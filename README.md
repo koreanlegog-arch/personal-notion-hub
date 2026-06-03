@@ -6,8 +6,10 @@
 
 - 프로젝트, task, note, routine, link를 한 브라우저에서 빠르게 관리합니다.
 - 서버, API, backend, dependency install 없이 동작합니다.
-- 데이터는 브라우저 `localStorage`에 저장됩니다.
+- 기본 hub 데이터는 브라우저 `localStorage`에 저장됩니다.
+- assistant inbox 데이터는 브라우저 `IndexedDB`에 저장됩니다.
 - 전체 데이터는 JSON으로 export/import할 수 있습니다.
+- 서버, 외부 API, OAuth, cloud sync는 사용하지 않습니다.
 
 ## Run Locally
 
@@ -39,7 +41,36 @@ http://127.0.0.1:4173/
 - private internal URL
 - 민감한 운영 메모
 
-실제 사용 데이터는 사용자의 브라우저 `localStorage`에만 저장됩니다. 다른 기기와 자동 동기화되지 않습니다.
+실제 사용 데이터는 사용자의 브라우저 저장소에만 저장됩니다. 다른 기기와 자동 동기화되지 않습니다.
+
+Assistant MVP는 수동 입력과 demo fixture만 다룹니다. Slack, email, SMS, KakaoTalk, call, voice memo, YouTube, calendar, Bible verse 같은 입력 경로는 source label일 뿐이며 실제 외부 서비스에 연결하지 않습니다.
+
+## Assistant MVP
+
+`Assistant` 화면은 참고 이미지의 흐름을 local-only 방식으로 구현합니다.
+
+```text
+manual input routes
+-> local rule processing
+-> work log / todo / daily summary / Slack-style draft / calendar draft
+```
+
+지원 범위:
+
+- manual paste input
+- demo fixture input
+- IndexedDB assistant inbox
+- local rule-based suggestions
+- copyable Slack-style summary draft
+- copyable calendar draft
+- 오늘의 성경말씀 widget
+
+제외 범위:
+
+- 실제 Slack/Google/Notion/Kakao/phone API 연동
+- 연락처, 통화기록, 문자, 녹음파일 자동 접근
+- OAuth, API key, token, cloud sync
+- cloud AI/STT/LLM 처리
 
 ## Backup
 
@@ -67,6 +98,9 @@ GitHub Pages custom workflow 사용은 repository Pages settings에서 GitHub Ac
 - `index.html`: app entry
 - `assets/css/styles.css`: layout, theme, responsive UI
 - `assets/js/app.js`: localStorage state, rendering, interactions
+- `assets/js/assistant-storage.js`: IndexedDB assistant inbox adapter
+- `assets/js/assistant-import.js`: manual/fixture input normalizer
+- `assets/js/assistant-rules.js`: local rule assistant
 - `data/seed.json`: demo-only schema note
 - `docs/TEST_PLAN.md`: manual QA plan
 - `docs/SECURITY_NOTES.md`: public deployment and localStorage risk notes
@@ -77,4 +111,5 @@ GitHub Pages custom workflow 사용은 repository Pages settings에서 GitHub Ac
 - 계정/auth 없음
 - 다중 기기 sync 없음
 - collaboration 없음
-- localStorage 기반이므로 브라우저/기기 보안에 의존
+- localStorage와 IndexedDB 기반이므로 브라우저/기기 보안에 의존
+- assistant output은 rule-based draft이며 실제 일정 등록이나 메시지 전송은 하지 않음

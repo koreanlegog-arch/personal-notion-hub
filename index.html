@@ -25,6 +25,7 @@
 
         <nav class="nav-list" aria-label="Primary">
           <button class="nav-item is-active" data-view="dashboard" type="button">Dashboard</button>
+          <button class="nav-item" data-view="assistant" type="button">Assistant</button>
           <button class="nav-item" data-view="projects" type="button">Projects</button>
           <button class="nav-item" data-view="tasks" type="button">Tasks</button>
           <button class="nav-item" data-view="notes" type="button">Notes</button>
@@ -35,7 +36,7 @@
 
         <section class="sidebar-panel" aria-labelledby="storage-label">
           <h2 id="storage-label">Storage</h2>
-          <p>브라우저 localStorage에만 저장됩니다. 서버 동기화와 외부 전송은 없습니다.</p>
+          <p>기본 hub는 localStorage, assistant inbox는 IndexedDB에 저장됩니다. 서버 동기화와 외부 전송은 없습니다.</p>
           <div class="storage-meter" aria-hidden="true">
             <span id="storageMeter"></span>
           </div>
@@ -75,6 +76,9 @@
 
     <div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
 
+    <script src="./assets/js/assistant-storage.js" defer></script>
+    <script src="./assets/js/assistant-import.js" defer></script>
+    <script src="./assets/js/assistant-rules.js" defer></script>
     <script src="./assets/js/app.js" defer></script>
   </body>
 </html>

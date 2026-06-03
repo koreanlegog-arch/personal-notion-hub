@@ -5,9 +5,28 @@ const nowISO = () => new Date().toISOString();
 
 const uid = (prefix) => `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 
+const ASSISTANT_SOURCES = [
+  "slack",
+  "email",
+  "sms",
+  "kakao",
+  "call",
+  "voice_memo",
+  "my_memo",
+  "youtube",
+  "bible",
+];
+
 let storageState = {
   available: true,
   lastError: "",
+};
+
+let assistantState = {
+  ready: false,
+  persistent: false,
+  error: "",
+  captures: [],
 };
 
 const seedState = {
@@ -281,6 +300,7 @@ function render() {
   clearView();
   const renderers = {
     dashboard: renderDashboard,
+    assistant: renderAssistant,
     projects: renderProjects,
     tasks: renderTasks,
     notes: renderNotes,
@@ -311,16 +331,17 @@ function renderDashboard() {
   const openTasks = state.tasks.filter((task) => task.status !== "done");
   const todayTasks = state.tasks.filter((task) => task.status === "today" || task.dueDate === todayISO());
   const notes = state.notes.slice().sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+  const brief = buildAssistantBrief();
 
   const hero = make("section", "hero-strip");
   const focus = make("div", "focus-panel");
   focus.append(make("p", "eyebrow", "Today"));
-  focus.append(make("h3", "", todayTasks[0]?.title || "Start with a clear capture"));
+  focus.append(make("h3", "", todayTasks[0]?.title || brief.title));
   focus.append(
     make(
       "p",
       "",
-      todayTasks[0]?.notes || "Quick Capture로 생각을 inbox에 넣고, 프로젝트와 task board에서 실행 단위로 정리하세요."
+      todayTasks[0]?.notes || brief.body
     )
   );
   focus.append(quickCaptureForm());
@@ -345,8 +366,8 @@ function renderDashboard() {
   [
     ["Active projects", activeProjects.length],
     ["Open tasks", openTasks.length],
+    ["Assistant inbox", assistantState.captures.filter((capture) => capture.status !== "archived").length],
     ["Notes", state.notes.length],
-    ["Routines", state.routines.length],
   ].forEach(([label, value]) => {
     const card = make("div", "stat-card");
     card.append(make("strong", "", String(value)));
@@ -358,10 +379,387 @@ function renderDashboard() {
   const grid = make("section", "content-grid three");
   grid.append(
     panel("Today", todayTasks.slice(0, 5), (task) => taskCard(task), "오늘 지정된 task가 없습니다."),
+    panel("Assistant Brief", assistantBriefCards(), (item) => assistantBriefCard(item), "assistant 입력이 아직 없습니다."),
     panel("Active Projects", activeProjects.slice(0, 5), (project) => projectCard(project), "진행 중 프로젝트가 없습니다."),
     panel("Recent Notes", notes.slice(0, 5), (note) => noteCard(note), "최근 note가 없습니다.")
   );
   appView.append(grid);
+}
+
+function renderAssistant() {
+  appView.append(
+    viewHeader(
+      "Assistant control page",
+      "수동 입력을 local-only assistant inbox에 넣고, 로컬 rule로 작업 기록, 할 일, 일별 요약, 알림 초안을 만듭니다.",
+      "Refresh Inbox",
+      refreshAssistant
+    )
+  );
+
+  const workflow = make("section", "assistant-workflow");
+  workflow.append(
+    assistantLane("Input routes", ASSISTANT_SOURCES.map(sourceLabel), "수동 paste/import만 허용"),
+    assistantLane("Local processing", ["중복/노이즈 줄이기", "rule-based 분류", "검토 후 반영", "주간/월간 회고 재료"], "외부 API 없음"),
+    assistantLane("Output drafts", ["작업 기록", "할 일 목록", "일별 요약", "Slack-style 알림", "Calendar draft"], "복사/다운로드 중심")
+  );
+  appView.append(workflow);
+
+  const topGrid = make("section", "content-grid");
+  topGrid.append(assistantCapturePanel(), assistantBiblePanel());
+  appView.append(topGrid);
+
+  const suggestions = buildAssistantSuggestions();
+  const reviewGrid = make("section", "content-grid three");
+  reviewGrid.append(
+    panel("Inbox", assistantState.captures.slice(0, 8), assistantCaptureCard, "assistant inbox가 비어 있습니다."),
+    panel("Suggested Outputs", suggestions.slice(0, 8), assistantSuggestionCard, "입력을 추가하면 제안이 표시됩니다."),
+    panel("Daily Summary", assistantBriefCards(), assistantBriefCard, "오늘 처리할 assistant context가 없습니다.")
+  );
+  appView.append(reviewGrid);
+}
+
+function sourceLabel(source) {
+  const labels = {
+    slack: "Slack",
+    email: "Email",
+    sms: "SMS",
+    kakao: "KakaoTalk",
+    call: "Call",
+    voice_memo: "Voice memo",
+    my_memo: "My memo",
+    youtube: "YouTube",
+    bible: "Bible verse",
+  };
+  return labels[source] || source;
+}
+
+function assistantLane(title, items, note) {
+  const lane = make("article", "assistant-lane");
+  lane.append(make("p", "eyebrow", note));
+  lane.append(make("h3", "", title));
+  const list = make("div", "route-list");
+  items.forEach((item) => list.append(make("span", "route-pill", item)));
+  lane.append(list);
+  return lane;
+}
+
+function captureSource(capture) {
+  return capture.source || capture.sourceType || "my_memo";
+}
+
+function captureStatus(capture) {
+  return capture.status || "inbox";
+}
+
+function assistantStorageLabel() {
+  if (assistantState.persistent) return "IndexedDB ready";
+  if (assistantState.ready) return "Session fallback";
+  return "Storage pending";
+}
+
+function assistantCapturePanel() {
+  const section = make("section", "section-panel assistant-capture-panel");
+  const header = make("div", "section-header");
+  header.append(make("h3", "", "Manual input"));
+  header.append(badge(assistantStorageLabel()));
+  section.append(header);
+
+  const form = make("form", "assistant-form");
+  const source = document.createElement("select");
+  source.name = "source";
+  ASSISTANT_SOURCES.forEach((value) => {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = sourceLabel(value);
+    source.append(option);
+  });
+
+  const title = document.createElement("input");
+  title.name = "title";
+  title.type = "text";
+  title.placeholder = "제목 또는 한 줄 요약";
+
+  const body = document.createElement("textarea");
+  body.name = "body";
+  body.placeholder = "Slack, 이메일, 문자, 카톡, 통화 메모, 음성메모 전사, 유튜브 메모, 성경 말씀을 직접 붙여넣으세요.";
+
+  const actions = make("div", "form-actions");
+  const submit = make("button", "primary-button", "Add to assistant");
+  submit.type = "submit";
+  actions.append(submit, button("Load demo fixture", loadAssistantFixture, "ghost-button"));
+  form.append(source, title, body, actions);
+  form.addEventListener("submit", handleAssistantCapture);
+  section.append(form);
+
+  const warning = make("p", "fine-print", "실제 연락처, 통화기록, 녹음파일, 토큰, 고객 데이터는 repo나 evidence에 넣지 마세요. 이 MVP는 수동 입력/fixture 전용입니다.");
+  section.append(warning);
+  return section;
+}
+
+function assistantBiblePanel() {
+  const section = make("section", "section-panel bible-panel");
+  const verse = getBibleVerse();
+  section.append(make("p", "eyebrow", "Today Bible Verse"));
+  section.append(make("h3", "", verse.reference));
+  section.append(make("p", "", verse.text));
+  section.append(make("p", "fine-print", "고정된 demo 말씀 목록에서 날짜별로 표시합니다."));
+  return section;
+}
+
+function getBibleVerse() {
+  if (window.PNHAssistantRules?.bibleVerseForToday) {
+    return window.PNHAssistantRules.bibleVerseForToday(new Date());
+  }
+  return {
+    reference: "Proverbs 16:3",
+    text: "Commit your work to the Lord, and your plans will be established.",
+  };
+}
+
+async function handleAssistantCapture(event) {
+  event.preventDefault();
+  const data = Object.fromEntries(new FormData(event.currentTarget).entries());
+  if (!String(data.title || "").trim() && !String(data.body || "").trim()) {
+    toast("Assistant input is empty", "내용을 입력한 뒤 추가하세요.");
+    return;
+  }
+  const normalizer = window.PNHAssistantImport?.normalizeManualCapture || fallbackNormalizeCapture;
+  let capture;
+  try {
+    capture = normalizer({
+      source: data.source,
+      title: data.title,
+      body: data.body,
+      receivedAt: nowISO(),
+    });
+  } catch (error) {
+    toast("Assistant input rejected", error?.message || "입력 형식을 확인하세요.");
+    return;
+  }
+  if (!capture.body && !capture.title) {
+    toast("Assistant input is empty", "내용을 입력한 뒤 추가하세요.");
+    return;
+  }
+  await saveAssistantCapture(capture);
+  event.currentTarget.reset();
+}
+
+function fallbackNormalizeCapture(input) {
+  return {
+    id: uid("capture"),
+    source: input.source || "my_memo",
+    title: String(input.title || "").trim() || sourceLabel(input.source || "my_memo"),
+    body: String(input.body || "").trim(),
+    receivedAt: input.receivedAt || nowISO(),
+    priority: "medium",
+    status: "inbox",
+    tags: [],
+    createdAt: nowISO(),
+    updatedAt: nowISO(),
+  };
+}
+
+async function saveAssistantCapture(capture) {
+  if (!window.PNHAssistantStorage?.addCapture) {
+    assistantState.captures.unshift(capture);
+  } else {
+    await window.PNHAssistantStorage.addCapture(capture);
+    assistantState.captures = await window.PNHAssistantStorage.listCaptures();
+    const status = window.PNHAssistantStorage.getStatus?.();
+    assistantState.ready = Boolean(status?.ready);
+    assistantState.persistent = Boolean(status?.persistent);
+    assistantState.error = status?.error || "";
+  }
+  render();
+  toast(
+    "Assistant input saved",
+    assistantState.persistent ? "IndexedDB assistant inbox에 저장했습니다." : "현재 세션 fallback에 저장했습니다. 브라우저 저장소 권한을 확인하세요."
+  );
+}
+
+async function refreshAssistant() {
+  await loadAssistantCaptures();
+  render();
+  toast("Assistant refreshed");
+}
+
+async function loadAssistantCaptures() {
+  try {
+    if (!window.PNHAssistantStorage?.init) {
+      assistantState.ready = false;
+      assistantState.persistent = false;
+      return;
+    }
+    const status = await window.PNHAssistantStorage.init();
+    assistantState.captures = await window.PNHAssistantStorage.listCaptures();
+    assistantState.ready = Boolean(status?.ready);
+    assistantState.persistent = Boolean(status?.persistent);
+    assistantState.error = status?.error || "";
+  } catch (error) {
+    assistantState.ready = false;
+    assistantState.persistent = false;
+    assistantState.error = error?.name || "AssistantStorageError";
+  }
+}
+
+async function updateAssistantCapture(id, patch, message = "Assistant item updated") {
+  const local = assistantState.captures.find((capture) => capture.id === id);
+  if (local) Object.assign(local, patch, { updatedAt: nowISO() });
+  if (window.PNHAssistantStorage?.updateCapture) {
+    await window.PNHAssistantStorage.updateCapture(id, patch);
+    assistantState.captures = await window.PNHAssistantStorage.listCaptures();
+  }
+  render();
+  toast(message);
+}
+
+function buildAssistantSuggestions() {
+  const rawSuggestions = window.PNHAssistantRules?.buildSuggestions
+    ? window.PNHAssistantRules.buildSuggestions(assistantState.captures)
+    : assistantState.captures.map((capture) => ({
+    id: `suggestion-${capture.id}`,
+    captureId: capture.id,
+    suggestionType: "note",
+    title: capture.title,
+    body: capture.body,
+    confidence: "low",
+    status: "pending",
+    payload: {},
+  }));
+
+  return rawSuggestions.map((suggestion, index) => ({
+    id: suggestion.id || `suggestion-${index + 1}`,
+    captureId: suggestion.captureId || "",
+    suggestionType: suggestion.suggestionType || suggestion.type || "note",
+    title: suggestion.title || "Assistant suggestion",
+    body: suggestion.body || suggestion.reason || "",
+    confidence: suggestion.confidence || "medium",
+    status: suggestion.status || "pending",
+    payload: {
+      priority: suggestion.priority,
+      dueDate: suggestion.dueDate,
+      ...(suggestion.payload || {}),
+    },
+  }));
+}
+
+function buildAssistantBrief() {
+  if (window.PNHAssistantRules?.buildDailyBrief) {
+    const brief = window.PNHAssistantRules.buildDailyBrief(assistantState.captures, state.tasks);
+    return {
+      title: brief.title || brief.focus || "Assistant daily brief",
+      body:
+        brief.body ||
+        [
+          `${brief.counts?.captures || 0} assistant inputs`,
+          `${brief.counts?.todayTasks || 0} today tasks`,
+          ...(brief.reviewPrompts || []),
+        ].join(" · "),
+      cards: (brief.topSuggestions || []).map((suggestion) => ({
+        title: suggestion.title,
+        body: suggestion.reason || suggestion.body || "",
+        type: suggestion.type || "assistant",
+      })),
+    };
+  }
+  return {
+    title: "Start with assistant inbox",
+    body: "오늘 들어온 입력을 assistant에 모으면 작업 기록, 할 일, 요약 초안으로 정리할 수 있습니다.",
+    cards: [],
+  };
+}
+
+function assistantBriefCards() {
+  const brief = buildAssistantBrief();
+  return [
+    { title: brief.title, body: brief.body, type: "Daily" },
+    ...(brief.cards || []),
+  ];
+}
+
+function assistantBriefCard(item) {
+  const card = itemShell(item.title);
+  card.append(metaRow([item.type || "assistant"]));
+  card.append(make("p", "", item.body || ""));
+  return card;
+}
+
+function assistantCaptureCard(capture) {
+  const card = itemShell(capture.title || sourceLabel(captureSource(capture)));
+  card.append(metaRow([sourceLabel(captureSource(capture)), captureStatus(capture), capture.priority, ...(capture.tags || [])], capture.priority));
+  if (capture.body) card.append(make("p", "", capture.body.slice(0, 220)));
+  const actions = make("div", "item-actions");
+  actions.append(button("Processed", () => updateAssistantCapture(capture.id, { status: "processed" }, "Marked processed"), "small-button"));
+  actions.append(button("Archive", () => updateAssistantCapture(capture.id, { status: "archived" }, "Archived"), "small-button"));
+  card.append(actions);
+  return card;
+}
+
+function assistantSuggestionCard(suggestion) {
+  const card = itemShell(suggestion.title);
+  card.append(metaRow([suggestion.suggestionType, suggestion.confidence]));
+  if (suggestion.body) card.append(make("p", "", suggestion.body.slice(0, 240)));
+  const actions = make("div", "item-actions");
+  if (suggestion.suggestionType === "task") {
+    actions.append(button("Create Task", () => acceptAssistantTask(suggestion), "small-button"));
+  } else if (suggestion.suggestionType === "calendar_event") {
+    actions.append(button("Copy Calendar Draft", () => copyAssistantText(suggestion.body || suggestion.title), "small-button"));
+  } else {
+    actions.append(button("Create Note", () => acceptAssistantNote(suggestion), "small-button"));
+  }
+  actions.append(button("Copy", () => copyAssistantText(`${suggestion.title}\n${suggestion.body || ""}`), "small-button"));
+  card.append(actions);
+  return card;
+}
+
+function acceptAssistantTask(suggestion) {
+  state.tasks.unshift({
+    id: uid("task"),
+    title: suggestion.title,
+    status: "inbox",
+    priority: suggestion.payload?.priority || "medium",
+    dueDate: suggestion.payload?.dueDate || "",
+    projectId: "",
+    notes: suggestion.body || "",
+    tags: ["assistant", suggestion.suggestionType],
+    createdAt: nowISO(),
+    updatedAt: nowISO(),
+  });
+  persist("Task created from assistant");
+}
+
+function acceptAssistantNote(suggestion) {
+  state.notes.unshift({
+    id: uid("note"),
+    title: suggestion.title,
+    body: suggestion.body || "",
+    tags: ["assistant", suggestion.suggestionType],
+    projectId: "",
+    createdAt: nowISO(),
+    updatedAt: nowISO(),
+  });
+  persist("Note created from assistant");
+}
+
+async function copyAssistantText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    toast("Copied", "출력 초안을 clipboard에 복사했습니다.");
+  } catch {
+    toast("Copy unavailable", "브라우저 권한 때문에 복사하지 못했습니다.");
+  }
+}
+
+async function loadAssistantFixture() {
+  const samples = [
+    { source: "slack", title: "배포 전 확인", body: "오늘 오후 5시까지 release checklist 확인하고 blocker 있으면 공유해야 함" },
+    { source: "youtube", title: "자동화 참고 영상", body: "https://example.com/demo 자동화 시스템 구성 아이디어 정리" },
+    { source: "bible", title: "오늘의 말씀", body: getBibleVerse().text },
+  ];
+  const normalizer = window.PNHAssistantImport?.normalizeManualCapture || fallbackNormalizeCapture;
+  for (const sample of samples) {
+    await saveAssistantCapture(normalizer({ ...sample, receivedAt: nowISO() }));
+  }
 }
 
 function quickCaptureForm() {
@@ -578,7 +976,7 @@ function renderSettings() {
 
   const stack = make("section", "settings-stack");
   stack.append(settingsRow("Theme", "밝은 화면과 어두운 화면을 전환합니다.", themeToggleButton()));
-  stack.append(settingsRow("Export JSON", "현재 localStorage 데이터를 파일로 백업합니다.", button("Export Data", exportState)));
+  stack.append(settingsRow("Export JSON", "현재 hub 데이터와 assistant capture를 JSON 파일로 백업합니다.", button("Export Data", exportState)));
   stack.append(settingsRow("Import JSON", "백업 파일을 불러와 현재 데이터를 교체합니다.", importControl()));
   stack.append(settingsRow("Reset Data", "현재 브라우저의 hub 데이터를 seed 상태로 되돌립니다.", button("Reset", resetState, "danger-button")));
   stack.append(settingsRow("Public data warning", "GitHub Pages에는 앱 코드와 더미 데이터만 올리세요. 실제 개인 데이터, 고객 정보, 민감한 키는 커밋하지 않습니다.", make("span", "badge", "Local only")));
@@ -944,8 +1342,14 @@ function deleteItem(type, id) {
   persist("Deleted");
 }
 
-function exportState(filenamePrefix = "personal-notion-hub") {
-  const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+async function exportState(filenamePrefix = "personal-notion-hub") {
+  const assistantExport = await exportAssistantCaptures();
+  const payload = {
+    ...state,
+    assistantCaptures: assistantExport.captures,
+    assistantExportedAt: assistantExport.exportedAt,
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
   anchor.href = url;
@@ -954,10 +1358,17 @@ function exportState(filenamePrefix = "personal-notion-hub") {
   anchor.click();
   anchor.remove();
   URL.revokeObjectURL(url);
-  toast("Export ready", "JSON backup downloaded.");
+  toast("Export ready", "JSON backup downloaded, including assistant captures.");
 }
 
-function handleImport(event) {
+async function exportAssistantCaptures() {
+  if (!window.PNHAssistantStorage?.exportCaptures) {
+    return { exportedAt: nowISO(), captures: assistantState.captures };
+  }
+  return window.PNHAssistantStorage.exportCaptures();
+}
+
+async function handleImport(event) {
   const file = event.target.files?.[0];
   if (!file) return;
   const confirmed = window.confirm("Import will replace this browser's current hub data. A pre-import backup will be downloaded first. Continue?");
@@ -966,24 +1377,41 @@ function handleImport(event) {
     toast("Import cancelled");
     return;
   }
-  exportState("personal-notion-hub-pre-import-backup");
+  await exportState("personal-notion-hub-pre-import-backup");
   const reader = new FileReader();
-  reader.addEventListener("load", () => {
+  reader.addEventListener("load", async () => {
     try {
       const parsed = JSON.parse(String(reader.result));
       validateImportedState(parsed);
       const imported = normalizeState(parsed);
       state = imported;
+      await importAssistantCaptures(parsed);
       activeView = state.settings.activeView || "dashboard";
       document.documentElement.dataset.theme = state.settings.theme;
       persist("Import complete");
     } catch (error) {
-      console.error(error);
+      console.warn("Import failed", error?.name || "ImportError");
       toast("Import failed", "JSON 형식이나 schema를 확인하세요.");
     }
     event.target.value = "";
   });
   reader.readAsText(file);
+}
+
+async function importAssistantCaptures(parsed) {
+  const captures = Array.isArray(parsed.assistantCaptures)
+    ? parsed.assistantCaptures
+    : Array.isArray(parsed.assistant?.captures)
+      ? parsed.assistant.captures
+      : [];
+  if (!captures.length || !window.PNHAssistantStorage?.clearCaptures) {
+    return;
+  }
+  await window.PNHAssistantStorage.clearCaptures();
+  for (const capture of captures) {
+    await window.PNHAssistantStorage.addCapture(capture);
+  }
+  assistantState.captures = await window.PNHAssistantStorage.listCaptures();
 }
 
 function validateImportedState(candidate) {
@@ -992,7 +1420,8 @@ function validateImportedState(candidate) {
   }
   const collections = ["projects", "tasks", "notes", "routines", "links"];
   const hasCollection = collections.some((name) => Array.isArray(candidate[name]));
-  if (!hasCollection) {
+  const hasAssistant = Array.isArray(candidate.assistantCaptures) || Array.isArray(candidate.assistant?.captures);
+  if (!hasCollection && !hasAssistant) {
     throw new Error("Import must include at least one known collection.");
   }
   collections.forEach((name) => {
@@ -1014,7 +1443,7 @@ function normalizeHttpUrl(value) {
   }
 }
 
-function resetState() {
+async function resetState() {
   const confirmation = window.prompt("Type RESET to reset this browser's local hub data.");
   if (confirmation !== "RESET") {
     toast("Reset cancelled");
@@ -1023,6 +1452,13 @@ function resetState() {
   state = clone(seedState);
   activeView = "dashboard";
   document.documentElement.dataset.theme = state.settings.theme;
+  if (window.PNHAssistantStorage?.clearCaptures) {
+    await window.PNHAssistantStorage.clearCaptures().then(loadAssistantCaptures).catch(() => {
+      assistantState.captures = [];
+    });
+  } else {
+    assistantState.captures = [];
+  }
   persist("Data reset");
 }
 
@@ -1061,11 +1497,19 @@ function wireEvents() {
   });
 }
 
-wireEvents();
-render();
-if (state.system?.recoveredAt) {
-  toast("Recovered default data", "손상된 localStorage 값을 감지해 기본 상태로 복구했습니다.");
+async function boot() {
+  await loadAssistantCaptures();
+  wireEvents();
+  render();
+  if (state.system?.recoveredAt) {
+    toast("Recovered default data", "손상된 localStorage 값을 감지해 기본 상태로 복구했습니다.");
+  }
+  if (!storageState.available) {
+    toast("Local storage unavailable", "앱은 열렸지만 이 브라우저에 저장하지 못할 수 있습니다.");
+  }
+  if (assistantState.error) {
+    toast("Assistant storage fallback", `IndexedDB를 초기화하지 못했습니다: ${assistantState.error}`);
+  }
 }
-if (!storageState.available) {
-  toast("Local storage unavailable", "앱은 열렸지만 이 브라우저에 저장하지 못할 수 있습니다.");
-}
+
+boot();

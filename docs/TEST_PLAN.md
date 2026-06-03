@@ -6,6 +6,14 @@
 
 ## Functional Checks
 
+- Assistant 화면이 sidebar에서 열린다.
+- Assistant input routes에 Slack, Email, SMS, KakaoTalk, Call, Voice memo, My memo, YouTube, Bible verse가 표시된다.
+- Assistant manual input을 추가하면 inbox에 표시된다.
+- Assistant demo fixture를 불러오면 demo capture와 suggestion이 표시된다.
+- Assistant suggestion에서 `Create Task`를 누르면 기존 Tasks에 항목이 생성된다.
+- Assistant suggestion에서 `Create Note`를 누르면 기존 Notes에 항목이 생성된다.
+- Calendar/Slack-style draft는 실제 전송 없이 copy action만 제공된다.
+- 오늘의 성경말씀 widget이 표시된다.
 - Dashboard가 첫 화면으로 로드된다.
 - Quick Capture로 task, note, project, link를 생성할 수 있다.
 - Projects에서 project 생성, 수정, 삭제가 가능하다.
@@ -50,6 +58,27 @@ location.reload()
 - recovery toast가 표시된다.
 - fatal console error가 없다.
 
+## IndexedDB Assistant Checks
+
+브라우저 console에서:
+
+```js
+indexedDB.deleteDatabase('personalNotionHubAssistant')
+location.reload()
+```
+
+기대 결과:
+
+- Assistant 화면이 정상 렌더링된다.
+- IndexedDB가 다시 초기화된다.
+- localStorage의 기존 hub 데이터는 손상되지 않는다.
+
+Assistant fixture:
+
+- `Load demo fixture` 클릭
+- Inbox와 Suggested Outputs에 demo 항목 표시
+- 새로고침 후 assistant inbox 유지
+
 ## Responsive Viewports
 
 - `360x640`
@@ -83,6 +112,7 @@ location.reload()
 - localStorage 저장/복원 정상
 - 새로고침 후 화면 유지
 - secret/API key/client data 포함 없음
+- 실제 개인정보/연락처/통화기록/녹음/transcript fixture 없음
 - Workflow permissions가 최소 권한 유지
 
 ## Residual Risk

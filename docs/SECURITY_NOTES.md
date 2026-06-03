@@ -27,6 +27,30 @@ Repository와 배포 artifact에는 demo data만 포함한다.
 - 기기/브라우저를 바꾸면 자동 동기화되지 않는다.
 - 민감 정보 저장에 적합하지 않다.
 
+## IndexedDB Assistant Store
+
+Assistant MVP는 browser `IndexedDB`에 manual capture를 저장한다.
+
+주의:
+
+- 암호화 저장소가 아니다.
+- 같은 origin의 JavaScript가 접근할 수 있다.
+- public GitHub Pages artifact에는 demo 코드만 포함되어야 한다.
+- 실제 연락처, 통화기록, 문자, 녹음, transcript, 일정, client data, token은 저장소와 evidence에 금지한다.
+
+허용:
+
+- 사용자가 브라우저에서 직접 입력한 demo/manual capture
+- local rule-based suggestion
+- copyable summary/calendar draft
+
+금지:
+
+- Slack, Google, Notion, Kakao, phone, email API 연결
+- OAuth/token/API key 저장
+- 녹음파일 자동 수집 또는 cloud transcription
+- 실제 개인 데이터 fixture commit
+
 ## XSS Mitigation
 
 - 사용자 입력은 text node로 렌더링한다.
@@ -64,3 +88,5 @@ permissions:
 - `git status --short`
 - artifact에 local backup JSON이 포함되지 않는지 확인
 - Pages URL에서 실제 개인 데이터가 없는지 확인
+- `assets/js/assistant-*.js`에 `fetch`, OAuth, token flow, external API가 없는지 확인
+- assistant demo fixture에 연락처, 전화번호, 이메일, 실제 일정, 녹음 transcript가 없는지 확인

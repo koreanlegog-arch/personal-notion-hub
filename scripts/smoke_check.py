@@ -17,6 +17,9 @@ REQUIRED = [
     "favicon.ico",
     "assets/css/styles.css",
     "assets/js/app.js",
+    "assets/js/assistant-storage.js",
+    "assets/js/assistant-import.js",
+    "assets/js/assistant-rules.js",
     "assets/img/workspace-visual.png",
     "data/seed.json",
     "README.md",
@@ -78,6 +81,11 @@ def assert_expected_app_contracts() -> None:
         "exportState",
         "handleImport",
         "validateImportedState",
+        "renderAssistant",
+        "loadAssistantCaptures",
+        "PNHAssistantStorage",
+        "PNHAssistantImport",
+        "PNHAssistantRules",
         "normalizeHttpUrl",
         "textContent",
         "rel = \"noopener noreferrer\"",
@@ -87,6 +95,15 @@ def assert_expected_app_contracts() -> None:
             raise SystemExit(f"missing_app_contract={token}")
     if "innerHTML" in js:
         raise SystemExit("innerHTML_found=true")
+
+
+def assert_js_security_contracts() -> None:
+    forbidden = ["innerHTML", "fetch(", "XMLHttpRequest("]
+    for path in sorted((ROOT / "assets/js").glob("*.js")):
+        text = path.read_text(encoding="utf-8")
+        for token in forbidden:
+            if token in text:
+                raise SystemExit(f"forbidden_js_token={path.relative_to(ROOT)}:{token}")
 
 
 def assert_workflow_permissions() -> None:
@@ -102,6 +119,7 @@ def main() -> int:
     assert_html_assets()
     assert_no_inline_handlers()
     assert_expected_app_contracts()
+    assert_js_security_contracts()
     assert_workflow_permissions()
     print("smoke_check_pass=true")
     return 0
