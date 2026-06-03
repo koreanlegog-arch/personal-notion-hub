@@ -71,7 +71,7 @@ const seedState = {
     {
       id: "note-data-policy",
       title: "Data policy",
-      body: "이 hub는 서버 저장이 없다. 실제 민감 정보, token, client secret은 기록하지 않는다.",
+      body: "이 hub는 서버 저장이 없다. 실제 민감한 키, 계정 정보, 고객 정보는 기록하지 않는다.",
       tags: ["security", "policy"],
       projectId: "project-personal-hub",
       createdAt: nowISO(),
@@ -581,7 +581,7 @@ function renderSettings() {
   stack.append(settingsRow("Export JSON", "현재 localStorage 데이터를 파일로 백업합니다.", button("Export Data", exportState)));
   stack.append(settingsRow("Import JSON", "백업 파일을 불러와 현재 데이터를 교체합니다.", importControl()));
   stack.append(settingsRow("Reset Data", "현재 브라우저의 hub 데이터를 seed 상태로 되돌립니다.", button("Reset", resetState, "danger-button")));
-  stack.append(settingsRow("Public data warning", "GitHub Pages에는 앱 코드와 더미 데이터만 올리세요. 실제 개인 데이터, client data, secret은 커밋하지 않습니다.", make("span", "badge", "Local only")));
+  stack.append(settingsRow("Public data warning", "GitHub Pages에는 앱 코드와 더미 데이터만 올리세요. 실제 개인 데이터, 고객 정보, 민감한 키는 커밋하지 않습니다.", make("span", "badge", "Local only")));
   appView.append(stack);
 }
 
