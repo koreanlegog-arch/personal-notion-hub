@@ -1,0 +1,18 @@
+# Local data and OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Real user data backups must stay local unless explicitly sanitized.
+*.local.json
+*.backup.json
+exports/
+
+# Secrets are not used by this project.
+.env
+.env.*
+*secret*
+*token*
+*credential*
+*.pem
+*.key

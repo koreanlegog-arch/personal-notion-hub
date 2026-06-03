@@ -1,0 +1,5 @@
+{
+  "schemaVersion": 1,
+  "description": "Demo-only seed data. Do not commit private personal data, client data, secrets, tokens, credentials, or internal URLs.",
+  "collections": ["projects", "tasks", "notes", "routines", "links"]
+}

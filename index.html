@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'"
+    />
+    <meta name="description" content="A private-browser Notion-style operations hub for projects, tasks, notes, routines, and links." />
+    <title>Personal Notion Hub</title>
+    <link rel="icon" href="./favicon.ico" sizes="any" />
+    <link rel="stylesheet" href="./assets/css/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Workspace navigation">
+        <div class="brand-block">
+          <div class="brand-mark" aria-hidden="true">PN</div>
+          <div>
+            <p class="eyebrow">Personal OS</p>
+            <h1>Notion Hub</h1>
+          </div>
+        </div>
+
+        <nav class="nav-list" aria-label="Primary">
+          <button class="nav-item is-active" data-view="dashboard" type="button">Dashboard</button>
+          <button class="nav-item" data-view="projects" type="button">Projects</button>
+          <button class="nav-item" data-view="tasks" type="button">Tasks</button>
+          <button class="nav-item" data-view="notes" type="button">Notes</button>
+          <button class="nav-item" data-view="routines" type="button">Routines</button>
+          <button class="nav-item" data-view="links" type="button">Links</button>
+          <button class="nav-item" data-view="settings" type="button">Settings</button>
+        </nav>
+
+        <section class="sidebar-panel" aria-labelledby="storage-label">
+          <h2 id="storage-label">Storage</h2>
+          <p>브라우저 localStorage에만 저장됩니다. 서버 동기화와 외부 전송은 없습니다.</p>
+          <div class="storage-meter" aria-hidden="true">
+            <span id="storageMeter"></span>
+          </div>
+          <p class="fine-print" id="storageText">Ready</p>
+        </section>
+      </aside>
+
+      <div class="workspace">
+        <header class="topbar">
+          <button class="icon-button mobile-menu-button" id="mobileMenuButton" type="button" aria-label="Toggle navigation">
+            <span aria-hidden="true"></span>
+          </button>
+          <div class="search-wrap">
+            <label class="sr-only" for="globalSearch">Search workspace</label>
+            <input id="globalSearch" type="search" placeholder="Search projects, tasks, notes, routines, links" autocomplete="off" />
+          </div>
+          <div class="topbar-actions">
+            <button class="ghost-button" id="quickExportButton" type="button">Export</button>
+            <button class="primary-button" id="quickCaptureFocus" type="button">Quick Capture</button>
+          </div>
+        </header>
+
+        <main class="content" id="appView" tabindex="-1"></main>
+      </div>
+
+      <aside class="inspector" id="inspector" aria-label="Editor panel">
+        <div class="inspector-header">
+          <div>
+            <p class="eyebrow" id="inspectorType">Editor</p>
+            <h2 id="inspectorTitle">Quick Capture</h2>
+          </div>
+          <button class="icon-button" id="closeInspector" type="button" aria-label="Close editor">x</button>
+        </div>
+        <form id="editorForm" class="editor-form"></form>
+      </aside>
+    </div>
+
+    <div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="./assets/js/app.js" defer></script>
+  </body>
+</html>
