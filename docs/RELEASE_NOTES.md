@@ -1,5 +1,36 @@
 # Release Notes
 
+## 2026-06-04 - Mobile Launch MVP
+
+### Summary
+
+Added a local-only `Launch` view for turning a mobile project brief into a dispatch packet for future team automation.
+
+### Included
+
+- `Launch` navigation item
+- mobile project brief form
+- dispatch packet generation
+- Discord command draft copy
+- GitHub issue draft copy
+- local Project and starter Task creation
+- duplicate-safe local start behavior
+- roadmap document for mobile project launch automation
+
+### Boundaries
+
+- No actual Discord/GitHub/OpenClaw dispatch
+- No external API
+- No token/secret handling
+- No real private data ingest
+- No dependency installation
+
+### Verification
+
+Recorded in:
+
+- `ops/runs/PNH-MOBILE-LAUNCH-MVP-20260604/`
+
 ## 2026-06-03 - Initial Web Release
 
 ### Summary

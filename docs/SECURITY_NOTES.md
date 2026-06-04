@@ -70,6 +70,30 @@ See:
 - `docs/PRIVATE_DATA_POLICY.md`
 - `docs/adr-0001-local-companion-vault.md`
 
+## Launch Packet Boundary
+
+The Launch MVP creates local dispatch packets and copyable drafts only.
+
+Allowed:
+
+- local project brief entry
+- local dispatch packet generation
+- local Project/Task creation
+- clipboard copy of Discord/GitHub drafts
+- JSON export controlled by the user
+
+Forbidden before separate approval:
+
+- automatic Discord message send
+- automatic GitHub issue creation
+- OpenClaw command execution
+- external API call
+- token storage
+- private client data in public launch packet
+- browser-to-companion `fetch` integration
+
+If launch briefs include sensitive business, client, or private information, they must be treated like private data and kept out of public repo artifacts, screenshots, logs, and QA evidence.
+
 ## Local Companion Prototype Security Boundary
 
 The current companion prototype is a fixture-only preview service, not a private-data vault.

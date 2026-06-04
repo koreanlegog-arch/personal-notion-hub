@@ -461,6 +461,77 @@ h1 {
   min-height: 100%;
 }
 
+.launch-grid {
+  align-items: start;
+  margin-bottom: 18px;
+}
+
+.launch-form {
+  display: grid;
+  gap: 12px;
+}
+
+.launch-form textarea {
+  min-height: 120px;
+}
+
+.launch-direction-panel h3 {
+  margin-bottom: 10px;
+}
+
+.launch-step-list {
+  display: grid;
+  gap: 10px;
+}
+
+.launch-step {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-strong);
+}
+
+.launch-step strong {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: #fff;
+  background: var(--accent);
+  font-size: 0.82rem;
+}
+
+.launch-step h4 {
+  margin: 0 0 4px;
+  font-size: 0.92rem;
+}
+
+.launch-step p {
+  margin-bottom: 0;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.packet-preview {
+  max-height: 280px;
+  margin: 0;
+  padding: 12px;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--surface-muted) 56%, transparent);
+  color: var(--ink);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
 .bible-panel h3 {
   margin-bottom: 10px;
 }

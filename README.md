@@ -5,6 +5,7 @@
 ## Purpose
 
 - 프로젝트, task, note, routine, link를 한 브라우저에서 빠르게 관리합니다.
+- 모바일에서 프로젝트 개요를 작성하고 팀 착수용 dispatch packet으로 정리합니다.
 - 서버, API, backend, dependency install 없이 동작합니다.
 - 기본 hub 데이터는 브라우저 `localStorage`에 저장됩니다.
 - assistant inbox 데이터는 브라우저 `IndexedDB`에 저장됩니다.
@@ -71,6 +72,30 @@ manual input routes
 - 연락처, 통화기록, 문자, 녹음파일 자동 접근
 - OAuth, API key, token, cloud sync
 - cloud AI/STT/LLM 처리
+
+## Launch MVP
+
+`Launch` 화면은 모바일 project intake를 위한 local-only MVP입니다.
+
+지원 범위:
+
+- project title/objective/outcome/constraints 입력
+- dispatch packet 생성
+- Discord command draft 복사
+- GitHub issue draft 복사
+- 기존 Projects/Tasks에 local starter work 생성
+- repeated local start 중복 방지
+
+제외 범위:
+
+- 실제 Discord/GitHub/OpenClaw 전송
+- API token 또는 secret 저장
+- 자동 외부 서비스 연동
+- real private data ingest
+
+장기 방향:
+
+- `docs/MOBILE_PROJECT_LAUNCH_AUTOMATION_ROADMAP.md`
 
 ## Long-Term Private Data Direction
 
@@ -157,6 +182,7 @@ GitHub Pages custom workflow 사용은 repository Pages settings에서 GitHub Ac
 - `docs/TEST_PLAN.md`: manual QA plan
 - `docs/SECURITY_NOTES.md`: public deployment and localStorage risk notes
 - `docs/LOCAL_COMPANION_ARCHITECTURE.md`: long-term local companion and encrypted vault architecture
+- `docs/MOBILE_PROJECT_LAUNCH_AUTOMATION_ROADMAP.md`: mobile project intake to automated team dispatch roadmap
 - `docs/PRIVATE_DATA_POLICY.md`: private data handling rules
 - `docs/adr-0001-local-companion-vault.md`: architecture decision record
 - `companion/`: fixture-only local companion prototype and fake import fixtures
@@ -169,4 +195,5 @@ GitHub Pages custom workflow 사용은 repository Pages settings에서 GitHub Ac
 - collaboration 없음
 - localStorage와 IndexedDB 기반이므로 브라우저/기기 보안에 의존
 - assistant output은 rule-based draft이며 실제 일정 등록이나 메시지 전송은 하지 않음
+- launch output은 local packet/copy draft이며 실제 Discord/GitHub/OpenClaw 실행은 하지 않음
 - local companion prototype은 preview-only이며 private-data vault가 아님

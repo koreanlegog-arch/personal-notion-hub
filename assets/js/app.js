@@ -119,6 +119,24 @@ const seedState = {
       updatedAt: nowISO(),
     },
   ],
+  launches: [
+    {
+      id: "launch-demo-control-plane",
+      title: "모바일 프로젝트 개요로 팀 착수 packet 만들기",
+      objective: "모바일에서 짧은 프로젝트 개요를 작성하면 집의 작업 팀이 바로 읽을 수 있는 착수 패킷으로 변환한다.",
+      desiredOutcome: "프로젝트, 초기 task, QA/security gate, Discord/GitHub 전달 초안이 한 번에 생성된다.",
+      constraints: "외부 API 연동 없음. 실제 민감 데이터 없음. 수동 copy/export만 허용.",
+      deadline: "",
+      priority: "high",
+      sensitivity: "internal",
+      deliveryTarget: "local_packet",
+      status: "draft",
+      createdProjectId: "",
+      createdTaskIds: [],
+      createdAt: nowISO(),
+      updatedAt: nowISO(),
+    },
+  ],
 };
 
 let state = loadState();
@@ -197,6 +215,7 @@ function normalizeState(candidate) {
     notes: Array.isArray(candidate.notes) ? candidate.notes : base.notes,
     routines: Array.isArray(candidate.routines) ? candidate.routines : base.routines,
     links: Array.isArray(candidate.links) ? candidate.links : base.links,
+    launches: Array.isArray(candidate.launches) ? candidate.launches : [],
     system: candidate.system || {},
   };
 }
@@ -248,6 +267,10 @@ function matchesQuery(item) {
     item.nextAction,
     item.notes,
     item.body,
+    item.objective,
+    item.desiredOutcome,
+    item.constraints,
+    item.deliveryTarget,
     item.url,
     item.category,
     ...(item.tags || []),
@@ -300,6 +323,7 @@ function render() {
   clearView();
   const renderers = {
     dashboard: renderDashboard,
+    launch: renderLaunch,
     assistant: renderAssistant,
     projects: renderProjects,
     tasks: renderTasks,
@@ -366,6 +390,7 @@ function renderDashboard() {
   [
     ["Active projects", activeProjects.length],
     ["Open tasks", openTasks.length],
+    ["Launch packets", state.launches.length],
     ["Assistant inbox", assistantState.captures.filter((capture) => capture.status !== "archived").length],
     ["Notes", state.notes.length],
   ].forEach(([label, value]) => {
@@ -384,6 +409,358 @@ function renderDashboard() {
     panel("Recent Notes", notes.slice(0, 5), (note) => noteCard(note), "최근 note가 없습니다.")
   );
   appView.append(grid);
+}
+
+function renderLaunch() {
+  appView.append(
+    viewHeader(
+      "Project launch control",
+      "모바일에서 프로젝트 개요를 남기면 집의 작업 팀이 바로 읽고 착수할 수 있는 dispatch packet으로 정리합니다.",
+      "Export Data",
+      exportState
+    )
+  );
+
+  const topGrid = make("section", "content-grid launch-grid");
+  topGrid.append(launchIntakePanel(), launchDirectionPanel());
+  appView.append(topGrid);
+
+  const launchList = state.launches
+    .filter(matchesQuery)
+    .slice()
+    .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+
+  const board = make("section", "content-grid");
+  board.append(panel("Dispatch Packets", launchList, launchPacketCard, "작성된 dispatch packet이 없습니다."));
+  appView.append(board);
+}
+
+function launchIntakePanel() {
+  const section = make("section", "section-panel launch-intake-panel");
+  const header = make("div", "section-header");
+  header.append(make("h3", "", "Mobile project brief"));
+  header.append(badge("local-only"));
+  section.append(header);
+
+  const form = make("form", "launch-form");
+  form.append(
+    launchField("title", "Project title", "text", ""),
+    launchField("objective", "Objective", "textarea", ""),
+    launchField("desiredOutcome", "Desired outcome", "textarea", ""),
+    launchField("constraints", "Constraints / risks", "textarea", ""),
+    launchField("deadline", "Target date", "date", ""),
+    launchField("priority", "Priority", "select", "medium", ["high", "medium", "low"]),
+    launchField("sensitivity", "Data sensitivity", "select", "internal", ["public-demo", "internal", "private-sensitive"]),
+    launchField("deliveryTarget", "Dispatch target", "select", "local_packet", ["local_packet", "discord_draft", "github_issue_draft"])
+  );
+
+  const actions = make("div", "form-actions");
+  const submit = make("button", "primary-button", "Create dispatch packet");
+  submit.type = "submit";
+  actions.append(submit, button("Load demo brief", loadLaunchDemo, "ghost-button"));
+  form.append(actions);
+  form.addEventListener("submit", handleLaunchSubmit);
+  section.append(form);
+  section.append(make("p", "fine-print", "이 MVP는 packet과 copy/export 초안만 만듭니다. Discord/GitHub/OpenClaw 자동 실행은 별도 승인 게이트입니다."));
+  return section;
+}
+
+function launchField(name, labelText, type, value, options = []) {
+  const wrap = make("div", "field");
+  const label = document.createElement("label");
+  label.htmlFor = `launch-field-${name}`;
+  label.textContent = labelText;
+  let control;
+  if (type === "textarea") {
+    control = document.createElement("textarea");
+    control.value = value;
+  } else if (type === "select") {
+    control = document.createElement("select");
+    options.forEach((optionValue) => {
+      const option = document.createElement("option");
+      option.value = optionValue;
+      option.textContent = optionValue;
+      control.append(option);
+    });
+    control.value = value;
+  } else {
+    control = document.createElement("input");
+    control.type = type;
+    control.value = value;
+  }
+  control.name = name;
+  control.id = `launch-field-${name}`;
+  wrap.append(label, control);
+  return wrap;
+}
+
+function launchDirectionPanel() {
+  const section = make("section", "section-panel launch-direction-panel");
+  section.append(make("p", "eyebrow", "Automation direction"));
+  section.append(make("h3", "", "Mobile brief -> team execution"));
+  const steps = [
+    ["1", "Capture", "모바일에서 목표, 결과물, 제약, 민감도 입력"],
+    ["2", "Packet", "작업 착수 기준, acceptance criteria, lane, approval gate 생성"],
+    ["3", "Ledger", "Projects/Tasks 또는 GitHub issue draft로 전환"],
+    ["4", "Dispatch", "Discord/OpenClaw 팀 지시문으로 전달"],
+    ["5", "Evidence", "QA/security/release-readiness 결과를 다시 hub에 기록"],
+  ];
+  const list = make("div", "launch-step-list");
+  steps.forEach(([number, title, body]) => {
+    const item = make("article", "launch-step");
+    item.append(make("strong", "", number));
+    const copy = make("div", "");
+    copy.append(make("h4", "", title));
+    copy.append(make("p", "", body));
+    item.append(copy);
+    list.append(item);
+  });
+  section.append(list);
+  return section;
+}
+
+function handleLaunchSubmit(event) {
+  event.preventDefault();
+  const data = Object.fromEntries(new FormData(event.currentTarget).entries());
+  const title = String(data.title || "").trim();
+  const objective = String(data.objective || "").trim();
+  if (!title || !objective) {
+    toast("Launch brief incomplete", "Project title과 objective는 필수입니다.");
+    return;
+  }
+
+  const launch = {
+    id: uid("launch"),
+    title,
+    objective,
+    desiredOutcome: String(data.desiredOutcome || "").trim(),
+    constraints: String(data.constraints || "").trim(),
+    deadline: data.deadline || "",
+    priority: data.priority || "medium",
+    sensitivity: data.sensitivity || "internal",
+    deliveryTarget: data.deliveryTarget || "local_packet",
+    status: "draft",
+    createdProjectId: "",
+    createdTaskIds: [],
+    createdAt: nowISO(),
+    updatedAt: nowISO(),
+  };
+
+  state.launches.unshift(launch);
+  activeView = "launch";
+  event.currentTarget.reset();
+  persist("Dispatch packet created", "Launch 화면에서 copy/export 또는 local start를 선택하세요.");
+}
+
+function loadLaunchDemo() {
+  const title = document.querySelector("#launch-field-title");
+  const objective = document.querySelector("#launch-field-objective");
+  const desiredOutcome = document.querySelector("#launch-field-desiredOutcome");
+  const constraints = document.querySelector("#launch-field-constraints");
+  const priority = document.querySelector("#launch-field-priority");
+  const sensitivity = document.querySelector("#launch-field-sensitivity");
+  const target = document.querySelector("#launch-field-deliveryTarget");
+  if (title) title.value = "PNH 모바일 착수 자동화";
+  if (objective) objective.value = "모바일에서 작성한 프로젝트 개요를 작업 팀이 바로 실행할 수 있는 착수 패킷으로 변환한다.";
+  if (desiredOutcome) desiredOutcome.value = "작업 범위, acceptance criteria, 초기 tasks, QA/security gates, Discord/GitHub 전달 초안이 생성된다.";
+  if (constraints) constraints.value = "실제 민감 데이터, 외부 전송, live OpenClaw 실행, GitHub issue 생성은 아직 하지 않는다.";
+  if (priority) priority.value = "high";
+  if (sensitivity) sensitivity.value = "internal";
+  if (target) target.value = "discord_draft";
+  toast("Demo brief loaded");
+}
+
+function launchPacketCard(launch) {
+  const card = itemShell(launch.title);
+  card.append(metaRow([launch.status, launch.priority, launch.sensitivity, launch.deliveryTarget, launch.deadline], launch.priority));
+  card.append(make("p", "", launch.objective));
+  if (launch.desiredOutcome) card.append(make("p", "", `Outcome: ${launch.desiredOutcome}`));
+  if (launch.constraints) card.append(make("p", "", `Constraints: ${launch.constraints}`));
+
+  const packetPreview = make("pre", "packet-preview", buildLaunchPacket(launch));
+  card.append(packetPreview);
+
+  const actions = make("div", "item-actions");
+  actions.append(button("Copy Packet", () => copyAssistantText(buildLaunchPacket(launch)), "small-button"));
+  actions.append(button("Copy Discord Draft", () => copyAssistantText(buildDiscordDispatchDraft(launch)), "small-button"));
+  actions.append(button("Copy GitHub Issue", () => copyAssistantText(buildGithubIssueDraft(launch)), "small-button"));
+  actions.append(button("Start Locally", () => startLaunchLocally(launch.id), "small-button"));
+  actions.append(button("Archive", () => updateLaunchStatus(launch.id, "archived"), "small-button"));
+  card.append(actions);
+
+  if (launch.createdProjectId || launch.createdTaskIds?.length) {
+    card.append(make("p", "fine-print", `Local start created project/tasks: ${[launch.createdProjectId, ...(launch.createdTaskIds || [])].filter(Boolean).length}`));
+  }
+  return card;
+}
+
+function buildLaunchPacket(launch) {
+  const criteria = launchAcceptanceCriteria(launch);
+  const lanes = launchLanes(launch);
+  return [
+    `# Project Dispatch Packet`,
+    ``,
+    `ID: ${launch.id}`,
+    `Title: ${launch.title}`,
+    `Priority: ${launch.priority}`,
+    `Sensitivity: ${launch.sensitivity}`,
+    `Target: ${launch.deliveryTarget}`,
+    `Deadline: ${launch.deadline || "not set"}`,
+    ``,
+    `## Objective`,
+    launch.objective,
+    ``,
+    `## Desired Outcome`,
+    launch.desiredOutcome || "Define expected outcome before implementation.",
+    ``,
+    `## Constraints`,
+    launch.constraints || "No extra constraints recorded.",
+    ``,
+    `## Acceptance Criteria`,
+    ...criteria.map((item, index) => `${index + 1}. ${item}`),
+    ``,
+    `## Suggested Lanes`,
+    ...lanes.map((item) => `- ${item}`),
+    ``,
+    `## Approval Gates`,
+    ...launchApprovalGates(launch).map((item) => `- ${item}`),
+    ``,
+    `## Next Action`,
+    `Create a task packet, confirm scope, and start with the smallest safe implementation slice.`,
+  ].join("\n");
+}
+
+function buildDiscordDispatchDraft(launch) {
+  return [
+    `/task create`,
+    `title: ${launch.title}`,
+    `priority: ${launch.priority}`,
+    `sensitivity: ${launch.sensitivity}`,
+    `objective: ${launch.objective}`,
+    `outcome: ${launch.desiredOutcome || "TBD"}`,
+    `constraints: ${launch.constraints || "none recorded"}`,
+    `approval: ${launchApprovalGates(launch).join("; ")}`,
+    ``,
+    `/agent spawn supervisor-orchestrator`,
+    `Use the packet above. Route architect, implementer, reviewer, QA, security, and delivery lanes only when they reduce risk or critical path.`,
+  ].join("\n");
+}
+
+function buildGithubIssueDraft(launch) {
+  return [
+    `# ${launch.title}`,
+    ``,
+    `## Objective`,
+    launch.objective,
+    ``,
+    `## Desired Outcome`,
+    launch.desiredOutcome || "TBD",
+    ``,
+    `## Acceptance Criteria`,
+    ...launchAcceptanceCriteria(launch).map((item) => `- [ ] ${item}`),
+    ``,
+    `## Constraints`,
+    launch.constraints || "None recorded.",
+    ``,
+    `## Suggested Lanes`,
+    ...launchLanes(launch).map((item) => `- ${item}`),
+    ``,
+    `## Approval Gates`,
+    ...launchApprovalGates(launch).map((item) => `- ${item}`),
+  ].join("\n");
+}
+
+function launchAcceptanceCriteria(launch) {
+  return [
+    "Scope and out-of-scope are explicit before implementation.",
+    "Implementation produces a reviewable diff or documented no-code outcome.",
+    "Validation commands or manual checks are recorded.",
+    "Security/privacy risks are checked before delivery.",
+    launch.desiredOutcome ? `Delivered outcome matches: ${launch.desiredOutcome}` : "Expected outcome is clarified before work starts.",
+  ];
+}
+
+function launchLanes(launch) {
+  const lanes = ["architect/planner", "implementer", "reviewer", "QA"];
+  if (launch.sensitivity !== "public-demo") lanes.push("security");
+  if (launch.deliveryTarget !== "local_packet") lanes.push("delivery-manager");
+  return lanes;
+}
+
+function launchApprovalGates(launch) {
+  const gates = ["scope approval before broad implementation", "release-readiness before delivery"];
+  if (launch.sensitivity === "private-sensitive") {
+    gates.push("explicit approval before handling private data");
+    gates.push("no screenshots/logs with private values");
+  }
+  if (launch.deliveryTarget !== "local_packet") {
+    gates.push("explicit approval before external dispatch or live automation");
+  }
+  return gates;
+}
+
+function startLaunchLocally(id) {
+  const launch = state.launches.find((item) => item.id === id);
+  if (!launch) return;
+  if (launch.createdTaskIds?.length) {
+    launch.status = "started";
+    launch.updatedAt = nowISO();
+    persist("Launch already started", "중복 task 생성을 막았습니다. 기존 Projects/Tasks를 확인하세요.");
+    return;
+  }
+  let projectId = launch.createdProjectId;
+  if (!projectId) {
+    projectId = uid("project");
+    state.projects.unshift({
+      id: projectId,
+      title: launch.title,
+      status: "active",
+      priority: launch.priority,
+      summary: launch.objective,
+      nextAction: "Review dispatch packet and confirm first implementation slice",
+      tags: ["launch", "dispatch"],
+      createdAt: nowISO(),
+      updatedAt: nowISO(),
+    });
+    launch.createdProjectId = projectId;
+  }
+
+  const taskTemplates = [
+    ["Clarify scope and out-of-scope", "architect"],
+    ["Create implementation plan", "architect"],
+    ["Execute first safe slice", "implementer"],
+    ["Review diff and evidence", "reviewer"],
+    ["Run QA and release-readiness", "qa"],
+  ];
+  const created = [];
+  taskTemplates.forEach(([title, tag]) => {
+    const taskId = uid("task");
+    state.tasks.unshift({
+      id: taskId,
+      title: `${launch.title}: ${title}`,
+      status: tag === "architect" ? "today" : "inbox",
+      priority: launch.priority,
+      dueDate: launch.deadline || "",
+      projectId,
+      notes: buildLaunchPacket(launch).slice(0, 900),
+      tags: ["launch", tag],
+      createdAt: nowISO(),
+      updatedAt: nowISO(),
+    });
+    created.push(taskId);
+  });
+  launch.createdTaskIds = [...(launch.createdTaskIds || []), ...created];
+  launch.status = "started";
+  launch.updatedAt = nowISO();
+  persist("Launch started locally", "Projects와 Tasks에 초기 작업 단위를 생성했습니다.");
+}
+
+function updateLaunchStatus(id, status) {
+  const launch = state.launches.find((item) => item.id === id);
+  if (!launch) return;
+  launch.status = status;
+  launch.updatedAt = nowISO();
+  persist("Launch updated");
 }
 
 function renderAssistant() {

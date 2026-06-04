@@ -15,6 +15,11 @@
 - Calendar/Slack-style draft는 실제 전송 없이 copy action만 제공된다.
 - 오늘의 성경말씀 widget이 표시된다.
 - Dashboard가 첫 화면으로 로드된다.
+- Launch 화면이 sidebar에서 열린다.
+- Launch brief에서 project title/objective/outcome/constraints를 입력하면 dispatch packet이 생성된다.
+- Launch packet은 Discord draft와 GitHub issue draft copy action을 제공한다.
+- Launch `Start Locally`는 project와 starter tasks를 생성한다.
+- Launch `Start Locally`를 반복 실행해도 starter tasks가 중복 생성되지 않는다.
 - Quick Capture로 task, note, project, link를 생성할 수 있다.
 - Projects에서 project 생성, 수정, 삭제가 가능하다.
 - Tasks에서 inbox/today/upcoming/done 상태가 표시된다.
@@ -136,6 +141,7 @@ Expected:
 - 실제 개인정보/연락처/통화기록/녹음/transcript fixture 없음
 - Workflow permissions가 최소 권한 유지
 - companion prototype is not deployed as part of GitHub Pages
+- Launch packet은 실제 Discord/GitHub/OpenClaw dispatch를 수행하지 않고 copy/export draft만 제공한다.
 
 ## Residual Risk
 
