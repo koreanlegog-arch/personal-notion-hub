@@ -2,6 +2,8 @@
 .DS_Store
 Thumbs.db
 .vscode/
+__pycache__/
+*.pyc
 
 # Real user data backups must stay local unless explicitly sanitized.
 *.local.json
