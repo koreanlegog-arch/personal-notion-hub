@@ -25,7 +25,8 @@ from typing import Any
 from urllib.parse import parse_qs, urlsplit
 
 try:
-    from .encrypted_vault import EncryptedVault, EncryptedVaultError, cryptography_available, load_vault_from_env
+    from .encrypted_vault import EncryptedVault, EncryptedVaultError, cryptography_available, init_encrypted_vault
+    from .passphrase_provider import PassphraseProviderError, resolve_passphrase
     from .private_store import (
         DEFAULT_DB_PATH,
         DEFAULT_TOKEN_PATH,
@@ -38,7 +39,8 @@ try:
     )
     from .preview import SCHEMA, preview_import, zero_counts
 except ImportError:  # pragma: no cover - supports direct script execution.
-    from encrypted_vault import EncryptedVault, EncryptedVaultError, cryptography_available, load_vault_from_env  # type: ignore
+    from encrypted_vault import EncryptedVault, EncryptedVaultError, cryptography_available, init_encrypted_vault  # type: ignore
+    from passphrase_provider import PassphraseProviderError, resolve_passphrase  # type: ignore
     from private_store import (  # type: ignore
         DEFAULT_DB_PATH,
         DEFAULT_TOKEN_PATH,
@@ -474,6 +476,7 @@ def main() -> int:
     parser.add_argument("--enable-private-inbox", action="store_true", help="Enable authenticated local private inbox writes.")
     parser.add_argument("--enable-encrypted-vault", action="store_true", help="Store private captures in encrypted vault mode.")
     parser.add_argument("--vault-passphrase-env", default="PNH_VAULT_PASSPHRASE", help="Environment variable containing vault passphrase.")
+    parser.add_argument("--prompt-vault-passphrase", action="store_true", help="Prompt for vault passphrase without echo. Intended for manual local sessions.")
     parser.add_argument("--enable-browser-bridge", action="store_true", help="Enable exact-origin browser bridge pairing.")
     parser.add_argument("--allowed-origin", default="", help="Allowed browser origin, for example http://127.0.0.1:8000.")
     parser.add_argument("--private-db", default="", help="Private inbox SQLite path. Default: companion/private/...")
@@ -497,11 +500,16 @@ def main() -> int:
             auth_token = read_token(token_path)
             init_private_store(private_db_path)
             if args.enable_encrypted_vault:
-                private_vault = load_vault_from_env(private_db_path, args.vault_passphrase_env)
+                vault_passphrase = resolve_passphrase(
+                    env_name=args.vault_passphrase_env,
+                    label="vault",
+                    prompt=args.prompt_vault_passphrase,
+                ).value
+                private_vault = init_encrypted_vault(private_db_path, vault_passphrase)
         except (OSError, PrivateStoreError) as exc:
             print(f"startup_error=private_inbox_unavailable detail={exc}", file=sys.stderr)
             return 2
-        except EncryptedVaultError as exc:
+        except (EncryptedVaultError, PassphraseProviderError) as exc:
             print(f"startup_error=encrypted_vault_unavailable detail={exc}", file=sys.stderr)
             return 2
 

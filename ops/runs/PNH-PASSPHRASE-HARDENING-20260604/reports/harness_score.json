@@ -1,0 +1,40 @@
+{
+  "score_model": "efficiency",
+  "score": 74.2,
+  "score_band": "useful",
+  "classification": "SUPERVISOR_IMPLEMENTED_EXCEPTION",
+  "implementer_slice_count": 0,
+  "supervisor_direct_implementation_ratio": 0.8,
+  "quality_gain": 0.0,
+  "evidence_completeness": 0.95,
+  "acceptance_pass_rate": 1.0,
+  "implementation_parallelism": 0.0,
+  "delivery_readiness": 0.0,
+  "scope_drift_count": 0,
+  "unverified_claim_count": 0,
+  "security_issue_count": 0,
+  "components": {
+    "outcome_quality": 23.0,
+    "specialist_fit": 17.2,
+    "critical_path_reduction": 8.4,
+    "coordination_efficiency": 13.2,
+    "evidence_quality": 9.6,
+    "supervisor_load_reduction": 2.8
+  },
+  "penalties": 0,
+  "penalty_breakdown": {
+    "scope_drift": 0,
+    "unverified_claims": 0,
+    "security_issues": 0,
+    "unnecessary_lanes": 0,
+    "write_set_conflicts": 0,
+    "duplicate_work": 0,
+    "replans": 0
+  },
+  "model_budget": {
+    "model_tier": "high-reasoning-supervisor",
+    "model_name": "not-metered-per-agent",
+    "reasoning_effort": "high",
+    "budget_note": "passphrase-prompt-hardening-plus-keychain-readiness-no-secret-storage"
+  }
+}

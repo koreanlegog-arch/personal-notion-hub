@@ -43,7 +43,7 @@ Negative:
 
 - implementation becomes more complex
 - a local runtime or packaged app may be required
-- key management is currently manual through a local passphrase environment variable
+- key management is currently manual through a local no-echo prompt or passphrase environment variable
 - localhost or IPC security must be designed
 - dependency review is required before changing encryption/database packages
 - public Pages and private companion modes must be kept visibly separate
@@ -74,7 +74,7 @@ Implemented under supervisor approval:
 - application-level encrypted capture records in SQLite
 - AES-GCM via installed `cryptography`
 - PBKDF2-HMAC-SHA256 with per-vault salt
-- passphrase loaded from environment variable name
+- passphrase loaded from no-echo prompt or environment variable name
 - fail-closed startup when encryption dependency or passphrase is missing
 - metadata-only API responses and redacted default status output
 
@@ -84,7 +84,8 @@ Separate approval is still required for:
 
 - installing or changing encryption/database dependencies
 - changing vault encryption scheme
-- OS keychain integration or packaged passphrase prompt
+- OS keychain storage/retrieval
+- passphrase recovery or rotation
 - real-data import adapters
 - packaging or distribution
 - screenshot/redaction policy for routine private mode
@@ -98,7 +99,7 @@ Separate approval is still required for:
 
 1. Add encrypted backup/delete/restore workflow.
 2. Add plaintext-to-encrypted migration audit and conversion gate.
-3. Add OS keychain or packaged passphrase prompt option.
+3. Add OS keychain storage/retrieval or a formal passphrase recovery/rotation policy.
 4. Add encrypted export/import.
 5. Define adapter-specific policies for contacts, calendar, calls, recordings, and transcripts.
 6. Keep GitHub Pages as demo shell only unless a separate private-data deployment decision is approved.

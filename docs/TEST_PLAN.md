@@ -227,7 +227,8 @@ Expected:
 
 - encrypted vault mode is explicit and disabled by default
 - `--enable-encrypted-vault` without private inbox fails closed
-- missing passphrase environment variable fails closed
+- missing required passphrase input fails closed
+- prompt passphrase input fails closed on missing, short, or mismatched values
 - simulated missing `cryptography` fails closed
 - AES-GCM encrypted records are written to `encrypted_mobile_captures`
 - wrong passphrase cannot decrypt
@@ -241,19 +242,23 @@ Expected:
 Manual encrypted local run:
 
 ```bash
-read -rsp "PNH vault passphrase: " PNH_VAULT_PASSPHRASE
-export PNH_VAULT_PASSPHRASE
-python3 scripts/private_inbox_init.py --enable-encrypted-vault
+python3 scripts/keychain_readiness.py
+python3 scripts/private_inbox_init.py \
+  --enable-encrypted-vault \
+  --prompt-vault-passphrase \
+  --confirm-vault-passphrase
 python3 companion/server.py \
   --host 127.0.0.1 \
   --port 8765 \
   --enable-private-inbox \
-  --enable-encrypted-vault
+  --enable-encrypted-vault \
+  --prompt-vault-passphrase
 ```
 
 Supervisor notes:
 
 - do not record the passphrase in chat, screenshots, docs, logs, or evidence
+- use environment variable mode only for non-interactive local runs where shell history and process evidence are controlled
 - use `scripts/private_inbox_status.py` without `--include-decrypted` for evidence
 
 ## Local Encrypted Vault Lifecycle Checks
@@ -264,6 +269,7 @@ Run:
 python3 scripts/encrypted_vault_backup_restore_smoke_check.py
 python3 scripts/encrypted_vault_delete_smoke_check.py
 python3 scripts/plaintext_migration_audit_smoke_check.py
+python3 scripts/passphrase_provider_smoke_check.py
 ```
 
 Expected:
@@ -326,4 +332,4 @@ Expected:
 
 Local companion UI integration is implemented only for explicit loopback bridge mode. Mobile LAN, public Pages remote sync, real private data adapters, plaintext migration apply, and automated browser QA remain separate phases.
 
-Plaintext private inbox mode is not encrypted at rest. Routine high-sensitivity use should stay on encrypted vault mode and still requires passphrase hardening, adapter-specific privacy policy, and redacted browser QA.
+Plaintext private inbox mode is not encrypted at rest. Routine high-sensitivity use should stay on encrypted vault mode and still requires OS keychain storage or recovery policy, adapter-specific privacy policy, and redacted browser QA.

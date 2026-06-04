@@ -20,7 +20,7 @@ Allowed:
 - bearer-token authenticated private inbox writes when explicitly enabled
 - ignored local SQLite private inbox under `companion/private/`
 - AES-GCM encrypted capture records when `--enable-encrypted-vault` is explicitly enabled
-- passphrase loaded from a local environment variable name, not from a CLI value
+- passphrase loaded from no-echo local prompt or a local environment variable name, not from a CLI value
 - default scripts reject private DB/token paths outside `companion/private/`
 - mobile capture simulation is loopback-only and blocks redirects
 - exact-origin browser bridge when explicitly enabled
@@ -56,14 +56,17 @@ python3 companion/server.py --host 127.0.0.1 --port 8765 --enable-private-inbox
 Encrypted vault mode:
 
 ```bash
-read -rsp "PNH vault passphrase: " PNH_VAULT_PASSPHRASE
-export PNH_VAULT_PASSPHRASE
-python3 scripts/private_inbox_init.py --enable-encrypted-vault
+python3 scripts/keychain_readiness.py
+python3 scripts/private_inbox_init.py \
+  --enable-encrypted-vault \
+  --prompt-vault-passphrase \
+  --confirm-vault-passphrase
 python3 companion/server.py \
   --host 127.0.0.1 \
   --port 8765 \
   --enable-private-inbox \
-  --enable-encrypted-vault
+  --enable-encrypted-vault \
+  --prompt-vault-passphrase
 ```
 
 Browser bridge mode:
@@ -97,6 +100,7 @@ python3 scripts/companion_smoke_check.py
 python3 scripts/encrypted_vault_smoke_check.py
 python3 scripts/encrypted_vault_backup_restore_smoke_check.py
 python3 scripts/encrypted_vault_delete_smoke_check.py
+python3 scripts/passphrase_provider_smoke_check.py
 python3 scripts/plaintext_migration_audit_smoke_check.py
 python3 scripts/private_inbox_smoke_check.py
 python3 scripts/browser_bridge_smoke_check.py
@@ -117,6 +121,10 @@ The lifecycle smoke checks verify encrypted backup/restore, wrong backup
 passphrase rejection, backup tamper rejection, delete metadata removal, safe
 delete audit, and plaintext migration audit without printing private values.
 
+The passphrase provider smoke check verifies env/prompt handling, confirmation
+mismatch rejection, short passphrase rejection, keychain readiness reporting,
+and no passphrase value output.
+
 The browser bridge smoke check verifies unsafe config rejection, CORS,
 one-time pairing, in-memory session auth compatibility, redacted responses, and
 legacy bearer-token compatibility without printing secret values.
@@ -125,7 +133,8 @@ legacy bearer-token compatibility without printing secret values.
 
 - real-data import adapters
 - plaintext-to-encrypted migration apply
-- OS keychain or packaged passphrase prompt
+- OS keychain storage/retrieval
+- passphrase recovery or rotation
 - packaging or distribution
 - LAN/mobile-device pairing beyond loopback
 - automated screenshot-safe browser QA

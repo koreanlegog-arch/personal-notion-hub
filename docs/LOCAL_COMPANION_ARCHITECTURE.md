@@ -26,9 +26,9 @@ The current GitHub Pages/static web app remains useful as a public-safe demo she
 - Local companion supports fixture-only preview mode.
 - Local companion also supports authenticated private inbox mode for workspace-local SQLite capture.
 - Local companion now supports explicit loopback browser bridge mode for synthetic Launch UI pairing.
-- Local companion now supports explicit encrypted vault mode for sensitive local captures when `cryptography` and a local passphrase env are available.
+- Local companion now supports explicit encrypted vault mode for sensitive local captures when `cryptography` and local passphrase input are available.
 
-This is acceptable for a demo, low-risk local notes, proving the private data ingress path, and supervisor-approved sensitive local testing in encrypted vault mode. It is not yet a full long-term private-data system because plaintext migration apply, OS keychain/passphrase hardening, real-data adapters, and adapter-specific policies are still missing.
+This is acceptable for a demo, low-risk local notes, proving the private data ingress path, and supervisor-approved sensitive local testing in encrypted vault mode. It is not yet a full long-term private-data system because plaintext migration apply, OS keychain storage/retrieval, real-data adapters, and adapter-specific policies are still missing.
 
 ## Public Shell Vs Private Data Plane
 
@@ -332,12 +332,12 @@ Implemented protections:
 
 Not yet implemented:
 
-- OS keychain integration
+- OS keychain storage/retrieval
 - phone/contact/calendar/recording adapters
 - local transcription
 - plaintext-to-encrypted migration apply
 - encrypted attachment/audio export/import
-- OS keychain integration
+- passphrase recovery or rotation
 
 ## Implemented Encrypted Vault MVP
 
@@ -346,7 +346,7 @@ The encrypted vault MVP stores private capture fields in `encrypted_mobile_captu
 Implemented protections:
 
 - explicit `--enable-encrypted-vault` startup flag
-- passphrase loaded from `PNH_VAULT_PASSPHRASE` or a configured env var name
+- passphrase loaded from no-echo prompt, `PNH_VAULT_PASSPHRASE`, or a configured env var name
 - fail-closed startup when `cryptography` or passphrase is unavailable
 - AES-GCM authenticated encryption
 - PBKDF2-HMAC-SHA256 key derivation with per-vault salt
@@ -356,10 +356,12 @@ Implemented protections:
 - wrong-passphrase rejection
 - tamper rejection
 - DB byte scan smoke check for synthetic plaintext absence
+- prompt/keychain readiness smoke check without secret output
 
 Not yet implemented:
 
-- OS keychain or packaged passphrase prompt
+- OS keychain storage/retrieval
+- passphrase recovery or rotation
 - plaintext private inbox migration apply
 - local search over encrypted private fields
 - adapter-specific ingestion for real contacts, calendar, calls, recordings, or transcripts
@@ -372,7 +374,7 @@ Implemented lifecycle controls:
 - explicit capture delete with confirmation phrase
 - plaintext migration audit without value disclosure
 
-This MVP is sufficient to prove that a mobile-like input can reach workspace-local encrypted storage and can be backed up, restored, and deleted at row level. For routine high-sensitivity operation, plaintext migration apply, passphrase hardening, real-data adapters, and adapter-specific policies are the next blockers.
+This MVP is sufficient to prove that a mobile-like input can reach workspace-local encrypted storage and can be backed up, restored, and deleted at row level. For routine high-sensitivity operation, plaintext migration apply, OS keychain storage or recovery policy, real-data adapters, and adapter-specific policies are the next blockers.
 
 ## Candidate Vault Designs
 
@@ -463,7 +465,8 @@ Separate approval is still required before:
 Upgrade the encrypted vault MVP into an operational private-data system. The next implementation should prove:
 
 - plaintext-to-encrypted migration apply
-- OS keychain or packaged passphrase prompt
+- OS keychain storage/retrieval
+- passphrase recovery or rotation
 - redacted review UI for sensitive records
 - adapter-by-adapter approval gates for phone, calendar, contacts, recordings, and transcripts
 
@@ -509,6 +512,7 @@ Current contract:
 - run with `python3 companion/server.py --host 127.0.0.1 --port 8765 --enable-private-inbox --enable-encrypted-vault`
 - keep `PNH_VAULT_PASSPHRASE` local and do not record it in chat, screenshots, logs, or docs
 - validate with `python3 scripts/encrypted_vault_smoke_check.py`
+- validate passphrase prompt/keychain readiness with `python3 scripts/passphrase_provider_smoke_check.py` and `python3 scripts/keychain_readiness.py`
 - validate lifecycle with `python3 scripts/encrypted_vault_backup_restore_smoke_check.py`, `python3 scripts/encrypted_vault_delete_smoke_check.py`, and `python3 scripts/plaintext_migration_audit_smoke_check.py`
 
 The critical success criterion is encrypted source-to-workspace persistence with redacted evidence.

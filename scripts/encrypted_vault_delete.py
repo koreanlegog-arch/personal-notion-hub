@@ -12,7 +12,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from companion.encrypted_vault import EncryptedVaultError, delete_encrypted_capture, load_vault_from_env  # noqa: E402
+from companion.encrypted_vault import EncryptedVaultError, delete_encrypted_capture, init_encrypted_vault  # noqa: E402
+from companion.passphrase_provider import PassphraseProviderError, resolve_passphrase  # noqa: E402
 from companion.private_store import DEFAULT_DB_PATH, PrivateStoreError, require_existing_store  # noqa: E402
 
 
@@ -24,6 +25,7 @@ def main() -> int:
     parser.add_argument("--db", default=str(DEFAULT_DB_PATH), help="Private inbox SQLite DB path.")
     parser.add_argument("--capture-id", required=True, help="Encrypted capture ID to delete.")
     parser.add_argument("--vault-passphrase-env", default="PNH_VAULT_PASSPHRASE", help="Env var containing the vault passphrase.")
+    parser.add_argument("--prompt-vault-passphrase", action="store_true", help="Prompt for vault passphrase without echo.")
     parser.add_argument("--confirm", required=True, help=f"Must be exactly {CONFIRM_PHRASE}.")
     parser.add_argument("--vacuum", action="store_true", help="Run SQLite VACUUM after deletion. Not a forensic secure erase guarantee.")
     parser.add_argument("--allow-external-private-paths", action="store_true", help="Allow DB path outside companion/private for tests or explicit local operations.")
@@ -35,12 +37,17 @@ def main() -> int:
 
     try:
         db_path = require_existing_store(Path(args.db), allow_external=args.allow_external_private_paths)
+        vault_passphrase = resolve_passphrase(
+            env_name=args.vault_passphrase_env,
+            label="vault",
+            prompt=args.prompt_vault_passphrase,
+        ).value
         result = delete_encrypted_capture(
-            load_vault_from_env(db_path, args.vault_passphrase_env),
+            init_encrypted_vault(db_path, vault_passphrase),
             args.capture_id,
             vacuum=args.vacuum,
         )
-    except (OSError, PrivateStoreError, EncryptedVaultError) as exc:
+    except (OSError, PrivateStoreError, EncryptedVaultError, PassphraseProviderError) as exc:
         print(f"encrypted_vault_delete=false error={exc}", file=sys.stderr)
         return 2
 

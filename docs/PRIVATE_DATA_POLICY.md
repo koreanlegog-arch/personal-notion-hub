@@ -93,17 +93,19 @@ Required:
 Current MVP:
 
 - explicit `--enable-encrypted-vault` mode
-- passphrase from local environment variable
+- passphrase from no-echo local prompt or local environment variable
 - AES-GCM encrypted title/body/payload fields
 - PBKDF2-HMAC-SHA256 key derivation with per-vault salt
 - metadata-only API responses
 - redacted default status output
+- keychain readiness audit that prints capability flags only
 - synthetic smoke tests for wrong passphrase, tamper rejection, and plaintext absence in DB bytes
 
 Remaining blockers before routine high-sensitivity operation:
 
 - plaintext-to-encrypted migration apply
-- OS keychain or packaged passphrase prompt
+- OS keychain storage/retrieval
+- passphrase recovery or rotation
 - screenshot-safe automated QA
 - adapter-specific policies for contacts, calendar, calls, recordings, and transcripts
 
@@ -147,7 +149,7 @@ Limitations:
 - pairing code is manually copied from local terminal and must not be recorded
 - browser session is memory-only and requires re-pairing after reload
 
-The plaintext MVP is acceptable for proving source-to-workspace persistence and compatibility. For sensitive local testing, use encrypted vault mode. Before routine use with high-sensitivity real data, add plaintext migration apply policy, OS keychain/passphrase hardening, and automated redaction validation.
+The plaintext MVP is acceptable for proving source-to-workspace persistence and compatibility. For sensitive local testing, use encrypted vault mode with prompt-first passphrase handling. Before routine use with high-sensitivity real data, add plaintext migration apply policy, OS keychain storage or recovery policy, and automated redaction validation.
 
 ## Call And Recording Data
 

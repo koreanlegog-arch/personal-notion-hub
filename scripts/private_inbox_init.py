@@ -11,7 +11,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from companion.encrypted_vault import EncryptedVaultError, load_vault_from_env  # noqa: E402
+from companion.encrypted_vault import EncryptedVaultError, init_encrypted_vault  # noqa: E402
+from companion.passphrase_provider import PassphraseProviderError, resolve_passphrase  # noqa: E402
 from companion.private_store import (  # noqa: E402
     DEFAULT_DB_PATH,
     DEFAULT_TOKEN_PATH,
@@ -27,6 +28,8 @@ def main() -> int:
     parser.add_argument("--token-file", default=str(DEFAULT_TOKEN_PATH), help="Bearer token file path.")
     parser.add_argument("--enable-encrypted-vault", action="store_true", help="Initialize encrypted vault tables.")
     parser.add_argument("--vault-passphrase-env", default="PNH_VAULT_PASSPHRASE", help="Environment variable containing vault passphrase.")
+    parser.add_argument("--prompt-vault-passphrase", action="store_true", help="Prompt for vault passphrase without echo instead of requiring shell input.")
+    parser.add_argument("--confirm-vault-passphrase", action="store_true", help="Prompt twice and require matching vault passphrase.")
     args = parser.parse_args()
 
     db_path = Path(args.db)
@@ -36,11 +39,17 @@ def main() -> int:
         init_private_store(db_path)
         create_token(token_path, overwrite=False)
         if args.enable_encrypted_vault:
-            load_vault_from_env(db_path, args.vault_passphrase_env)
+            vault_passphrase = resolve_passphrase(
+                env_name=args.vault_passphrase_env,
+                label="vault",
+                prompt=args.prompt_vault_passphrase,
+                confirm=args.confirm_vault_passphrase,
+            ).value
+            init_encrypted_vault(db_path, vault_passphrase)
     except (OSError, PrivateStoreError) as exc:
         print(f"private_inbox_initialized=false error={exc}", file=sys.stderr)
         return 2
-    except EncryptedVaultError as exc:
+    except (EncryptedVaultError, PassphraseProviderError) as exc:
         print(f"private_inbox_initialized=false error={exc}", file=sys.stderr)
         return 2
 

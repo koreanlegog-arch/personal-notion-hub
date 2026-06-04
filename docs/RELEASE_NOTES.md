@@ -1,5 +1,32 @@
 # Release Notes
 
+## 2026-06-04 - Passphrase Prompt Hardening
+
+### Summary
+
+Added prompt-first passphrase handling and keychain readiness reporting for encrypted vault operations.
+
+### Included
+
+- no-echo prompt provider for vault and backup passphrases
+- confirmation prompts for vault initialization and backup creation
+- keychain readiness audit that prints capability flags only
+- provider smoke check for env/prompt behavior, mismatch rejection, short passphrase rejection, and no secret output
+- docs separating implemented prompt handling from future OS keychain storage/retrieval
+
+### Boundaries
+
+- No OS keychain storage/retrieval
+- No passphrase recovery or rotation
+- No package installation or dependency manifest change
+- No real private data in tests or evidence
+
+### Verification
+
+Recorded in:
+
+- `ops/runs/PNH-PASSPHRASE-HARDENING-20260604/`
+
 ## 2026-06-04 - Encrypted Vault Lifecycle MVP
 
 ### Summary
@@ -20,7 +47,7 @@ Added encrypted backup, restore, delete, and plaintext migration audit workflows
 
 - No plaintext sensitive JSON backup
 - No plaintext migration apply/conversion
-- No OS keychain integration
+- No OS keychain storage/retrieval
 - No forensic secure erase guarantee
 - No real phone/contact/calendar/recording adapters
 - No real private data in tests or evidence
@@ -42,6 +69,8 @@ Added explicit encrypted vault mode for local companion captures so supervisor-a
 - `companion/encrypted_vault.py` with AES-GCM encrypted capture records
 - PBKDF2-HMAC-SHA256 key derivation with per-vault salt
 - `--enable-encrypted-vault` and `--vault-passphrase-env` companion flags
+- prompt-first passphrase options for manual local sessions
+- keychain readiness audit without secret storage or secret output
 - encrypted private store integration with metadata-only API responses
 - encrypted vault initialization option in `scripts/private_inbox_init.py`
 - redacted status compatibility for encrypted rows
@@ -51,7 +80,8 @@ Added explicit encrypted vault mode for local companion captures so supervisor-a
 ### Boundaries
 
 - No package installation or dependency manifest change
-- No OS keychain integration yet
+- No OS keychain storage/retrieval yet
+- No passphrase recovery or rotation yet
 - Encrypted capture backup/delete/restore is now implemented in the lifecycle MVP
 - Plaintext-to-encrypted migration apply is still not implemented
 - No real phone/contact/calendar/recording adapters

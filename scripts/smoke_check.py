@@ -28,6 +28,7 @@ REQUIRED = [
     "docs/SECURITY_NOTES.md",
     ".github/workflows/pages.yml",
     "companion/encrypted_vault.py",
+    "companion/passphrase_provider.py",
     "companion/private_store.py",
     "companion/server.py",
     "scripts/private_inbox_init.py",
@@ -38,6 +39,8 @@ REQUIRED = [
     "scripts/encrypted_vault_delete.py",
     "scripts/encrypted_vault_metadata_audit.py",
     "scripts/encrypted_backup_envelope_audit.py",
+    "scripts/keychain_readiness.py",
+    "scripts/passphrase_provider_smoke_check.py",
     "scripts/plaintext_migration_audit.py",
     "scripts/encrypted_vault_backup_restore_smoke_check.py",
     "scripts/encrypted_vault_delete_smoke_check.py",
@@ -175,6 +178,7 @@ def assert_companion_bridge_contracts() -> None:
 def assert_encrypted_vault_contracts() -> None:
     vault = (ROOT / "companion/encrypted_vault.py").read_text(encoding="utf-8")
     server = (ROOT / "companion/server.py").read_text(encoding="utf-8")
+    provider = (ROOT / "companion/passphrase_provider.py").read_text(encoding="utf-8")
     init_script = (ROOT / "scripts/private_inbox_init.py").read_text(encoding="utf-8")
     status_script = (ROOT / "scripts/private_inbox_status.py").read_text(encoding="utf-8")
     smoke = (ROOT / "scripts/encrypted_vault_smoke_check.py").read_text(encoding="utf-8")
@@ -199,6 +203,9 @@ def assert_encrypted_vault_contracts() -> None:
         "--enable-encrypted-vault",
         "--vault-passphrase-env",
         "--backup-passphrase-env",
+        "--prompt-vault-passphrase",
+        "--prompt-backup-passphrase",
+        "--confirm-backup-passphrase",
         "PNH_VAULT_PASSPHRASE",
         "PNH_BACKUP_PASSPHRASE",
         "encrypted_vault_enabled",
@@ -206,6 +213,9 @@ def assert_encrypted_vault_contracts() -> None:
         "plaintextRowsDetected",
         "encryptedVaultMetadataAudit",
         "encryptedBackupEnvelopeAudit",
+        "keychainReadiness",
+        "recommendedMode",
+        "secretValuePrinted",
     ]
     lifecycle_scripts = "\n".join(
         [
@@ -214,10 +224,11 @@ def assert_encrypted_vault_contracts() -> None:
             (ROOT / "scripts/encrypted_vault_delete.py").read_text(encoding="utf-8"),
             (ROOT / "scripts/encrypted_vault_metadata_audit.py").read_text(encoding="utf-8"),
             (ROOT / "scripts/encrypted_backup_envelope_audit.py").read_text(encoding="utf-8"),
+            (ROOT / "scripts/keychain_readiness.py").read_text(encoding="utf-8"),
             (ROOT / "scripts/plaintext_migration_audit.py").read_text(encoding="utf-8"),
         ]
     )
-    runtime_text = "\n".join([server, init_script, status_script, lifecycle_scripts])
+    runtime_text = "\n".join([server, provider, init_script, status_script, lifecycle_scripts])
     for token in expected_runtime:
         if token not in runtime_text:
             raise SystemExit(f"missing_encrypted_runtime_contract={token}")
@@ -231,6 +242,7 @@ def assert_encrypted_vault_contracts() -> None:
         "encrypted_vault_metadata_audit_smoke_check_pass=true",
         "encrypted_backup_envelope_audit_smoke_check_pass=true",
         "plaintext_migration_audit_smoke_check_pass=true",
+        "passphrase_provider_smoke_check_pass=true",
     ]
     smoke_text = "\n".join(
         [
@@ -240,6 +252,7 @@ def assert_encrypted_vault_contracts() -> None:
             (ROOT / "scripts/encrypted_vault_metadata_audit_smoke_check.py").read_text(encoding="utf-8"),
             (ROOT / "scripts/encrypted_backup_envelope_audit_smoke_check.py").read_text(encoding="utf-8"),
             (ROOT / "scripts/plaintext_migration_audit_smoke_check.py").read_text(encoding="utf-8"),
+            (ROOT / "scripts/passphrase_provider_smoke_check.py").read_text(encoding="utf-8"),
         ]
     )
     for token in expected_smoke:
