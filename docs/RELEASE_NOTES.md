@@ -1,5 +1,37 @@
 # Release Notes
 
+## 2026-06-04 - Phone Ingress MVP
+
+### Summary
+
+Added an explicit private-LAN phone ingress mode so a phone browser can open the
+PNH UI from the local companion and send synthetic or low-risk captures into the
+workspace private inbox/encrypted vault path.
+
+### Included
+
+- `--enable-phone-ingress` companion flag
+- same-origin static UI serving from the companion in phone ingress mode
+- private LAN origin validation
+- dynamic companion bridge base URL for `http://<LAN_IP>:8765`
+- phone ingress smoke check
+- LAN info helper
+- phone ingress security guide
+
+### Boundaries
+
+- Disabled by default
+- Requires private inbox and browser bridge
+- Rejects wildcard/public/`localhost`/`0.0.0.0` origins
+- Still requires one-time pairing and memory-only browser session token
+- No real phone OS adapter, contacts, calls, recordings, calendar, or external service integration
+
+### Verification
+
+Recorded in:
+
+- `ops/runs/PNH-PHONE-INGRESS-MVP-20260604/`
+
 ## 2026-06-04 - Redacted Browser QA Runner
 
 ### Summary

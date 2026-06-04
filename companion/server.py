@@ -14,10 +14,12 @@ from __future__ import annotations
 
 import argparse
 import json
+import mimetypes
 import secrets
 import sqlite3
 import sys
 import time
+from ipaddress import ip_address
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -57,8 +59,12 @@ except ImportError:  # pragma: no cover - supports direct script execution.
 MAX_BODY_BYTES = 64 * 1024
 MAX_PRIVATE_BODY_BYTES = 128 * 1024
 ALLOWED_HOST = "127.0.0.1"
+PHONE_BIND_HOSTS = {"0.0.0.0"}
 BROWSER_SESSION_TTL_SECONDS = 10 * 60
 BROWSER_PAIRING_TTL_SECONDS = 5 * 60
+ROOT = Path(__file__).resolve().parents[1]
+STATIC_ALLOWED_PREFIXES = ("assets/", "data/")
+STATIC_ALLOWED_FILES = {"index.html", "favicon.ico"}
 
 
 class CompanionServer(ThreadingHTTPServer):
@@ -75,6 +81,7 @@ class CompanionServer(ThreadingHTTPServer):
         private_vault: EncryptedVault | None = None,
         browser_bridge_enabled: bool = False,
         allowed_origin: str | None = None,
+        phone_ingress_enabled: bool = False,
         browser_session_ttl_seconds: int = BROWSER_SESSION_TTL_SECONDS,
         browser_pairing_ttl_seconds: int = BROWSER_PAIRING_TTL_SECONDS,
     ) -> None:
@@ -85,6 +92,7 @@ class CompanionServer(ThreadingHTTPServer):
         self.private_vault = private_vault
         self.browser_bridge_enabled = browser_bridge_enabled
         self.allowed_origin = allowed_origin
+        self.phone_ingress_enabled = phone_ingress_enabled
         self.browser_session_ttl_seconds = browser_session_ttl_seconds
         self.browser_pairing_ttl_seconds = browser_pairing_ttl_seconds
         self.browser_pairing_code = secrets.token_urlsafe(12) if browser_bridge_enabled else ""
@@ -140,7 +148,11 @@ class CompanionHandler(BaseHTTPRequestHandler):
                 {
                     "ok": True,
                     "mode": "private-inbox" if self.server.private_enabled else "fixture-only-preview",
-                    "loopbackOnly": True,
+                    "loopbackOnly": not self.server.phone_ingress_enabled,
+                    "phoneIngress": {
+                        "enabled": self.server.phone_ingress_enabled,
+                        "staticUiServed": self.server.phone_ingress_enabled,
+                    },
                     "writesEnabled": self.server.private_enabled,
                     "authRequired": self.server.private_enabled,
                     "privateStoreConfigured": self.server.private_enabled,
@@ -175,8 +187,11 @@ class CompanionHandler(BaseHTTPRequestHandler):
                 "pairEndpoint": "/api/private/pair",
                 "allowedOriginConfigured": bool(self.server.allowed_origin),
                 "responsePolicy": "metadata-only",
+                "phoneIngressEnabled": self.server.phone_ingress_enabled,
             }
             self._send_json(HTTPStatus.OK, schema)
+            return
+        if self.server.phone_ingress_enabled and self._serve_static_if_allowed(path):
             return
         if path == "/api/private/summary":
             if not self._require_private_auth():
@@ -375,10 +390,12 @@ class CompanionHandler(BaseHTTPRequestHandler):
         return True
 
     def log_message(self, format: str, *args: Any) -> None:
-        sys.stderr.write(f"companion_request method={self.command} path={self._path()} client=loopback\n")
+        client_label = "lan" if self.server.phone_ingress_enabled else "loopback"
+        sys.stderr.write(f"companion_request method={self.command} path={self._path()} client={client_label}\n")
 
     def log_error(self, format: str, *args: Any) -> None:
-        sys.stderr.write(f"companion_error method={self.command} path={self._path()} client=loopback\n")
+        client_label = "lan" if self.server.phone_ingress_enabled else "loopback"
+        sys.stderr.write(f"companion_error method={self.command} path={self._path()} client={client_label}\n")
 
     def _path(self) -> str:
         return urlsplit(self.path).path
@@ -414,6 +431,24 @@ class CompanionHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def _serve_static_if_allowed(self, path: str) -> bool:
+        rel = "index.html" if path in {"", "/"} else path.lstrip("/")
+        if not _static_path_allowed(rel):
+            return False
+        target = (ROOT / rel).resolve()
+        if not target.is_file() or ROOT not in target.parents:
+            self._send_json(HTTPStatus.NOT_FOUND, {"error": "not_found"})
+            return True
+        body = target.read_bytes()
+        content_type = mimetypes.guess_type(str(target))[0] or "application/octet-stream"
+        self.send_response(HTTPStatus.OK)
+        self.send_header("Content-Type", content_type)
+        self.send_header("Content-Length", str(len(body)))
+        self.send_header("Cache-Control", "no-store")
+        self.end_headers()
+        self.wfile.write(body)
+        return True
+
 
 def _error_result(path: str, code: str) -> dict[str, Any]:
     return {
@@ -435,18 +470,23 @@ def create_server(
     private_vault: EncryptedVault | None = None,
     browser_bridge_enabled: bool = False,
     allowed_origin: str | None = None,
+    phone_ingress_enabled: bool = False,
     browser_session_ttl_seconds: int = BROWSER_SESSION_TTL_SECONDS,
     browser_pairing_ttl_seconds: int = BROWSER_PAIRING_TTL_SECONDS,
 ) -> CompanionServer:
-    if host != ALLOWED_HOST:
-        raise ValueError("companion server must bind to 127.0.0.1 only")
+    if host != ALLOWED_HOST and not phone_ingress_enabled:
+        raise ValueError("companion server must bind to 127.0.0.1 only unless --enable-phone-ingress is set")
+    if phone_ingress_enabled and host not in PHONE_BIND_HOSTS and not _is_private_or_loopback_host(host):
+        raise ValueError("phone ingress host must be 0.0.0.0, 127.0.0.1, or a private LAN IP")
+    if phone_ingress_enabled and not browser_bridge_enabled:
+        raise ValueError("phone ingress requires --enable-browser-bridge")
     if browser_bridge_enabled:
         if not allowed_origin:
             raise ValueError("browser bridge requires --allowed-origin")
         parsed_origin = urlsplit(allowed_origin)
         if (
             parsed_origin.scheme != "http"
-            or parsed_origin.hostname != ALLOWED_HOST
+            or not parsed_origin.hostname
             or not parsed_origin.port
             or parsed_origin.path
             or parsed_origin.query
@@ -454,6 +494,13 @@ def create_server(
             or parsed_origin.username
             or parsed_origin.password
         ):
+            raise ValueError("browser bridge allowed origin must be http://<host>:<port>")
+        if phone_ingress_enabled:
+            if parsed_origin.hostname in {"0.0.0.0", "localhost"}:
+                raise ValueError("phone ingress allowed origin must use a concrete loopback or private LAN host")
+            if not _is_private_or_loopback_host(parsed_origin.hostname):
+                raise ValueError("phone ingress allowed origin must use loopback or private LAN host")
+        elif parsed_origin.hostname != ALLOWED_HOST:
             raise ValueError("browser bridge allowed origin must be http://127.0.0.1:<port>")
     return CompanionServer(
         (host, port),
@@ -464,14 +511,31 @@ def create_server(
         private_vault=private_vault,
         browser_bridge_enabled=browser_bridge_enabled,
         allowed_origin=allowed_origin,
+        phone_ingress_enabled=phone_ingress_enabled,
         browser_session_ttl_seconds=browser_session_ttl_seconds,
         browser_pairing_ttl_seconds=browser_pairing_ttl_seconds,
     )
 
 
+def _is_private_or_loopback_host(host: str) -> bool:
+    try:
+        parsed = ip_address(host)
+    except ValueError:
+        return False
+    return parsed.is_private or parsed.is_loopback
+
+
+def _static_path_allowed(rel: str) -> bool:
+    if ".." in Path(rel).parts or rel.startswith("/"):
+        return False
+    if rel in STATIC_ALLOWED_FILES:
+        return True
+    return rel.startswith(STATIC_ALLOWED_PREFIXES)
+
+
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Run the loopback-only Personal Notion Hub companion.")
-    parser.add_argument("--host", default="127.0.0.1", help="Loopback host only. Default: 127.0.0.1")
+    parser = argparse.ArgumentParser(description="Run the local Personal Notion Hub companion.")
+    parser.add_argument("--host", default="127.0.0.1", help="Bind host. Default: 127.0.0.1. Non-loopback requires --enable-phone-ingress.")
     parser.add_argument("--port", type=int, default=8765, help="Port to bind. Default: 8765")
     parser.add_argument("--enable-private-inbox", action="store_true", help="Enable authenticated local private inbox writes.")
     parser.add_argument("--enable-encrypted-vault", action="store_true", help="Store private captures in encrypted vault mode.")
@@ -482,6 +546,7 @@ def main() -> int:
     parser.add_argument("--vault-passphrase-file", default="", help="Provider-specific secret file path.")
     parser.add_argument("--enable-browser-bridge", action="store_true", help="Enable exact-origin browser bridge pairing.")
     parser.add_argument("--allowed-origin", default="", help="Allowed browser origin, for example http://127.0.0.1:8000.")
+    parser.add_argument("--enable-phone-ingress", action="store_true", help="Serve PNH UI/API for explicit private LAN phone testing.")
     parser.add_argument("--private-db", default="", help="Private inbox SQLite path. Default: companion/private/...")
     parser.add_argument("--token-file", default="", help="Auth token file path. Default: companion/private/auth_token")
     args = parser.parse_args()
@@ -528,6 +593,7 @@ def main() -> int:
             private_vault=private_vault,
             browser_bridge_enabled=args.enable_browser_bridge,
             allowed_origin=args.allowed_origin or None,
+            phone_ingress_enabled=args.enable_phone_ingress,
         )
     except ValueError as exc:
         print(f"startup_error={exc}", file=sys.stderr)
@@ -539,6 +605,7 @@ def main() -> int:
     print(f"private_storage_mode={httpd.private_storage_mode}")
     print(f"encrypted_vault_enabled={httpd.private_vault is not None}")
     print(f"browser_bridge_enabled={httpd.browser_bridge_enabled}")
+    print(f"phone_ingress_enabled={httpd.phone_ingress_enabled}")
     if httpd.browser_bridge_enabled:
         print(f"browser_pairing_code={httpd.browser_pairing_code}")
         print(f"browser_pairing_code_ttl_seconds={httpd.browser_pairing_ttl_seconds}")

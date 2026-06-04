@@ -225,6 +225,44 @@ Assistant workspace ingress scenario:
 - Confirm `scripts/private_inbox_status.py` reports an increased count without printing private values.
 - Confirm browser response and toast do not show title/body, file token, pairing code, or browser session token.
 
+## Phone Ingress Checks
+
+Run:
+
+```bash
+python3 scripts/phone_ingress_smoke_check.py
+```
+
+Expected:
+
+- non-loopback bind is rejected unless `--enable-phone-ingress` is set
+- phone ingress requires browser bridge mode
+- wildcard, public IP, `localhost`, and `0.0.0.0` origins are rejected
+- private LAN origin shape is accepted
+- companion can serve the PNH static UI in phone ingress mode
+- one-time pairing still gates browser writes
+- synthetic phone-style capture writes to private inbox
+- API response does not echo synthetic title/body
+
+Manual phone scenario:
+
+```bash
+python3 scripts/private_inbox_init.py
+python3 scripts/phone_ingress_lan_info.py
+python3 companion/server.py \
+  --host 0.0.0.0 \
+  --port 8765 \
+  --enable-private-inbox \
+  --enable-browser-bridge \
+  --enable-phone-ingress \
+  --allowed-origin http://<LAN_IP>:8765
+```
+
+- Open `http://<LAN_IP>:8765/` on the phone.
+- Pair using the local WSL terminal code. Do not record the code in evidence.
+- Send a synthetic Assistant input.
+- Confirm `python3 scripts/private_inbox_status.py` reports an increased count without printing private values.
+
 ## Local Encrypted Vault Checks
 
 Encrypted vault mode validates the minimum local path for supervisor-approved sensitive testing. Use synthetic data only in automated checks.

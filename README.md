@@ -230,6 +230,60 @@ Bridge boundaries:
 - Launch 화면에는 screenshot redaction toggle이 있으며 민감 launch text와 pairing input을 캡처 전에 가릴 수 있습니다.
 - real sensitive data should use encrypted vault mode, not plaintext private inbox mode
 
+## Phone Ingress MVP
+
+Phone ingress lets a phone browser on the same trusted private LAN open the PNH
+UI and explicitly send Assistant/Launch captures to the workspace companion.
+
+Default stance:
+
+- disabled by default
+- private LAN only
+- exact-origin only
+- one-time pairing required
+- synthetic or low-risk input first
+
+Find LAN candidates and commands:
+
+```bash
+python3 scripts/phone_ingress_lan_info.py
+```
+
+Run synthetic/low-risk phone ingress:
+
+```bash
+python3 scripts/private_inbox_init.py
+python3 companion/server.py \
+  --host 0.0.0.0 \
+  --port 8765 \
+  --enable-private-inbox \
+  --enable-browser-bridge \
+  --enable-phone-ingress \
+  --allowed-origin http://<LAN_IP>:8765
+```
+
+Open on phone:
+
+```text
+http://<LAN_IP>:8765/
+```
+
+Sensitive input should use encrypted vault mode:
+
+```bash
+python3 companion/server.py \
+  --host 0.0.0.0 \
+  --port 8765 \
+  --enable-private-inbox \
+  --enable-encrypted-vault \
+  --vault-passphrase-provider windows-dpapi-file \
+  --enable-browser-bridge \
+  --enable-phone-ingress \
+  --allowed-origin http://<LAN_IP>:8765
+```
+
+See `docs/PHONE_INGRESS_SECURITY.md`.
+
 ## Local Encrypted Vault MVP
 
 The encrypted vault proves this higher-sensitivity path:

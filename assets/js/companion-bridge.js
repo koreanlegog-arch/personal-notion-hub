@@ -1,14 +1,34 @@
 (function () {
   "use strict";
 
-  const BASE_URL = "http://127.0.0.1:8765";
-  const EXPECTED_ORIGIN = "http://127.0.0.1:8765";
+  const LOOPBACK_BASE_URL = "http://127.0.0.1:8765";
+  const COMPANION_PORT = "8765";
   let sessionToken = "";
 
-  function validatedBaseUrl(value = BASE_URL) {
+  function defaultBaseUrl() {
+    const page = new URL(window.location.href);
+    if (page.protocol === "http:" && page.port === COMPANION_PORT && page.hostname) {
+      return page.origin;
+    }
+    return LOOPBACK_BASE_URL;
+  }
+
+  function validCompanionOrigin(origin) {
+    const parsed = new URL(origin);
+    if (parsed.protocol !== "http:" || parsed.port !== COMPANION_PORT || parsed.pathname !== "/") {
+      return false;
+    }
+    if (parsed.hostname === "127.0.0.1") return true;
+    if (/^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(parsed.hostname)) return true;
+    if (/^192\.168\.\d{1,3}\.\d{1,3}$/.test(parsed.hostname)) return true;
+    const match = parsed.hostname.match(/^172\.(\d{1,3})\.\d{1,3}\.\d{1,3}$/);
+    return Boolean(match && Number(match[1]) >= 16 && Number(match[1]) <= 31);
+  }
+
+  function validatedBaseUrl(value = defaultBaseUrl()) {
     const parsed = new URL(value);
-    if (parsed.origin !== EXPECTED_ORIGIN || parsed.pathname !== "/" || parsed.search || parsed.hash) {
-      throw new Error("Companion base URL must be exactly http://127.0.0.1:8765");
+    if (!validCompanionOrigin(parsed.origin) || parsed.search || parsed.hash) {
+      throw new Error("Companion base URL must be loopback or private LAN http on port 8765");
     }
     return parsed.origin;
   }
@@ -16,8 +36,8 @@
   async function controlledFetch(path, options = {}) {
     const baseUrl = validatedBaseUrl();
     const target = new URL(path, baseUrl);
-    if (target.origin !== EXPECTED_ORIGIN) {
-      throw new Error("Companion request blocked by loopback origin policy");
+    if (target.origin !== baseUrl) {
+      throw new Error("Companion request blocked by allowed origin policy");
     }
     const headers = new Headers(options.headers || {});
     headers.set("Accept", "application/json");
@@ -108,7 +128,7 @@
   }
 
   window.PNHCompanionBridge = Object.freeze({
-    baseUrl: BASE_URL,
+    baseUrl: defaultBaseUrl(),
     disconnect,
     health,
     isPaired,

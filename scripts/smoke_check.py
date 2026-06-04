@@ -29,6 +29,7 @@ REQUIRED = [
     "docs/PASSPHRASE_KEYCHAIN_BACKEND_DESIGN.md",
     "docs/PASSPHRASE_RECOVERY_POLICY.md",
     "docs/REAL_DATA_ADAPTER_PRIVACY_GATE.md",
+    "docs/PHONE_INGRESS_SECURITY.md",
     "ops/templates/PRIVATE_DATA_ADAPTER_BRIEF_TEMPLATE.md",
     "ops/templates/PRIVATE_DATA_ADAPTER_SECURITY_GATE_TEMPLATE.md",
     "ops/checklists/PRIVATE_DATA_ADAPTER_QA_CHECKLIST.md",
@@ -57,6 +58,8 @@ REQUIRED = [
     "scripts/plaintext_migration_apply.py",
     "scripts/redacted_browser_qa_check.py",
     "scripts/run_playwright_redacted_ui_qa.sh",
+    "scripts/phone_ingress_smoke_check.py",
+    "scripts/phone_ingress_lan_info.py",
     "tests/redacted-ui.spec.cjs",
     "scripts/encrypted_vault_backup_restore_smoke_check.py",
     "scripts/encrypted_vault_delete_smoke_check.py",
@@ -177,6 +180,13 @@ def assert_private_data_policy_contracts() -> None:
             "Stop Conditions",
             "Blocked",
         ],
+        "docs/PHONE_INGRESS_SECURITY.md": [
+            "Phone ingress is disabled by default",
+            "--enable-phone-ingress",
+            "http://<LAN_IP>:8765/",
+            "Sensitive Data Mode",
+            "Stop Conditions",
+        ],
     }
     for rel, tokens in docs.items():
         text = (ROOT / rel).read_text(encoding="utf-8")
@@ -272,7 +282,8 @@ def assert_companion_bridge_contracts() -> None:
         "http://127.0.0.1:8765",
         "function validatedBaseUrl",
         "async function controlledFetch",
-        "target.origin !== EXPECTED_ORIGIN",
+        "validCompanionOrigin",
+        "target.origin !== baseUrl",
         "let sessionToken = \"\"",
         "Authorization",
         "sendCapture",
@@ -288,6 +299,16 @@ def assert_companion_bridge_contracts() -> None:
     for token in forbidden_storage:
         if token in bridge:
             raise SystemExit(f"companion_secret_storage_token={token}")
+    server = (ROOT / "companion/server.py").read_text(encoding="utf-8")
+    for token in [
+        "--enable-phone-ingress",
+        "phone_ingress_enabled",
+        "phone ingress requires --enable-browser-bridge",
+        "phone ingress allowed origin must use loopback or private LAN host",
+        "STATIC_ALLOWED_PREFIXES",
+    ]:
+        if token not in server:
+            raise SystemExit(f"missing_phone_ingress_contract={token}")
 
 
 def assert_encrypted_vault_contracts() -> None:

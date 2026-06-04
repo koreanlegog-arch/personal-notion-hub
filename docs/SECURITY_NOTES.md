@@ -114,6 +114,7 @@ Private inbox mode allowed:
 - metadata-only API responses
 - redacted status output
 - browser bridge only when explicitly enabled with exact `http://127.0.0.1:<port>` origin
+- phone ingress only when explicitly enabled with exact private LAN origin
 - short-lived one-time pairing code issued in local terminal only
 - short-lived browser session token held in JS memory only
 
@@ -140,6 +141,8 @@ Forbidden in all modes:
 - browser UI `fetch` integration outside the approved bridge module
 - wildcard CORS
 - non-loopback bind address
+- phone ingress without `--enable-phone-ingress`
+- wildcard, public IP, `localhost`, or `0.0.0.0` browser origins for phone ingress
 - committed private inbox files
 - persistent browser storage of token, pairing code, or session token
 - passing vault passphrases as CLI values or printing them in evidence
@@ -158,6 +161,8 @@ Current private inbox protections:
 - browser bridge is disabled by default and requires `--enable-browser-bridge`
 - browser bridge startup requires `--enable-private-inbox`
 - `--allowed-origin` accepts only exact `http://127.0.0.1:<port>` origins
+- phone ingress startup requires `--enable-private-inbox`, `--enable-browser-bridge`, `--enable-phone-ingress`, and an exact private LAN `--allowed-origin`
+- phone ingress serves static UI from the companion so phone UI and API share an origin
 - CSP restricts browser connection to `connect-src 'self' http://127.0.0.1:8765`
 - Launch UI provides a screenshot redaction toggle for sensitive launch text and pairing input
 - encrypted vault mode stores private fields in `encrypted_mobile_captures`
@@ -179,6 +184,7 @@ Residual risks:
 - encrypted capture backup/restore/delete/rotation exists, but forensic secure erase and encrypted attachment/audio export are not implemented
 - browser session token is memory-only, so reload requires re-pairing
 - screenshot redaction is best-effort UI masking, not a substitute for fake-fixture QA
+- phone ingress exposes the companion to the local LAN and should only run on trusted networks
 
 Encrypted vault mode with prompt-first passphrase handling, optional
 `windows-dpapi-file` storage, backup-gated rotation, backup-gated plaintext
