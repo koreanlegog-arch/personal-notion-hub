@@ -516,5 +516,6 @@ Current contract:
 - validate with `python3 scripts/encrypted_vault_smoke_check.py`
 - validate passphrase prompt/keychain readiness with `python3 scripts/passphrase_provider_smoke_check.py` and `python3 scripts/keychain_readiness.py`
 - validate lifecycle with `python3 scripts/encrypted_vault_backup_restore_smoke_check.py`, `python3 scripts/encrypted_vault_delete_smoke_check.py`, and `python3 scripts/plaintext_migration_audit_smoke_check.py`
+- validate the approved backend implementation plan against `docs/PASSPHRASE_KEYCHAIN_BACKEND_DESIGN.md` before adding persistent secret storage
 
 The critical success criterion is encrypted source-to-workspace persistence with redacted evidence.

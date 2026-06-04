@@ -151,7 +151,9 @@ Limitations:
 - pairing code is manually copied from local terminal and must not be recorded
 - browser session is memory-only and requires re-pairing after reload
 
-The plaintext MVP is acceptable for proving source-to-workspace persistence and compatibility. For sensitive local testing, use encrypted vault mode with prompt-first passphrase handling. Before routine use with high-sensitivity real data, add plaintext migration apply policy, OS keychain storage/retrieval or recovery policy, and automated redaction validation.
+The plaintext MVP is acceptable for proving source-to-workspace persistence and compatibility. For sensitive local testing, use encrypted vault mode with prompt-first passphrase handling. Before routine use with high-sensitivity real data, add plaintext migration apply policy, approved OS keychain storage/retrieval or recovery policy, and automated redaction validation.
+
+The current OS keychain backend design recommends `windows-dpapi-file` for the Windows + WSL environment, but implementation remains blocked until explicit approval.
 
 ## Call And Recording Data
 

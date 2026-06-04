@@ -169,6 +169,7 @@ Residual risks:
 - plaintext private inbox mode is not encrypted at rest and should not be used for routine high-sensitivity storage
 - token file security depends on the local OS account
 - encrypted vault passphrase management is still manual; prompt input and backup-gated rotation are implemented but OS keychain storage/retrieval and recovery are not implemented
+- OS keychain backend design is documented in `docs/PASSPHRASE_KEYCHAIN_BACKEND_DESIGN.md`; current recommendation is `windows-dpapi-file` after explicit approval
 - existing plaintext private inbox rows are not migrated automatically; audit-only detection exists
 - encrypted capture backup/restore/delete/rotation exists, but forensic secure erase and encrypted attachment/audio export are not implemented
 - browser session token is memory-only, so reload requires re-pairing

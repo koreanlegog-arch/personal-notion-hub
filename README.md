@@ -301,6 +301,7 @@ Encrypted vault boundaries:
 - passphrase rotation requires `--confirm ROTATE_VAULT_PASSPHRASE` and an existing encrypted backup path
 - plaintext migration audit reports counts only and does not mutate the DB
 - OS keychain storage/retrieval, plaintext migration apply, adapter ingestion, passphrase recovery, and forensic secure erase are not implemented yet
+- OS keychain backend design is documented in `docs/PASSPHRASE_KEYCHAIN_BACKEND_DESIGN.md`; implementation requires `APPROVE_PNH_WINDOWS_DPAPI_FILE_BACKEND`
 
 ## Local Private Inbox MVP
 

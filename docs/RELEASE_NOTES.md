@@ -1,5 +1,32 @@
 # Release Notes
 
+## 2026-06-04 - Keychain Backend Design Packet
+
+### Summary
+
+Added a design and approval packet for future OS-backed passphrase persistence.
+
+### Included
+
+- backend comparison for prompt, env, Windows DPAPI file, Windows Credential Manager, Linux Secret Service, and third-party keyring
+- recommendation of `windows-dpapi-file` for the current Windows + WSL environment
+- explicit rejection of `cmdkey /pass:` for secret input
+- approval phrase `APPROVE_PNH_WINDOWS_DPAPI_FILE_BACKEND`
+- validation plan requiring synthetic secrets only
+
+### Boundaries
+
+- No actual OS keychain storage/retrieval implementation
+- No real passphrase storage
+- No package installation
+- No real private data in tests or evidence
+
+### Verification
+
+Recorded in:
+
+- `ops/runs/PNH-KEYCHAIN-BACKEND-DESIGN-20260604/`
+
 ## 2026-06-04 - Encrypted Vault Passphrase Rotation MVP
 
 ### Summary

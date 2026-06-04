@@ -1,0 +1,40 @@
+{
+  "score_model": "efficiency",
+  "score": 73.6,
+  "score_band": "useful",
+  "classification": "SUPERVISOR_IMPLEMENTED_EXCEPTION",
+  "implementer_slice_count": 0,
+  "supervisor_direct_implementation_ratio": 0.55,
+  "quality_gain": 0.0,
+  "evidence_completeness": 0.9,
+  "acceptance_pass_rate": 1.0,
+  "implementation_parallelism": 0.0,
+  "delivery_readiness": 0.0,
+  "scope_drift_count": 0,
+  "unverified_claim_count": 0,
+  "security_issue_count": 0,
+  "components": {
+    "outcome_quality": 22.5,
+    "specialist_fit": 18.0,
+    "critical_path_reduction": 7.2,
+    "coordination_efficiency": 13.8,
+    "evidence_quality": 8.6,
+    "supervisor_load_reduction": 3.5
+  },
+  "penalties": 0,
+  "penalty_breakdown": {
+    "scope_drift": 0,
+    "unverified_claims": 0,
+    "security_issues": 0,
+    "unnecessary_lanes": 0,
+    "write_set_conflicts": 0,
+    "duplicate_work": 0,
+    "replans": 0
+  },
+  "model_budget": {
+    "model_tier": "high-reasoning-supervisor",
+    "model_name": "not-metered-per-agent",
+    "reasoning_effort": "high",
+    "budget_note": "keychain-backend-design-only-no-secret-storage"
+  }
+}
