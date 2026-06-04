@@ -183,6 +183,16 @@ python3 scripts/simulate_mobile_capture.py \
   --body "Synthetic private note for workspace ingress validation."
 ```
 
+Or paste mobile-like body text through stdin without storing the text in shell history:
+
+```bash
+printf "Synthetic mobile project brief body." | python3 scripts/simulate_mobile_capture.py \
+  --source mobile_web \
+  --kind project_brief \
+  --title "Synthetic mobile project brief" \
+  --body-file -
+```
+
 Check that the capture reached the workspace-local inbox without printing private values:
 
 ```bash

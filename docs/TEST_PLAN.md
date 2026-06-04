@@ -121,12 +121,13 @@ Expected:
 - private inbox health reports writes enabled
 - write endpoint rejects missing auth
 - write endpoint rejects wrong token
-- valid bearer token can store one synthetic capture
+- valid bearer token can store a synthetic capture
+- stdin mobile-like sender can store an additional synthetic capture without echoing the body
 - API response does not echo title/body private values
 - simulated mobile sender rejects non-loopback base URLs before reading the token
 - private inbox init rejects DB/token paths outside `companion/private/`
 - status command does not create a missing DB
-- summary reports one capture
+- summary reports two synthetic captures during smoke validation
 - recent list is redacted and omits body text
 - SQLite summary confirms persistence
 
@@ -143,6 +144,17 @@ Then, in a second terminal:
 python3 scripts/simulate_mobile_capture.py \
   --title "Synthetic mobile project brief" \
   --body "Synthetic private note for workspace ingress validation."
+python3 scripts/private_inbox_status.py
+```
+
+Optional stdin/mobile-like capture:
+
+```bash
+printf "Synthetic mobile project brief body." | python3 scripts/simulate_mobile_capture.py \
+  --source mobile_web \
+  --kind project_brief \
+  --title "Synthetic mobile project brief" \
+  --body-file -
 python3 scripts/private_inbox_status.py
 ```
 

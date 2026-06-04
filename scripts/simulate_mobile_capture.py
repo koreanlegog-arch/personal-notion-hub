@@ -26,6 +26,7 @@ def main() -> int:
     parser.add_argument("--kind", default="project_brief", help="Capture kind.")
     parser.add_argument("--title", default="Synthetic mobile project brief", help="Capture title.")
     parser.add_argument("--body", default="Synthetic private note for workspace ingress validation.", help="Capture body.")
+    parser.add_argument("--body-file", default="", help="Read capture body from a UTF-8 file, or '-' for stdin.")
     parser.add_argument("--sensitivity", default="private", choices=["internal", "private", "highly_sensitive"])
     args = parser.parse_args()
 
@@ -40,11 +41,17 @@ def main() -> int:
     except (OSError, PrivateStoreError) as exc:
         print(f"mobile_capture_sent=false error={exc}", file=sys.stderr)
         return 2
+    try:
+        body = read_capture_body(args.body, args.body_file)
+    except OSError as exc:
+        print(f"mobile_capture_sent=false error={exc}", file=sys.stderr)
+        return 2
+
     payload = {
         "source": args.source,
         "kind": args.kind,
         "title": args.title,
-        "body": args.body,
+        "body": body,
         "sensitivity": args.sensitivity,
     }
     request = urllib.request.Request(
@@ -89,6 +96,14 @@ def build_loopback_endpoint(base_url: str) -> str:
     if parsed.port is None:
         raise ValueError("base-url must include an explicit port")
     return f"http://127.0.0.1:{parsed.port}/api/private/mobile-captures"
+
+
+def read_capture_body(default_body: str, body_file: str) -> str:
+    if not body_file:
+        return default_body
+    if body_file == "-":
+        return sys.stdin.read().strip()
+    return Path(body_file).read_text(encoding="utf-8").strip()
 
 
 class NoRedirectHandler(urllib.request.HTTPRedirectHandler):

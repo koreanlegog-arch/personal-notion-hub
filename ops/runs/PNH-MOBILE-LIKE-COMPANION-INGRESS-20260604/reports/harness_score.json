@@ -1,0 +1,40 @@
+{
+  "score_model": "efficiency",
+  "score": 60.1,
+  "score_band": "partial",
+  "classification": "single-agent-or-partial-harness",
+  "implementer_slice_count": 1,
+  "supervisor_direct_implementation_ratio": 0.55,
+  "quality_gain": 0.0,
+  "evidence_completeness": 0.92,
+  "acceptance_pass_rate": 0.88,
+  "implementation_parallelism": 0.5,
+  "delivery_readiness": 0.0,
+  "scope_drift_count": 0,
+  "unverified_claim_count": 0,
+  "security_issue_count": 0,
+  "components": {
+    "outcome_quality": 21.5,
+    "specialist_fit": 15.6,
+    "critical_path_reduction": 7.0,
+    "coordination_efficiency": 12.3,
+    "evidence_quality": 9.2,
+    "supervisor_load_reduction": 4.5
+  },
+  "penalties": 10,
+  "penalty_breakdown": {
+    "scope_drift": 0,
+    "unverified_claims": 0,
+    "security_issues": 0,
+    "unnecessary_lanes": 0,
+    "write_set_conflicts": 0,
+    "duplicate_work": 0,
+    "replans": 10
+  },
+  "model_budget": {
+    "model_tier": "mixed",
+    "model_name": "sidecars:gpt-5.3-codex-spark+gpt-5.5",
+    "reasoning_effort": "mixed",
+    "budget_note": "historical-estimate-no-ab-speedup"
+  }
+}

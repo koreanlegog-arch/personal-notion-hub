@@ -19,6 +19,7 @@ sys.path.insert(0, str(ROOT))
 
 from companion.private_store import create_token, init_private_store, list_captures, store_summary  # noqa: E402
 from companion.server import create_server  # noqa: E402
+from scripts.simulate_mobile_capture import read_capture_body  # noqa: E402
 
 
 FORBIDDEN_VALUES = (
@@ -125,21 +126,40 @@ def main() -> int:
             assert_true(stored.get("writesPerformed") is True, "authorized_capture_write_failed=true")
             assert_no_forbidden_values(stored)
 
+            body_file = temp_root / "synthetic_mobile_body.txt"
+            body_file.write_text(FORBIDDEN_VALUES[0], encoding="utf-8")
+            file_payload = {
+                "source": "mobile_web",
+                "kind": "project_brief",
+                "title": FORBIDDEN_VALUES[1],
+                "body": read_capture_body("", str(body_file)),
+                "sensitivity": "highly_sensitive",
+            }
+            status, file_stored = request_json(
+                f"{base_url}/api/private/mobile-captures",
+                "POST",
+                file_payload,
+                token=token,
+            )
+            assert_true(status == 201, "file_mobile_capture_status_failed=true")
+            assert_true(file_stored.get("writesPerformed") is True, "file_mobile_capture_write_failed=true")
+            assert_no_forbidden_values(file_stored)
+
             status, summary = request_json(f"{base_url}/api/private/summary", token=token)
             assert_true(status == 200, "private_summary_status_failed=true")
-            assert_true(summary.get("summary", {}).get("totalCaptures") == 1, "private_summary_count_failed=true")
+            assert_true(summary.get("summary", {}).get("totalCaptures") == 2, "private_summary_count_failed=true")
             assert_true("dbPath" not in summary.get("summary", {}), "http_summary_path_leaked=true")
             assert_no_forbidden_values(summary)
 
             status, listed = request_json(f"{base_url}/api/private/mobile-captures", token=token)
-            assert_true(status == 200 and len(listed.get("items", [])) == 1, "private_list_failed=true")
+            assert_true(status == 200 and len(listed.get("items", [])) == 2, "private_list_failed=true")
             assert_no_forbidden_values(listed)
 
             status, invalid_limit = request_json(f"{base_url}/api/private/mobile-captures?limit=abc", token=token)
             assert_true(status == 400 and invalid_limit.get("error") == "invalid_limit", "invalid_limit_contract_failed=true")
 
             local_summary = store_summary(db_path, allow_external=True)
-            assert_true(local_summary["totalCaptures"] == 1, "sqlite_summary_count_failed=true")
+            assert_true(local_summary["totalCaptures"] == 2, "sqlite_summary_count_failed=true")
             recent = list_captures(db_path, include_body=False, allow_external=True)
             assert_true(recent and "body" not in recent[0], "redacted_list_contract_failed=true")
 
