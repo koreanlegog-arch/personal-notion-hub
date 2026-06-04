@@ -100,6 +100,7 @@ python3 scripts/companion_smoke_check.py
 python3 scripts/encrypted_vault_smoke_check.py
 python3 scripts/encrypted_vault_backup_restore_smoke_check.py
 python3 scripts/encrypted_vault_delete_smoke_check.py
+python3 scripts/encrypted_vault_rotation_smoke_check.py
 python3 scripts/passphrase_provider_smoke_check.py
 python3 scripts/plaintext_migration_audit_smoke_check.py
 python3 scripts/private_inbox_smoke_check.py
@@ -119,7 +120,8 @@ redacted API/status responses, and plaintext absence in SQLite bytes.
 
 The lifecycle smoke checks verify encrypted backup/restore, wrong backup
 passphrase rejection, backup tamper rejection, delete metadata removal, safe
-delete audit, and plaintext migration audit without printing private values.
+delete audit, backup-gated passphrase rotation, and plaintext migration audit
+without printing private values.
 
 The passphrase provider smoke check verifies env/prompt handling, confirmation
 mismatch rejection, short passphrase rejection, keychain readiness reporting,
@@ -134,7 +136,7 @@ legacy bearer-token compatibility without printing secret values.
 - real-data import adapters
 - plaintext-to-encrypted migration apply
 - OS keychain storage/retrieval
-- passphrase recovery or rotation
+- passphrase recovery
 - packaging or distribution
 - LAN/mobile-device pairing beyond loopback
 - automated screenshot-safe browser QA

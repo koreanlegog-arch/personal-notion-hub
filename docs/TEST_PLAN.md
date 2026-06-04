@@ -268,6 +268,7 @@ Run:
 ```bash
 python3 scripts/encrypted_vault_backup_restore_smoke_check.py
 python3 scripts/encrypted_vault_delete_smoke_check.py
+python3 scripts/encrypted_vault_rotation_smoke_check.py
 python3 scripts/plaintext_migration_audit_smoke_check.py
 python3 scripts/passphrase_provider_smoke_check.py
 ```
@@ -284,6 +285,10 @@ Expected:
 - delete requires `--confirm DELETE_CAPTURE`
 - delete removes the encrypted row and redacted list entry
 - delete audit stores no title/body/payload/private values
+- rotation requires `--confirm ROTATE_VAULT_PASSPHRASE` and an existing encrypted backup path
+- old passphrase cannot decrypt after rotation
+- new passphrase can decrypt after rotation
+- rotation audit stores no title/body/payload/private values
 - plaintext migration audit detects plaintext row count without printing values
 - plaintext migration audit does not mutate the DB
 

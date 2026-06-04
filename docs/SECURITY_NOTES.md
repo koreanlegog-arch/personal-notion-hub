@@ -123,6 +123,7 @@ Encrypted vault mode allowed:
 - passphrase loaded from no-echo local prompt or a configured environment variable name
 - prompt confirmation available for initialization and backup creation
 - keychain readiness audit reports capability flags without storing or printing secrets
+- passphrase rotation requires explicit confirmation and an existing encrypted backup path
 - private title/body/payload encryption before SQLite persistence
 - AES-GCM authenticated encryption through installed `cryptography`
 - PBKDF2-HMAC-SHA256 key derivation with per-vault salt
@@ -161,18 +162,19 @@ Current private inbox protections:
 - encrypted vault mode fails closed if `cryptography` or required passphrase input is missing
 - encrypted vault smoke test checks wrong passphrase rejection, tamper rejection, redacted responses, and plaintext absence in SQLite bytes
 - passphrase provider smoke test checks env/prompt behavior, confirmation mismatch rejection, short passphrase rejection, and no secret output
+- rotation smoke test checks backup gate, old-passphrase rejection after rotation, new-passphrase decrypt, audit event, and no secret output
 
 Residual risks:
 
 - plaintext private inbox mode is not encrypted at rest and should not be used for routine high-sensitivity storage
 - token file security depends on the local OS account
-- encrypted vault passphrase management is still manual; prompt input is implemented but OS keychain storage/retrieval and recovery/rotation are not implemented
+- encrypted vault passphrase management is still manual; prompt input and backup-gated rotation are implemented but OS keychain storage/retrieval and recovery are not implemented
 - existing plaintext private inbox rows are not migrated automatically; audit-only detection exists
-- encrypted capture backup/restore/delete exists, but forensic secure erase and encrypted attachment/audio export are not implemented
+- encrypted capture backup/restore/delete/rotation exists, but forensic secure erase and encrypted attachment/audio export are not implemented
 - browser session token is memory-only, so reload requires re-pairing
 - screenshot redaction is best-effort UI masking, not a substitute for fake-fixture QA
 
-Encrypted vault mode with prompt-first passphrase handling is the minimum local path for supervisor-approved sensitive testing. Plaintext migration apply, OS keychain storage/retrieval, adapter-specific data policies, passphrase recovery/rotation, and automated screenshot-safe QA remain release blockers before routine high-sensitivity operation or distribution.
+Encrypted vault mode with prompt-first passphrase handling and backup-gated rotation is the minimum local path for supervisor-approved sensitive testing. Plaintext migration apply, OS keychain storage/retrieval, adapter-specific data policies, passphrase recovery, and automated screenshot-safe QA remain release blockers before routine high-sensitivity operation or distribution.
 
 ## XSS Mitigation
 

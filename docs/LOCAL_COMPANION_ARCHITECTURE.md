@@ -337,7 +337,7 @@ Not yet implemented:
 - local transcription
 - plaintext-to-encrypted migration apply
 - encrypted attachment/audio export/import
-- passphrase recovery or rotation
+- passphrase recovery
 
 ## Implemented Encrypted Vault MVP
 
@@ -357,11 +357,12 @@ Implemented protections:
 - tamper rejection
 - DB byte scan smoke check for synthetic plaintext absence
 - prompt/keychain readiness smoke check without secret output
+- backup-gated passphrase rotation smoke check
 
 Not yet implemented:
 
 - OS keychain storage/retrieval
-- passphrase recovery or rotation
+- passphrase recovery
 - plaintext private inbox migration apply
 - local search over encrypted private fields
 - adapter-specific ingestion for real contacts, calendar, calls, recordings, or transcripts
@@ -372,9 +373,10 @@ Implemented lifecycle controls:
 - encrypted restore into a fresh or existing vault
 - duplicate restore skip by default
 - explicit capture delete with confirmation phrase
+- passphrase rotation with existing encrypted backup acknowledgement
 - plaintext migration audit without value disclosure
 
-This MVP is sufficient to prove that a mobile-like input can reach workspace-local encrypted storage and can be backed up, restored, and deleted at row level. For routine high-sensitivity operation, plaintext migration apply, OS keychain storage or recovery policy, real-data adapters, and adapter-specific policies are the next blockers.
+This MVP is sufficient to prove that a mobile-like input can reach workspace-local encrypted storage and can be backed up, restored, deleted at row level, and rotated to a new passphrase. For routine high-sensitivity operation, plaintext migration apply, OS keychain storage/retrieval or recovery policy, real-data adapters, and adapter-specific policies are the next blockers.
 
 ## Candidate Vault Designs
 
@@ -466,7 +468,7 @@ Upgrade the encrypted vault MVP into an operational private-data system. The nex
 
 - plaintext-to-encrypted migration apply
 - OS keychain storage/retrieval
-- passphrase recovery or rotation
+- passphrase recovery
 - redacted review UI for sensitive records
 - adapter-by-adapter approval gates for phone, calendar, contacts, recordings, and transcripts
 

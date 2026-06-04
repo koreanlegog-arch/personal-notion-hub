@@ -548,6 +548,93 @@ def delete_encrypted_capture(vault: EncryptedVault, capture_id: str, *, vacuum: 
     }
 
 
+def rotate_vault_passphrase(
+    db_path: str | Path,
+    current_passphrase: str,
+    new_passphrase: str,
+) -> dict[str, Any]:
+    """Re-encrypt all encrypted capture rows with a new vault passphrase.
+
+    Rotation is intentionally all-or-nothing: existing rows are decrypted before
+    mutation, then metadata and rows are updated in one SQLite transaction.
+    """
+
+    current_passphrase = require_passphrase(current_passphrase)
+    new_passphrase = require_passphrase(new_passphrase)
+    if current_passphrase == new_passphrase:
+        raise EncryptedVaultError("new vault passphrase must differ from current passphrase")
+
+    old_vault = init_encrypted_vault(db_path, current_passphrase)
+    captures = old_vault.list_decrypted_captures()
+    old_key_id = old_vault.key_id
+    new_salt = os.urandom(SALT_BYTES)
+    new_key_id = _key_id(new_salt)
+    new_key = _derive_key_from_passphrase(new_passphrase, new_salt)
+    AESGCM, _, _, _ = _load_crypto()
+    aesgcm = AESGCM(new_key)
+
+    rotated_rows = []
+    for capture in captures:
+        metadata = {
+            "id": capture["id"],
+            "source": capture["source"],
+            "kind": capture["kind"],
+            "sensitivity": capture["sensitivity"],
+            "status": capture["status"],
+            "created_at": capture["created_at"],
+            "stored_at": capture["stored_at"],
+            "storage_mode": capture.get("storage_mode", "encrypted-vault"),
+            "key_id": new_key_id,
+            "algorithm": ALGORITHM,
+        }
+        private_payload = {
+            "title": capture["title"],
+            "body": capture["body"],
+            "payload_json": capture["payload_json"],
+        }
+        nonce = os.urandom(NONCE_BYTES)
+        ciphertext = aesgcm.encrypt(
+            nonce,
+            json.dumps(private_payload, ensure_ascii=False, sort_keys=True).encode("utf-8"),
+            old_vault._associated_data(metadata),
+        )
+        rotated_rows.append({**metadata, "nonce": nonce, "ciphertext": ciphertext})
+
+    with sqlite3.connect(old_vault.db_path) as conn:
+        conn.execute(
+            "INSERT OR REPLACE INTO encrypted_vault_meta(key, value) VALUES (?, ?)",
+            ("salt", new_salt),
+        )
+        conn.execute(
+            "INSERT OR REPLACE INTO encrypted_vault_meta(key, value) VALUES (?, ?)",
+            ("key_id", new_key_id.encode("ascii")),
+        )
+        conn.executemany(
+            """
+            UPDATE encrypted_mobile_captures
+            SET key_id = :key_id,
+                algorithm = :algorithm,
+                nonce = :nonce,
+                ciphertext = :ciphertext
+            WHERE id = :id
+            """,
+            rotated_rows,
+        )
+        conn.execute(
+            "INSERT INTO audit_events(event_type, capture_id, source, created_at) VALUES (?, ?, ?, ?)",
+            ("encrypted_vault_passphrase_rotated", None, "local_vault", utc_now()),
+        )
+    old_vault.apply_private_mode()
+    return {
+        "rotated": True,
+        "captureCount": len(rotated_rows),
+        "oldKeyId": old_key_id,
+        "newKeyId": new_key_id,
+        "keyChanged": old_key_id != new_key_id,
+        "secretValuePrinted": False,
+    }
+
+
 def metadata_response(metadata: dict[str, Any]) -> dict[str, Any]:
     return {
         "id": metadata["id"],

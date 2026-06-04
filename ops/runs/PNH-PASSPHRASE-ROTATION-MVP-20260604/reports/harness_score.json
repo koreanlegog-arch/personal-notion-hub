@@ -1,0 +1,40 @@
+{
+  "score_model": "efficiency",
+  "score": 75.45,
+  "score_band": "useful",
+  "classification": "SUPERVISOR_IMPLEMENTED_EXCEPTION",
+  "implementer_slice_count": 0,
+  "supervisor_direct_implementation_ratio": 0.78,
+  "quality_gain": 0.0,
+  "evidence_completeness": 0.96,
+  "acceptance_pass_rate": 1.0,
+  "implementation_parallelism": 0.0,
+  "delivery_readiness": 0.0,
+  "scope_drift_count": 0,
+  "unverified_claim_count": 0,
+  "security_issue_count": 0,
+  "components": {
+    "outcome_quality": 23.25,
+    "specialist_fit": 17.6,
+    "critical_path_reduction": 8.8,
+    "coordination_efficiency": 13.2,
+    "evidence_quality": 9.6,
+    "supervisor_load_reduction": 3.0
+  },
+  "penalties": 0,
+  "penalty_breakdown": {
+    "scope_drift": 0,
+    "unverified_claims": 0,
+    "security_issues": 0,
+    "unnecessary_lanes": 0,
+    "write_set_conflicts": 0,
+    "duplicate_work": 0,
+    "replans": 0
+  },
+  "model_budget": {
+    "model_tier": "high-reasoning-supervisor",
+    "model_name": "not-metered-per-agent",
+    "reasoning_effort": "high",
+    "budget_note": "security-sensitive-vault-rotation-single-lane"
+  }
+}

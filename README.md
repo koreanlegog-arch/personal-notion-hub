@@ -247,7 +247,7 @@ Run the encrypted vault smoke check:
 python3 scripts/encrypted_vault_smoke_check.py
 ```
 
-Encrypted backup/restore/delete lifecycle scripts:
+Encrypted backup/restore/delete/rotation lifecycle scripts:
 
 ```bash
 python3 scripts/encrypted_vault_backup.py \
@@ -266,6 +266,13 @@ python3 scripts/encrypted_vault_delete.py \
   --confirm DELETE_CAPTURE \
   --prompt-vault-passphrase
 
+python3 scripts/encrypted_vault_rotate_passphrase.py \
+  --preflight-backup companion/private/backups/pnh-YYYYMMDD.pnhbackup \
+  --confirm ROTATE_VAULT_PASSPHRASE \
+  --prompt-vault-passphrase \
+  --prompt-new-vault-passphrase \
+  --confirm-new-vault-passphrase
+
 python3 scripts/plaintext_migration_audit.py --fail-on-plaintext
 ```
 
@@ -274,6 +281,7 @@ Run lifecycle smoke checks:
 ```bash
 python3 scripts/encrypted_vault_backup_restore_smoke_check.py
 python3 scripts/encrypted_vault_delete_smoke_check.py
+python3 scripts/encrypted_vault_rotation_smoke_check.py
 python3 scripts/plaintext_migration_audit_smoke_check.py
 ```
 
@@ -290,8 +298,9 @@ Encrypted vault boundaries:
 - encrypted backups are encrypted envelope files, not plaintext JSON exports
 - restore skips duplicate IDs unless `--replace` is explicitly provided
 - delete requires `--confirm DELETE_CAPTURE`
+- passphrase rotation requires `--confirm ROTATE_VAULT_PASSPHRASE` and an existing encrypted backup path
 - plaintext migration audit reports counts only and does not mutate the DB
-- OS keychain storage/retrieval, plaintext migration apply, adapter ingestion, passphrase recovery/rotation, and forensic secure erase are not implemented yet
+- OS keychain storage/retrieval, plaintext migration apply, adapter ingestion, passphrase recovery, and forensic secure erase are not implemented yet
 
 ## Local Private Inbox MVP
 

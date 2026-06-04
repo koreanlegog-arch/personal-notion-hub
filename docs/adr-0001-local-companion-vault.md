@@ -77,6 +77,7 @@ Implemented under supervisor approval:
 - passphrase loaded from no-echo prompt or environment variable name
 - fail-closed startup when encryption dependency or passphrase is missing
 - metadata-only API responses and redacted default status output
+- backup-gated passphrase rotation
 
 ## Remaining Implementation Gates
 
@@ -85,7 +86,7 @@ Separate approval is still required for:
 - installing or changing encryption/database dependencies
 - changing vault encryption scheme
 - OS keychain storage/retrieval
-- passphrase recovery or rotation
+- passphrase recovery
 - real-data import adapters
 - packaging or distribution
 - screenshot/redaction policy for routine private mode
@@ -99,7 +100,7 @@ Separate approval is still required for:
 
 1. Add encrypted backup/delete/restore workflow.
 2. Add plaintext-to-encrypted migration audit and conversion gate.
-3. Add OS keychain storage/retrieval or a formal passphrase recovery/rotation policy.
+3. Add OS keychain storage/retrieval or a formal passphrase recovery policy.
 4. Add encrypted export/import.
 5. Define adapter-specific policies for contacts, calendar, calls, recordings, and transcripts.
 6. Keep GitHub Pages as demo shell only unless a separate private-data deployment decision is approved.

@@ -1,5 +1,33 @@
 # Release Notes
 
+## 2026-06-04 - Encrypted Vault Passphrase Rotation MVP
+
+### Summary
+
+Added backup-gated encrypted vault passphrase rotation for local vault captures.
+
+### Included
+
+- row-level re-encryption with new vault salt, key ID, and per-row nonces
+- explicit `ROTATE_VAULT_PASSPHRASE` confirmation phrase
+- existing encrypted backup path acknowledgement before mutation
+- dry-run path that counts decryptable rows without changing the DB
+- rotation audit event without private title/body/payload values
+- smoke check for backup gate, old-passphrase rejection, new-passphrase decrypt, and no secret output
+
+### Boundaries
+
+- No OS keychain storage/retrieval
+- No passphrase recovery
+- No encryption scheme change
+- No plaintext private data in tests or evidence
+
+### Verification
+
+Recorded in:
+
+- `ops/runs/PNH-PASSPHRASE-ROTATION-MVP-20260604/`
+
 ## 2026-06-04 - Passphrase Prompt Hardening
 
 ### Summary
@@ -17,7 +45,7 @@ Added prompt-first passphrase handling and keychain readiness reporting for encr
 ### Boundaries
 
 - No OS keychain storage/retrieval
-- No passphrase recovery or rotation
+- No passphrase recovery; rotation was added in a later same-day MVP
 - No package installation or dependency manifest change
 - No real private data in tests or evidence
 
@@ -81,7 +109,7 @@ Added explicit encrypted vault mode for local companion captures so supervisor-a
 
 - No package installation or dependency manifest change
 - No OS keychain storage/retrieval yet
-- No passphrase recovery or rotation yet
+- No passphrase recovery yet; rotation was added in a later same-day MVP
 - Encrypted capture backup/delete/restore is now implemented in the lifecycle MVP
 - Plaintext-to-encrypted migration apply is still not implemented
 - No real phone/contact/calendar/recording adapters

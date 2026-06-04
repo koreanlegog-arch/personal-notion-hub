@@ -99,13 +99,14 @@ Current MVP:
 - metadata-only API responses
 - redacted default status output
 - keychain readiness audit that prints capability flags only
+- backup-gated passphrase rotation
 - synthetic smoke tests for wrong passphrase, tamper rejection, and plaintext absence in DB bytes
 
 Remaining blockers before routine high-sensitivity operation:
 
 - plaintext-to-encrypted migration apply
 - OS keychain storage/retrieval
-- passphrase recovery or rotation
+- passphrase recovery
 - screenshot-safe automated QA
 - adapter-specific policies for contacts, calendar, calls, recordings, and transcripts
 
@@ -114,6 +115,7 @@ Implemented lifecycle controls:
 - encrypted backup envelope creation with no plaintext JSON export
 - encrypted restore with duplicate skip by default and explicit replace option
 - encrypted capture delete by ID with confirmation phrase
+- encrypted vault passphrase rotation with existing backup acknowledgement
 - plaintext migration audit that reports counts only and does not mutate the DB
 
 ### Local Private Inbox MVP
@@ -149,7 +151,7 @@ Limitations:
 - pairing code is manually copied from local terminal and must not be recorded
 - browser session is memory-only and requires re-pairing after reload
 
-The plaintext MVP is acceptable for proving source-to-workspace persistence and compatibility. For sensitive local testing, use encrypted vault mode with prompt-first passphrase handling. Before routine use with high-sensitivity real data, add plaintext migration apply policy, OS keychain storage or recovery policy, and automated redaction validation.
+The plaintext MVP is acceptable for proving source-to-workspace persistence and compatibility. For sensitive local testing, use encrypted vault mode with prompt-first passphrase handling. Before routine use with high-sensitivity real data, add plaintext migration apply policy, OS keychain storage/retrieval or recovery policy, and automated redaction validation.
 
 ## Call And Recording Data
 
