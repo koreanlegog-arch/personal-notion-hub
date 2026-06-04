@@ -17,6 +17,7 @@ REQUIRED = [
     "favicon.ico",
     "assets/css/styles.css",
     "assets/js/app.js",
+    "assets/js/companion-bridge.js",
     "assets/js/assistant-storage.js",
     "assets/js/assistant-import.js",
     "assets/js/assistant-rules.js",
@@ -40,6 +41,7 @@ class AssetParser(HTMLParser):
         super().__init__()
         self.assets: list[str] = []
         self.has_csp = False
+        self.csp_content = ""
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         data = dict(attrs)
@@ -49,6 +51,7 @@ class AssetParser(HTMLParser):
             self.assets.append(data["src"])
         if tag == "meta" and data.get("http-equiv", "").lower() == "content-security-policy":
             self.has_csp = True
+            self.csp_content = data.get("content") or ""
 
 
 def assert_required_files() -> None:
@@ -63,6 +66,16 @@ def assert_html_assets() -> None:
     parser.feed((ROOT / "index.html").read_text(encoding="utf-8"))
     if not parser.has_csp:
         raise SystemExit("missing_meta_csp=true")
+    if "connect-src 'self' http://127.0.0.1:8765" not in parser.csp_content:
+        raise SystemExit("missing_loopback_connect_src=true")
+    forbidden_connect = ["localhost", "0.0.0.0", "*", "127.0.0.1:"]
+    for token in forbidden_connect:
+        if token == "127.0.0.1:" and "http://127.0.0.1:8765" in parser.csp_content:
+            remaining = parser.csp_content.replace("http://127.0.0.1:8765", "")
+            if token not in remaining:
+                continue
+        if token in parser.csp_content:
+            raise SystemExit(f"forbidden_csp_connect_token={token}")
     for asset in parser.assets:
         asset_path = (ROOT / asset.replace("./", "", 1)).resolve()
         if not asset_path.exists():
@@ -97,6 +110,11 @@ def assert_expected_app_contracts() -> None:
         "PNHAssistantStorage",
         "PNHAssistantImport",
         "PNHAssistantRules",
+        "PNHCompanionBridge",
+        "launchCompanionPanel",
+        "sendLatestLaunchToCompanion",
+        "toggleScreenshotRedaction",
+        "data-sensitive",
         "normalizeHttpUrl",
         "textContent",
         "rel = \"noopener noreferrer\"",
@@ -109,12 +127,49 @@ def assert_expected_app_contracts() -> None:
 
 
 def assert_js_security_contracts() -> None:
-    forbidden = ["innerHTML", "fetch(", "XMLHttpRequest("]
+    forbidden = ["innerHTML", "XMLHttpRequest("]
     for path in sorted((ROOT / "assets/js").glob("*.js")):
         text = path.read_text(encoding="utf-8")
         for token in forbidden:
             if token in text:
                 raise SystemExit(f"forbidden_js_token={path.relative_to(ROOT)}:{token}")
+        if path.name != "companion-bridge.js" and "fetch(" in text:
+            raise SystemExit(f"forbidden_fetch_token={path.relative_to(ROOT)}")
+
+
+def assert_companion_bridge_contracts() -> None:
+    bridge = (ROOT / "assets/js/companion-bridge.js").read_text(encoding="utf-8")
+    expected = [
+        "http://127.0.0.1:8765",
+        "function validatedBaseUrl",
+        "async function controlledFetch",
+        "target.origin !== EXPECTED_ORIGIN",
+        "let sessionToken = \"\"",
+        "Authorization",
+        "sendLaunchPacket",
+    ]
+    for token in expected:
+        if token not in bridge:
+            raise SystemExit(f"missing_companion_bridge_contract={token}")
+    if bridge.count("fetch(") != 1 or "await fetch(target.href" not in bridge:
+        raise SystemExit("uncontrolled_companion_fetch=true")
+    forbidden_storage = ["localStorage", "sessionStorage", "indexedDB", "indexedDB.open", "document.cookie"]
+    for token in forbidden_storage:
+        if token in bridge:
+            raise SystemExit(f"companion_secret_storage_token={token}")
+
+
+def assert_redaction_contracts() -> None:
+    css = (ROOT / "assets/css/styles.css").read_text(encoding="utf-8")
+    expected = [
+        "body.screenshot-redaction [data-sensitive=\"true\"]",
+        "color: transparent",
+        "text-shadow",
+        "caret-color: transparent",
+    ]
+    for token in expected:
+        if token not in css:
+            raise SystemExit(f"missing_redaction_contract={token}")
 
 
 def assert_workflow_permissions() -> None:
@@ -131,6 +186,8 @@ def main() -> int:
     assert_no_inline_handlers()
     assert_expected_app_contracts()
     assert_js_security_contracts()
+    assert_companion_bridge_contracts()
+    assert_redaction_contracts()
     assert_workflow_permissions()
     print("smoke_check_pass=true")
     return 0

@@ -25,6 +25,7 @@ The current GitHub Pages/static web app remains useful as a public-safe demo she
 - Demo/fixture data only should be committed.
 - Local companion supports fixture-only preview mode.
 - Local companion also supports authenticated private inbox mode for workspace-local SQLite capture.
+- Local companion now supports explicit loopback browser bridge mode for synthetic Launch UI pairing.
 
 This is acceptable for a demo, low-risk local notes, and proving the private data ingress path. It is not yet an encrypted long-term vault.
 
@@ -315,12 +316,13 @@ Implemented protections:
 - API write responses return metadata only
 - recent status output redacts titles and omits bodies
 - fixture preview mode remains write-disabled
+- browser bridge is disabled by default and uses exact-origin CORS
+- Launch UI uses memory-only browser sessions and best-effort screenshot redaction
 
 Not yet implemented:
 
 - encryption-at-rest
 - OS keychain integration
-- CORS/pairing between the public web UI and companion
 - phone/contact/calendar/recording adapters
 - local transcription
 - backup/delete/restore workflow for sensitive records
@@ -367,7 +369,7 @@ Default for first sensitive implementation:
 4. Add a local companion proof of concept using fake fixture data only. Done.
 5. Add `GET /api/health`, `GET /api/schema`, and `POST /api/import/preview` before any vault write endpoint. Done.
 6. Add authenticated private inbox write endpoint and local SQLite store. Done.
-7. Add secure pairing between UI and companion.
+7. Add secure pairing between UI and companion. Done for loopback-only synthetic Launch bridge.
 8. Add encrypted vault schema.
 9. Add encrypted export/import/delete validation.
 10. Add selected real-data import adapters one by one, each behind approval.
@@ -416,7 +418,6 @@ Upgrade the private inbox into a hardened local vault. The next implementation s
 
 - encryption-at-rest or equivalent vault protection
 - backup/delete/restore workflow
-- CORS/pairing policy before browser `fetch`
 - redacted review UI for sensitive records
 - adapter-by-adapter approval gates for phone, calendar, contacts, recordings, and transcripts
 
@@ -434,9 +435,9 @@ Current prototype boundary:
 - fake fixtures only
 - no vault/database/encryption package
 - no private data adapters
-- no browser UI connection yet
+- browser UI connection only through explicit loopback bridge mode
 
-The prototype is not a sensitive-data storage system. Its job is to validate the companion boundary and QA loop before pairing, CORS, encrypted storage, or real import adapters are approved.
+The prototype is not a sensitive-data storage system. Its job is to validate the companion boundary and QA loop before encrypted storage or real import adapters are approved.
 
 ## Private Inbox MVP Status
 
@@ -446,8 +447,10 @@ Current contract:
 
 - initialize with `python3 scripts/private_inbox_init.py`
 - run with `python3 companion/server.py --host 127.0.0.1 --port 8765 --enable-private-inbox`
+- optionally run browser bridge with `--enable-browser-bridge --allowed-origin http://127.0.0.1:4173`
 - simulate phone-like input with `python3 scripts/simulate_mobile_capture.py`
 - verify storage with `python3 scripts/private_inbox_status.py`
 - validate security contracts with `python3 scripts/private_inbox_smoke_check.py`
+- validate browser bridge contracts with `python3 scripts/browser_bridge_smoke_check.py`
 
 The critical success criterion is source-to-workspace persistence, not UI polish.

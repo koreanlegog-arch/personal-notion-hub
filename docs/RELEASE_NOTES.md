@@ -1,5 +1,36 @@
 # Release Notes
 
+## 2026-06-04 - Browser Companion Bridge
+
+### Summary
+
+Added an explicit loopback browser bridge so the Launch UI can pair with the local companion and write a synthetic dispatch packet to the ignored private inbox.
+
+### Included
+
+- `--enable-browser-bridge` and `--allowed-origin` companion flags
+- exact-origin CORS preflight for private browser endpoints
+- one-time pairing endpoint issuing memory-only browser session tokens
+- isolated `assets/js/companion-bridge.js` fetch module
+- Launch UI companion status, pairing, disconnect, send-latest, and screenshot redaction controls
+- browser bridge smoke test covering CORS, pairing replay, session write, and redacted responses
+- static smoke contract limiting browser `fetch` to the bridge module
+
+### Boundaries
+
+- No external service integration
+- No non-loopback/LAN/mobile-device pairing
+- No long-lived file token sent to the browser
+- No browser persistent storage for auth material
+- No real private data
+- No encryption-at-rest yet
+
+### Verification
+
+Recorded in:
+
+- `ops/runs/PNH-BROWSER-COMPANION-BRIDGE-20260604/`
+
 ## 2026-06-04 - Local Private Inbox MVP
 
 ### Summary
@@ -21,7 +52,6 @@ Added a working local companion private inbox for proving that phone-like input 
 
 - No external service integration
 - No phone/contact/calendar/recording adapter
-- No browser-to-companion `fetch` pairing yet
 - No encryption-at-rest yet
 - No raw private values in API responses, status output, or test evidence
 

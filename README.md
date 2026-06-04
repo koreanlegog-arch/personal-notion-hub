@@ -129,7 +129,7 @@ Current limits:
 - no encryption dependency
 - no real contacts, schedules, calls, recordings, transcripts, or private notes
 - no file write from import preview mode
-- no browser UI `fetch` integration yet
+- browser UI bridge is local-only and disabled unless the companion is started with explicit bridge flags
 
 Run the companion smoke check:
 
@@ -150,7 +150,50 @@ http://127.0.0.1:8765/api/health
 http://127.0.0.1:8765/api/schema
 ```
 
-Actual private data import, encrypted vault writes, CORS/pairing, and UI connection remain separate approval gates.
+Actual private data import, encrypted vault writes, external dispatch, and non-loopback access remain separate approval gates.
+
+## Browser Companion Bridge
+
+The Launch page can connect to the local companion in private bridge mode.
+
+Run private inbox plus browser bridge:
+
+```bash
+python3 scripts/private_inbox_init.py
+python3 companion/server.py \
+  --host 127.0.0.1 \
+  --port 8765 \
+  --enable-private-inbox \
+  --enable-browser-bridge \
+  --allowed-origin http://127.0.0.1:4173
+```
+
+Then serve the static UI:
+
+```bash
+python3 -m http.server 4173
+```
+
+Open:
+
+```text
+http://127.0.0.1:4173/
+```
+
+Use the one-time `browser_pairing_code` printed by the companion terminal to pair the Launch page. Do not paste that code into chat, screenshots, docs, or committed files.
+
+Bridge boundaries:
+
+- browser bridge is disabled by default
+- browser bridge requires private inbox mode
+- CORS allowlist is exact-origin only
+- CSP allows `connect-src 'self' http://127.0.0.1:8765`
+- browser session token is kept in JS memory only
+- long-lived file token is not sent to the browser
+- Launch packet writes require explicit user action
+- API response remains metadata-only
+- Launch 화면에는 screenshot redaction toggle이 있으며 민감 launch text와 pairing input을 캡처 전에 가릴 수 있습니다.
+- real sensitive data remains out of scope until vault hardening
 
 ## Local Private Inbox MVP
 

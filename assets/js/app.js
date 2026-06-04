@@ -29,6 +29,15 @@ let assistantState = {
   captures: [],
 };
 
+let companionState = {
+  checked: false,
+  online: false,
+  paired: false,
+  screenshotRedaction: false,
+  statusText: "Not checked",
+  lastResult: "",
+};
+
 const seedState = {
   schemaVersion: 1,
   settings: {
@@ -301,6 +310,15 @@ function badge(text, extra = "") {
   return make("span", `badge ${extra}`.trim(), text);
 }
 
+function sensitive(el) {
+  el.setAttribute("data-sensitive", "true");
+  return el;
+}
+
+function syncScreenshotRedaction() {
+  document.body.classList.toggle("screenshot-redaction", companionState.screenshotRedaction);
+}
+
 function viewHeader(title, description, actionLabel, action) {
   const header = make("div", "view-header");
   const titleWrap = make("div", "view-title");
@@ -318,6 +336,7 @@ function viewHeader(title, description, actionLabel, action) {
 }
 
 function render() {
+  syncScreenshotRedaction();
   updateActiveNav();
   updateStorageMeter();
   clearView();
@@ -422,7 +441,7 @@ function renderLaunch() {
   );
 
   const topGrid = make("section", "content-grid launch-grid");
-  topGrid.append(launchIntakePanel(), launchDirectionPanel());
+  topGrid.append(launchIntakePanel(), launchCompanionPanel(), launchDirectionPanel());
   appView.append(topGrid);
 
   const launchList = state.launches
@@ -490,6 +509,9 @@ function launchField(name, labelText, type, value, options = []) {
   }
   control.name = name;
   control.id = `launch-field-${name}`;
+  if (["title", "objective", "desiredOutcome", "constraints"].includes(name)) {
+    sensitive(control);
+  }
   wrap.append(label, control);
   return wrap;
 }
@@ -517,6 +539,215 @@ function launchDirectionPanel() {
   });
   section.append(list);
   return section;
+}
+
+function launchCompanionPanel() {
+  const section = make("section", "section-panel companion-panel");
+  const header = make("div", "section-header");
+  header.append(make("h3", "", "Local companion"));
+  header.append(badge(companionStatusLabel(), companionState.online ? "status-online" : "status-offline"));
+  section.append(header);
+
+  const status = make("div", "companion-status");
+  status.append(make("p", "", companionState.statusText));
+  if (companionState.lastResult) status.append(make("p", "fine-print", companionState.lastResult));
+  section.append(status);
+
+  const form = make("form", "companion-form");
+  const label = document.createElement("label");
+  label.htmlFor = "companion-pair-code";
+  label.textContent = "Pairing code";
+  const input = document.createElement("input");
+  input.id = "companion-pair-code";
+  input.name = "pairingCode";
+  input.type = "text";
+  input.inputMode = "text";
+  input.autocomplete = "off";
+  input.placeholder = "One-time code";
+  sensitive(input);
+  const actions = make("div", "form-actions");
+  const pairButton = make("button", "primary-button", companionState.paired ? "Paired" : "Pair");
+  pairButton.type = "submit";
+  pairButton.disabled = companionState.paired;
+  actions.append(
+    pairButton,
+    button("Check", checkCompanionStatus, "ghost-button"),
+    button("Disconnect", disconnectCompanion, "ghost-button"),
+    button(companionState.screenshotRedaction ? "Show Screen" : "Redact Screen", toggleScreenshotRedaction, "ghost-button")
+  );
+  form.append(label, input, actions);
+  form.addEventListener("submit", pairCompanion);
+  section.append(form);
+
+  const latest = latestLaunchPacket();
+  const send = button("Send Latest Packet", sendLatestLaunchToCompanion, "small-button");
+  send.disabled = !latest || !companionState.paired;
+  const sendRow = make("div", "item-actions");
+  sendRow.append(send);
+  if (latest) {
+    sendRow.append(sensitive(make("span", "fine-print", latest.title)));
+  } else {
+    sendRow.append(make("span", "fine-print", "Create a dispatch packet first."));
+  }
+  section.append(sendRow);
+  section.append(make("p", "fine-print", "Session token stays in memory only. Pairing code and token are not shown or saved. Use Redact Screen before screenshots."));
+  return section;
+}
+
+function companionStatusLabel() {
+  if (companionState.paired) return "paired";
+  if (companionState.online) return "online";
+  if (companionState.checked) return "offline";
+  return "local-only";
+}
+
+async function checkCompanionStatus() {
+  const bridge = window.PNHCompanionBridge;
+  if (!bridge?.health) {
+    companionState = {
+      ...companionState,
+      checked: true,
+      online: false,
+      paired: false,
+      statusText: "Companion bridge script is unavailable. Browser-only mode is active.",
+      lastResult: "",
+    };
+    render();
+    return;
+  }
+  try {
+    const health = await bridge.health();
+    companionState = {
+      checked: true,
+      online: health.ok,
+      paired: bridge.isPaired(),
+      statusText: health.ok
+        ? `Companion reachable at ${bridge.baseUrl}. Mode: ${health.mode}.`
+        : "Companion did not report a healthy loopback bridge.",
+      lastResult: health.writesEnabled ? "Private inbox writes are enabled." : "Private inbox writes are disabled.",
+    };
+  } catch (error) {
+    companionState = {
+      checked: true,
+      online: false,
+      paired: false,
+      statusText: "Companion is not reachable. Browser-only mode is active.",
+      lastResult: error?.message || "Loopback request failed.",
+    };
+  }
+  render();
+}
+
+async function pairCompanion(event) {
+  event.preventDefault();
+  const bridge = window.PNHCompanionBridge;
+  if (!bridge?.pair) {
+    toast("Companion unavailable", "브라우저 전용 모드로 계속 사용할 수 있습니다.");
+    return;
+  }
+  const input = event.currentTarget.elements.pairingCode;
+  const pairingCode = String(input?.value || "").trim();
+  try {
+    await bridge.pair(pairingCode);
+    if (input) input.value = "";
+    companionState = {
+      ...companionState,
+      checked: true,
+      online: true,
+      paired: true,
+      statusText: `Companion paired at ${bridge.baseUrl}.`,
+      lastResult: "Ready to send the latest launch packet.",
+    };
+    render();
+    toast("Companion paired");
+  } catch (error) {
+    if (input) input.value = "";
+    companionState = {
+      ...companionState,
+      checked: true,
+      online: false,
+      paired: false,
+      statusText: "Pairing failed. Browser-only mode is still available.",
+      lastResult: error?.message || "Pairing failed.",
+    };
+    render();
+    toast("Pairing failed", "코드를 확인하고 companion이 bridge mode로 실행 중인지 확인하세요.");
+  }
+}
+
+function disconnectCompanion() {
+  window.PNHCompanionBridge?.disconnect?.();
+  companionState = {
+    ...companionState,
+    paired: false,
+    lastResult: "Disconnected. No browser session token is retained.",
+  };
+  render();
+  toast("Companion disconnected");
+}
+
+function toggleScreenshotRedaction() {
+  companionState = {
+    ...companionState,
+    screenshotRedaction: !companionState.screenshotRedaction,
+    lastResult: companionState.screenshotRedaction
+      ? "Screenshot redaction disabled."
+      : "Screenshot redaction enabled for sensitive launch text.",
+  };
+  syncScreenshotRedaction();
+  render();
+  toast(companionState.screenshotRedaction ? "Redaction enabled" : "Redaction disabled");
+}
+
+function latestLaunchPacket() {
+  return state.launches
+    .filter((launch) => launch.status !== "archived")
+    .slice()
+    .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))[0];
+}
+
+function companionPayloadForLaunch(launch) {
+  return {
+    id: `launch-packet-${launch.id}`,
+    source: "mobile_web",
+    kind: "project_brief",
+    title: `Launch packet: ${launch.title}`,
+    body: buildLaunchPacket(launch),
+    sensitivity: launch.sensitivity === "private-sensitive" ? "highly_sensitive" : "internal",
+    createdAt: nowISO(),
+    payloadType: "pnh_launch_packet",
+  };
+}
+
+async function sendLatestLaunchToCompanion() {
+  const bridge = window.PNHCompanionBridge;
+  const launch = latestLaunchPacket();
+  if (!launch) {
+    toast("No launch packet", "먼저 dispatch packet을 생성하세요.");
+    return;
+  }
+  if (!bridge?.sendLaunchPacket || !bridge.isPaired()) {
+    toast("Companion not paired", "pairing code로 연결한 뒤 전송하세요.");
+    return;
+  }
+  try {
+    const result = await bridge.sendLaunchPacket(companionPayloadForLaunch(launch));
+    companionState = {
+      ...companionState,
+      online: true,
+      paired: true,
+      lastResult: result.writesPerformed ? "Latest launch packet sent to private inbox." : "Companion responded without a private write.",
+    };
+    render();
+    toast("Launch packet sent", "Local companion private inbox에 metadata-only 응답으로 저장했습니다.");
+  } catch (error) {
+    companionState = {
+      ...companionState,
+      lastResult: error?.message || "Send failed.",
+    };
+    render();
+    toast("Send failed", "companion 상태와 pairing을 확인하세요.");
+  }
 }
 
 function handleLaunchSubmit(event) {
@@ -572,13 +803,15 @@ function loadLaunchDemo() {
 
 function launchPacketCard(launch) {
   const card = itemShell(launch.title);
+  const title = card.querySelector(".item-title");
+  if (title) sensitive(title);
   card.append(metaRow([launch.status, launch.priority, launch.sensitivity, launch.deliveryTarget, launch.deadline], launch.priority));
-  card.append(make("p", "", launch.objective));
-  if (launch.desiredOutcome) card.append(make("p", "", `Outcome: ${launch.desiredOutcome}`));
-  if (launch.constraints) card.append(make("p", "", `Constraints: ${launch.constraints}`));
+  card.append(sensitive(make("p", "", launch.objective)));
+  if (launch.desiredOutcome) card.append(sensitive(make("p", "", `Outcome: ${launch.desiredOutcome}`)));
+  if (launch.constraints) card.append(sensitive(make("p", "", `Constraints: ${launch.constraints}`)));
 
   const packetPreview = make("pre", "packet-preview", buildLaunchPacket(launch));
-  card.append(packetPreview);
+  card.append(sensitive(packetPreview));
 
   const actions = make("div", "item-actions");
   actions.append(button("Copy Packet", () => copyAssistantText(buildLaunchPacket(launch)), "small-button"));

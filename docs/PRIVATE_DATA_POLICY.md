@@ -100,6 +100,7 @@ Allowed:
 - supervisor-approved local private testing
 - workspace-local SQLite records under `companion/private/`
 - redacted status checks
+- explicit loopback browser bridge pairing for synthetic Launch packets
 
 Required:
 
@@ -109,15 +110,20 @@ Required:
 - no raw capture body echoed in API responses
 - no private inbox files committed to Git
 - fixture-only QA for screenshots and public reports
+- browser bridge disabled by default
+- exact-origin CORS and CSP
+- no persistent browser storage for token, pairing code, or session token
+- screenshot redaction enabled before capture evidence
 
 Limitations:
 
 - not encrypted at rest
 - relies on OS account and file permissions
 - not suitable as the final long-term vault for highly sensitive call transcripts, recordings, or third-party private content
-- no browser-to-companion pairing yet
+- pairing code is manually copied from local terminal and must not be recorded
+- browser session is memory-only and requires re-pairing after reload
 
-The MVP is acceptable for proving source-to-workspace persistence. Before routine use with high-sensitivity real data, add encryption-at-rest, backup/delete workflow, and UI pairing/CORS controls.
+The MVP is acceptable for proving source-to-workspace persistence. Before routine use with high-sensitivity real data, add encryption-at-rest, backup/delete workflow, and automated redaction validation.
 
 ## Call And Recording Data
 

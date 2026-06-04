@@ -166,6 +166,53 @@ Expected:
 - private values are not printed in status output
 - `companion/private/` remains untracked/ignored
 
+## Browser Companion Bridge Checks
+
+The browser bridge validates the approved local-only path from Launch UI to the private inbox. Use synthetic launch packets only.
+
+Run:
+
+```bash
+python3 scripts/browser_bridge_smoke_check.py
+```
+
+Expected:
+
+- unsafe bridge configs are rejected
+- bridge is unavailable unless explicitly enabled
+- CORS preflight accepts only the configured `http://127.0.0.1:<port>` origin
+- wildcard, `localhost`, `null`, path-bearing, and bad-origin requests are rejected
+- long-lived file token cannot be used as a pairing code
+- one-time pairing code cannot be replayed
+- browser session token can write one synthetic capture
+- API responses do not echo title/body, file token, pairing code, or browser session token
+- existing script bearer-token private inbox path remains compatible
+- static smoke allows `fetch` only in `assets/js/companion-bridge.js`
+
+Manual local bridge run:
+
+```bash
+python3 scripts/private_inbox_init.py
+python3 companion/server.py \
+  --host 127.0.0.1 \
+  --port 8765 \
+  --enable-private-inbox \
+  --enable-browser-bridge \
+  --allowed-origin http://127.0.0.1:4173
+python3 -m http.server 4173
+```
+
+Manual scenario:
+
+- Open `http://127.0.0.1:4173/`.
+- Open `Launch`.
+- Check companion status.
+- Enter the one-time pairing code from the local companion terminal. Do not record the code in evidence.
+- Create or load a synthetic launch packet.
+- Turn on `Redact Screen` before screenshots.
+- Send Latest Packet.
+- Confirm `scripts/private_inbox_status.py` reports an increased count without printing private values.
+
 ## Responsive Viewports
 
 - `360x640`
@@ -209,6 +256,6 @@ Expected:
 
 자동 브라우저 회귀 테스트는 아직 없다. UI 변경이 잦아지면 Playwright smoke test를 추가하는 것이 적절하다.
 
-Local companion UI integration is not implemented yet. Before adding browser `fetch`, define pairing/session token, CORS, CSP, and localhost origin policy.
+Local companion UI integration is implemented only for explicit loopback bridge mode. Mobile LAN, public Pages remote sync, real private data adapters, and automated browser QA remain separate phases.
 
 The private inbox is not encrypted at rest yet. Before routine high-sensitivity use, add encryption-at-rest plus backup/delete/restore validation.

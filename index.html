@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'"
+      content="default-src 'self'; connect-src 'self' http://127.0.0.1:8765; img-src 'self' data:; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'"
     />
     <meta name="description" content="A private-browser Notion-style operations hub for projects, tasks, notes, routines, and links." />
     <title>Personal Notion Hub</title>
@@ -80,6 +80,7 @@
     <script src="./assets/js/assistant-storage.js" defer></script>
     <script src="./assets/js/assistant-import.js" defer></script>
     <script src="./assets/js/assistant-rules.js" defer></script>
+    <script src="./assets/js/companion-bridge.js" defer></script>
     <script src="./assets/js/app.js" defer></script>
   </body>
 </html>

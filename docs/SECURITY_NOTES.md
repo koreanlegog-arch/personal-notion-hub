@@ -90,7 +90,7 @@ Forbidden before separate approval:
 - external API call
 - token storage
 - private client data in public launch packet
-- browser-to-companion `fetch` integration
+- browser-to-companion `fetch` integration outside the approved local bridge mode
 
 If launch briefs include sensitive business, client, or private information, they must be treated like private data and kept out of public repo artifacts, screenshots, logs, and QA evidence.
 
@@ -113,16 +113,20 @@ Private inbox mode allowed:
 - synthetic or supervisor-approved private capture testing
 - metadata-only API responses
 - redacted status output
+- browser bridge only when explicitly enabled with exact `http://127.0.0.1:<port>` origin
+- short-lived one-time pairing code issued in local terminal only
+- short-lived browser session token held in JS memory only
 
 Forbidden in all modes:
 
 - real contacts, phone numbers, emails, call logs, schedules, recordings, transcripts, client data, tokens, credentials, or private notes
 - request body logging
 - external API calls
-- browser UI `fetch` integration before pairing/CORS/CSP design
+- browser UI `fetch` integration outside the approved bridge module
 - wildcard CORS
 - non-loopback bind address
 - committed private inbox files
+- persistent browser storage of token, pairing code, or session token
 
 Current private inbox protections:
 
@@ -135,15 +139,21 @@ Current private inbox protections:
 - status command is read-only and does not create a missing database
 - scripts use best-effort restrictive file permissions
 - responses do not echo submitted title/body
+- browser bridge is disabled by default and requires `--enable-browser-bridge`
+- browser bridge startup requires `--enable-private-inbox`
+- `--allowed-origin` accepts only exact `http://127.0.0.1:<port>` origins
+- CSP restricts browser connection to `connect-src 'self' http://127.0.0.1:8765`
+- Launch UI provides a screenshot redaction toggle for sensitive launch text and pairing input
 
 Residual risks:
 
 - SQLite private inbox is not encrypted at rest
 - token file security depends on the local OS account
-- browser UI is not yet paired to the companion
 - no backup/delete/restore workflow exists yet
+- browser session token is memory-only, so reload requires re-pairing
+- screenshot redaction is best-effort UI masking, not a substitute for fake-fixture QA
 
-Pairing/session token design, encryption-at-rest, and data lifecycle controls are release blockers before routine high-sensitivity use.
+Encryption-at-rest, data lifecycle controls, and automated screenshot-safe QA are release blockers before routine high-sensitivity use.
 
 ## XSS Mitigation
 
@@ -183,6 +193,7 @@ permissions:
 - artifact에 local backup JSON이 포함되지 않는지 확인
 - Pages URL에서 실제 개인 데이터가 없는지 확인
 - `assets/js/assistant-*.js`에 `fetch`, OAuth, token flow, external API가 없는지 확인
+- `assets/js/companion-bridge.js` 외의 browser JS에 `fetch`가 없는지 확인
 - assistant demo fixture에 연락처, 전화번호, 이메일, 실제 일정, 녹음 transcript가 없는지 확인
 - companion fixtures contain fake data only
 - no `*.vault`, `*.sqlite`, `*.db`, `companion/private/`, `companion/runtime/`, or `companion/logs/` artifact is committed

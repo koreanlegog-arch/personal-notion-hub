@@ -124,7 +124,6 @@ Current MVP does not:
 - send data to Discord
 - create GitHub issues
 - call OpenClaw
-- fetch from local companion
 - write encrypted vault data
 - handle real private data
 
@@ -135,7 +134,7 @@ Until separately approved:
 - no real private data in launch packets
 - no client secrets or tokens
 - no automatic external dispatch
-- no browser `fetch` to companion
+- no browser `fetch` to companion outside the approved loopback bridge
 - no cloud sync
 - no phone/contact/call/recording access
 - no screenshots containing sensitive project contents
@@ -155,12 +154,21 @@ Status: implemented.
 
 ### Stage 2: Local Companion Readiness UI
 
-Add:
+Status: partially implemented for loopback-only synthetic Launch bridge.
+
+Implemented:
 
 - companion status card
-- manual probe instructions
-- no data transfer by default
-- no `fetch` until approved
+- one-time pairing UI
+- send latest Launch packet to local private inbox
+- no data transfer before explicit user action
+- screenshot redaction toggle
+
+Still needed:
+
+- browser automation QA
+- encrypted vault
+- real mobile/LAN pairing decision
 
 ### Stage 3: Approved GitHub Ledger Bridge
 
@@ -208,7 +216,7 @@ Then implement Stage 2:
 ```text
 Local companion readiness UI
 -> show disconnected/connected status
--> explain manual probe command
--> prepare future secure pairing requirements
--> still no private data or automatic fetch
+-> pair through one-time local terminal code
+-> send synthetic launch packet to private inbox
+-> keep real private data blocked until vault hardening
 ```
