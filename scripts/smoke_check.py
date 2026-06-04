@@ -26,6 +26,12 @@ REQUIRED = [
     "docs/TEST_PLAN.md",
     "docs/SECURITY_NOTES.md",
     ".github/workflows/pages.yml",
+    "companion/private_store.py",
+    "companion/server.py",
+    "scripts/private_inbox_init.py",
+    "scripts/simulate_mobile_capture.py",
+    "scripts/private_inbox_status.py",
+    "scripts/private_inbox_smoke_check.py",
 ]
 
 

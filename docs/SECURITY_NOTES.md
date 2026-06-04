@@ -96,26 +96,54 @@ If launch briefs include sensitive business, client, or private information, the
 
 ## Local Companion Prototype Security Boundary
 
-The current companion prototype is a fixture-only preview service, not a private-data vault.
+The companion keeps fixture-only preview mode and adds authenticated private inbox mode.
 
-Allowed:
+Preview mode allowed:
 
 - bind to `127.0.0.1`
 - health/schema/import-preview checks
 - fake fixture payloads
 - validation errors, counts, and sanitized summaries
+- no writes
 
-Forbidden:
+Private inbox mode allowed:
+
+- local bearer-token authenticated write/read endpoints
+- workspace-local ignored SQLite inbox
+- synthetic or supervisor-approved private capture testing
+- metadata-only API responses
+- redacted status output
+
+Forbidden in all modes:
 
 - real contacts, phone numbers, emails, call logs, schedules, recordings, transcripts, client data, tokens, credentials, or private notes
-- vault/database/private backup/runtime file writes
 - request body logging
 - external API calls
 - browser UI `fetch` integration before pairing/CORS/CSP design
 - wildcard CORS
 - non-loopback bind address
+- committed private inbox files
 
-The prototype may run locally only to validate the companion boundary. Pairing/session token design is a release blocker before any write endpoint or real-data adapter.
+Current private inbox protections:
+
+- token file lives in `companion/private/auth_token`
+- token value must never be printed
+- database lives in `companion/private/pnh_private_inbox.sqlite`
+- both paths are ignored by Git
+- custom DB/token paths outside `companion/private/` are rejected by default
+- simulated mobile capture only sends to `http://127.0.0.1:<port>` and rejects redirects
+- status command is read-only and does not create a missing database
+- scripts use best-effort restrictive file permissions
+- responses do not echo submitted title/body
+
+Residual risks:
+
+- SQLite private inbox is not encrypted at rest
+- token file security depends on the local OS account
+- browser UI is not yet paired to the companion
+- no backup/delete/restore workflow exists yet
+
+Pairing/session token design, encryption-at-rest, and data lifecycle controls are release blockers before routine high-sensitivity use.
 
 ## XSS Mitigation
 

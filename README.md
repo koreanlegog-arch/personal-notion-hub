@@ -6,7 +6,8 @@
 
 - 프로젝트, task, note, routine, link를 한 브라우저에서 빠르게 관리합니다.
 - 모바일에서 프로젝트 개요를 작성하고 팀 착수용 dispatch packet으로 정리합니다.
-- 서버, API, backend, dependency install 없이 동작합니다.
+- 기본 web UI는 서버, API, backend, dependency install 없이 동작합니다.
+- 민감 입력은 선택형 local companion private inbox로 workspace-local 저장할 수 있습니다.
 - 기본 hub 데이터는 브라우저 `localStorage`에 저장됩니다.
 - assistant inbox 데이터는 브라우저 `IndexedDB`에 저장됩니다.
 - 전체 데이터는 JSON으로 export/import할 수 있습니다.
@@ -42,7 +43,9 @@ http://127.0.0.1:4173/
 - private internal URL
 - 민감한 운영 메모
 
-실제 사용 데이터는 사용자의 브라우저 저장소에만 저장됩니다. 다른 기기와 자동 동기화되지 않습니다.
+기본 hub 사용 데이터는 사용자의 브라우저 저장소에 저장됩니다. 다른 기기와 자동 동기화되지 않습니다.
+
+민감 입력 MVP는 `companion/private/` 아래 ignored SQLite private inbox에 저장됩니다.
 
 Assistant MVP는 수동 입력과 demo fixture만 다룹니다. Slack, email, SMS, KakaoTalk, call, voice memo, YouTube, calendar, Bible verse 같은 입력 경로는 source label일 뿐이며 실제 외부 서비스에 연결하지 않습니다.
 
@@ -117,15 +120,15 @@ Personal_Notion_Hub web UI
 
 ## Local Companion Prototype
 
-`companion/` contains a fixture-only local companion prototype.
+`companion/` contains a loopback-only local companion. It keeps fixture preview mode for public-safe QA and adds an authenticated private inbox mode for workspace-local capture.
 
 Current limits:
 
 - Python standard library only
 - `127.0.0.1` loopback only
-- no vault/database/encryption dependency
+- no encryption dependency
 - no real contacts, schedules, calls, recordings, transcripts, or private notes
-- no file write from import preview
+- no file write from import preview mode
 - no browser UI `fetch` integration yet
 
 Run the companion smoke check:
@@ -148,6 +151,55 @@ http://127.0.0.1:8765/api/schema
 ```
 
 Actual private data import, encrypted vault writes, CORS/pairing, and UI connection remain separate approval gates.
+
+## Local Private Inbox MVP
+
+The local companion can now prove this critical path:
+
+```text
+virtual mobile input
+-> 127.0.0.1 local companion
+-> bearer-token protected endpoint
+-> ignored workspace SQLite inbox
+```
+
+Initialize the local private inbox:
+
+```bash
+python3 scripts/private_inbox_init.py
+```
+
+Run the companion with private inbox writes enabled:
+
+```bash
+python3 companion/server.py --host 127.0.0.1 --port 8765 --enable-private-inbox
+```
+
+In another terminal, simulate a mobile capture:
+
+```bash
+python3 scripts/simulate_mobile_capture.py \
+  --title "Synthetic mobile project brief" \
+  --body "Synthetic private note for workspace ingress validation."
+```
+
+Check that the capture reached the workspace-local inbox without printing private values:
+
+```bash
+python3 scripts/private_inbox_status.py
+```
+
+Security boundary:
+
+- token value is never printed by the scripts
+- write endpoint requires `Authorization: Bearer ...`
+- server binds to `127.0.0.1` only
+- capture sender accepts only `http://127.0.0.1:<port>` and blocks redirects
+- private DB and token paths must remain under `companion/private/`
+- raw capture body is not echoed in API responses
+- `companion/private/` is ignored and must not be committed
+
+Current protection is local-only binding, bearer-token auth, repository ignore rules, and best-effort file permissions. Full encryption-at-rest remains the next hardening stage before long-term storage of highly sensitive real data.
 
 ## Backup
 
@@ -185,15 +237,16 @@ GitHub Pages custom workflow 사용은 repository Pages settings에서 GitHub Ac
 - `docs/MOBILE_PROJECT_LAUNCH_AUTOMATION_ROADMAP.md`: mobile project intake to automated team dispatch roadmap
 - `docs/PRIVATE_DATA_POLICY.md`: private data handling rules
 - `docs/adr-0001-local-companion-vault.md`: architecture decision record
-- `companion/`: fixture-only local companion prototype and fake import fixtures
+- `companion/`: local companion, private inbox storage, and fake import fixtures
 
 ## Limitations
 
-- 서버 저장 없음
-- 계정/auth 없음
+- 기본 web UI에는 서버 저장 없음
+- 기본 web UI에는 계정/auth 없음
+- companion private inbox에는 local bearer token auth 사용
 - 다중 기기 sync 없음
 - collaboration 없음
 - localStorage와 IndexedDB 기반이므로 브라우저/기기 보안에 의존
 - assistant output은 rule-based draft이며 실제 일정 등록이나 메시지 전송은 하지 않음
 - launch output은 local packet/copy draft이며 실제 Discord/GitHub/OpenClaw 실행은 하지 않음
-- local companion prototype은 preview-only이며 private-data vault가 아님
+- local private inbox는 encrypted vault가 아니며, 장기 민감 보관 전 encryption-at-rest와 backup/delete workflow가 필요함

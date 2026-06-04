@@ -86,7 +86,7 @@ Assistant fixture:
 
 ## Local Companion Prototype Checks
 
-The companion prototype uses fake fixtures only. It must not handle real contacts, calls, schedules, recordings, transcripts, client data, or secrets.
+The companion fixture preview uses fake fixtures only. It must not handle real contacts, calls, schedules, recordings, transcripts, client data, or secrets.
 
 Run:
 
@@ -103,7 +103,56 @@ Expected:
 - valid fake fixture returns preview counts
 - sensitive-looking fixture is rejected without echoing the sensitive value
 - non-loopback host configuration is rejected
-- no vault, database, private backup, or runtime data file is created
+- fixture preview does not create new vault, database, private backup, or runtime data files
+
+## Local Private Inbox Checks
+
+The private inbox proves that phone-like input can reach workspace-local private storage.
+
+Run fixture-based private inbox validation:
+
+```bash
+python3 scripts/private_inbox_smoke_check.py
+```
+
+Expected:
+
+- non-loopback host configuration is rejected
+- private inbox health reports writes enabled
+- write endpoint rejects missing auth
+- write endpoint rejects wrong token
+- valid bearer token can store one synthetic capture
+- API response does not echo title/body private values
+- simulated mobile sender rejects non-loopback base URLs before reading the token
+- private inbox init rejects DB/token paths outside `companion/private/`
+- status command does not create a missing DB
+- summary reports one capture
+- recent list is redacted and omits body text
+- SQLite summary confirms persistence
+
+Run real local private inbox setup:
+
+```bash
+python3 scripts/private_inbox_init.py
+python3 companion/server.py --host 127.0.0.1 --port 8765 --enable-private-inbox
+```
+
+Then, in a second terminal:
+
+```bash
+python3 scripts/simulate_mobile_capture.py \
+  --title "Synthetic mobile project brief" \
+  --body "Synthetic private note for workspace ingress validation."
+python3 scripts/private_inbox_status.py
+```
+
+Expected:
+
+- token value is not printed
+- capture POST returns metadata only
+- `private_inbox_status.py` shows total capture count
+- private values are not printed in status output
+- `companion/private/` remains untracked/ignored
 
 ## Responsive Viewports
 
@@ -142,9 +191,12 @@ Expected:
 - Workflow permissions가 최소 권한 유지
 - companion prototype is not deployed as part of GitHub Pages
 - Launch packet은 실제 Discord/GitHub/OpenClaw dispatch를 수행하지 않고 copy/export draft만 제공한다.
+- local private inbox files are not included in public Pages artifacts
 
 ## Residual Risk
 
 자동 브라우저 회귀 테스트는 아직 없다. UI 변경이 잦아지면 Playwright smoke test를 추가하는 것이 적절하다.
 
 Local companion UI integration is not implemented yet. Before adding browser `fetch`, define pairing/session token, CORS, CSP, and localhost origin policy.
+
+The private inbox is not encrypted at rest yet. Before routine high-sensitivity use, add encryption-at-rest plus backup/delete/restore validation.

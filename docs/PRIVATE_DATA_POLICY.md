@@ -90,6 +90,35 @@ Required:
 - encrypted backups only
 - explicit deletion workflow
 
+### Local Private Inbox MVP
+
+Implemented as a transitional storage layer before the encrypted vault.
+
+Allowed:
+
+- synthetic mobile captures
+- supervisor-approved local private testing
+- workspace-local SQLite records under `companion/private/`
+- redacted status checks
+
+Required:
+
+- `127.0.0.1` loopback only
+- bearer token auth for write/read endpoints
+- no token value printed in terminal output
+- no raw capture body echoed in API responses
+- no private inbox files committed to Git
+- fixture-only QA for screenshots and public reports
+
+Limitations:
+
+- not encrypted at rest
+- relies on OS account and file permissions
+- not suitable as the final long-term vault for highly sensitive call transcripts, recordings, or third-party private content
+- no browser-to-companion pairing yet
+
+The MVP is acceptable for proving source-to-workspace persistence. Before routine use with high-sensitivity real data, add encryption-at-rest, backup/delete workflow, and UI pairing/CORS controls.
+
 ## Call And Recording Data
 
 Call content, recordings, and transcripts are high-sensitivity data.

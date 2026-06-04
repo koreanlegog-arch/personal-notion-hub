@@ -23,8 +23,10 @@ The current GitHub Pages/static web app remains useful as a public-safe demo she
 - Assistant MVP uses browser `IndexedDB`.
 - Public GitHub Pages deployment is possible.
 - Demo/fixture data only should be committed.
+- Local companion supports fixture-only preview mode.
+- Local companion also supports authenticated private inbox mode for workspace-local SQLite capture.
 
-This is acceptable for a demo and low-risk local notes. It is not enough for long-term storage of sensitive personal data.
+This is acceptable for a demo, low-risk local notes, and proving the private data ingress path. It is not yet an encrypted long-term vault.
 
 ## Public Shell Vs Private Data Plane
 
@@ -189,7 +191,19 @@ Not recommended now.
 
 ## Data Flow
 
-First approved local-companion flow:
+First implemented local-companion flow:
+
+```text
+virtual mobile input
+-> local companion bearer-token auth
+-> private inbox validation
+-> ignored workspace SQLite write
+-> redacted status check
+```
+
+No automatic external API call is part of this flow.
+
+Target encrypted-vault flow remains:
 
 ```text
 manual input / local file import
@@ -200,8 +214,6 @@ manual input / local file import
 -> UI review
 -> export / backup / delete
 ```
-
-No automatic external API call is part of this flow.
 
 ## Local Communication Options
 
@@ -285,6 +297,36 @@ Selection criteria:
 
 Do not add an encryption package until a concrete implementation plan and dependency review are approved.
 
+## Implemented Private Inbox MVP
+
+The current MVP uses Python standard library SQLite as a local private inbox.
+
+Implemented protections:
+
+- `127.0.0.1` bind only
+- bearer token loaded from `companion/private/auth_token`
+- token value is not printed by scripts
+- `companion/private/` is ignored by Git
+- private DB/token paths outside `companion/private/` are rejected by default
+- simulated mobile sender accepts only `http://127.0.0.1:<port>` and blocks redirects
+- status command does not create a missing DB
+- best-effort `0700` private directory permission
+- best-effort `0600` token and database file permission
+- API write responses return metadata only
+- recent status output redacts titles and omits bodies
+- fixture preview mode remains write-disabled
+
+Not yet implemented:
+
+- encryption-at-rest
+- OS keychain integration
+- CORS/pairing between the public web UI and companion
+- phone/contact/calendar/recording adapters
+- local transcription
+- backup/delete/restore workflow for sensitive records
+
+This MVP is sufficient to prove that a mobile-like input can reach workspace-local private storage. For long-term storage of highly sensitive records, encryption-at-rest and explicit backup/delete workflows are the next blockers.
+
 ## Candidate Vault Designs
 
 ### SQLCipher SQLite
@@ -322,13 +364,14 @@ Default for first sensitive implementation:
 1. Keep current browser-only Assistant MVP as demo/public-safe.
 2. Use current JSON export as migration input, but keep it demo/browser-only until encrypted export is approved.
 3. Add architecture docs and approval gates.
-4. Add a local companion proof of concept using fake fixture data only.
-5. Add `GET /api/health`, `GET /api/schema`, and `POST /api/import/preview` before any vault write endpoint.
-6. Add secure pairing between UI and companion.
-7. Add encrypted vault schema.
-8. Add encrypted export/import/delete validation.
-9. Add selected real-data import adapters one by one, each behind approval.
-10. Only then consider distribution to close friends.
+4. Add a local companion proof of concept using fake fixture data only. Done.
+5. Add `GET /api/health`, `GET /api/schema`, and `POST /api/import/preview` before any vault write endpoint. Done.
+6. Add authenticated private inbox write endpoint and local SQLite store. Done.
+7. Add secure pairing between UI and companion.
+8. Add encrypted vault schema.
+9. Add encrypted export/import/delete validation.
+10. Add selected real-data import adapters one by one, each behind approval.
+11. Only then consider distribution to close friends.
 
 ## Distribution To Close Friends
 
@@ -351,12 +394,13 @@ Before sharing beyond the owner, require:
 
 ## Approval Gates
 
-Separate approval is required before:
+The current local companion script and private inbox MVP were created under supervisor request on 2026-06-04.
 
-- adding a local companion executable/script
+Separate approval is still required before:
+
 - installing encryption/database dependencies
 - choosing a vault encryption scheme
-- opening any localhost service
+- opening any non-loopback or long-running localhost service
 - adding phone/contact/calendar/recording import adapters
 - adding transcription
 - adding cloud sync or OAuth
@@ -368,13 +412,13 @@ Separate approval is required before:
 
 ## Recommended Next Step
 
-Create a fixture-only local companion prototype plan. The prototype should not store real personal data. It should prove:
+Upgrade the private inbox into a hardened local vault. The next implementation should prove:
 
-- local UI can detect companion status
-- fake fixture payloads can be validated by a loopback companion
-- fake captures can be counted and previewed without writing a vault
-- invalid or sensitive-looking fixture values are rejected
-- no private values appear in logs or repo
+- encryption-at-rest or equivalent vault protection
+- backup/delete/restore workflow
+- CORS/pairing policy before browser `fetch`
+- redacted review UI for sensitive records
+- adapter-by-adapter approval gates for phone, calendar, contacts, recordings, and transcripts
 
 ## Fixture-Only Prototype Status
 
@@ -393,3 +437,17 @@ Current prototype boundary:
 - no browser UI connection yet
 
 The prototype is not a sensitive-data storage system. Its job is to validate the companion boundary and QA loop before pairing, CORS, encrypted storage, or real import adapters are approved.
+
+## Private Inbox MVP Status
+
+The private inbox is a working local ingestion MVP, not a final vault.
+
+Current contract:
+
+- initialize with `python3 scripts/private_inbox_init.py`
+- run with `python3 companion/server.py --host 127.0.0.1 --port 8765 --enable-private-inbox`
+- simulate phone-like input with `python3 scripts/simulate_mobile_capture.py`
+- verify storage with `python3 scripts/private_inbox_status.py`
+- validate security contracts with `python3 scripts/private_inbox_smoke_check.py`
+
+The critical success criterion is source-to-workspace persistence, not UI polish.

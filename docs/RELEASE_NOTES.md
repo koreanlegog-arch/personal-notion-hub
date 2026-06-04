@@ -1,5 +1,36 @@
 # Release Notes
 
+## 2026-06-04 - Local Private Inbox MVP
+
+### Summary
+
+Added a working local companion private inbox for proving that phone-like input can reach workspace-local storage.
+
+### Included
+
+- authenticated `/api/private/mobile-captures` write endpoint
+- authenticated private inbox summary/list endpoints
+- ignored SQLite private inbox storage
+- local bearer token initialization script
+- synthetic mobile capture sender script
+- redacted private inbox status script
+- fixture-based private inbox smoke test
+- updated docs for local companion, private data policy, security, and testing
+
+### Boundaries
+
+- No external service integration
+- No phone/contact/calendar/recording adapter
+- No browser-to-companion `fetch` pairing yet
+- No encryption-at-rest yet
+- No raw private values in API responses, status output, or test evidence
+
+### Verification
+
+Recorded in:
+
+- `ops/runs/PNH-PRIVATE-INBOX-MVP-20260604/`
+
 ## 2026-06-04 - Mobile Launch MVP
 
 ### Summary

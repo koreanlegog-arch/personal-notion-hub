@@ -23,8 +23,8 @@ from companion.server import create_server  # noqa: E402
 
 
 FIXTURE_PATH = ROOT / "companion" / "fixtures" / "fake_import.json"
-FORBIDDEN_ARTIFACT_GLOBS = ("*.vault", "*.sqlite", "*.sqlite3", "*.db")
-FORBIDDEN_ARTIFACT_DIRS = (
+PRIVATE_ARTIFACT_GLOBS = ("*.vault", "*.sqlite", "*.sqlite3", "*.db")
+PRIVATE_ARTIFACT_DIRS = (
     ROOT / "companion" / "private",
     ROOT / "companion" / "runtime",
     ROOT / "companion" / "logs",
@@ -50,12 +50,20 @@ def assert_true(condition: bool, message: str) -> None:
         raise SystemExit(message)
 
 
-def assert_no_private_artifacts() -> None:
-    for pattern in FORBIDDEN_ARTIFACT_GLOBS:
-        matches = list(ROOT.rglob(pattern))
-        assert_true(not matches, f"forbidden_artifact_found={pattern}")
-    for path in FORBIDDEN_ARTIFACT_DIRS:
-        assert_true(not path.exists(), f"forbidden_artifact_dir_found={path.relative_to(ROOT)}")
+def private_artifact_snapshot() -> set[str]:
+    paths: set[str] = set()
+    for pattern in PRIVATE_ARTIFACT_GLOBS:
+        for path in ROOT.rglob(pattern):
+            paths.add(str(path.relative_to(ROOT)))
+    for path in PRIVATE_ARTIFACT_DIRS:
+        if path.exists():
+            paths.add(str(path.relative_to(ROOT)))
+    return paths
+
+
+def assert_no_new_private_artifacts(before: set[str]) -> None:
+    added = private_artifact_snapshot() - before
+    assert_true(not added, "fixture_preview_created_private_artifact=true")
 
 
 def assert_host_rejected(host: str) -> None:
@@ -77,7 +85,7 @@ def assert_private_fixture_rejected(base_url: str, fixture: dict[str, Any], forb
 
 
 def main() -> int:
-    assert_no_private_artifacts()
+    private_artifacts_before = private_artifact_snapshot()
     for host in ("0.0.0.0", "localhost", "::1"):
         assert_host_rejected(host)
 
@@ -142,7 +150,7 @@ def main() -> int:
         for private_fixture, forbidden_values in private_cases:
             assert_private_fixture_rejected(base_url, private_fixture, forbidden_values)
 
-        assert_no_private_artifacts()
+        assert_no_new_private_artifacts(private_artifacts_before)
 
         print("companion_smoke_check_pass=true")
         return 0
