@@ -5,7 +5,8 @@ This directory contains the loopback-only local companion.
 It has two modes:
 
 - fixture preview mode for public-safe validation
-- authenticated private inbox mode for workspace-local capture persistence
+- authenticated plaintext private inbox mode for transitional workspace-local capture persistence
+- explicit encrypted vault mode for sensitive local capture persistence
 - optional browser bridge mode for exact-origin Launch UI pairing
 
 ## Boundary
@@ -18,6 +19,8 @@ Allowed:
 - preview counts, errors, and warnings
 - bearer-token authenticated private inbox writes when explicitly enabled
 - ignored local SQLite private inbox under `companion/private/`
+- AES-GCM encrypted capture records when `--enable-encrypted-vault` is explicitly enabled
+- passphrase loaded from a local environment variable name, not from a CLI value
 - default scripts reject private DB/token paths outside `companion/private/`
 - mobile capture simulation is loopback-only and blocks redirects
 - exact-origin browser bridge when explicitly enabled
@@ -50,6 +53,19 @@ python3 scripts/private_inbox_init.py
 python3 companion/server.py --host 127.0.0.1 --port 8765 --enable-private-inbox
 ```
 
+Encrypted vault mode:
+
+```bash
+read -rsp "PNH vault passphrase: " PNH_VAULT_PASSPHRASE
+export PNH_VAULT_PASSPHRASE
+python3 scripts/private_inbox_init.py --enable-encrypted-vault
+python3 companion/server.py \
+  --host 127.0.0.1 \
+  --port 8765 \
+  --enable-private-inbox \
+  --enable-encrypted-vault
+```
+
 Browser bridge mode:
 
 ```bash
@@ -78,6 +94,7 @@ Endpoints:
 
 ```bash
 python3 scripts/companion_smoke_check.py
+python3 scripts/encrypted_vault_smoke_check.py
 python3 scripts/private_inbox_smoke_check.py
 python3 scripts/browser_bridge_smoke_check.py
 ```
@@ -89,14 +106,21 @@ rejection.
 The private inbox smoke check verifies auth rejection, authorized synthetic
 capture storage, redacted responses, and SQLite persistence.
 
+The encrypted vault smoke check verifies fail-closed crypto/passphrase gates,
+AES-GCM encrypted writes, wrong-passphrase rejection, tamper rejection,
+redacted API/status responses, and plaintext absence in SQLite bytes.
+
 The browser bridge smoke check verifies unsafe config rejection, CORS,
 one-time pairing, in-memory session auth compatibility, redacted responses, and
 legacy bearer-token compatibility without printing secret values.
 
 ## Next Approval Gates
 
-- encrypted vault implementation
 - real-data import adapters
+- backup/delete/restore workflow
+- encrypted export/import
+- plaintext-to-encrypted migration
+- OS keychain or packaged passphrase prompt
 - packaging or distribution
 - LAN/mobile-device pairing beyond loopback
 - automated screenshot-safe browser QA

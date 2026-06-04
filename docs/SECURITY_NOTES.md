@@ -96,7 +96,7 @@ If launch briefs include sensitive business, client, or private information, the
 
 ## Local Companion Prototype Security Boundary
 
-The companion keeps fixture-only preview mode and adds authenticated private inbox mode.
+The companion keeps fixture-only preview mode, adds authenticated plaintext private inbox mode, and now supports explicit encrypted vault mode for sensitive local captures.
 
 Preview mode allowed:
 
@@ -117,9 +117,19 @@ Private inbox mode allowed:
 - short-lived one-time pairing code issued in local terminal only
 - short-lived browser session token held in JS memory only
 
+Encrypted vault mode allowed:
+
+- explicit `--enable-encrypted-vault` startup only
+- passphrase loaded from a configured environment variable name
+- private title/body/payload encryption before SQLite persistence
+- AES-GCM authenticated encryption through installed `cryptography`
+- PBKDF2-HMAC-SHA256 key derivation with per-vault salt
+- metadata-only API responses and redacted default status output
+- synthetic or supervisor-approved sensitive local testing
+
 Forbidden in all modes:
 
-- real contacts, phone numbers, emails, call logs, schedules, recordings, transcripts, client data, tokens, credentials, or private notes
+- real contacts, phone numbers, emails, call logs, schedules, recordings, transcripts, client data, tokens, credentials, or private notes in plaintext mode, public artifacts, logs, screenshots, evidence, or tracked files
 - request body logging
 - external API calls
 - browser UI `fetch` integration outside the approved bridge module
@@ -127,6 +137,7 @@ Forbidden in all modes:
 - non-loopback bind address
 - committed private inbox files
 - persistent browser storage of token, pairing code, or session token
+- passing vault passphrases as CLI values or printing them in evidence
 
 Current private inbox protections:
 
@@ -144,16 +155,22 @@ Current private inbox protections:
 - `--allowed-origin` accepts only exact `http://127.0.0.1:<port>` origins
 - CSP restricts browser connection to `connect-src 'self' http://127.0.0.1:8765`
 - Launch UI provides a screenshot redaction toggle for sensitive launch text and pairing input
+- encrypted vault mode stores private fields in `encrypted_mobile_captures`
+- encrypted vault mode fails closed if `cryptography` or passphrase env is missing
+- encrypted vault smoke test checks wrong passphrase rejection, tamper rejection, redacted responses, and plaintext absence in SQLite bytes
 
 Residual risks:
 
-- SQLite private inbox is not encrypted at rest
+- plaintext private inbox mode is not encrypted at rest and should not be used for routine high-sensitivity storage
 - token file security depends on the local OS account
 - no backup/delete/restore workflow exists yet
+- encrypted vault passphrase management is still manual; OS keychain or packaged prompt is not implemented
+- existing plaintext private inbox rows are not migrated automatically
+- encrypted export/import is not implemented
 - browser session token is memory-only, so reload requires re-pairing
 - screenshot redaction is best-effort UI masking, not a substitute for fake-fixture QA
 
-Encryption-at-rest, data lifecycle controls, and automated screenshot-safe QA are release blockers before routine high-sensitivity use.
+Encrypted vault mode is the minimum local path for supervisor-approved sensitive testing. Data lifecycle controls, backup/delete/restore, plaintext migration, and automated screenshot-safe QA remain release blockers before routine high-sensitivity operation or distribution.
 
 ## XSS Mitigation
 

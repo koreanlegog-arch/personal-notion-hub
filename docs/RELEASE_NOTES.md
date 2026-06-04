@@ -1,5 +1,38 @@
 # Release Notes
 
+## 2026-06-04 - Local Encrypted Vault MVP
+
+### Summary
+
+Added explicit encrypted vault mode for local companion captures so supervisor-approved sensitive test records can be stored in encrypted SQLite rows rather than plaintext private inbox columns.
+
+### Included
+
+- `companion/encrypted_vault.py` with AES-GCM encrypted capture records
+- PBKDF2-HMAC-SHA256 key derivation with per-vault salt
+- `--enable-encrypted-vault` and `--vault-passphrase-env` companion flags
+- encrypted private store integration with metadata-only API responses
+- encrypted vault initialization option in `scripts/private_inbox_init.py`
+- redacted status compatibility for encrypted rows
+- encrypted vault smoke check for fail-closed startup, wrong-passphrase rejection, tamper rejection, redacted responses, and plaintext absence in DB bytes
+- docs distinguishing plaintext private inbox, encrypted vault MVP, and remaining high-sensitivity blockers
+
+### Boundaries
+
+- No package installation or dependency manifest change
+- No OS keychain integration yet
+- No encrypted backup/delete/restore yet
+- No encrypted export/import yet
+- No plaintext-to-encrypted migration yet
+- No real phone/contact/calendar/recording adapters
+- No real private data in tests or evidence
+
+### Verification
+
+Recorded in:
+
+- `ops/runs/PNH-LOCAL-ENCRYPTED-VAULT-MVP-20260604/`
+
 ## 2026-06-04 - Browser Companion Bridge
 
 ### Summary

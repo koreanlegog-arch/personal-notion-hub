@@ -77,7 +77,7 @@ Limitations:
 
 ### Local Companion Vault
 
-Target for sensitive data after approval.
+Minimum target for supervisor-approved sensitive local testing.
 
 Required:
 
@@ -90,14 +90,33 @@ Required:
 - encrypted backups only
 - explicit deletion workflow
 
+Current MVP:
+
+- explicit `--enable-encrypted-vault` mode
+- passphrase from local environment variable
+- AES-GCM encrypted title/body/payload fields
+- PBKDF2-HMAC-SHA256 key derivation with per-vault salt
+- metadata-only API responses
+- redacted default status output
+- synthetic smoke tests for wrong passphrase, tamper rejection, and plaintext absence in DB bytes
+
+Remaining blockers before routine high-sensitivity operation:
+
+- backup/delete/restore workflow
+- encrypted export/import
+- plaintext-to-encrypted migration check
+- OS keychain or packaged passphrase prompt
+- screenshot-safe automated QA
+- adapter-specific policies for contacts, calendar, calls, recordings, and transcripts
+
 ### Local Private Inbox MVP
 
-Implemented as a transitional storage layer before the encrypted vault.
+Implemented as a transitional storage layer and compatibility path.
 
 Allowed:
 
 - synthetic mobile captures
-- supervisor-approved local private testing
+- low-risk supervisor-approved local private testing
 - workspace-local SQLite records under `companion/private/`
 - redacted status checks
 - explicit loopback browser bridge pairing for synthetic Launch packets
@@ -119,11 +138,11 @@ Limitations:
 
 - not encrypted at rest
 - relies on OS account and file permissions
-- not suitable as the final long-term vault for highly sensitive call transcripts, recordings, or third-party private content
+- not suitable for routine high-sensitivity call transcripts, recordings, client data, or third-party private content
 - pairing code is manually copied from local terminal and must not be recorded
 - browser session is memory-only and requires re-pairing after reload
 
-The MVP is acceptable for proving source-to-workspace persistence. Before routine use with high-sensitivity real data, add encryption-at-rest, backup/delete workflow, and automated redaction validation.
+The plaintext MVP is acceptable for proving source-to-workspace persistence and compatibility. For sensitive local testing, use encrypted vault mode. Before routine use with high-sensitivity real data, add backup/delete workflow, encrypted export/import, and automated redaction validation.
 
 ## Call And Recording Data
 

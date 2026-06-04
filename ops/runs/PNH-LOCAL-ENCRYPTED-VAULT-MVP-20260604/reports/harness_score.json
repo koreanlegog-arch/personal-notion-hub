@@ -1,0 +1,40 @@
+{
+  "score_model": "efficiency",
+  "score": 70.8,
+  "score_band": "useful",
+  "classification": "multi-agent-harness",
+  "implementer_slice_count": 2,
+  "supervisor_direct_implementation_ratio": 0.35,
+  "quality_gain": 0.0,
+  "evidence_completeness": 0.9,
+  "acceptance_pass_rate": 0.9,
+  "implementation_parallelism": 1.0,
+  "delivery_readiness": 0.0,
+  "scope_drift_count": 0,
+  "unverified_claim_count": 0,
+  "security_issue_count": 0,
+  "components": {
+    "outcome_quality": 22.5,
+    "specialist_fit": 18.4,
+    "critical_path_reduction": 12.4,
+    "coordination_efficiency": 12.0,
+    "evidence_quality": 9.0,
+    "supervisor_load_reduction": 6.5
+  },
+  "penalties": 10,
+  "penalty_breakdown": {
+    "scope_drift": 0,
+    "unverified_claims": 0,
+    "security_issues": 0,
+    "unnecessary_lanes": 0,
+    "write_set_conflicts": 0,
+    "duplicate_work": 0,
+    "replans": 10
+  },
+  "model_budget": {
+    "model_tier": "role-routed-not-cost-instrumented",
+    "model_name": "not-metered-per-agent",
+    "reasoning_effort": "mixed-by-role",
+    "budget_note": "encrypted-vault-module-plus-server-integration-with-counterfactual-prep"
+  }
+}

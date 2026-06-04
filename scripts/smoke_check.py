@@ -27,11 +27,13 @@ REQUIRED = [
     "docs/TEST_PLAN.md",
     "docs/SECURITY_NOTES.md",
     ".github/workflows/pages.yml",
+    "companion/encrypted_vault.py",
     "companion/private_store.py",
     "companion/server.py",
     "scripts/private_inbox_init.py",
     "scripts/simulate_mobile_capture.py",
     "scripts/private_inbox_status.py",
+    "scripts/encrypted_vault_smoke_check.py",
     "scripts/private_inbox_smoke_check.py",
 ]
 
@@ -159,6 +161,47 @@ def assert_companion_bridge_contracts() -> None:
             raise SystemExit(f"companion_secret_storage_token={token}")
 
 
+def assert_encrypted_vault_contracts() -> None:
+    vault = (ROOT / "companion/encrypted_vault.py").read_text(encoding="utf-8")
+    server = (ROOT / "companion/server.py").read_text(encoding="utf-8")
+    init_script = (ROOT / "scripts/private_inbox_init.py").read_text(encoding="utf-8")
+    status_script = (ROOT / "scripts/private_inbox_status.py").read_text(encoding="utf-8")
+    smoke = (ROOT / "scripts/encrypted_vault_smoke_check.py").read_text(encoding="utf-8")
+    expected_vault = [
+        "AES-256-GCM",
+        "PBKDF2-HMAC-SHA256",
+        "encrypted_mobile_captures",
+        "EncryptedVaultError",
+        "cryptography_available",
+        "load_vault_from_env",
+        "MIN_PASSPHRASE_LENGTH = 16",
+        "associated_data",
+    ]
+    for token in expected_vault:
+        if token not in vault:
+            raise SystemExit(f"missing_encrypted_vault_contract={token}")
+    expected_runtime = [
+        "--enable-encrypted-vault",
+        "--vault-passphrase-env",
+        "PNH_VAULT_PASSPHRASE",
+        "encrypted_vault_enabled",
+        "private_storage_mode",
+    ]
+    runtime_text = "\n".join([server, init_script, status_script])
+    for token in expected_runtime:
+        if token not in runtime_text:
+            raise SystemExit(f"missing_encrypted_runtime_contract={token}")
+    expected_smoke = [
+        "plaintext_found_in_db=false",
+        "wrong_passphrase_accepted=true",
+        "tampered_ciphertext_accepted=true",
+        "secret_value_printed=false",
+    ]
+    for token in expected_smoke:
+        if token not in smoke:
+            raise SystemExit(f"missing_encrypted_smoke_contract={token}")
+
+
 def assert_redaction_contracts() -> None:
     css = (ROOT / "assets/css/styles.css").read_text(encoding="utf-8")
     expected = [
@@ -187,6 +230,7 @@ def main() -> int:
     assert_expected_app_contracts()
     assert_js_security_contracts()
     assert_companion_bridge_contracts()
+    assert_encrypted_vault_contracts()
     assert_redaction_contracts()
     assert_workflow_permissions()
     print("smoke_check_pass=true")

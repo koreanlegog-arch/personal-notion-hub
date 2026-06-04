@@ -25,6 +25,7 @@ from typing import Any
 from urllib.parse import parse_qs, urlsplit
 
 try:
+    from .encrypted_vault import EncryptedVault, EncryptedVaultError, cryptography_available, load_vault_from_env
     from .private_store import (
         DEFAULT_DB_PATH,
         DEFAULT_TOKEN_PATH,
@@ -37,6 +38,7 @@ try:
     )
     from .preview import SCHEMA, preview_import, zero_counts
 except ImportError:  # pragma: no cover - supports direct script execution.
+    from encrypted_vault import EncryptedVault, EncryptedVaultError, cryptography_available, load_vault_from_env  # type: ignore
     from private_store import (  # type: ignore
         DEFAULT_DB_PATH,
         DEFAULT_TOKEN_PATH,
@@ -68,6 +70,7 @@ class CompanionServer(ThreadingHTTPServer):
         private_db_path: Path | None = None,
         auth_token: str | None = None,
         allow_external_private_paths: bool = False,
+        private_vault: EncryptedVault | None = None,
         browser_bridge_enabled: bool = False,
         allowed_origin: str | None = None,
         browser_session_ttl_seconds: int = BROWSER_SESSION_TTL_SECONDS,
@@ -77,6 +80,7 @@ class CompanionServer(ThreadingHTTPServer):
         self.private_db_path = private_db_path
         self.auth_token = auth_token
         self.allow_external_private_paths = allow_external_private_paths
+        self.private_vault = private_vault
         self.browser_bridge_enabled = browser_bridge_enabled
         self.allowed_origin = allowed_origin
         self.browser_session_ttl_seconds = browser_session_ttl_seconds
@@ -89,6 +93,14 @@ class CompanionServer(ThreadingHTTPServer):
     @property
     def private_enabled(self) -> bool:
         return self.private_db_path is not None and bool(self.auth_token)
+
+    @property
+    def private_storage_mode(self) -> str:
+        if self.private_vault is not None:
+            return "encrypted-vault"
+        if self.private_enabled:
+            return "plaintext-inbox"
+        return "disabled"
 
     def create_browser_session(self, pairing_code: str) -> str | None:
         if not self.browser_bridge_enabled or not self.private_enabled or self._pairing_code_used:
@@ -130,6 +142,12 @@ class CompanionHandler(BaseHTTPRequestHandler):
                     "writesEnabled": self.server.private_enabled,
                     "authRequired": self.server.private_enabled,
                     "privateStoreConfigured": self.server.private_enabled,
+                    "storageMode": self.server.private_storage_mode,
+                    "encryptedVault": {
+                        "enabled": self.server.private_vault is not None,
+                        "cryptographyAvailable": cryptography_available(),
+                        "algorithm": self.server.private_vault.algorithm if self.server.private_vault else "",
+                    },
                     "browserBridge": {
                         "enabled": self.server.browser_bridge_enabled,
                         "allowedOriginConfigured": bool(self.server.allowed_origin),
@@ -147,6 +165,8 @@ class CompanionHandler(BaseHTTPRequestHandler):
                 "writeEndpoint": "/api/private/mobile-captures",
                 "summaryEndpoint": "/api/private/summary",
                 "responsePolicy": "metadata-only",
+                "storageMode": self.server.private_storage_mode,
+                "encryptedVaultEnabled": self.server.private_vault is not None,
             }
             schema["browserBridge"] = {
                 "enabled": self.server.browser_bridge_enabled,
@@ -182,6 +202,7 @@ class CompanionHandler(BaseHTTPRequestHandler):
                     limit=parsed_limit,
                     include_body=False,
                     allow_external=self.server.allow_external_private_paths,
+                    vault=self.server.private_vault,
                 )
             except (OSError, sqlite3.Error, ValueError):
                 self._send_json(HTTPStatus.INTERNAL_SERVER_ERROR, {"error": "private_store_read_failed"})
@@ -288,6 +309,7 @@ class CompanionHandler(BaseHTTPRequestHandler):
                 self.server.private_db_path,
                 payload,
                 allow_external=self.server.allow_external_private_paths,
+                vault=self.server.private_vault,
             )
         except PrivateStoreError as exc:
             self._send_json(HTTPStatus.BAD_REQUEST, {"error": str(exc)})
@@ -408,6 +430,7 @@ def create_server(
     private_db_path: Path | None = None,
     auth_token: str | None = None,
     allow_external_private_paths: bool = False,
+    private_vault: EncryptedVault | None = None,
     browser_bridge_enabled: bool = False,
     allowed_origin: str | None = None,
     browser_session_ttl_seconds: int = BROWSER_SESSION_TTL_SECONDS,
@@ -436,6 +459,7 @@ def create_server(
         private_db_path=private_db_path,
         auth_token=auth_token,
         allow_external_private_paths=allow_external_private_paths,
+        private_vault=private_vault,
         browser_bridge_enabled=browser_bridge_enabled,
         allowed_origin=allowed_origin,
         browser_session_ttl_seconds=browser_session_ttl_seconds,
@@ -448,6 +472,8 @@ def main() -> int:
     parser.add_argument("--host", default="127.0.0.1", help="Loopback host only. Default: 127.0.0.1")
     parser.add_argument("--port", type=int, default=8765, help="Port to bind. Default: 8765")
     parser.add_argument("--enable-private-inbox", action="store_true", help="Enable authenticated local private inbox writes.")
+    parser.add_argument("--enable-encrypted-vault", action="store_true", help="Store private captures in encrypted vault mode.")
+    parser.add_argument("--vault-passphrase-env", default="PNH_VAULT_PASSPHRASE", help="Environment variable containing vault passphrase.")
     parser.add_argument("--enable-browser-bridge", action="store_true", help="Enable exact-origin browser bridge pairing.")
     parser.add_argument("--allowed-origin", default="", help="Allowed browser origin, for example http://127.0.0.1:8000.")
     parser.add_argument("--private-db", default="", help="Private inbox SQLite path. Default: companion/private/...")
@@ -457,17 +483,26 @@ def main() -> int:
     if args.enable_browser_bridge and not args.enable_private_inbox:
         print("startup_error=browser_bridge_requires_private_inbox", file=sys.stderr)
         return 2
+    if args.enable_encrypted_vault and not args.enable_private_inbox:
+        print("startup_error=encrypted_vault_requires_private_inbox", file=sys.stderr)
+        return 2
 
     private_db_path = None
     auth_token = None
+    private_vault = None
     if args.enable_private_inbox:
         private_db_path = Path(args.private_db) if args.private_db else DEFAULT_DB_PATH
         token_path = Path(args.token_file) if args.token_file else DEFAULT_TOKEN_PATH
         try:
             auth_token = read_token(token_path)
             init_private_store(private_db_path)
+            if args.enable_encrypted_vault:
+                private_vault = load_vault_from_env(private_db_path, args.vault_passphrase_env)
         except (OSError, PrivateStoreError) as exc:
             print(f"startup_error=private_inbox_unavailable detail={exc}", file=sys.stderr)
+            return 2
+        except EncryptedVaultError as exc:
+            print(f"startup_error=encrypted_vault_unavailable detail={exc}", file=sys.stderr)
             return 2
 
     try:
@@ -476,6 +511,7 @@ def main() -> int:
             args.port,
             private_db_path=private_db_path,
             auth_token=auth_token,
+            private_vault=private_vault,
             browser_bridge_enabled=args.enable_browser_bridge,
             allowed_origin=args.allowed_origin or None,
         )
@@ -486,6 +522,8 @@ def main() -> int:
     host, port = httpd.server_address[:2]
     print(f"companion_listening=http://{host}:{port}")
     print(f"private_inbox_enabled={httpd.private_enabled}")
+    print(f"private_storage_mode={httpd.private_storage_mode}")
+    print(f"encrypted_vault_enabled={httpd.private_vault is not None}")
     print(f"browser_bridge_enabled={httpd.browser_bridge_enabled}")
     if httpd.browser_bridge_enabled:
         print(f"browser_pairing_code={httpd.browser_pairing_code}")

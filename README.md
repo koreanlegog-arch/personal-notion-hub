@@ -7,7 +7,7 @@
 - 프로젝트, task, note, routine, link를 한 브라우저에서 빠르게 관리합니다.
 - 모바일에서 프로젝트 개요를 작성하고 팀 착수용 dispatch packet으로 정리합니다.
 - 기본 web UI는 서버, API, backend, dependency install 없이 동작합니다.
-- 민감 입력은 선택형 local companion private inbox로 workspace-local 저장할 수 있습니다.
+- 민감 입력은 선택형 local companion encrypted vault로 workspace-local 저장할 수 있습니다.
 - 기본 hub 데이터는 브라우저 `localStorage`에 저장됩니다.
 - assistant inbox 데이터는 브라우저 `IndexedDB`에 저장됩니다.
 - 전체 데이터는 JSON으로 export/import할 수 있습니다.
@@ -45,7 +45,7 @@ http://127.0.0.1:4173/
 
 기본 hub 사용 데이터는 사용자의 브라우저 저장소에 저장됩니다. 다른 기기와 자동 동기화되지 않습니다.
 
-민감 입력 MVP는 `companion/private/` 아래 ignored SQLite private inbox에 저장됩니다.
+민감 입력 MVP는 명시적으로 켠 local companion encrypted vault 모드에서 `companion/private/` 아래 ignored SQLite DB에 암호화 저장됩니다. Plaintext private inbox 모드는 호환성 검증용 transitional mode로만 사용합니다.
 
 Assistant MVP는 수동 입력과 demo fixture만 다룹니다. Slack, email, SMS, KakaoTalk, call, voice memo, YouTube, calendar, Bible verse 같은 입력 경로는 source label일 뿐이며 실제 외부 서비스에 연결하지 않습니다.
 
@@ -120,16 +120,23 @@ Personal_Notion_Hub web UI
 
 ## Local Companion Prototype
 
-`companion/` contains a loopback-only local companion. It keeps fixture preview mode for public-safe QA and adds an authenticated private inbox mode for workspace-local capture.
+`companion/` contains a loopback-only local companion. It keeps fixture preview mode for public-safe QA, a transitional authenticated plaintext private inbox, and an explicit encrypted vault mode for sensitive local capture.
 
 Current limits:
 
-- Python standard library only
 - `127.0.0.1` loopback only
-- no encryption dependency
 - no real contacts, schedules, calls, recordings, transcripts, or private notes
 - no file write from import preview mode
 - browser UI bridge is local-only and disabled unless the companion is started with explicit bridge flags
+- no phone/contact/calendar/recording adapters yet
+- no backup/delete/restore workflow yet
+- no OS keychain integration yet
+
+Dependency boundary:
+
+- No package install is performed by this project setup.
+- Encrypted vault mode uses the already-installed Python `cryptography` package when available.
+- If `cryptography` or the configured passphrase environment variable is missing, encrypted vault startup fails closed.
 
 Run the companion smoke check:
 
@@ -150,7 +157,7 @@ http://127.0.0.1:8765/api/health
 http://127.0.0.1:8765/api/schema
 ```
 
-Actual private data import, encrypted vault writes, external dispatch, and non-loopback access remain separate approval gates.
+Actual phone/contact/calendar/recording adapters, external dispatch, non-loopback access, encrypted backup/delete/restore, and packaging remain separate approval gates.
 
 ## Browser Companion Bridge
 
@@ -193,11 +200,52 @@ Bridge boundaries:
 - Launch packet writes require explicit user action
 - API response remains metadata-only
 - Launch 화면에는 screenshot redaction toggle이 있으며 민감 launch text와 pairing input을 캡처 전에 가릴 수 있습니다.
-- real sensitive data remains out of scope until vault hardening
+- real sensitive data should use encrypted vault mode, not plaintext private inbox mode
+
+## Local Encrypted Vault MVP
+
+The encrypted vault proves this higher-sensitivity path:
+
+```text
+virtual mobile input
+-> 127.0.0.1 local companion
+-> bearer-token protected endpoint
+-> AES-GCM encrypted local SQLite record
+-> redacted metadata/status output
+```
+
+Set the vault passphrase locally before running encrypted mode. Do not paste this value into chat, screenshots, logs, docs, or committed files.
+
+```bash
+read -rsp "PNH vault passphrase: " PNH_VAULT_PASSPHRASE
+export PNH_VAULT_PASSPHRASE
+python3 scripts/private_inbox_init.py --enable-encrypted-vault
+python3 companion/server.py \
+  --host 127.0.0.1 \
+  --port 8765 \
+  --enable-private-inbox \
+  --enable-encrypted-vault
+```
+
+Run the encrypted vault smoke check:
+
+```bash
+python3 scripts/encrypted_vault_smoke_check.py
+```
+
+Encrypted vault boundaries:
+
+- encrypted vault mode is disabled by default
+- passphrase is read from an environment variable name, not from a CLI value
+- private title/body/payload values are encrypted before SQLite persistence
+- API responses and default status output are metadata-only
+- wrong passphrase and tampered ciphertext are rejected
+- existing plaintext private inbox rows are not migrated automatically
+- backup/delete/restore and encrypted export/import are not implemented yet
 
 ## Local Private Inbox MVP
 
-The local companion can now prove this critical path:
+The plaintext private inbox remains available as a transitional compatibility path:
 
 ```text
 virtual mobile input
@@ -252,7 +300,7 @@ Security boundary:
 - raw capture body is not echoed in API responses
 - `companion/private/` is ignored and must not be committed
 
-Current protection is local-only binding, bearer-token auth, repository ignore rules, and best-effort file permissions. Full encryption-at-rest remains the next hardening stage before long-term storage of highly sensitive real data.
+Current protection is local-only binding, bearer-token auth, repository ignore rules, and best-effort file permissions. Do not use plaintext private inbox mode for routine high-sensitivity records; use `--enable-encrypted-vault`.
 
 ## Backup
 
@@ -290,16 +338,17 @@ GitHub Pages custom workflow 사용은 repository Pages settings에서 GitHub Ac
 - `docs/MOBILE_PROJECT_LAUNCH_AUTOMATION_ROADMAP.md`: mobile project intake to automated team dispatch roadmap
 - `docs/PRIVATE_DATA_POLICY.md`: private data handling rules
 - `docs/adr-0001-local-companion-vault.md`: architecture decision record
-- `companion/`: local companion, private inbox storage, and fake import fixtures
+- `companion/`: local companion, encrypted vault, private inbox storage, and fake import fixtures
 
 ## Limitations
 
 - 기본 web UI에는 서버 저장 없음
 - 기본 web UI에는 계정/auth 없음
 - companion private inbox에는 local bearer token auth 사용
+- encrypted vault mode는 local passphrase 환경변수와 application-level AES-GCM encryption 사용
 - 다중 기기 sync 없음
 - collaboration 없음
 - localStorage와 IndexedDB 기반이므로 브라우저/기기 보안에 의존
 - assistant output은 rule-based draft이며 실제 일정 등록이나 메시지 전송은 하지 않음
 - launch output은 local packet/copy draft이며 실제 Discord/GitHub/OpenClaw 실행은 하지 않음
-- local private inbox는 encrypted vault가 아니며, 장기 민감 보관 전 encryption-at-rest와 backup/delete workflow가 필요함
+- plaintext local private inbox는 encrypted vault가 아니며, 장기 민감 보관 전 encrypted mode와 backup/delete workflow가 필요함
