@@ -22,11 +22,14 @@
 
 ## Current Verdict
 
-`not_ready` for routine sensitive local owner mode.
+`ready_for_sensitive_local_owner_mode`.
 
 Reason:
 
-- plaintext inbox rows are present
+- vault passphrase is stored in the approved local backend
+- plaintext inbox rows were migrated to encrypted vault rows
+- synthetic owner capture writes through encrypted vault mode
+- private/secret values were not printed
 
 ## Harness Score
 
@@ -37,6 +40,20 @@ Reason:
 Interpretation: useful as a gated security/readiness start. It intentionally
 blocks real sensitive entry until operator passphrase setup and plaintext row
 resolution are complete.
+
+## Migration Evidence
+
+| Command | Result |
+| --- | --- |
+| `python3 scripts/private_inbox_init.py --enable-encrypted-vault --vault-passphrase-provider windows-dpapi-file` | pass: encrypted vault initialized without printing passphrase or token value. |
+| `python3 scripts/encrypted_vault_backup.py --out companion/private/backups/pnh-pre-migration-*.pnhbackup --vault-passphrase-provider windows-dpapi-file --backup-passphrase-provider windows-dpapi-file` | pass: encrypted preflight backup created, `captureCount=0`, no secret value printed. |
+| `python3 scripts/plaintext_migration_apply.py --dry-run` | pass: `migratableRowCount=5`, no mutation. |
+| `python3 scripts/plaintext_migration_apply.py --preflight-backup ... --confirm MIGRATE_PLAINTEXT_TO_ENCRYPTED --vault-passphrase-provider windows-dpapi-file` | pass: 5 plaintext rows migrated and deleted. |
+| `python3 scripts/plaintext_migration_audit.py --fail-on-plaintext` | pass: `plaintextRowCount=0`, `encryptedRowCount=6` after owner smoke. |
+| `python3 companion/server.py --host 127.0.0.1 --port 8765 --enable-private-inbox --enable-encrypted-vault --vault-passphrase-provider windows-dpapi-file` | pass: loopback encrypted companion started for synthetic owner smoke. |
+| `python3 scripts/simulate_mobile_capture.py ...` | pass: synthetic capture returned metadata-only response with `storageMode=encrypted-vault`. |
+| `python3 scripts/sensitive_owner_readiness_check.py` | pass: verdict `ready_for_sensitive_local_owner_mode`, no private/secret value printed. |
+| `python3 scripts/encrypted_vault_backup.py --out companion/private/backups/pnh-post-owner-smoke-*.pnhbackup --vault-passphrase-provider windows-dpapi-file --backup-passphrase-provider windows-dpapi-file` | pass: encrypted post-smoke backup created, `captureCount=6`, no secret value printed. |
 
 ## No-Secret Evidence Rule
 
