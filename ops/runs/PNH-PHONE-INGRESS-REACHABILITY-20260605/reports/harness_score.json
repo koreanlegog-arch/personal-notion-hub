@@ -1,0 +1,40 @@
+{
+  "score_model": "efficiency",
+  "score": 65.7,
+  "score_band": "partial",
+  "classification": "SUPERVISOR_IMPLEMENTED_EXCEPTION",
+  "implementer_slice_count": 0,
+  "supervisor_direct_implementation_ratio": 0.55,
+  "quality_gain": 0.0,
+  "evidence_completeness": 0.9,
+  "acceptance_pass_rate": 0.7,
+  "implementation_parallelism": 0.0,
+  "delivery_readiness": 0.0,
+  "scope_drift_count": 0,
+  "unverified_claim_count": 0,
+  "security_issue_count": 1,
+  "components": {
+    "outcome_quality": 19.5,
+    "specialist_fit": 18.4,
+    "critical_path_reduction": 12.4,
+    "coordination_efficiency": 12.9,
+    "evidence_quality": 9.0,
+    "supervisor_load_reduction": 3.5
+  },
+  "penalties": 10,
+  "penalty_breakdown": {
+    "scope_drift": 0,
+    "unverified_claims": 0,
+    "security_issues": 10,
+    "unnecessary_lanes": 0,
+    "write_set_conflicts": 0,
+    "duplicate_work": 0,
+    "replans": 0
+  },
+  "model_budget": {
+    "model_tier": "high-reasoning-supervisor",
+    "model_name": "not-metered-per-agent",
+    "reasoning_effort": "high",
+    "budget_note": "phone-ingress-reachability-blocked-no-private-lan-ip-secret-output-incident"
+  }
+}

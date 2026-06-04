@@ -94,10 +94,24 @@ Stop and do not enter real private data if:
 Automated:
 
 ```bash
+python3 scripts/phone_ingress_reachability_check.py
+python3 scripts/phone_ingress_lan_info.py
 python3 scripts/phone_ingress_smoke_check.py
 python3 scripts/browser_bridge_smoke_check.py
 python3 scripts/smoke_check.py
 ```
+
+`phone_ingress_lan_info.py` reports only phone-reachable Windows private LAN
+candidates as `candidateLanIps`. WSL private NAT addresses are reported
+separately as `wslPrivateIpsNotPhoneReachableByDefault` and must not be used as
+the phone browser URL.
+
+If `phone_ingress_reachability_check.py` reports
+`blocked_no_phone_reachable_private_windows_lan_ip`, do not expose the companion
+on a public IP. Windows `vEthernet (WSL)` addresses are internal to the host and
+are not phone-reachable LAN URLs.
+Use a trusted private LAN, Windows portproxy to a private Windows LAN address,
+USB/ADB reverse, or a separately approved private tunnel strategy.
 
 Manual:
 
