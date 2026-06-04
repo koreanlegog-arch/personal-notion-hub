@@ -1,0 +1,40 @@
+{
+  "score_model": "efficiency",
+  "score": 68.9,
+  "score_band": "partial",
+  "classification": "multi-agent-harness",
+  "implementer_slice_count": 2,
+  "supervisor_direct_implementation_ratio": 0.4,
+  "quality_gain": 0.0,
+  "evidence_completeness": 0.93,
+  "acceptance_pass_rate": 1.0,
+  "implementation_parallelism": 1.0,
+  "delivery_readiness": 0.0,
+  "scope_drift_count": 0,
+  "unverified_claim_count": 0,
+  "security_issue_count": 0,
+  "components": {
+    "outcome_quality": 22.5,
+    "specialist_fit": 18.4,
+    "critical_path_reduction": 11.6,
+    "coordination_efficiency": 11.7,
+    "evidence_quality": 9.2,
+    "supervisor_load_reduction": 5.5
+  },
+  "penalties": 10,
+  "penalty_breakdown": {
+    "scope_drift": 0,
+    "unverified_claims": 0,
+    "security_issues": 0,
+    "unnecessary_lanes": 0,
+    "write_set_conflicts": 0,
+    "duplicate_work": 0,
+    "replans": 10
+  },
+  "model_budget": {
+    "model_tier": "medium-reasoning-team",
+    "model_name": "not-metered-per-agent",
+    "reasoning_effort": "medium",
+    "budget_note": "docs-templates-qa-review-benchmark-with-reviewer-caught-rework"
+  }
+}

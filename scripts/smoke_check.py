@@ -26,6 +26,9 @@ REQUIRED = [
     "README.md",
     "docs/TEST_PLAN.md",
     "docs/SECURITY_NOTES.md",
+    "ops/templates/PRIVATE_DATA_ADAPTER_BRIEF_TEMPLATE.md",
+    "ops/templates/PRIVATE_DATA_ADAPTER_SECURITY_GATE_TEMPLATE.md",
+    "ops/checklists/PRIVATE_DATA_ADAPTER_QA_CHECKLIST.md",
     ".github/workflows/pages.yml",
     "companion/encrypted_vault.py",
     "companion/passphrase_provider.py",
@@ -77,6 +80,47 @@ def assert_required_files() -> None:
         path = ROOT / rel
         if not path.exists() or path.stat().st_size == 0:
             raise SystemExit(f"missing_or_empty={rel}")
+
+
+def assert_private_data_adapter_governance_contracts() -> None:
+    contracts = {
+        "ops/templates/PRIVATE_DATA_ADAPTER_BRIEF_TEMPLATE.md": [
+            "## Adapter Summary",
+            "## Data Scope",
+            "## Storage And Security",
+            "## Approval Gates",
+            "## Residual Risks",
+        ],
+        "ops/templates/PRIVATE_DATA_ADAPTER_SECURITY_GATE_TEMPLATE.md": [
+            "## Adapter Summary",
+            "## Data Handling Requirements",
+            "Approved local encrypted vault",
+            "## Approval Gates",
+            "## Validation Plan",
+            "## Rollback Plan",
+            "## Residual Risks",
+        ],
+        "ops/checklists/PRIVATE_DATA_ADAPTER_QA_CHECKLIST.md": [
+            "## 1. Fixture-Only Validation",
+            "## 2. No-Secret / No-Private-Value Evidence",
+            "## 3. Local Encrypted Vault Path",
+            "## 4. Redacted Browser QA",
+            "## 5. Rollback / Backup Checks",
+            "## 6. Approval Gates",
+            "## 7. Release-Readiness Verdict",
+            "Acceptance Matrix",
+        ],
+    }
+    for rel, tokens in contracts.items():
+        text = (ROOT / rel).read_text(encoding="utf-8")
+        for token in tokens:
+            if token not in text:
+                raise SystemExit(f"missing_private_adapter_governance_contract={rel}:{token}")
+    security_gate = (ROOT / "ops/templates/PRIVATE_DATA_ADAPTER_SECURITY_GATE_TEMPLATE.md").read_text(
+        encoding="utf-8"
+    )
+    if "Storage Mode | No storage / Local cache / Local database / Export file" in security_gate:
+        raise SystemExit("unsafe_private_adapter_storage_mode_contract=true")
 
 
 def assert_html_assets() -> None:
@@ -293,6 +337,7 @@ def assert_workflow_permissions() -> None:
 
 def main() -> int:
     assert_required_files()
+    assert_private_data_adapter_governance_contracts()
     assert_html_assets()
     assert_no_inline_handlers()
     assert_expected_app_contracts()
