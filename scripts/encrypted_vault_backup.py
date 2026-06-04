@@ -29,6 +29,9 @@ def main() -> int:
     parser.add_argument("--vault-passphrase-provider", default="", help="Optional source vault passphrase provider.")
     parser.add_argument("--vault-passphrase-name", default="vault-passphrase", help="Provider secret name.")
     parser.add_argument("--vault-passphrase-file", default="", help="Provider-specific secret file path.")
+    parser.add_argument("--backup-passphrase-provider", default="", help="Optional backup passphrase provider.")
+    parser.add_argument("--backup-passphrase-name", default="vault-passphrase", help="Provider backup secret name.")
+    parser.add_argument("--backup-passphrase-file", default="", help="Provider-specific backup secret file path.")
     parser.add_argument("--allow-external-private-paths", action="store_true", help="Allow DB path outside companion/private for tests or explicit local operations.")
     args = parser.parse_args()
 
@@ -47,6 +50,9 @@ def main() -> int:
             label="backup",
             prompt=args.prompt_backup_passphrase,
             confirm=args.confirm_backup_passphrase,
+            provider=args.backup_passphrase_provider,
+            secret_name=args.backup_passphrase_name,
+            secret_path=args.backup_passphrase_file,
         ).value
         result = export_encrypted_backup(
             init_encrypted_vault(db_path, vault_passphrase),

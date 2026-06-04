@@ -57,6 +57,7 @@ REQUIRED = [
     "scripts/plaintext_migration_audit.py",
     "scripts/plaintext_migration_apply.py",
     "scripts/redacted_browser_qa_check.py",
+    "scripts/sensitive_owner_readiness_check.py",
     "scripts/run_playwright_redacted_ui_qa.sh",
     "scripts/phone_ingress_smoke_check.py",
     "scripts/phone_ingress_lan_info.py",
