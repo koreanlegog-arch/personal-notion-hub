@@ -36,9 +36,13 @@ REQUIRED = [
     "scripts/encrypted_vault_backup.py",
     "scripts/encrypted_vault_restore.py",
     "scripts/encrypted_vault_delete.py",
+    "scripts/encrypted_vault_metadata_audit.py",
+    "scripts/encrypted_backup_envelope_audit.py",
     "scripts/plaintext_migration_audit.py",
     "scripts/encrypted_vault_backup_restore_smoke_check.py",
     "scripts/encrypted_vault_delete_smoke_check.py",
+    "scripts/encrypted_vault_metadata_audit_smoke_check.py",
+    "scripts/encrypted_backup_envelope_audit_smoke_check.py",
     "scripts/encrypted_vault_smoke_check.py",
     "scripts/plaintext_migration_audit_smoke_check.py",
     "scripts/private_inbox_smoke_check.py",
@@ -200,12 +204,16 @@ def assert_encrypted_vault_contracts() -> None:
         "encrypted_vault_enabled",
         "private_storage_mode",
         "plaintextRowsDetected",
+        "encryptedVaultMetadataAudit",
+        "encryptedBackupEnvelopeAudit",
     ]
     lifecycle_scripts = "\n".join(
         [
             (ROOT / "scripts/encrypted_vault_backup.py").read_text(encoding="utf-8"),
             (ROOT / "scripts/encrypted_vault_restore.py").read_text(encoding="utf-8"),
             (ROOT / "scripts/encrypted_vault_delete.py").read_text(encoding="utf-8"),
+            (ROOT / "scripts/encrypted_vault_metadata_audit.py").read_text(encoding="utf-8"),
+            (ROOT / "scripts/encrypted_backup_envelope_audit.py").read_text(encoding="utf-8"),
             (ROOT / "scripts/plaintext_migration_audit.py").read_text(encoding="utf-8"),
         ]
     )
@@ -220,6 +228,8 @@ def assert_encrypted_vault_contracts() -> None:
         "secret_value_printed=false",
         "encrypted_vault_backup_restore_smoke_check_pass=true",
         "encrypted_vault_delete_smoke_check_pass=true",
+        "encrypted_vault_metadata_audit_smoke_check_pass=true",
+        "encrypted_backup_envelope_audit_smoke_check_pass=true",
         "plaintext_migration_audit_smoke_check_pass=true",
     ]
     smoke_text = "\n".join(
@@ -227,6 +237,8 @@ def assert_encrypted_vault_contracts() -> None:
             smoke,
             (ROOT / "scripts/encrypted_vault_backup_restore_smoke_check.py").read_text(encoding="utf-8"),
             (ROOT / "scripts/encrypted_vault_delete_smoke_check.py").read_text(encoding="utf-8"),
+            (ROOT / "scripts/encrypted_vault_metadata_audit_smoke_check.py").read_text(encoding="utf-8"),
+            (ROOT / "scripts/encrypted_backup_envelope_audit_smoke_check.py").read_text(encoding="utf-8"),
             (ROOT / "scripts/plaintext_migration_audit_smoke_check.py").read_text(encoding="utf-8"),
         ]
     )
