@@ -1,5 +1,33 @@
 # Release Notes
 
+## 2026-06-04 - Redacted Browser QA Runner
+
+### Summary
+
+Added a Playwright-based redacted UI QA test and runner for validating synthetic
+Assistant input redaction, browser storage token boundaries, and core viewport
+overflow checks.
+
+### Included
+
+- `tests/redacted-ui.spec.cjs`
+- `scripts/run_playwright_redacted_ui_qa.sh`
+- static smoke contracts for the Playwright runner
+- generated browser QA artifacts ignored by Git
+- run evidence separating manual browser confirmation from automated runner availability
+
+### Boundaries
+
+- No Playwright/browser download is performed automatically
+- If Chromium is unavailable, the runner reports blocked and requests approval for `npx playwright install chromium`
+- Screenshot artifacts are generated only from synthetic/redacted data and remain untracked
+
+### Verification
+
+Recorded in:
+
+- `ops/runs/PNH-REDACTED-BROWSER-QA-20260604/`
+
 ## 2026-06-04 - Assistant Workspace Ingress MVP
 
 ### Summary

@@ -345,16 +345,28 @@ Run:
 
 ```bash
 python3 scripts/redacted_browser_qa_check.py
+bash scripts/run_playwright_redacted_ui_qa.sh
 ```
 
 Expected:
 
 - screenshot-redaction CSS masks `data-sensitive="true"` values
 - Launch UI contains redaction controls
+- Assistant Workspace ingress UI contains redaction controls
 - companion bridge keeps session token in memory only
 - bridge does not use persistent browser token storage
 - CSP remains loopback-scoped for companion access
 - no real private values are required for this check
+- Playwright runner uses existing local tooling only and reports blocked if Chromium is unavailable
+
+Playwright redacted UI QA expected when Chromium is available:
+
+- synthetic Assistant input is visible before redaction
+- `Redact Screen` applies `body.screenshot-redaction`
+- `data-sensitive="true"` elements are masked before screenshot capture
+- localStorage/sessionStorage do not contain pairing/session token material
+- desktop and mobile core views do not horizontally overflow
+- screenshot artifact contains synthetic/redacted evidence only
 - use environment variable mode only for non-interactive local runs where shell history and process evidence are controlled
 - use `scripts/private_inbox_status.py` without `--include-decrypted` for evidence
 
@@ -430,8 +442,8 @@ Expected:
 
 ## Residual Risk
 
-자동 브라우저 회귀 테스트는 아직 없다. UI 변경이 잦아지면 Playwright smoke test를 추가하는 것이 적절하다.
+Playwright redacted UI QA runner exists, but execution depends on an installed Playwright Chromium browser binary.
 
-Local companion UI integration is implemented only for explicit loopback bridge mode. Mobile LAN, public Pages remote sync, real private data adapters, plaintext migration apply, and automated browser QA remain separate phases.
+Local companion UI integration is implemented only for explicit loopback bridge mode. Mobile LAN, public Pages remote sync, and real private data adapters remain separate phases.
 
-Plaintext private inbox mode is not encrypted at rest. Routine high-sensitivity use should stay on encrypted vault mode and still requires OS keychain storage or recovery policy, adapter-specific privacy policy, and redacted browser QA.
+Plaintext private inbox mode is not encrypted at rest. Routine high-sensitivity use should stay on encrypted vault mode and still requires adapter-specific privacy policy and successful redacted browser QA in the target runtime.

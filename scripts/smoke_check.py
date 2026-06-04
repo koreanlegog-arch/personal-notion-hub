@@ -56,6 +56,8 @@ REQUIRED = [
     "scripts/plaintext_migration_audit.py",
     "scripts/plaintext_migration_apply.py",
     "scripts/redacted_browser_qa_check.py",
+    "scripts/run_playwright_redacted_ui_qa.sh",
+    "tests/redacted-ui.spec.cjs",
     "scripts/encrypted_vault_backup_restore_smoke_check.py",
     "scripts/encrypted_vault_delete_smoke_check.py",
     "scripts/encrypted_vault_rotation_smoke_check.py",
@@ -388,6 +390,8 @@ def assert_encrypted_vault_contracts() -> None:
 
 def assert_redaction_contracts() -> None:
     css = (ROOT / "assets/css/styles.css").read_text(encoding="utf-8")
+    playwright = (ROOT / "tests/redacted-ui.spec.cjs").read_text(encoding="utf-8")
+    runner = (ROOT / "scripts/run_playwright_redacted_ui_qa.sh").read_text(encoding="utf-8")
     expected = [
         "body.screenshot-redaction [data-sensitive=\"true\"]",
         "color: transparent",
@@ -397,6 +401,22 @@ def assert_redaction_contracts() -> None:
     for token in expected:
         if token not in css:
             raise SystemExit(f"missing_redaction_contract={token}")
+    for token in [
+        "SYNTHETIC_REDACTED_QA_BODY_NEVER_REAL_PRIVATE_DATA",
+        "assistant-redacted-desktop.png",
+        "screenshot-redaction",
+        "sessionStorage",
+        "localStorage",
+    ]:
+        if token not in playwright:
+            raise SystemExit(f"missing_playwright_redaction_contract={token}")
+    for token in [
+        "npx --no-install playwright",
+        "playwright_chromium_binary_unavailable",
+        "npx_playwright_install_chromium",
+    ]:
+        if token not in runner:
+            raise SystemExit(f"missing_playwright_runner_contract={token}")
 
 
 def assert_workflow_permissions() -> None:
