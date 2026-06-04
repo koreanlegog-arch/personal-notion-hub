@@ -51,6 +51,25 @@ Assistant MVP는 browser `IndexedDB`에 manual capture를 저장한다.
 - 녹음파일 자동 수집 또는 cloud transcription
 - 실제 개인 데이터 fixture commit
 
+## Long-Term Private Data Direction
+
+민감 개인정보, 통화 내용, 녹음 transcript, 일정, 연락처를 장기적으로 다루려면 browser storage가 아니라 local companion과 encrypted local vault를 사용한다.
+
+Default stance:
+
+- public GitHub Pages는 demo shell only
+- 실제 private data는 repo, Pages artifact, logs, screenshots, evidence에 금지
+- cloud sync는 기본 금지
+- real-data adapter는 별도 승인 전 금지
+- 평문 JSON export는 민감 모드에서 금지
+- clipboard/screenshot은 민감 모드에서 별도 redaction/warning 정책 필요
+
+See:
+
+- `docs/LOCAL_COMPANION_ARCHITECTURE.md`
+- `docs/PRIVATE_DATA_POLICY.md`
+- `docs/adr-0001-local-companion-vault.md`
+
 ## XSS Mitigation
 
 - 사용자 입력은 text node로 렌더링한다.

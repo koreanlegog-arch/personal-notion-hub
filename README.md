@@ -72,6 +72,24 @@ manual input routes
 - OAuth, API key, token, cloud sync
 - cloud AI/STT/LLM 처리
 
+## Long-Term Private Data Direction
+
+민감 개인정보, 통화 내용, 녹음 transcript, 일정, 연락처를 장기적으로 다루려면 browser storage만으로는 부족합니다.
+
+채택한 장기 방향:
+
+```text
+Personal_Notion_Hub web UI
+-> local companion script/service
+-> encrypted SQLite or encrypted local vault
+```
+
+관련 문서:
+
+- `docs/LOCAL_COMPANION_ARCHITECTURE.md`
+- `docs/PRIVATE_DATA_POLICY.md`
+- `docs/adr-0001-local-companion-vault.md`
+
 ## Backup
 
 `Settings -> Export JSON`으로 현재 브라우저 데이터를 백업합니다.
@@ -104,6 +122,9 @@ GitHub Pages custom workflow 사용은 repository Pages settings에서 GitHub Ac
 - `data/seed.json`: demo-only schema note
 - `docs/TEST_PLAN.md`: manual QA plan
 - `docs/SECURITY_NOTES.md`: public deployment and localStorage risk notes
+- `docs/LOCAL_COMPANION_ARCHITECTURE.md`: long-term local companion and encrypted vault architecture
+- `docs/PRIVATE_DATA_POLICY.md`: private data handling rules
+- `docs/adr-0001-local-companion-vault.md`: architecture decision record
 
 ## Limitations
 
