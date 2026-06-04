@@ -76,6 +76,32 @@ Stop Serve when finished:
 
 Use this only when Tailscale HTTPS certificates are unavailable.
 
+### Recommended WSL Helper
+
+Start a session from WSL:
+
+```bash
+cd /home/koreanlego/projects/Personal_Notion_Hub
+bash scripts/start_tailnet_session.sh
+```
+
+The script prints:
+
+- `tailnet_url`
+- `allowed_origin`
+- the companion startup output including the local-only pairing code
+
+Use the pairing code only in the phone browser. Do not paste it into chat or docs.
+
+When the companion process exits normally, the script removes the temporary Windows forwarding rule. If cleanup is needed manually, run:
+
+```bash
+cd /home/koreanlego/projects/Personal_Notion_Hub
+bash scripts/stop_tailnet_session.sh
+```
+
+### Manual Fallback
+
 Start the companion in WSL:
 
 ```bash
@@ -149,4 +175,3 @@ Get-NetFirewallRule -DisplayName "PNH Tailnet Ingress 8765" -ErrorAction Silentl
 - Pairing fails: restart the companion and use the newly printed code.
 - Capture fails: verify the exact `--allowed-origin` matches the phone URL origin.
 - Browser shows insecure HTTP warning: expected only for the fallback path; do not use fallback for client-facing deployment.
-
