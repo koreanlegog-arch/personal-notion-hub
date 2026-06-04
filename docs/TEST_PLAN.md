@@ -255,7 +255,31 @@ Supervisor notes:
 
 - do not record the passphrase in chat, screenshots, docs, logs, or evidence
 - use `scripts/private_inbox_status.py` without `--include-decrypted` for evidence
-- backup/delete/restore and encrypted export/import are still separate validation phases
+
+## Local Encrypted Vault Lifecycle Checks
+
+Run:
+
+```bash
+python3 scripts/encrypted_vault_backup_restore_smoke_check.py
+python3 scripts/encrypted_vault_delete_smoke_check.py
+python3 scripts/plaintext_migration_audit_smoke_check.py
+```
+
+Expected:
+
+- encrypted backup file contains no synthetic private plaintext
+- backup envelope declares schema, kind, algorithm, KDF, salt, nonce, and ciphertext
+- correct backup passphrase restores encrypted captures into a fresh vault
+- wrong backup passphrase fails closed
+- tampered backup ciphertext fails closed
+- unsupported backup algorithm/KDF/schema fails closed
+- duplicate restore skips existing IDs unless replace is explicit
+- delete requires `--confirm DELETE_CAPTURE`
+- delete removes the encrypted row and redacted list entry
+- delete audit stores no title/body/payload/private values
+- plaintext migration audit detects plaintext row count without printing values
+- plaintext migration audit does not mutate the DB
 
 ## Responsive Viewports
 
@@ -300,6 +324,6 @@ Supervisor notes:
 
 자동 브라우저 회귀 테스트는 아직 없다. UI 변경이 잦아지면 Playwright smoke test를 추가하는 것이 적절하다.
 
-Local companion UI integration is implemented only for explicit loopback bridge mode. Mobile LAN, public Pages remote sync, real private data adapters, and automated browser QA remain separate phases.
+Local companion UI integration is implemented only for explicit loopback bridge mode. Mobile LAN, public Pages remote sync, real private data adapters, plaintext migration apply, and automated browser QA remain separate phases.
 
-The private inbox is not encrypted at rest yet. Before routine high-sensitivity use, add encryption-at-rest plus backup/delete/restore validation.
+Plaintext private inbox mode is not encrypted at rest. Routine high-sensitivity use should stay on encrypted vault mode and still requires passphrase hardening, adapter-specific privacy policy, and redacted browser QA.

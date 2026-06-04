@@ -8,7 +8,9 @@ __pycache__/
 # Real user data backups must stay local unless explicitly sanitized.
 *.local.json
 *.backup.json
+*.pnhbackup
 exports/
+encrypted_exports/
 
 # Future local companion private storage/runtime artifacts.
 *.vault

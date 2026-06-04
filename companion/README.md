@@ -95,6 +95,9 @@ Endpoints:
 ```bash
 python3 scripts/companion_smoke_check.py
 python3 scripts/encrypted_vault_smoke_check.py
+python3 scripts/encrypted_vault_backup_restore_smoke_check.py
+python3 scripts/encrypted_vault_delete_smoke_check.py
+python3 scripts/plaintext_migration_audit_smoke_check.py
 python3 scripts/private_inbox_smoke_check.py
 python3 scripts/browser_bridge_smoke_check.py
 ```
@@ -110,6 +113,10 @@ The encrypted vault smoke check verifies fail-closed crypto/passphrase gates,
 AES-GCM encrypted writes, wrong-passphrase rejection, tamper rejection,
 redacted API/status responses, and plaintext absence in SQLite bytes.
 
+The lifecycle smoke checks verify encrypted backup/restore, wrong backup
+passphrase rejection, backup tamper rejection, delete metadata removal, safe
+delete audit, and plaintext migration audit without printing private values.
+
 The browser bridge smoke check verifies unsafe config rejection, CORS,
 one-time pairing, in-memory session auth compatibility, redacted responses, and
 legacy bearer-token compatibility without printing secret values.
@@ -117,9 +124,7 @@ legacy bearer-token compatibility without printing secret values.
 ## Next Approval Gates
 
 - real-data import adapters
-- backup/delete/restore workflow
-- encrypted export/import
-- plaintext-to-encrypted migration
+- plaintext-to-encrypted migration apply
 - OS keychain or packaged passphrase prompt
 - packaging or distribution
 - LAN/mobile-device pairing beyond loopback

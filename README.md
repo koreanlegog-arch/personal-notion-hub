@@ -129,7 +129,8 @@ Current limits:
 - no file write from import preview mode
 - browser UI bridge is local-only and disabled unless the companion is started with explicit bridge flags
 - no phone/contact/calendar/recording adapters yet
-- no backup/delete/restore workflow yet
+- encrypted backup/restore/delete scripts are available for encrypted capture rows
+- plaintext migration is audit-only; conversion requires separate approval
 - no OS keychain integration yet
 
 Dependency boundary:
@@ -157,7 +158,7 @@ http://127.0.0.1:8765/api/health
 http://127.0.0.1:8765/api/schema
 ```
 
-Actual phone/contact/calendar/recording adapters, external dispatch, non-loopback access, encrypted backup/delete/restore, and packaging remain separate approval gates.
+Actual phone/contact/calendar/recording adapters, external dispatch, non-loopback access, plaintext migration apply, OS keychain integration, and packaging remain separate approval gates.
 
 ## Browser Companion Bridge
 
@@ -233,6 +234,33 @@ Run the encrypted vault smoke check:
 python3 scripts/encrypted_vault_smoke_check.py
 ```
 
+Encrypted backup/restore/delete lifecycle scripts:
+
+```bash
+read -rsp "PNH backup passphrase: " PNH_BACKUP_PASSPHRASE
+export PNH_BACKUP_PASSPHRASE
+
+python3 scripts/encrypted_vault_backup.py \
+  --out companion/private/backups/pnh-$(date +%Y%m%d).pnhbackup
+
+python3 scripts/encrypted_vault_restore.py \
+  --backup companion/private/backups/pnh-YYYYMMDD.pnhbackup
+
+python3 scripts/encrypted_vault_delete.py \
+  --capture-id capture-id-to-delete \
+  --confirm DELETE_CAPTURE
+
+python3 scripts/plaintext_migration_audit.py --fail-on-plaintext
+```
+
+Run lifecycle smoke checks:
+
+```bash
+python3 scripts/encrypted_vault_backup_restore_smoke_check.py
+python3 scripts/encrypted_vault_delete_smoke_check.py
+python3 scripts/plaintext_migration_audit_smoke_check.py
+```
+
 Encrypted vault boundaries:
 
 - encrypted vault mode is disabled by default
@@ -241,7 +269,11 @@ Encrypted vault boundaries:
 - API responses and default status output are metadata-only
 - wrong passphrase and tampered ciphertext are rejected
 - existing plaintext private inbox rows are not migrated automatically
-- backup/delete/restore and encrypted export/import are not implemented yet
+- encrypted backups are encrypted envelope files, not plaintext JSON exports
+- restore skips duplicate IDs unless `--replace` is explicitly provided
+- delete requires `--confirm DELETE_CAPTURE`
+- plaintext migration audit reports counts only and does not mutate the DB
+- OS keychain, plaintext migration apply, adapter ingestion, and forensic secure erase are not implemented yet
 
 ## Local Private Inbox MVP
 
@@ -346,6 +378,7 @@ GitHub Pages custom workflow 사용은 repository Pages settings에서 GitHub Ac
 - 기본 web UI에는 계정/auth 없음
 - companion private inbox에는 local bearer token auth 사용
 - encrypted vault mode는 local passphrase 환경변수와 application-level AES-GCM encryption 사용
+- encrypted backup/restore/delete lifecycle scripts are local-only and metadata-only in output
 - 다중 기기 sync 없음
 - collaboration 없음
 - localStorage와 IndexedDB 기반이므로 브라우저/기기 보안에 의존

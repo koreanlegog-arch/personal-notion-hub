@@ -22,10 +22,13 @@ from typing import Any
 SCHEMA_VERSION = 1
 KDF_NAME = "PBKDF2-HMAC-SHA256"
 ALGORITHM = "AES-256-GCM"
+BACKUP_KIND = "pnh.encrypted-vault-backup"
+BACKUP_SCHEMA_VERSION = 1
 KDF_ITERATIONS = 390_000
 SALT_BYTES = 16
 NONCE_BYTES = 12
 MAX_CAPTURE_BYTES = 128 * 1024
+MAX_BACKUP_BYTES = 10 * 1024 * 1024
 MIN_PASSPHRASE_LENGTH = 16
 
 
@@ -89,6 +92,7 @@ def normalize_capture_for_vault(record: Any) -> dict[str, Any]:
     sensitivity = compact(record.get("sensitivity") or "private")
     status = compact(record.get("status") or "inbox")
     created_at = compact(record.get("created_at") or record.get("createdAt") or utc_now())
+    stored_at = compact(record.get("stored_at") or record.get("storedAt") or utc_now())
     capture_id = compact(record.get("id") or f"capture-{secrets.token_hex(12)}")
 
     sanitized_payload = dict(record)
@@ -107,7 +111,7 @@ def normalize_capture_for_vault(record: Any) -> dict[str, Any]:
             "sensitivity": sensitivity,
             "status": status,
             "created_at": created_at,
-            "stored_at": utc_now(),
+            "stored_at": stored_at,
             "storage_mode": "encrypted-vault",
         },
         "private": {
@@ -156,6 +160,17 @@ class EncryptedVault:
                   algorithm TEXT NOT NULL,
                   nonce BLOB NOT NULL,
                   ciphertext BLOB NOT NULL
+                )
+                """
+            )
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS audit_events (
+                  id INTEGER PRIMARY KEY AUTOINCREMENT,
+                  event_type TEXT NOT NULL,
+                  capture_id TEXT,
+                  source TEXT,
+                  created_at TEXT NOT NULL
                 )
                 """
             )
@@ -281,6 +296,20 @@ class EncryptedVault:
             raise EncryptedVaultError("capture not found")
         return self.decrypt_capture_row(row)
 
+    def list_decrypted_captures(self) -> list[dict[str, Any]]:
+        self.init()
+        with sqlite3.connect(self.db_path) as conn:
+            conn.row_factory = sqlite3.Row
+            rows = conn.execute(
+                """
+                SELECT id, source, kind, sensitivity, status, created_at, stored_at,
+                       storage_mode, key_id, algorithm, nonce, ciphertext
+                FROM encrypted_mobile_captures
+                ORDER BY stored_at ASC, id ASC
+                """
+            ).fetchall()
+        return [self.decrypt_capture_row(row) for row in rows]
+
     def _derive_key(self) -> bytes:
         _, PBKDF2HMAC, hashes, _ = _load_crypto()
         salt = self._read_meta("salt")
@@ -366,6 +395,159 @@ def decrypt_capture_row(
     return active_vault.decrypt_capture_row(row)
 
 
+def export_encrypted_backup(
+    vault: EncryptedVault,
+    backup_path: str | Path,
+    backup_passphrase: str,
+) -> dict[str, Any]:
+    vault.init()
+    backup_passphrase = require_passphrase(backup_passphrase)
+    captures = [_backup_capture_payload(capture) for capture in vault.list_decrypted_captures()]
+    payload = {
+        "schemaVersion": BACKUP_SCHEMA_VERSION,
+        "kind": BACKUP_KIND,
+        "exportedAt": utc_now(),
+        "captureCount": len(captures),
+        "captures": captures,
+    }
+    plaintext = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    if len(plaintext) > MAX_BACKUP_BYTES:
+        raise EncryptedVaultError("encrypted vault backup payload too large")
+
+    salt = os.urandom(SALT_BYTES)
+    nonce = os.urandom(NONCE_BYTES)
+    envelope_header = {
+        "schemaVersion": BACKUP_SCHEMA_VERSION,
+        "kind": BACKUP_KIND,
+        "algorithm": ALGORITHM,
+        "kdf": KDF_NAME,
+        "kdfIterations": KDF_ITERATIONS,
+        "salt": _b64encode(salt),
+        "nonce": _b64encode(nonce),
+        "createdAt": utc_now(),
+    }
+    ciphertext = _load_crypto()[0](_derive_key_from_passphrase(backup_passphrase, salt)).encrypt(
+        nonce,
+        plaintext,
+        _backup_associated_data(envelope_header),
+    )
+    envelope = {**envelope_header, "ciphertext": _b64encode(ciphertext)}
+
+    path = Path(backup_path).expanduser().resolve()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(envelope, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    _apply_dir_mode(path.parent)
+    _apply_file_mode(path)
+    return {
+        "backupPath": _safe_path_label(path),
+        "captureCount": len(captures),
+        "encrypted": True,
+        "algorithm": ALGORITHM,
+        "secretValuePrinted": False,
+    }
+
+
+def restore_encrypted_backup(
+    vault: EncryptedVault,
+    backup_path: str | Path,
+    backup_passphrase: str,
+    *,
+    replace: bool = False,
+) -> dict[str, Any]:
+    vault.init()
+    payload = decrypt_backup_payload(backup_path, backup_passphrase)
+    captures = payload.get("captures")
+    if not isinstance(captures, list):
+        raise EncryptedVaultError("encrypted backup captures are invalid")
+
+    restored = 0
+    skipped_existing = 0
+    with sqlite3.connect(vault.db_path) as conn:
+        existing_ids = {
+            row[0]
+            for row in conn.execute("SELECT id FROM encrypted_mobile_captures").fetchall()
+        }
+    for capture in captures:
+        record = _restore_capture_record(capture)
+        capture_id = record["id"]
+        if capture_id in existing_ids:
+            if not replace:
+                skipped_existing += 1
+                continue
+            delete_encrypted_capture(vault, capture_id)
+        vault.encrypt_capture_record(record)
+        restored += 1
+    return {
+        "backupPath": _safe_path_label(Path(backup_path).expanduser().resolve()),
+        "restoredCount": restored,
+        "skippedExistingCount": skipped_existing,
+        "replace": replace,
+        "secretValuePrinted": False,
+    }
+
+
+def decrypt_backup_payload(backup_path: str | Path, backup_passphrase: str) -> dict[str, Any]:
+    backup_passphrase = require_passphrase(backup_passphrase)
+    path = Path(backup_path).expanduser().resolve()
+    if not path.exists():
+        raise EncryptedVaultError("encrypted backup file is missing")
+    raw_text = path.read_text(encoding="utf-8")
+    if len(raw_text.encode("utf-8")) > MAX_BACKUP_BYTES:
+        raise EncryptedVaultError("encrypted backup file too large")
+    try:
+        envelope = json.loads(raw_text)
+    except json.JSONDecodeError as exc:
+        raise EncryptedVaultError("encrypted backup is invalid JSON") from exc
+    if not isinstance(envelope, dict):
+        raise EncryptedVaultError("encrypted backup envelope must be an object")
+    _validate_backup_envelope(envelope)
+    salt = _b64decode(envelope["salt"])
+    nonce = _b64decode(envelope["nonce"])
+    ciphertext = _b64decode(envelope["ciphertext"])
+    _, _, _, InvalidTag = _load_crypto()
+    try:
+        plaintext = _load_crypto()[0](_derive_key_from_passphrase(backup_passphrase, salt)).decrypt(
+            nonce,
+            ciphertext,
+            _backup_associated_data(envelope),
+        )
+    except InvalidTag as exc:
+        raise EncryptedVaultError("encrypted backup decryption failed") from exc
+    try:
+        payload = json.loads(plaintext.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise EncryptedVaultError("encrypted backup payload is invalid") from exc
+    if payload.get("schemaVersion") != BACKUP_SCHEMA_VERSION or payload.get("kind") != BACKUP_KIND:
+        raise EncryptedVaultError("encrypted backup payload version is unsupported")
+    return payload
+
+
+def delete_encrypted_capture(vault: EncryptedVault, capture_id: str, *, vacuum: bool = False) -> dict[str, Any]:
+    vault.init()
+    normalized_id = compact(capture_id)
+    if not normalized_id:
+        raise EncryptedVaultError("capture id is required")
+    with sqlite3.connect(vault.db_path) as conn:
+        cursor = conn.execute("DELETE FROM encrypted_mobile_captures WHERE id = ?", (normalized_id,))
+        deleted = cursor.rowcount
+        if deleted:
+            conn.execute(
+                "INSERT INTO audit_events(event_type, capture_id, source, created_at) VALUES (?, ?, ?, ?)",
+                ("encrypted_mobile_capture_deleted", normalized_id, "local_vault", utc_now()),
+            )
+        if vacuum and deleted:
+            conn.commit()
+            conn.execute("VACUUM")
+    vault.apply_private_mode()
+    return {
+        "id": normalized_id,
+        "deleted": bool(deleted),
+        "deletedCount": int(deleted),
+        "vacuumRequested": vacuum,
+        "secretValuePrinted": False,
+    }
+
+
 def metadata_response(metadata: dict[str, Any]) -> dict[str, Any]:
     return {
         "id": metadata["id"],
@@ -378,6 +560,88 @@ def metadata_response(metadata: dict[str, Any]) -> dict[str, Any]:
         "encrypted": True,
         "algorithm": metadata.get("algorithm", ALGORITHM),
     }
+
+
+def _backup_capture_payload(capture: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "id": capture["id"],
+        "source": capture["source"],
+        "kind": capture["kind"],
+        "sensitivity": capture["sensitivity"],
+        "status": capture["status"],
+        "createdAt": capture["created_at"],
+        "storedAt": capture["stored_at"],
+        "title": capture["title"],
+        "body": capture["body"],
+        "payloadJson": capture["payload_json"],
+    }
+
+
+def _restore_capture_record(capture: Any) -> dict[str, Any]:
+    if not isinstance(capture, dict):
+        raise EncryptedVaultError("encrypted backup capture must be an object")
+    payload_json = capture.get("payloadJson")
+    if not isinstance(payload_json, str):
+        raise EncryptedVaultError("encrypted backup capture payload is invalid")
+    try:
+        payload = json.loads(payload_json)
+    except json.JSONDecodeError as exc:
+        raise EncryptedVaultError("encrypted backup capture payload JSON is invalid") from exc
+    if not isinstance(payload, dict):
+        raise EncryptedVaultError("encrypted backup capture payload must be an object")
+    payload["id"] = capture.get("id")
+    payload["title"] = capture.get("title")
+    payload["body"] = capture.get("body")
+    payload["source"] = capture.get("source")
+    payload["kind"] = capture.get("kind")
+    payload["sensitivity"] = capture.get("sensitivity")
+    payload["status"] = capture.get("status")
+    payload["created_at"] = capture.get("createdAt")
+    payload["stored_at"] = capture.get("storedAt")
+    return payload
+
+
+def _validate_backup_envelope(envelope: dict[str, Any]) -> None:
+    expected = {
+        "schemaVersion": BACKUP_SCHEMA_VERSION,
+        "kind": BACKUP_KIND,
+        "algorithm": ALGORITHM,
+        "kdf": KDF_NAME,
+        "kdfIterations": KDF_ITERATIONS,
+    }
+    for key, value in expected.items():
+        if envelope.get(key) != value:
+            raise EncryptedVaultError("encrypted backup envelope version is unsupported")
+    for key in ("salt", "nonce", "ciphertext", "createdAt"):
+        if not isinstance(envelope.get(key), str) or not envelope[key]:
+            raise EncryptedVaultError("encrypted backup envelope is incomplete")
+
+
+def _derive_key_from_passphrase(passphrase: str, salt: bytes) -> bytes:
+    _, PBKDF2HMAC, hashes, _ = _load_crypto()
+    kdf = PBKDF2HMAC(
+        algorithm=hashes.SHA256(),
+        length=32,
+        salt=salt,
+        iterations=KDF_ITERATIONS,
+    )
+    return kdf.derive(passphrase.encode("utf-8"))
+
+
+def _backup_associated_data(envelope: dict[str, Any]) -> bytes:
+    return json.dumps(
+        {
+            "schemaVersion": envelope["schemaVersion"],
+            "kind": envelope["kind"],
+            "algorithm": envelope["algorithm"],
+            "kdf": envelope["kdf"],
+            "kdfIterations": envelope["kdfIterations"],
+            "salt": envelope["salt"],
+            "nonce": envelope["nonce"],
+        },
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
 
 
 def _vault_from_args(db_path: str | Path | None, passphrase: str | None) -> EncryptedVault:
@@ -405,6 +669,24 @@ def _key_id(salt: bytes) -> str:
         )
     ).digest()[:12]
     return base64.urlsafe_b64encode(digest).decode("ascii").rstrip("=")
+
+
+def _b64encode(value: bytes) -> str:
+    return base64.urlsafe_b64encode(value).decode("ascii")
+
+
+def _b64decode(value: str) -> bytes:
+    try:
+        return base64.urlsafe_b64decode(value.encode("ascii"))
+    except (ValueError, UnicodeEncodeError) as exc:
+        raise EncryptedVaultError("encrypted backup base64 value is invalid") from exc
+
+
+def _safe_path_label(path: Path) -> str:
+    try:
+        return str(path.resolve().relative_to(Path(__file__).resolve().parents[1]))
+    except ValueError:
+        return "[outside-project-private-file]"
 
 
 def _apply_dir_mode(path: Path) -> None:

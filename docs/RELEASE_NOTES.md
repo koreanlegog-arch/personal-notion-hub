@@ -1,5 +1,36 @@
 # Release Notes
 
+## 2026-06-04 - Encrypted Vault Lifecycle MVP
+
+### Summary
+
+Added encrypted backup, restore, delete, and plaintext migration audit workflows for local encrypted vault captures.
+
+### Included
+
+- encrypted backup envelope creation with schema, algorithm, KDF, salt, nonce, and ciphertext
+- encrypted restore from backup into a fresh or existing vault
+- duplicate restore skip by default and explicit replace option
+- encrypted capture delete by ID with confirmation phrase
+- non-sensitive delete audit event
+- plaintext migration audit that reports counts and category counts only
+- lifecycle smoke checks for backup/restore, delete, and migration audit
+
+### Boundaries
+
+- No plaintext sensitive JSON backup
+- No plaintext migration apply/conversion
+- No OS keychain integration
+- No forensic secure erase guarantee
+- No real phone/contact/calendar/recording adapters
+- No real private data in tests or evidence
+
+### Verification
+
+Recorded in:
+
+- `ops/runs/PNH-VAULT-LIFECYCLE-MVP-20260604/`
+
 ## 2026-06-04 - Local Encrypted Vault MVP
 
 ### Summary
@@ -21,9 +52,8 @@ Added explicit encrypted vault mode for local companion captures so supervisor-a
 
 - No package installation or dependency manifest change
 - No OS keychain integration yet
-- No encrypted backup/delete/restore yet
-- No encrypted export/import yet
-- No plaintext-to-encrypted migration yet
+- Encrypted capture backup/delete/restore is now implemented in the lifecycle MVP
+- Plaintext-to-encrypted migration apply is still not implemented
 - No real phone/contact/calendar/recording adapters
 - No real private data in tests or evidence
 

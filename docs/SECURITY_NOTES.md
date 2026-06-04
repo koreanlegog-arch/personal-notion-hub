@@ -163,14 +163,13 @@ Residual risks:
 
 - plaintext private inbox mode is not encrypted at rest and should not be used for routine high-sensitivity storage
 - token file security depends on the local OS account
-- no backup/delete/restore workflow exists yet
 - encrypted vault passphrase management is still manual; OS keychain or packaged prompt is not implemented
-- existing plaintext private inbox rows are not migrated automatically
-- encrypted export/import is not implemented
+- existing plaintext private inbox rows are not migrated automatically; audit-only detection exists
+- encrypted capture backup/restore/delete exists, but forensic secure erase and encrypted attachment/audio export are not implemented
 - browser session token is memory-only, so reload requires re-pairing
 - screenshot redaction is best-effort UI masking, not a substitute for fake-fixture QA
 
-Encrypted vault mode is the minimum local path for supervisor-approved sensitive testing. Data lifecycle controls, backup/delete/restore, plaintext migration, and automated screenshot-safe QA remain release blockers before routine high-sensitivity operation or distribution.
+Encrypted vault mode is the minimum local path for supervisor-approved sensitive testing. Plaintext migration apply, OS keychain/passphrase hardening, adapter-specific data policies, and automated screenshot-safe QA remain release blockers before routine high-sensitivity operation or distribution.
 
 ## XSS Mitigation
 

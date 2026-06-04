@@ -28,7 +28,7 @@ The current GitHub Pages/static web app remains useful as a public-safe demo she
 - Local companion now supports explicit loopback browser bridge mode for synthetic Launch UI pairing.
 - Local companion now supports explicit encrypted vault mode for sensitive local captures when `cryptography` and a local passphrase env are available.
 
-This is acceptable for a demo, low-risk local notes, proving the private data ingress path, and supervisor-approved sensitive local testing in encrypted vault mode. It is not yet a full long-term private-data system because backup/delete/restore, encrypted export/import, plaintext migration, and adapter-specific policies are still missing.
+This is acceptable for a demo, low-risk local notes, proving the private data ingress path, and supervisor-approved sensitive local testing in encrypted vault mode. It is not yet a full long-term private-data system because plaintext migration apply, OS keychain/passphrase hardening, real-data adapters, and adapter-specific policies are still missing.
 
 ## Public Shell Vs Private Data Plane
 
@@ -335,9 +335,9 @@ Not yet implemented:
 - OS keychain integration
 - phone/contact/calendar/recording adapters
 - local transcription
-- backup/delete/restore workflow for sensitive records
-- plaintext-to-encrypted migration
-- encrypted export/import
+- plaintext-to-encrypted migration apply
+- encrypted attachment/audio export/import
+- OS keychain integration
 
 ## Implemented Encrypted Vault MVP
 
@@ -360,13 +360,19 @@ Implemented protections:
 Not yet implemented:
 
 - OS keychain or packaged passphrase prompt
-- backup/delete/restore workflow
-- encrypted export/import
-- plaintext private inbox migration
+- plaintext private inbox migration apply
 - local search over encrypted private fields
 - adapter-specific ingestion for real contacts, calendar, calls, recordings, or transcripts
 
-This MVP is sufficient to prove that a mobile-like input can reach workspace-local encrypted storage. For routine high-sensitivity operation, explicit backup/delete workflows, encrypted export/import, and adapter-specific policies are the next blockers.
+Implemented lifecycle controls:
+
+- encrypted backup envelope creation
+- encrypted restore into a fresh or existing vault
+- duplicate restore skip by default
+- explicit capture delete with confirmation phrase
+- plaintext migration audit without value disclosure
+
+This MVP is sufficient to prove that a mobile-like input can reach workspace-local encrypted storage and can be backed up, restored, and deleted at row level. For routine high-sensitivity operation, plaintext migration apply, passphrase hardening, real-data adapters, and adapter-specific policies are the next blockers.
 
 ## Candidate Vault Designs
 
@@ -410,8 +416,8 @@ Default for first sensitive implementation:
 6. Add authenticated private inbox write endpoint and local SQLite store. Done.
 7. Add secure pairing between UI and companion. Done for loopback-only synthetic Launch bridge.
 8. Add encrypted vault schema. Done for capture records.
-9. Add encrypted export/import/delete validation.
-10. Add plaintext-to-encrypted migration guard.
+9. Add encrypted export/import/delete validation. Done for encrypted capture rows.
+10. Add plaintext-to-encrypted migration guard. Done as audit-only.
 11. Add selected real-data import adapters one by one, each behind approval.
 12. Only then consider distribution to close friends.
 
@@ -456,9 +462,8 @@ Separate approval is still required before:
 
 Upgrade the encrypted vault MVP into an operational private-data system. The next implementation should prove:
 
-- backup/delete/restore workflow
-- encrypted export/import
-- plaintext-to-encrypted migration audit
+- plaintext-to-encrypted migration apply
+- OS keychain or packaged passphrase prompt
 - redacted review UI for sensitive records
 - adapter-by-adapter approval gates for phone, calendar, contacts, recordings, and transcripts
 
@@ -504,5 +509,6 @@ Current contract:
 - run with `python3 companion/server.py --host 127.0.0.1 --port 8765 --enable-private-inbox --enable-encrypted-vault`
 - keep `PNH_VAULT_PASSPHRASE` local and do not record it in chat, screenshots, logs, or docs
 - validate with `python3 scripts/encrypted_vault_smoke_check.py`
+- validate lifecycle with `python3 scripts/encrypted_vault_backup_restore_smoke_check.py`, `python3 scripts/encrypted_vault_delete_smoke_check.py`, and `python3 scripts/plaintext_migration_audit_smoke_check.py`
 
 The critical success criterion is encrypted source-to-workspace persistence with redacted evidence.

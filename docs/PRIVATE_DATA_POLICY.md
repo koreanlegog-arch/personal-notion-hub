@@ -102,12 +102,17 @@ Current MVP:
 
 Remaining blockers before routine high-sensitivity operation:
 
-- backup/delete/restore workflow
-- encrypted export/import
-- plaintext-to-encrypted migration check
+- plaintext-to-encrypted migration apply
 - OS keychain or packaged passphrase prompt
 - screenshot-safe automated QA
 - adapter-specific policies for contacts, calendar, calls, recordings, and transcripts
+
+Implemented lifecycle controls:
+
+- encrypted backup envelope creation with no plaintext JSON export
+- encrypted restore with duplicate skip by default and explicit replace option
+- encrypted capture delete by ID with confirmation phrase
+- plaintext migration audit that reports counts only and does not mutate the DB
 
 ### Local Private Inbox MVP
 
@@ -142,7 +147,7 @@ Limitations:
 - pairing code is manually copied from local terminal and must not be recorded
 - browser session is memory-only and requires re-pairing after reload
 
-The plaintext MVP is acceptable for proving source-to-workspace persistence and compatibility. For sensitive local testing, use encrypted vault mode. Before routine use with high-sensitivity real data, add backup/delete workflow, encrypted export/import, and automated redaction validation.
+The plaintext MVP is acceptable for proving source-to-workspace persistence and compatibility. For sensitive local testing, use encrypted vault mode. Before routine use with high-sensitivity real data, add plaintext migration apply policy, OS keychain/passphrase hardening, and automated redaction validation.
 
 ## Call And Recording Data
 

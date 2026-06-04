@@ -33,7 +33,14 @@ REQUIRED = [
     "scripts/private_inbox_init.py",
     "scripts/simulate_mobile_capture.py",
     "scripts/private_inbox_status.py",
+    "scripts/encrypted_vault_backup.py",
+    "scripts/encrypted_vault_restore.py",
+    "scripts/encrypted_vault_delete.py",
+    "scripts/plaintext_migration_audit.py",
+    "scripts/encrypted_vault_backup_restore_smoke_check.py",
+    "scripts/encrypted_vault_delete_smoke_check.py",
     "scripts/encrypted_vault_smoke_check.py",
+    "scripts/plaintext_migration_audit_smoke_check.py",
     "scripts/private_inbox_smoke_check.py",
 ]
 
@@ -170,7 +177,11 @@ def assert_encrypted_vault_contracts() -> None:
     expected_vault = [
         "AES-256-GCM",
         "PBKDF2-HMAC-SHA256",
+        "pnh.encrypted-vault-backup",
         "encrypted_mobile_captures",
+        "export_encrypted_backup",
+        "restore_encrypted_backup",
+        "delete_encrypted_capture",
         "EncryptedVaultError",
         "cryptography_available",
         "load_vault_from_env",
@@ -183,11 +194,22 @@ def assert_encrypted_vault_contracts() -> None:
     expected_runtime = [
         "--enable-encrypted-vault",
         "--vault-passphrase-env",
+        "--backup-passphrase-env",
         "PNH_VAULT_PASSPHRASE",
+        "PNH_BACKUP_PASSPHRASE",
         "encrypted_vault_enabled",
         "private_storage_mode",
+        "plaintextRowsDetected",
     ]
-    runtime_text = "\n".join([server, init_script, status_script])
+    lifecycle_scripts = "\n".join(
+        [
+            (ROOT / "scripts/encrypted_vault_backup.py").read_text(encoding="utf-8"),
+            (ROOT / "scripts/encrypted_vault_restore.py").read_text(encoding="utf-8"),
+            (ROOT / "scripts/encrypted_vault_delete.py").read_text(encoding="utf-8"),
+            (ROOT / "scripts/plaintext_migration_audit.py").read_text(encoding="utf-8"),
+        ]
+    )
+    runtime_text = "\n".join([server, init_script, status_script, lifecycle_scripts])
     for token in expected_runtime:
         if token not in runtime_text:
             raise SystemExit(f"missing_encrypted_runtime_contract={token}")
@@ -196,9 +218,20 @@ def assert_encrypted_vault_contracts() -> None:
         "wrong_passphrase_accepted=true",
         "tampered_ciphertext_accepted=true",
         "secret_value_printed=false",
+        "encrypted_vault_backup_restore_smoke_check_pass=true",
+        "encrypted_vault_delete_smoke_check_pass=true",
+        "plaintext_migration_audit_smoke_check_pass=true",
     ]
+    smoke_text = "\n".join(
+        [
+            smoke,
+            (ROOT / "scripts/encrypted_vault_backup_restore_smoke_check.py").read_text(encoding="utf-8"),
+            (ROOT / "scripts/encrypted_vault_delete_smoke_check.py").read_text(encoding="utf-8"),
+            (ROOT / "scripts/plaintext_migration_audit_smoke_check.py").read_text(encoding="utf-8"),
+        ]
+    )
     for token in expected_smoke:
-        if token not in smoke:
+        if token not in smoke_text:
             raise SystemExit(f"missing_encrypted_smoke_contract={token}")
 
 
