@@ -62,6 +62,7 @@ REQUIRED = [
     "scripts/phone_ingress_smoke_check.py",
     "scripts/phone_ingress_lan_info.py",
     "scripts/phone_ingress_reachability_check.py",
+    "scripts/tailnet_ingress_smoke_check.py",
     "tests/redacted-ui.spec.cjs",
     "scripts/encrypted_vault_backup_restore_smoke_check.py",
     "scripts/encrypted_vault_delete_smoke_check.py",

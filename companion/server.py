@@ -82,6 +82,7 @@ class CompanionServer(ThreadingHTTPServer):
         browser_bridge_enabled: bool = False,
         allowed_origin: str | None = None,
         phone_ingress_enabled: bool = False,
+        tailnet_ingress_enabled: bool = False,
         browser_session_ttl_seconds: int = BROWSER_SESSION_TTL_SECONDS,
         browser_pairing_ttl_seconds: int = BROWSER_PAIRING_TTL_SECONDS,
     ) -> None:
@@ -93,6 +94,7 @@ class CompanionServer(ThreadingHTTPServer):
         self.browser_bridge_enabled = browser_bridge_enabled
         self.allowed_origin = allowed_origin
         self.phone_ingress_enabled = phone_ingress_enabled
+        self.tailnet_ingress_enabled = tailnet_ingress_enabled
         self.browser_session_ttl_seconds = browser_session_ttl_seconds
         self.browser_pairing_ttl_seconds = browser_pairing_ttl_seconds
         self.browser_pairing_code = secrets.token_urlsafe(12) if browser_bridge_enabled else ""
@@ -153,6 +155,10 @@ class CompanionHandler(BaseHTTPRequestHandler):
                         "enabled": self.server.phone_ingress_enabled,
                         "staticUiServed": self.server.phone_ingress_enabled,
                     },
+                    "tailnetIngress": {
+                        "enabled": self.server.tailnet_ingress_enabled,
+                        "staticUiServed": self.server.tailnet_ingress_enabled,
+                    },
                     "writesEnabled": self.server.private_enabled,
                     "authRequired": self.server.private_enabled,
                     "privateStoreConfigured": self.server.private_enabled,
@@ -188,10 +194,11 @@ class CompanionHandler(BaseHTTPRequestHandler):
                 "allowedOriginConfigured": bool(self.server.allowed_origin),
                 "responsePolicy": "metadata-only",
                 "phoneIngressEnabled": self.server.phone_ingress_enabled,
+                "tailnetIngressEnabled": self.server.tailnet_ingress_enabled,
             }
             self._send_json(HTTPStatus.OK, schema)
             return
-        if self.server.phone_ingress_enabled and self._serve_static_if_allowed(path):
+        if (self.server.phone_ingress_enabled or self.server.tailnet_ingress_enabled) and self._serve_static_if_allowed(path):
             return
         if path == "/api/private/summary":
             if not self._require_private_auth():
@@ -390,11 +397,11 @@ class CompanionHandler(BaseHTTPRequestHandler):
         return True
 
     def log_message(self, format: str, *args: Any) -> None:
-        client_label = "lan" if self.server.phone_ingress_enabled else "loopback"
+        client_label = _client_label(self.server)
         sys.stderr.write(f"companion_request method={self.command} path={self._path()} client={client_label}\n")
 
     def log_error(self, format: str, *args: Any) -> None:
-        client_label = "lan" if self.server.phone_ingress_enabled else "loopback"
+        client_label = _client_label(self.server)
         sys.stderr.write(f"companion_error method={self.command} path={self._path()} client={client_label}\n")
 
     def _path(self) -> str:
@@ -471,31 +478,39 @@ def create_server(
     browser_bridge_enabled: bool = False,
     allowed_origin: str | None = None,
     phone_ingress_enabled: bool = False,
+    tailnet_ingress_enabled: bool = False,
     browser_session_ttl_seconds: int = BROWSER_SESSION_TTL_SECONDS,
     browser_pairing_ttl_seconds: int = BROWSER_PAIRING_TTL_SECONDS,
 ) -> CompanionServer:
+    if phone_ingress_enabled and tailnet_ingress_enabled:
+        raise ValueError("phone ingress and tailnet ingress are separate modes")
     if host != ALLOWED_HOST and not phone_ingress_enabled:
         raise ValueError("companion server must bind to 127.0.0.1 only unless --enable-phone-ingress is set")
+    if tailnet_ingress_enabled and host != ALLOWED_HOST:
+        raise ValueError("tailnet ingress must bind to 127.0.0.1 and be exposed through Tailscale Serve")
     if phone_ingress_enabled and host not in PHONE_BIND_HOSTS and not _is_private_or_loopback_host(host):
         raise ValueError("phone ingress host must be 0.0.0.0, 127.0.0.1, or a private LAN IP")
-    if phone_ingress_enabled and not browser_bridge_enabled:
+    if (phone_ingress_enabled or tailnet_ingress_enabled) and not browser_bridge_enabled:
         raise ValueError("phone ingress requires --enable-browser-bridge")
     if browser_bridge_enabled:
         if not allowed_origin:
             raise ValueError("browser bridge requires --allowed-origin")
         parsed_origin = urlsplit(allowed_origin)
-        if (
+        if _has_origin_path_or_credentials(parsed_origin):
+            raise ValueError("browser bridge allowed origin must not include path, query, credentials, or fragment")
+        if tailnet_ingress_enabled:
+            if not _is_tailnet_allowed_origin(parsed_origin):
+                raise ValueError(
+                    "tailnet ingress allowed origin must be https://<device>.<tailnet>.ts.net "
+                    "or http://<tailnet-ip-or-dns>:8765"
+                )
+        elif (
             parsed_origin.scheme != "http"
             or not parsed_origin.hostname
             or not parsed_origin.port
-            or parsed_origin.path
-            or parsed_origin.query
-            or parsed_origin.fragment
-            or parsed_origin.username
-            or parsed_origin.password
         ):
             raise ValueError("browser bridge allowed origin must be http://<host>:<port>")
-        if phone_ingress_enabled:
+        elif phone_ingress_enabled:
             if parsed_origin.hostname in {"0.0.0.0", "localhost"}:
                 raise ValueError("phone ingress allowed origin must use a concrete loopback or private LAN host")
             if not _is_private_or_loopback_host(parsed_origin.hostname):
@@ -512,9 +527,28 @@ def create_server(
         browser_bridge_enabled=browser_bridge_enabled,
         allowed_origin=allowed_origin,
         phone_ingress_enabled=phone_ingress_enabled,
+        tailnet_ingress_enabled=tailnet_ingress_enabled,
         browser_session_ttl_seconds=browser_session_ttl_seconds,
         browser_pairing_ttl_seconds=browser_pairing_ttl_seconds,
     )
+
+
+def _has_origin_path_or_credentials(parsed_origin: Any) -> bool:
+    return bool(
+        parsed_origin.path
+        or parsed_origin.query
+        or parsed_origin.fragment
+        or parsed_origin.username
+        or parsed_origin.password
+    )
+
+
+def _client_label(server: CompanionServer) -> str:
+    if server.tailnet_ingress_enabled:
+        return "tailnet"
+    if server.phone_ingress_enabled:
+        return "lan"
+    return "loopback"
 
 
 def _is_private_or_loopback_host(host: str) -> bool:
@@ -523,6 +557,27 @@ def _is_private_or_loopback_host(host: str) -> bool:
     except ValueError:
         return False
     return parsed.is_private or parsed.is_loopback
+
+
+def _is_tailnet_ipv4_host(host: str) -> bool:
+    try:
+        parsed = ip_address(host)
+    except ValueError:
+        return False
+    return parsed.version == 4 and ip_address("100.64.0.0") <= parsed <= ip_address("100.127.255.255")
+
+
+def _is_tailnet_allowed_origin(parsed_origin) -> bool:
+    hostname = parsed_origin.hostname or ""
+    if (
+        parsed_origin.scheme == "https"
+        and hostname.endswith(".ts.net")
+        and parsed_origin.port in {None, 443}
+    ):
+        return True
+    if parsed_origin.scheme != "http" or parsed_origin.port != 8765:
+        return False
+    return hostname.endswith(".ts.net") or _is_tailnet_ipv4_host(hostname)
 
 
 def _static_path_allowed(rel: str) -> bool:
@@ -547,6 +602,7 @@ def main() -> int:
     parser.add_argument("--enable-browser-bridge", action="store_true", help="Enable exact-origin browser bridge pairing.")
     parser.add_argument("--allowed-origin", default="", help="Allowed browser origin, for example http://127.0.0.1:8000.")
     parser.add_argument("--enable-phone-ingress", action="store_true", help="Serve PNH UI/API for explicit private LAN phone testing.")
+    parser.add_argument("--enable-tailnet-ingress", action="store_true", help="Serve PNH UI/API through Tailscale Serve while binding only to 127.0.0.1.")
     parser.add_argument("--private-db", default="", help="Private inbox SQLite path. Default: companion/private/...")
     parser.add_argument("--token-file", default="", help="Auth token file path. Default: companion/private/auth_token")
     args = parser.parse_args()
@@ -594,6 +650,7 @@ def main() -> int:
             browser_bridge_enabled=args.enable_browser_bridge,
             allowed_origin=args.allowed_origin or None,
             phone_ingress_enabled=args.enable_phone_ingress,
+            tailnet_ingress_enabled=args.enable_tailnet_ingress,
         )
     except ValueError as exc:
         print(f"startup_error={exc}", file=sys.stderr)
@@ -606,6 +663,7 @@ def main() -> int:
     print(f"encrypted_vault_enabled={httpd.private_vault is not None}")
     print(f"browser_bridge_enabled={httpd.browser_bridge_enabled}")
     print(f"phone_ingress_enabled={httpd.phone_ingress_enabled}")
+    print(f"tailnet_ingress_enabled={httpd.tailnet_ingress_enabled}")
     if httpd.browser_bridge_enabled:
         print(f"browser_pairing_code={httpd.browser_pairing_code}")
         print(f"browser_pairing_code_ttl_seconds={httpd.browser_pairing_ttl_seconds}")
