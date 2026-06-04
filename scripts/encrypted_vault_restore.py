@@ -25,6 +25,9 @@ def main() -> int:
     parser.add_argument("--backup-passphrase-env", default="PNH_BACKUP_PASSPHRASE", help="Env var containing the backup decryption passphrase.")
     parser.add_argument("--prompt-vault-passphrase", action="store_true", help="Prompt for target vault passphrase without echo.")
     parser.add_argument("--prompt-backup-passphrase", action="store_true", help="Prompt for backup decryption passphrase without echo.")
+    parser.add_argument("--vault-passphrase-provider", default="", help="Optional target vault passphrase provider.")
+    parser.add_argument("--vault-passphrase-name", default="vault-passphrase", help="Provider secret name.")
+    parser.add_argument("--vault-passphrase-file", default="", help="Provider-specific secret file path.")
     parser.add_argument("--replace", action="store_true", help="Replace existing encrypted captures with matching IDs.")
     parser.add_argument("--allow-external-private-paths", action="store_true", help="Allow DB path outside companion/private for tests or explicit local operations.")
     args = parser.parse_args()
@@ -35,6 +38,9 @@ def main() -> int:
             env_name=args.vault_passphrase_env,
             label="vault",
             prompt=args.prompt_vault_passphrase,
+            provider=args.vault_passphrase_provider,
+            secret_name=args.vault_passphrase_name,
+            secret_path=args.vault_passphrase_file,
         ).value
         backup_passphrase = resolve_passphrase(
             env_name=args.backup_passphrase_env,

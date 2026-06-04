@@ -1,9 +1,7 @@
 """Passphrase input helpers for Personal Notion Hub local vault scripts.
 
-The provider supports environment variables and interactive no-echo prompts.
-It does not store passphrases. OS keychain storage is intentionally a separate
-approval gate until a backend can be used without exposing secrets in command
-arguments or logs.
+The provider supports environment variables, interactive no-echo prompts, and
+approved local secret backends. Callers must never print returned passphrases.
 """
 
 from __future__ import annotations
@@ -17,8 +15,10 @@ from typing import Callable
 
 try:
     from .encrypted_vault import MIN_PASSPHRASE_LENGTH
+    from .secret_backends import DEFAULT_PROVIDER, DEFAULT_SECRET_NAME, retrieve_secret
 except ImportError:  # pragma: no cover - supports direct companion script execution.
     from encrypted_vault import MIN_PASSPHRASE_LENGTH  # type: ignore
+    from secret_backends import DEFAULT_PROVIDER, DEFAULT_SECRET_NAME, retrieve_secret  # type: ignore
 
 
 PromptFunc = Callable[[str], str]
@@ -42,6 +42,9 @@ def resolve_passphrase(
     allow_env: bool = True,
     prompt: bool = False,
     confirm: bool = False,
+    provider: str = "",
+    secret_name: str = DEFAULT_SECRET_NAME,
+    secret_path: str = "",
     prompt_func: PromptFunc | None = None,
 ) -> PassphraseResult:
     """Resolve a passphrase from env or no-echo prompt.
@@ -56,6 +59,16 @@ def resolve_passphrase(
         if env_value:
             _validate_passphrase(env_value, label)
             return PassphraseResult(env_value, source=f"env:{env_name}")
+
+    if provider and not prompt:
+        if provider != DEFAULT_PROVIDER:
+            raise PassphraseProviderError("unsupported passphrase provider")
+        try:
+            provider_value = retrieve_secret(name=secret_name, provider=provider, path=secret_path)
+        except Exception as exc:
+            raise PassphraseProviderError("passphrase provider is unavailable") from exc
+        _validate_passphrase(provider_value, label)
+        return PassphraseResult(provider_value, source=f"provider:{provider}")
 
     if not prompt:
         raise PassphraseProviderError(
@@ -82,13 +95,13 @@ def keychain_readiness() -> dict[str, object]:
         "gnomeKeyringDaemonAvailable": bool(shutil.which("gnome-keyring-daemon")),
         "powershellExeAvailable": bool(shutil.which("powershell.exe")),
         "cmdkeyExeAvailable": bool(shutil.which("cmdkey.exe")),
-        "implementedBackends": [],
-        "recommendedMode": "prompt",
-        "keychainStorageImplemented": False,
+        "implementedBackends": ["windows-dpapi-file"],
+        "recommendedMode": "windows-dpapi-file" if shutil.which("powershell.exe") else "prompt",
+        "keychainStorageImplemented": True,
         "secretValuePrinted": False,
         "notes": [
             "env and prompt modes are implemented",
-            "OS keychain storage is not implemented because backend-specific safe stdin storage needs separate approval",
+            "windows-dpapi-file storage is implemented for approved local use",
             "cmdkey.exe is not used because password arguments can be exposed through process listings",
         ],
     }

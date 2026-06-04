@@ -130,8 +130,9 @@ Current limits:
 - browser UI bridge is local-only and disabled unless the companion is started with explicit bridge flags
 - no phone/contact/calendar/recording adapters yet
 - encrypted backup/restore/delete scripts are available for encrypted capture rows
-- plaintext migration is audit-only; conversion requires separate approval
-- prompt-first passphrase input is available; OS keychain storage/retrieval is not implemented yet
+- plaintext migration apply is available behind an explicit backup and confirmation gate
+- prompt-first passphrase input is available
+- `windows-dpapi-file` local passphrase storage is available for approved Windows + WSL use
 
 Dependency boundary:
 
@@ -241,6 +242,24 @@ export PNH_VAULT_PASSPHRASE
 python3 scripts/private_inbox_init.py --enable-encrypted-vault
 ```
 
+Windows + WSL DPAPI file mode is available after storing the passphrase locally:
+
+```bash
+python3 scripts/vault_secret_store.py \
+  --provider windows-dpapi-file \
+  --name vault-passphrase \
+  --prompt
+
+python3 scripts/vault_secret_status.py --provider windows-dpapi-file
+
+python3 companion/server.py \
+  --host 127.0.0.1 \
+  --port 8765 \
+  --enable-private-inbox \
+  --enable-encrypted-vault \
+  --vault-passphrase-provider windows-dpapi-file
+```
+
 Run the encrypted vault smoke check:
 
 ```bash
@@ -274,6 +293,11 @@ python3 scripts/encrypted_vault_rotate_passphrase.py \
   --confirm-new-vault-passphrase
 
 python3 scripts/plaintext_migration_audit.py --fail-on-plaintext
+
+python3 scripts/plaintext_migration_apply.py \
+  --preflight-backup companion/private/backups/pnh-YYYYMMDD.pnhbackup \
+  --confirm MIGRATE_PLAINTEXT_TO_ENCRYPTED \
+  --prompt-vault-passphrase
 ```
 
 Run lifecycle smoke checks:
@@ -283,6 +307,9 @@ python3 scripts/encrypted_vault_backup_restore_smoke_check.py
 python3 scripts/encrypted_vault_delete_smoke_check.py
 python3 scripts/encrypted_vault_rotation_smoke_check.py
 python3 scripts/plaintext_migration_audit_smoke_check.py
+python3 scripts/plaintext_migration_apply_smoke_check.py
+python3 scripts/vault_secret_smoke_check.py
+python3 scripts/redacted_browser_qa_check.py
 ```
 
 Encrypted vault boundaries:
@@ -300,8 +327,10 @@ Encrypted vault boundaries:
 - delete requires `--confirm DELETE_CAPTURE`
 - passphrase rotation requires `--confirm ROTATE_VAULT_PASSPHRASE` and an existing encrypted backup path
 - plaintext migration audit reports counts only and does not mutate the DB
-- OS keychain storage/retrieval, plaintext migration apply, adapter ingestion, passphrase recovery, and forensic secure erase are not implemented yet
-- OS keychain backend design is documented in `docs/PASSPHRASE_KEYCHAIN_BACKEND_DESIGN.md`; implementation requires `APPROVE_PNH_WINDOWS_DPAPI_FILE_BACKEND`
+- plaintext migration apply requires `--confirm MIGRATE_PLAINTEXT_TO_ENCRYPTED` and an existing encrypted backup path
+- `windows-dpapi-file` stores a DPAPI-protected blob under the current Windows user's LocalAppData path
+- passphrase recovery is policy-only; there is no cryptographic recovery mechanism
+- real-data adapter ingestion and forensic secure erase are not implemented yet
 
 ## Local Private Inbox MVP
 
@@ -407,6 +436,7 @@ GitHub Pages custom workflow 사용은 repository Pages settings에서 GitHub Ac
 - companion private inbox에는 local bearer token auth 사용
 - encrypted vault mode는 no-echo prompt 또는 local passphrase 환경변수와 application-level AES-GCM encryption 사용
 - encrypted backup/restore/delete lifecycle scripts are local-only and metadata-only in output
+- `windows-dpapi-file` can store the vault passphrase locally for approved Windows + WSL use
 - 다중 기기 sync 없음
 - collaboration 없음
 - localStorage와 IndexedDB 기반이므로 브라우저/기기 보안에 의존

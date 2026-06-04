@@ -258,6 +258,91 @@ python3 companion/server.py \
 Supervisor notes:
 
 - do not record the passphrase in chat, screenshots, docs, logs, or evidence
+
+## Vault Secret Backend Checks
+
+Use only synthetic secrets in automated validation.
+
+Run:
+
+```bash
+python3 scripts/vault_secret_smoke_check.py
+```
+
+Expected:
+
+- `windows-dpapi-file` smoke is skipped when PowerShell/DPAPI bridge is unavailable
+- synthetic passphrase is stored as a DPAPI-protected file under Windows LocalAppData
+- status reports provider/name/set flags only
+- retrieve is validated in-process without printing the secret
+- delete requires `DELETE_VAULT_SECRET`
+- stdout/stderr do not include the synthetic secret value
+
+Manual approved operator flow:
+
+```bash
+python3 scripts/vault_secret_store.py --provider windows-dpapi-file --prompt
+python3 scripts/vault_secret_status.py --provider windows-dpapi-file
+python3 companion/server.py \
+  --host 127.0.0.1 \
+  --port 8765 \
+  --enable-private-inbox \
+  --enable-encrypted-vault \
+  --vault-passphrase-provider windows-dpapi-file
+```
+
+## Plaintext Migration Apply Checks
+
+Use only synthetic data in automated validation.
+
+Run:
+
+```bash
+python3 scripts/plaintext_migration_apply_smoke_check.py
+```
+
+Expected:
+
+- dry-run does not mutate plaintext rows
+- apply fails without an existing encrypted backup path
+- apply requires `MIGRATE_PLAINTEXT_TO_ENCRYPTED`
+- encrypted insert, plaintext delete, and audit event are transaction-scoped
+- plaintext rows are encrypted and then removed
+- encrypted records decrypt with the vault passphrase
+- synthetic private values are absent from DB bytes after apply
+- stdout/stderr do not include private values
+
+Manual approved operator flow:
+
+```bash
+python3 scripts/plaintext_migration_audit.py --fail-on-plaintext
+python3 scripts/encrypted_vault_backup.py \
+  --out companion/private/backups/pnh-YYYYMMDD.pnhbackup \
+  --prompt-vault-passphrase \
+  --prompt-backup-passphrase \
+  --confirm-backup-passphrase
+python3 scripts/plaintext_migration_apply.py \
+  --preflight-backup companion/private/backups/pnh-YYYYMMDD.pnhbackup \
+  --confirm MIGRATE_PLAINTEXT_TO_ENCRYPTED \
+  --prompt-vault-passphrase
+```
+
+## Redacted Browser QA Checks
+
+Run:
+
+```bash
+python3 scripts/redacted_browser_qa_check.py
+```
+
+Expected:
+
+- screenshot-redaction CSS masks `data-sensitive="true"` values
+- Launch UI contains redaction controls
+- companion bridge keeps session token in memory only
+- bridge does not use persistent browser token storage
+- CSP remains loopback-scoped for companion access
+- no real private values are required for this check
 - use environment variable mode only for non-interactive local runs where shell history and process evidence are controlled
 - use `scripts/private_inbox_status.py` without `--include-decrypted` for evidence
 

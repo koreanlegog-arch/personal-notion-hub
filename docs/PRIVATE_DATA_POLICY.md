@@ -99,15 +99,16 @@ Current MVP:
 - metadata-only API responses
 - redacted default status output
 - keychain readiness audit that prints capability flags only
+- approved `windows-dpapi-file` storage for Windows + WSL local passphrase persistence
 - backup-gated passphrase rotation
 - synthetic smoke tests for wrong passphrase, tamper rejection, and plaintext absence in DB bytes
+- backup-gated plaintext-to-encrypted migration apply with explicit confirmation
+- static redacted browser QA check for screenshot masking and token handling boundaries
 
 Remaining blockers before routine high-sensitivity operation:
 
-- plaintext-to-encrypted migration apply
-- OS keychain storage/retrieval
-- passphrase recovery
-- screenshot-safe automated QA
+- passphrase recovery drill and operator backup UX
+- live browser screenshot QA with redacted fixture evidence
 - adapter-specific policies for contacts, calendar, calls, recordings, and transcripts
 
 Implemented lifecycle controls:
@@ -117,6 +118,7 @@ Implemented lifecycle controls:
 - encrypted capture delete by ID with confirmation phrase
 - encrypted vault passphrase rotation with existing backup acknowledgement
 - plaintext migration audit that reports counts only and does not mutate the DB
+- plaintext migration apply that requires `MIGRATE_PLAINTEXT_TO_ENCRYPTED` and an existing encrypted backup path
 
 ### Local Private Inbox MVP
 
@@ -151,9 +153,9 @@ Limitations:
 - pairing code is manually copied from local terminal and must not be recorded
 - browser session is memory-only and requires re-pairing after reload
 
-The plaintext MVP is acceptable for proving source-to-workspace persistence and compatibility. For sensitive local testing, use encrypted vault mode with prompt-first passphrase handling. Before routine use with high-sensitivity real data, add plaintext migration apply policy, approved OS keychain storage/retrieval or recovery policy, and automated redaction validation.
+The plaintext MVP is acceptable for proving source-to-workspace persistence and compatibility. For sensitive local testing, use encrypted vault mode with prompt-first passphrase handling or the approved `windows-dpapi-file` provider. Before routine use with high-sensitivity real data, complete recovery drills, live redacted browser QA, and adapter-specific privacy gates.
 
-The current OS keychain backend design recommends `windows-dpapi-file` for the Windows + WSL environment, but implementation remains blocked until explicit approval.
+The current OS keychain backend is `windows-dpapi-file` for the Windows + WSL environment. It is not a cryptographic recovery mechanism and does not replace backup discipline.
 
 ## Call And Recording Data
 

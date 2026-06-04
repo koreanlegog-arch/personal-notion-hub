@@ -1,5 +1,38 @@
 # Release Notes
 
+## 2026-06-04 - Private Data Operations Hardening
+
+### Summary
+
+Implemented the next local-first private data controls for approved sensitive
+testing: Windows + WSL DPAPI file passphrase storage, passphrase recovery policy,
+backup-gated plaintext migration apply, redacted browser QA contracts, and
+real-data adapter privacy gate documentation.
+
+### Included
+
+- `windows-dpapi-file` local passphrase backend using PowerShell DPAPI protected strings
+- store/status/delete CLI wrappers that do not print secret values
+- provider integration for companion server, inbox initialization/status, backup, restore, delete, rotation, and migration scripts
+- passphrase recovery policy documenting that there is no cryptographic recovery mechanism
+- plaintext-to-encrypted migration apply gate requiring `MIGRATE_PLAINTEXT_TO_ENCRYPTED` and an existing encrypted backup path
+- redacted browser QA static check for screenshot masking and browser token handling boundaries
+- real-data adapter privacy gate for contacts, calendar, calls, recordings, transcripts, and external accounts
+
+### Boundaries
+
+- No real passphrase stored by automated tests
+- No real private data used in smoke checks or evidence
+- No package installation
+- No cloud sync, external API adapter, phone adapter, or Telegram/Discord data adapter
+- DPAPI blob is local to the current Windows user/machine and is not recovery
+
+### Verification
+
+Recorded in:
+
+- `ops/runs/PNH-PRIVATE-DATA-OPS-HARDENING-20260604/`
+
 ## 2026-06-04 - Keychain Backend Design Packet
 
 ### Summary

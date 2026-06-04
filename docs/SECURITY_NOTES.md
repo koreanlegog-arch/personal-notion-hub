@@ -123,7 +123,9 @@ Encrypted vault mode allowed:
 - passphrase loaded from no-echo local prompt or a configured environment variable name
 - prompt confirmation available for initialization and backup creation
 - keychain readiness audit reports capability flags without storing or printing secrets
+- `windows-dpapi-file` stores a DPAPI-protected passphrase blob for approved Windows + WSL use
 - passphrase rotation requires explicit confirmation and an existing encrypted backup path
+- plaintext migration apply requires explicit confirmation and an existing encrypted backup path
 - private title/body/payload encryption before SQLite persistence
 - AES-GCM authenticated encryption through installed `cryptography`
 - PBKDF2-HMAC-SHA256 key derivation with per-vault salt
@@ -162,20 +164,29 @@ Current private inbox protections:
 - encrypted vault mode fails closed if `cryptography` or required passphrase input is missing
 - encrypted vault smoke test checks wrong passphrase rejection, tamper rejection, redacted responses, and plaintext absence in SQLite bytes
 - passphrase provider smoke test checks env/prompt behavior, confirmation mismatch rejection, short passphrase rejection, and no secret output
+- DPAPI file backend smoke test checks synthetic store/status/retrieve/delete without printing the secret
 - rotation smoke test checks backup gate, old-passphrase rejection after rotation, new-passphrase decrypt, audit event, and no secret output
+- plaintext migration apply smoke test checks backup gate, confirmation gate, plaintext row deletion, encrypted readback, and no private value output
+- redacted browser QA check validates screenshot masking contracts and token persistence boundaries
 
 Residual risks:
 
 - plaintext private inbox mode is not encrypted at rest and should not be used for routine high-sensitivity storage
 - token file security depends on the local OS account
-- encrypted vault passphrase management is still manual; prompt input and backup-gated rotation are implemented but OS keychain storage/retrieval and recovery are not implemented
-- OS keychain backend design is documented in `docs/PASSPHRASE_KEYCHAIN_BACKEND_DESIGN.md`; current recommendation is `windows-dpapi-file` after explicit approval
-- existing plaintext private inbox rows are not migrated automatically; audit-only detection exists
+- encrypted vault passphrase recovery is not possible without the passphrase or a valid operator-managed backup/recovery copy
+- `windows-dpapi-file` is tied to the current Windows user/machine and is not a cross-device recovery mechanism
+- existing plaintext private inbox rows are not migrated automatically; apply requires backup and explicit confirmation
 - encrypted capture backup/restore/delete/rotation exists, but forensic secure erase and encrypted attachment/audio export are not implemented
 - browser session token is memory-only, so reload requires re-pairing
 - screenshot redaction is best-effort UI masking, not a substitute for fake-fixture QA
 
-Encrypted vault mode with prompt-first passphrase handling and backup-gated rotation is the minimum local path for supervisor-approved sensitive testing. Plaintext migration apply, OS keychain storage/retrieval, adapter-specific data policies, passphrase recovery, and automated screenshot-safe QA remain release blockers before routine high-sensitivity operation or distribution.
+Encrypted vault mode with prompt-first passphrase handling, optional
+`windows-dpapi-file` storage, backup-gated rotation, backup-gated plaintext
+migration apply, and redacted browser QA static checks is the minimum local path
+for supervisor-approved sensitive testing. Adapter-specific data policies,
+passphrase recovery drills, real browser screenshot evidence, and packaged
+operator UX remain release blockers before routine high-sensitivity operation
+or distribution.
 
 ## XSS Mitigation
 

@@ -28,7 +28,7 @@ The current GitHub Pages/static web app remains useful as a public-safe demo she
 - Local companion now supports explicit loopback browser bridge mode for synthetic Launch UI pairing.
 - Local companion now supports explicit encrypted vault mode for sensitive local captures when `cryptography` and local passphrase input are available.
 
-This is acceptable for a demo, low-risk local notes, proving the private data ingress path, and supervisor-approved sensitive local testing in encrypted vault mode. It is not yet a full long-term private-data system because plaintext migration apply, OS keychain storage/retrieval, real-data adapters, and adapter-specific policies are still missing.
+This is acceptable for a demo, low-risk local notes, proving the private data ingress path, and supervisor-approved sensitive local testing in encrypted vault mode. It is not yet a full long-term private-data system because real-data adapters, recovery UX, distribution packaging, and adapter-specific policies are still missing.
 
 ## Public Shell Vs Private Data Plane
 
@@ -213,6 +213,16 @@ virtual mobile input / Launch bridge packet
 -> AES-GCM encrypted SQLite record
 -> redacted metadata/status output
 -> optional local decrypt with passphrase for owner inspection
+```
+
+Implemented secret and migration controls:
+
+```text
+no-echo prompt or windows-dpapi-file provider
+-> encrypted vault open
+-> backup-gated plaintext migration apply
+-> plaintext row deletion after encrypted write
+-> metadata-only evidence
 ```
 
 Target long-term flow remains:

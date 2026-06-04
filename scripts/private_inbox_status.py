@@ -23,6 +23,9 @@ def main() -> int:
     parser.add_argument("--limit", type=int, default=5, help="Recent item count.")
     parser.add_argument("--vault-passphrase-env", default="", help="Optional env var for decrypted local-only inspection.")
     parser.add_argument("--prompt-vault-passphrase", action="store_true", help="Prompt for vault passphrase without echo for decrypted local-only inspection.")
+    parser.add_argument("--vault-passphrase-provider", default="", help="Optional passphrase provider for decrypted local-only inspection.")
+    parser.add_argument("--vault-passphrase-name", default="vault-passphrase", help="Provider secret name.")
+    parser.add_argument("--vault-passphrase-file", default="", help="Provider-specific secret file path.")
     parser.add_argument("--include-decrypted", action="store_true", help="Include decrypted values. Do not use for evidence.")
     args = parser.parse_args()
 
@@ -30,13 +33,16 @@ def main() -> int:
     try:
         vault = None
         if args.include_decrypted:
-            if not args.vault_passphrase_env and not args.prompt_vault_passphrase:
-                raise PrivateStoreError("--include-decrypted requires --vault-passphrase-env or --prompt-vault-passphrase")
+            if not args.vault_passphrase_env and not args.prompt_vault_passphrase and not args.vault_passphrase_provider:
+                raise PrivateStoreError("--include-decrypted requires passphrase env, prompt, or provider")
             vault_env = args.vault_passphrase_env or "PNH_VAULT_PASSPHRASE"
             vault_passphrase = resolve_passphrase(
                 env_name=vault_env,
                 label="vault",
                 prompt=args.prompt_vault_passphrase,
+                provider=args.vault_passphrase_provider,
+                secret_name=args.vault_passphrase_name,
+                secret_path=args.vault_passphrase_file,
             ).value
             vault = init_encrypted_vault(db_path, vault_passphrase)
         result = {

@@ -91,13 +91,20 @@ def main() -> int:
 
         readiness = keychain_readiness()
         assert_true(readiness["secretValuePrinted"] is False, "keychain_status_secret_printed=true")
-        assert_true(readiness["recommendedMode"] == "prompt", "keychain_recommended_mode_failed=true")
-        assert_true(readiness["keychainStorageImplemented"] is False, "keychain_storage_flag_failed=true")
+        if readiness["powershellExeAvailable"]:
+            assert_true(
+                readiness["recommendedMode"] == "windows-dpapi-file",
+                "keychain_recommended_mode_failed=true",
+            )
+            assert_true("windows-dpapi-file" in readiness["implementedBackends"], "keychain_backend_missing=true")
+            assert_true(readiness["keychainStorageImplemented"] is True, "keychain_storage_flag_failed=true")
+        else:
+            assert_true(readiness["recommendedMode"] == "prompt", "keychain_recommended_mode_failed=true")
 
     assert_no_secret_output(captured.getvalue())
     print("passphrase_provider_smoke_check_pass=true")
     print("passphrase_value_printed=false")
-    print("recommended_mode=prompt")
+    print(f"recommended_mode={keychain_readiness()['recommendedMode']}")
     return 0
 
 

@@ -2,7 +2,12 @@
 
 ## Status
 
-Design packet. No OS keychain storage or retrieval is implemented in this step.
+Implemented local backend for approved Windows + WSL use.
+
+`windows-dpapi-file` now stores a DPAPI-protected blob under the current
+Windows user's LocalAppData path. Prompt mode remains the safest manual default,
+and environment variable mode remains available for controlled non-interactive
+runs.
 
 ## Objective
 
@@ -17,11 +22,11 @@ Implemented:
 - confirmation prompts for new passphrases.
 - keychain readiness reporting without secret storage.
 - encrypted vault backup, restore, delete, and backup-gated passphrase rotation.
+- `windows-dpapi-file` passphrase store/status/delete/retrieve path for WSL.
 
 Not implemented:
 
-- OS keychain storage/retrieval.
-- passphrase recovery.
+- passphrase recovery; there is no cryptographic recovery mechanism.
 - real private-data adapter ingestion.
 
 ## Requirements
@@ -60,15 +65,15 @@ python3 companion/server.py \
 
 This remains the safest mode for manual local sessions.
 
-### Phase 2: Add Windows DPAPI Protected File Backend
+### Phase 2: Windows DPAPI Protected File Backend
 
-Proposed provider name:
+Provider name:
 
 ```text
 windows-dpapi-file
 ```
 
-Proposed local secret reference:
+Local secret reference:
 
 ```text
 service=personal-notion-hub
@@ -76,7 +81,7 @@ name=vault-passphrase
 scope=current-windows-user
 ```
 
-Proposed storage path:
+Storage path:
 
 ```text
 %LOCALAPPDATA%\PersonalNotionHub\secrets\vault-passphrase.dpapi
@@ -118,7 +123,45 @@ When the project runs outside WSL or in a packaged app, revisit:
 | User loses Windows account access | Document that DPAPI-protected blob is not recovery |
 | WSL service cannot access Windows user context | Keep prompt/env fallback and require startup validation |
 
-## Approval Packet For Implementation
+## Operator Commands
+
+Store a passphrase through a no-echo prompt:
+
+```bash
+python3 scripts/vault_secret_store.py \
+  --provider windows-dpapi-file \
+  --name vault-passphrase \
+  --prompt
+```
+
+Check whether a secret exists without printing it:
+
+```bash
+python3 scripts/vault_secret_status.py --provider windows-dpapi-file
+```
+
+Use the provider in encrypted vault operations:
+
+```bash
+python3 companion/server.py \
+  --host 127.0.0.1 \
+  --port 8765 \
+  --enable-private-inbox \
+  --enable-encrypted-vault \
+  --vault-passphrase-provider windows-dpapi-file
+```
+
+Delete the stored local passphrase:
+
+```bash
+python3 scripts/vault_secret_delete.py \
+  --confirm DELETE_VAULT_SECRET
+```
+
+The command output reports only metadata such as provider, name, availability,
+and set status. It must not print the passphrase value.
+
+## Original Approval Packet
 
 Approval phrase:
 
@@ -126,7 +169,7 @@ Approval phrase:
 APPROVE_PNH_WINDOWS_DPAPI_FILE_BACKEND
 ```
 
-If approved, implementation should add:
+The original approval packet required:
 
 - `companion/secret_backends.py`
 - `scripts/vault_secret_store.py`
@@ -156,9 +199,9 @@ Implementation must not:
 
 ## Decision
 
-Proceed only after supervisor approval with `APPROVE_PNH_WINDOWS_DPAPI_FILE_BACKEND`.
-
-Until then, use prompt mode for manual sessions and environment variable mode only for controlled non-interactive local runs.
+The backend is implemented for local approved use. Prompt mode remains available
+for manual sessions, and environment variable mode should only be used for
+controlled non-interactive local runs.
 
 ## References
 

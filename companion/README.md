@@ -21,6 +21,7 @@ Allowed:
 - ignored local SQLite private inbox under `companion/private/`
 - AES-GCM encrypted capture records when `--enable-encrypted-vault` is explicitly enabled
 - passphrase loaded from no-echo local prompt or a local environment variable name, not from a CLI value
+- approved Windows + WSL `windows-dpapi-file` passphrase provider
 - default scripts reject private DB/token paths outside `companion/private/`
 - mobile capture simulation is loopback-only and blocks redirects
 - exact-origin browser bridge when explicitly enabled
@@ -69,6 +70,19 @@ python3 companion/server.py \
   --prompt-vault-passphrase
 ```
 
+Windows + WSL DPAPI file provider:
+
+```bash
+python3 scripts/vault_secret_store.py --provider windows-dpapi-file --prompt
+python3 scripts/vault_secret_status.py --provider windows-dpapi-file
+python3 companion/server.py \
+  --host 127.0.0.1 \
+  --port 8765 \
+  --enable-private-inbox \
+  --enable-encrypted-vault \
+  --vault-passphrase-provider windows-dpapi-file
+```
+
 Browser bridge mode:
 
 ```bash
@@ -103,6 +117,9 @@ python3 scripts/encrypted_vault_delete_smoke_check.py
 python3 scripts/encrypted_vault_rotation_smoke_check.py
 python3 scripts/passphrase_provider_smoke_check.py
 python3 scripts/plaintext_migration_audit_smoke_check.py
+python3 scripts/plaintext_migration_apply_smoke_check.py
+python3 scripts/vault_secret_smoke_check.py
+python3 scripts/redacted_browser_qa_check.py
 python3 scripts/private_inbox_smoke_check.py
 python3 scripts/browser_bridge_smoke_check.py
 ```
@@ -127,6 +144,16 @@ The passphrase provider smoke check verifies env/prompt handling, confirmation
 mismatch rejection, short passphrase rejection, keychain readiness reporting,
 and no passphrase value output.
 
+The vault secret smoke check verifies synthetic `windows-dpapi-file`
+store/status/retrieve/delete without printing the secret value.
+
+The plaintext migration apply smoke check verifies explicit backup and
+confirmation gates, encrypted readback, plaintext row deletion, and no private
+value output.
+
+The redacted browser QA check verifies static screenshot-redaction and token
+storage contracts.
+
 The browser bridge smoke check verifies unsafe config rejection, CORS,
 one-time pairing, in-memory session auth compatibility, redacted responses, and
 legacy bearer-token compatibility without printing secret values.
@@ -134,9 +161,7 @@ legacy bearer-token compatibility without printing secret values.
 ## Next Approval Gates
 
 - real-data import adapters
-- plaintext-to-encrypted migration apply
-- OS keychain storage/retrieval
-- passphrase recovery
+- passphrase recovery drill / operator recovery UX
 - packaging or distribution
 - LAN/mobile-device pairing beyond loopback
-- automated screenshot-safe browser QA
+- live browser screenshot-safe QA evidence

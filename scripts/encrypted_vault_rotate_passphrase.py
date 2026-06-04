@@ -28,6 +28,9 @@ def main() -> int:
     parser.add_argument("--prompt-vault-passphrase", action="store_true", help="Prompt for current vault passphrase without echo.")
     parser.add_argument("--prompt-new-vault-passphrase", action="store_true", help="Prompt for new vault passphrase without echo.")
     parser.add_argument("--confirm-new-vault-passphrase", action="store_true", help="Prompt twice and require matching new vault passphrase.")
+    parser.add_argument("--vault-passphrase-provider", default="", help="Optional current vault passphrase provider.")
+    parser.add_argument("--vault-passphrase-name", default="vault-passphrase", help="Provider secret name.")
+    parser.add_argument("--vault-passphrase-file", default="", help="Provider-specific secret file path.")
     parser.add_argument("--preflight-backup", default="", help="Existing encrypted backup path to acknowledge before rotation.")
     parser.add_argument("--confirm", required=True, help=f"Must be exactly {CONFIRM_PHRASE}.")
     parser.add_argument("--dry-run", action="store_true", help="Validate inputs and count decryptable rows without mutating the vault.")
@@ -50,6 +53,9 @@ def main() -> int:
             env_name=args.vault_passphrase_env,
             label="current vault",
             prompt=args.prompt_vault_passphrase,
+            provider=args.vault_passphrase_provider,
+            secret_name=args.vault_passphrase_name,
+            secret_path=args.vault_passphrase_file,
         ).value
         new_passphrase = resolve_passphrase(
             env_name=args.new_vault_passphrase_env,

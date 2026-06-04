@@ -30,6 +30,9 @@ def main() -> int:
     parser.add_argument("--vault-passphrase-env", default="PNH_VAULT_PASSPHRASE", help="Environment variable containing vault passphrase.")
     parser.add_argument("--prompt-vault-passphrase", action="store_true", help="Prompt for vault passphrase without echo instead of requiring shell input.")
     parser.add_argument("--confirm-vault-passphrase", action="store_true", help="Prompt twice and require matching vault passphrase.")
+    parser.add_argument("--vault-passphrase-provider", default="", help="Optional passphrase provider, for example windows-dpapi-file.")
+    parser.add_argument("--vault-passphrase-name", default="vault-passphrase", help="Provider secret name.")
+    parser.add_argument("--vault-passphrase-file", default="", help="Provider-specific secret file path.")
     args = parser.parse_args()
 
     db_path = Path(args.db)
@@ -44,6 +47,9 @@ def main() -> int:
                 label="vault",
                 prompt=args.prompt_vault_passphrase,
                 confirm=args.confirm_vault_passphrase,
+                provider=args.vault_passphrase_provider,
+                secret_name=args.vault_passphrase_name,
+                secret_path=args.vault_passphrase_file,
             ).value
             init_encrypted_vault(db_path, vault_passphrase)
     except (OSError, PrivateStoreError) as exc:

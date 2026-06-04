@@ -29,3 +29,10 @@ companion/logs/
 *credential*
 *.pem
 *.key
+
+# Secret-handling source code is tracked; secret values/artifacts remain ignored.
+!companion/secret_backends.py
+!scripts/vault_secret_store.py
+!scripts/vault_secret_status.py
+!scripts/vault_secret_delete.py
+!scripts/vault_secret_smoke_check.py

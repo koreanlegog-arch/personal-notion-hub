@@ -26,6 +26,9 @@ REQUIRED = [
     "README.md",
     "docs/TEST_PLAN.md",
     "docs/SECURITY_NOTES.md",
+    "docs/PASSPHRASE_KEYCHAIN_BACKEND_DESIGN.md",
+    "docs/PASSPHRASE_RECOVERY_POLICY.md",
+    "docs/REAL_DATA_ADAPTER_PRIVACY_GATE.md",
     "ops/templates/PRIVATE_DATA_ADAPTER_BRIEF_TEMPLATE.md",
     "ops/templates/PRIVATE_DATA_ADAPTER_SECURITY_GATE_TEMPLATE.md",
     "ops/checklists/PRIVATE_DATA_ADAPTER_QA_CHECKLIST.md",
@@ -33,6 +36,7 @@ REQUIRED = [
     "companion/encrypted_vault.py",
     "companion/passphrase_provider.py",
     "companion/private_store.py",
+    "companion/secret_backends.py",
     "companion/server.py",
     "scripts/private_inbox_init.py",
     "scripts/simulate_mobile_capture.py",
@@ -45,7 +49,13 @@ REQUIRED = [
     "scripts/encrypted_backup_envelope_audit.py",
     "scripts/keychain_readiness.py",
     "scripts/passphrase_provider_smoke_check.py",
+    "scripts/vault_secret_store.py",
+    "scripts/vault_secret_status.py",
+    "scripts/vault_secret_delete.py",
+    "scripts/vault_secret_smoke_check.py",
     "scripts/plaintext_migration_audit.py",
+    "scripts/plaintext_migration_apply.py",
+    "scripts/redacted_browser_qa_check.py",
     "scripts/encrypted_vault_backup_restore_smoke_check.py",
     "scripts/encrypted_vault_delete_smoke_check.py",
     "scripts/encrypted_vault_rotation_smoke_check.py",
@@ -53,6 +63,7 @@ REQUIRED = [
     "scripts/encrypted_backup_envelope_audit_smoke_check.py",
     "scripts/encrypted_vault_smoke_check.py",
     "scripts/plaintext_migration_audit_smoke_check.py",
+    "scripts/plaintext_migration_apply_smoke_check.py",
     "scripts/private_inbox_smoke_check.py",
 ]
 
@@ -121,6 +132,55 @@ def assert_private_data_adapter_governance_contracts() -> None:
     )
     if "Storage Mode | No storage / Local cache / Local database / Export file" in security_gate:
         raise SystemExit("unsafe_private_adapter_storage_mode_contract=true")
+
+
+def assert_secret_backend_contracts() -> None:
+    backend = (ROOT / "companion/secret_backends.py").read_text(encoding="utf-8")
+    provider = (ROOT / "companion/passphrase_provider.py").read_text(encoding="utf-8")
+    scripts = "\n".join(
+        [
+            (ROOT / "scripts/vault_secret_store.py").read_text(encoding="utf-8"),
+            (ROOT / "scripts/vault_secret_status.py").read_text(encoding="utf-8"),
+            (ROOT / "scripts/vault_secret_delete.py").read_text(encoding="utf-8"),
+            (ROOT / "scripts/vault_secret_smoke_check.py").read_text(encoding="utf-8"),
+        ]
+    )
+    expected = [
+        "windows-dpapi-file",
+        "ConvertFrom-SecureString",
+        "ConvertTo-SecureString",
+        "EncodedCommand",
+        "DELETE_VAULT_SECRET",
+        "secretValuePrinted",
+        "vault_secret_smoke_check_pass=true",
+    ]
+    combined = "\n".join([backend, provider, scripts])
+    for token in expected:
+        if token not in combined:
+            raise SystemExit(f"missing_secret_backend_contract={token}")
+    if "cmdkey" in backend or "/pass:" in combined:
+        raise SystemExit("unsafe_secret_backend_cmdkey_contract=true")
+
+
+def assert_private_data_policy_contracts() -> None:
+    docs = {
+        "docs/PASSPHRASE_RECOVERY_POLICY.md": [
+            "no cryptographic recovery mechanism",
+            "Recovery Drill",
+            "Never paste recovery material",
+        ],
+        "docs/REAL_DATA_ADAPTER_PRIVACY_GATE.md": [
+            "Real-data adapters are disabled",
+            "approved local encrypted vault",
+            "Stop Conditions",
+            "Blocked",
+        ],
+    }
+    for rel, tokens in docs.items():
+        text = (ROOT / rel).read_text(encoding="utf-8")
+        for token in tokens:
+            if token not in text:
+                raise SystemExit(f"missing_private_data_policy_contract={rel}:{token}")
 
 
 def assert_html_assets() -> None:
@@ -255,7 +315,9 @@ def assert_encrypted_vault_contracts() -> None:
         "--confirm-backup-passphrase",
         "--prompt-new-vault-passphrase",
         "--confirm-new-vault-passphrase",
+        "--vault-passphrase-provider",
         "ROTATE_VAULT_PASSPHRASE",
+        "MIGRATE_PLAINTEXT_TO_ENCRYPTED",
         "PNH_NEW_VAULT_PASSPHRASE",
         "PNH_VAULT_PASSPHRASE",
         "PNH_BACKUP_PASSPHRASE",
@@ -278,6 +340,7 @@ def assert_encrypted_vault_contracts() -> None:
             (ROOT / "scripts/encrypted_backup_envelope_audit.py").read_text(encoding="utf-8"),
             (ROOT / "scripts/keychain_readiness.py").read_text(encoding="utf-8"),
             (ROOT / "scripts/plaintext_migration_audit.py").read_text(encoding="utf-8"),
+            (ROOT / "scripts/plaintext_migration_apply.py").read_text(encoding="utf-8"),
         ]
     )
     runtime_text = "\n".join([server, provider, init_script, status_script, lifecycle_scripts])
@@ -295,6 +358,7 @@ def assert_encrypted_vault_contracts() -> None:
         "encrypted_vault_metadata_audit_smoke_check_pass=true",
         "encrypted_backup_envelope_audit_smoke_check_pass=true",
         "plaintext_migration_audit_smoke_check_pass=true",
+        "plaintext_migration_apply_smoke_check_pass=true",
         "passphrase_provider_smoke_check_pass=true",
     ]
     smoke_text = "\n".join(
@@ -306,6 +370,7 @@ def assert_encrypted_vault_contracts() -> None:
             (ROOT / "scripts/encrypted_vault_metadata_audit_smoke_check.py").read_text(encoding="utf-8"),
             (ROOT / "scripts/encrypted_backup_envelope_audit_smoke_check.py").read_text(encoding="utf-8"),
             (ROOT / "scripts/plaintext_migration_audit_smoke_check.py").read_text(encoding="utf-8"),
+            (ROOT / "scripts/plaintext_migration_apply_smoke_check.py").read_text(encoding="utf-8"),
             (ROOT / "scripts/passphrase_provider_smoke_check.py").read_text(encoding="utf-8"),
         ]
     )
@@ -338,6 +403,8 @@ def assert_workflow_permissions() -> None:
 def main() -> int:
     assert_required_files()
     assert_private_data_adapter_governance_contracts()
+    assert_secret_backend_contracts()
+    assert_private_data_policy_contracts()
     assert_html_assets()
     assert_no_inline_handlers()
     assert_expected_app_contracts()

@@ -477,6 +477,9 @@ def main() -> int:
     parser.add_argument("--enable-encrypted-vault", action="store_true", help="Store private captures in encrypted vault mode.")
     parser.add_argument("--vault-passphrase-env", default="PNH_VAULT_PASSPHRASE", help="Environment variable containing vault passphrase.")
     parser.add_argument("--prompt-vault-passphrase", action="store_true", help="Prompt for vault passphrase without echo. Intended for manual local sessions.")
+    parser.add_argument("--vault-passphrase-provider", default="", help="Optional passphrase provider, for example windows-dpapi-file.")
+    parser.add_argument("--vault-passphrase-name", default="vault-passphrase", help="Provider secret name.")
+    parser.add_argument("--vault-passphrase-file", default="", help="Provider-specific secret file path.")
     parser.add_argument("--enable-browser-bridge", action="store_true", help="Enable exact-origin browser bridge pairing.")
     parser.add_argument("--allowed-origin", default="", help="Allowed browser origin, for example http://127.0.0.1:8000.")
     parser.add_argument("--private-db", default="", help="Private inbox SQLite path. Default: companion/private/...")
@@ -504,6 +507,9 @@ def main() -> int:
                     env_name=args.vault_passphrase_env,
                     label="vault",
                     prompt=args.prompt_vault_passphrase,
+                    provider=args.vault_passphrase_provider,
+                    secret_name=args.vault_passphrase_name,
+                    secret_path=args.vault_passphrase_file,
                 ).value
                 private_vault = init_encrypted_vault(private_db_path, vault_passphrase)
         except (OSError, PrivateStoreError) as exc:
