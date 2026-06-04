@@ -1015,7 +1015,7 @@ function renderAssistant() {
   appView.append(workflow);
 
   const topGrid = make("section", "content-grid");
-  topGrid.append(assistantCapturePanel(), assistantBiblePanel());
+  topGrid.append(assistantCapturePanel(), assistantWorkspacePanel(), assistantBiblePanel());
   appView.append(topGrid);
 
   const suggestions = buildAssistantSuggestions();
@@ -1103,6 +1103,59 @@ function assistantCapturePanel() {
 
   const warning = make("p", "fine-print", "실제 연락처, 통화기록, 녹음파일, 토큰, 고객 데이터는 repo나 evidence에 넣지 마세요. 이 MVP는 수동 입력/fixture 전용입니다.");
   section.append(warning);
+  return section;
+}
+
+function assistantWorkspacePanel() {
+  const section = make("section", "section-panel assistant-workspace-panel");
+  const header = make("div", "section-header");
+  header.append(make("h3", "", "Workspace ingress"));
+  header.append(badge(companionStatusLabel(), companionState.online ? "status-online" : "status-offline"));
+  section.append(header);
+
+  const status = make("div", "companion-status");
+  status.append(make("p", "", companionState.statusText));
+  if (companionState.lastResult) status.append(make("p", "fine-print", companionState.lastResult));
+  section.append(status);
+
+  const form = make("form", "companion-form");
+  const label = document.createElement("label");
+  label.htmlFor = "assistant-companion-pair-code";
+  label.textContent = "Pairing code";
+  const input = document.createElement("input");
+  input.id = "assistant-companion-pair-code";
+  input.name = "pairingCode";
+  input.type = "text";
+  input.inputMode = "text";
+  input.autocomplete = "off";
+  input.placeholder = "One-time code";
+  sensitive(input);
+  const actions = make("div", "form-actions");
+  const pairButton = make("button", "primary-button", companionState.paired ? "Paired" : "Pair");
+  pairButton.type = "submit";
+  pairButton.disabled = companionState.paired;
+  actions.append(
+    pairButton,
+    button("Check", checkCompanionStatus, "ghost-button"),
+    button("Disconnect", disconnectCompanion, "ghost-button"),
+    button(companionState.screenshotRedaction ? "Show Screen" : "Redact Screen", toggleScreenshotRedaction, "ghost-button")
+  );
+  form.append(label, input, actions);
+  form.addEventListener("submit", pairCompanion);
+  section.append(form);
+
+  const latest = latestAssistantCapture();
+  const send = button("Send Latest Input", sendLatestAssistantToCompanion, "small-button");
+  send.disabled = !latest || !companionState.paired;
+  const sendRow = make("div", "item-actions");
+  sendRow.append(send);
+  if (latest) {
+    sendRow.append(sensitive(make("span", "fine-print", latest.title || sourceLabel(captureSource(latest)))));
+  } else {
+    sendRow.append(make("span", "fine-print", "Add an assistant input first."));
+  }
+  section.append(sendRow);
+  section.append(make("p", "fine-print", "Synthetic or low-risk input only. The browser session token stays in memory and workspace responses stay metadata-only."));
   return section;
 }
 
@@ -1297,12 +1350,72 @@ function assistantBriefCard(item) {
 function assistantCaptureCard(capture) {
   const card = itemShell(capture.title || sourceLabel(captureSource(capture)));
   card.append(metaRow([sourceLabel(captureSource(capture)), captureStatus(capture), capture.priority, ...(capture.tags || [])], capture.priority));
-  if (capture.body) card.append(make("p", "", capture.body.slice(0, 220)));
+  if (capture.body) card.append(sensitive(make("p", "", capture.body.slice(0, 220))));
   const actions = make("div", "item-actions");
+  actions.append(button("Send to Workspace", () => sendAssistantCaptureToCompanion(capture), "small-button"));
   actions.append(button("Processed", () => updateAssistantCapture(capture.id, { status: "processed" }, "Marked processed"), "small-button"));
   actions.append(button("Archive", () => updateAssistantCapture(capture.id, { status: "archived" }, "Archived"), "small-button"));
   card.append(actions);
   return card;
+}
+
+function latestAssistantCapture() {
+  return assistantState.captures
+    .filter((capture) => captureStatus(capture) !== "archived")
+    .slice()
+    .sort((a, b) => String(b.updatedAt || b.receivedAt || b.createdAt || "").localeCompare(String(a.updatedAt || a.receivedAt || a.createdAt || "")))[0];
+}
+
+function companionPayloadForAssistantCapture(capture) {
+  const title = String(capture.title || sourceLabel(captureSource(capture))).trim();
+  const body = String(capture.body || title).trim();
+  return {
+    id: `assistant-capture-${capture.id}`,
+    source: "mobile_web",
+    kind: "assistant_capture",
+    title: `Assistant input: ${title}`,
+    body,
+    sensitivity: capture.sensitivity || "internal",
+    createdAt: capture.receivedAt || capture.createdAt || nowISO(),
+    payloadType: "pnh_assistant_capture",
+    assistantSource: captureSource(capture),
+    assistantStatus: captureStatus(capture),
+    tags: capture.tags || [],
+  };
+}
+
+async function sendLatestAssistantToCompanion() {
+  const capture = latestAssistantCapture();
+  if (!capture) {
+    toast("No assistant input", "먼저 Assistant 입력을 추가하세요.");
+    return;
+  }
+  await sendAssistantCaptureToCompanion(capture);
+}
+
+async function sendAssistantCaptureToCompanion(capture) {
+  const bridge = window.PNHCompanionBridge;
+  if (!bridge?.sendAssistantCapture || !bridge.isPaired()) {
+    toast("Companion not paired", "pairing code로 연결한 뒤 전송하세요.");
+    return;
+  }
+  try {
+    const result = await bridge.sendAssistantCapture(companionPayloadForAssistantCapture(capture));
+    companionState = {
+      ...companionState,
+      online: true,
+      paired: true,
+      lastResult: result.writesPerformed ? "Assistant input sent to workspace private inbox." : "Companion responded without a private write.",
+    };
+    await updateAssistantCapture(capture.id, { workspaceSentAt: nowISO(), workspaceCaptureId: result.captureId }, "Assistant input sent to workspace");
+  } catch (error) {
+    companionState = {
+      ...companionState,
+      lastResult: error?.message || "Assistant send failed.",
+    };
+    render();
+    toast("Send failed", "companion 상태와 pairing을 확인하세요.");
+  }
 }
 
 function assistantSuggestionCard(suggestion) {

@@ -9,6 +9,7 @@
 - Assistant 화면이 sidebar에서 열린다.
 - Assistant input routes에 Slack, Email, SMS, KakaoTalk, Call, Voice memo, My memo, YouTube, Bible verse가 표시된다.
 - Assistant manual input을 추가하면 inbox에 표시된다.
+- Assistant manual input은 paired local companion으로 workspace private inbox에 전송할 수 있다.
 - Assistant demo fixture를 불러오면 demo capture와 suggestion이 표시된다.
 - Assistant suggestion에서 `Create Task`를 누르면 기존 Tasks에 항목이 생성된다.
 - Assistant suggestion에서 `Create Note`를 누르면 기존 Notes에 항목이 생성된다.
@@ -184,7 +185,8 @@ Expected:
 - wildcard, `localhost`, `null`, path-bearing, and bad-origin requests are rejected
 - long-lived file token cannot be used as a pairing code
 - one-time pairing code cannot be replayed
-- browser session token can write one synthetic capture
+- browser session token can write one synthetic launch-style capture
+- browser session token can write one synthetic assistant-style capture
 - API responses do not echo title/body, file token, pairing code, or browser session token
 - existing script bearer-token private inbox path remains compatible
 - static smoke allows `fetch` only in `assets/js/companion-bridge.js`
@@ -212,6 +214,16 @@ Manual scenario:
 - Turn on `Redact Screen` before screenshots.
 - Send Latest Packet.
 - Confirm `scripts/private_inbox_status.py` reports an increased count without printing private values.
+
+Assistant workspace ingress scenario:
+
+- Open `Assistant`.
+- Check companion status from `Workspace ingress`.
+- Enter the one-time pairing code from the local companion terminal. Do not record the code in evidence.
+- Add a synthetic manual input.
+- Use `Send Latest Input` or the capture card's `Send to Workspace`.
+- Confirm `scripts/private_inbox_status.py` reports an increased count without printing private values.
+- Confirm browser response and toast do not show title/body, file token, pairing code, or browser session token.
 
 ## Local Encrypted Vault Checks
 

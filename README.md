@@ -68,6 +68,7 @@ manual input routes
 - copyable Slack-style summary draft
 - copyable calendar draft
 - 오늘의 성경말씀 widget
+- paired local companion으로 Assistant input을 workspace private inbox/encrypted vault에 전송
 
 제외 범위:
 
@@ -75,6 +76,30 @@ manual input routes
 - 연락처, 통화기록, 문자, 녹음파일 자동 접근
 - OAuth, API key, token, cloud sync
 - cloud AI/STT/LLM 처리
+
+Assistant workspace ingress:
+
+```bash
+python3 scripts/private_inbox_init.py
+python3 companion/server.py \
+  --host 127.0.0.1 \
+  --port 8765 \
+  --enable-private-inbox \
+  --enable-browser-bridge \
+  --allowed-origin http://127.0.0.1:4173
+python3 -m http.server 4173
+```
+
+Open `http://127.0.0.1:4173/`, go to `Assistant`, pair with the local
+terminal's one-time code, add a synthetic input, and use `Send Latest Input` or
+`Send to Workspace`.
+
+Expected:
+
+- browser response is metadata-only
+- pairing/session token is not shown or stored in browser persistence
+- `scripts/private_inbox_status.py` reports an increased count without printing the body
+- in encrypted vault mode, the input is written to `encrypted_mobile_captures`
 
 ## Launch MVP
 
@@ -200,6 +225,7 @@ Bridge boundaries:
 - browser session token is kept in JS memory only
 - long-lived file token is not sent to the browser
 - Launch packet writes require explicit user action
+- Assistant input writes require explicit user action
 - API response remains metadata-only
 - Launch 화면에는 screenshot redaction toggle이 있으며 민감 launch text와 pairing input을 캡처 전에 가릴 수 있습니다.
 - real sensitive data should use encrypted vault mode, not plaintext private inbox mode

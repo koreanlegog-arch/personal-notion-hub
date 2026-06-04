@@ -79,9 +79,9 @@
     return Boolean(sessionToken);
   }
 
-  async function sendLaunchPacket(packet) {
+  async function sendCapture(packet, label = "Capture") {
     if (!packet || typeof packet !== "object") {
-      throw new Error("Launch packet payload is required");
+      throw new Error(`${label} payload is required`);
     }
     const result = await controlledFetch("/api/private/mobile-captures", {
       method: "POST",
@@ -89,7 +89,7 @@
       body: packet,
     });
     if (!result.ok) {
-      throw new Error(result.data?.error || "Launch packet send failed");
+      throw new Error(result.data?.error || `${label} send failed`);
     }
     return {
       ok: true,
@@ -99,12 +99,22 @@
     };
   }
 
+  async function sendLaunchPacket(packet) {
+    return sendCapture(packet, "Launch packet");
+  }
+
+  async function sendAssistantCapture(packet) {
+    return sendCapture(packet, "Assistant capture");
+  }
+
   window.PNHCompanionBridge = Object.freeze({
     baseUrl: BASE_URL,
     disconnect,
     health,
     isPaired,
     pair,
+    sendAssistantCapture,
+    sendCapture,
     sendLaunchPacket,
   });
 })();

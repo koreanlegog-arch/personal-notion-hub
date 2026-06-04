@@ -235,6 +235,11 @@ def assert_expected_app_contracts() -> None:
         "PNHCompanionBridge",
         "launchCompanionPanel",
         "sendLatestLaunchToCompanion",
+        "assistantWorkspacePanel",
+        "sendLatestAssistantToCompanion",
+        "sendAssistantCaptureToCompanion",
+        "companionPayloadForAssistantCapture",
+        "payloadType: \"pnh_assistant_capture\"",
         "toggleScreenshotRedaction",
         "data-sensitive",
         "normalizeHttpUrl",
@@ -268,6 +273,8 @@ def assert_companion_bridge_contracts() -> None:
         "target.origin !== EXPECTED_ORIGIN",
         "let sessionToken = \"\"",
         "Authorization",
+        "sendCapture",
+        "sendAssistantCapture",
         "sendLaunchPacket",
     ]
     for token in expected:

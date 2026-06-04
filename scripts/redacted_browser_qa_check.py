@@ -30,6 +30,8 @@ def main() -> int:
         "toggleScreenshotRedaction",
         "data-sensitive",
         "screenshotRedaction",
+        "assistantWorkspacePanel",
+        "sendAssistantCaptureToCompanion",
     ):
         require_token(app, token)
     for token in (

@@ -1,5 +1,35 @@
 # Release Notes
 
+## 2026-06-04 - Assistant Workspace Ingress MVP
+
+### Summary
+
+Connected Assistant manual inputs to the existing local companion browser bridge
+so synthetic or low-risk chat-style inputs can be explicitly sent from the PNH
+web UI into the workspace private inbox/encrypted vault path.
+
+### Included
+
+- generic companion bridge `sendCapture` path
+- `sendAssistantCapture` wrapper for Assistant inputs
+- Assistant `Workspace ingress` panel with status, pairing, redaction, and send-latest controls
+- per-capture `Send to Workspace` action
+- static smoke contracts for Assistant ingress
+- browser bridge smoke extension that stores both launch-style and assistant-style synthetic captures
+
+### Boundaries
+
+- No external mobile/LAN exposure
+- No automatic send; every Assistant write requires explicit user action
+- No real private data in tests or evidence
+- Browser session token remains memory-only
+
+### Verification
+
+Recorded in:
+
+- `ops/runs/PNH-ASSISTANT-WORKSPACE-INGRESS-20260604/`
+
 ## 2026-06-04 - Private Data Operations Hardening
 
 ### Summary

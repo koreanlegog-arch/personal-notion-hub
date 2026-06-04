@@ -27,6 +27,8 @@ BAD_ORIGIN = "http://localhost:8000"
 FORBIDDEN_VALUES = (
     "synthetic-browser-bridge-body",
     "synthetic-browser-bridge-title",
+    "synthetic-assistant-bridge-body",
+    "synthetic-assistant-bridge-title",
 )
 
 
@@ -235,23 +237,43 @@ def main() -> int:
             assert_no_forbidden_values(stored)
             assert_no_secret_values(stored, file_token, browser_session)
 
+            assistant_payload = {
+                "source": "mobile_web",
+                "kind": "assistant_capture",
+                "title": FORBIDDEN_VALUES[3],
+                "body": FORBIDDEN_VALUES[2],
+                "sensitivity": "internal",
+                "payloadType": "pnh_assistant_capture",
+                "assistantSource": "my_memo",
+            }
+            status, assistant_stored, _headers = request_json(
+                f"{base_url}/api/private/mobile-captures",
+                "POST",
+                assistant_payload,
+                token=browser_session,
+                origin=ALLOWED_ORIGIN,
+            )
+            assert_true(status == 201 and assistant_stored.get("writesPerformed") is True, "assistant_session_capture_write_failed=true")
+            assert_no_forbidden_values(assistant_stored)
+            assert_no_secret_values(assistant_stored, file_token, browser_session)
+
             status, summary, _headers = request_json(
                 f"{base_url}/api/private/summary",
                 token=browser_session,
                 origin=ALLOWED_ORIGIN,
             )
             assert_true(status == 200, "session_summary_failed=true")
-            assert_true(summary.get("summary", {}).get("totalCaptures") == 1, "session_summary_count_failed=true")
+            assert_true(summary.get("summary", {}).get("totalCaptures") == 2, "session_summary_count_failed=true")
             assert_true("dbPath" not in summary.get("summary", {}), "summary_path_leaked=true")
             assert_no_forbidden_values(summary)
             assert_no_secret_values(summary, file_token, browser_session)
 
             status, file_bearer_summary, _headers = request_json(f"{base_url}/api/private/summary", token=file_token)
-            assert_true(status == 200 and file_bearer_summary.get("summary", {}).get("totalCaptures") == 1, "file_bearer_auth_failed=true")
+            assert_true(status == 200 and file_bearer_summary.get("summary", {}).get("totalCaptures") == 2, "file_bearer_auth_failed=true")
 
             local_summary = store_summary(db_path, allow_external=True)
             recent = list_captures(db_path, include_body=False, allow_external=True)
-            assert_true(local_summary["totalCaptures"] == 1, "sqlite_session_write_missing=true")
+            assert_true(local_summary["totalCaptures"] == 2, "sqlite_session_write_missing=true")
             assert_true(recent and "body" not in recent[0], "redacted_list_contract_failed=true")
 
             print("browser_bridge_smoke_check_pass=true")
