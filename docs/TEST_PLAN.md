@@ -79,6 +79,27 @@ Assistant fixture:
 - Inbox와 Suggested Outputs에 demo 항목 표시
 - 새로고침 후 assistant inbox 유지
 
+## Local Companion Prototype Checks
+
+The companion prototype uses fake fixtures only. It must not handle real contacts, calls, schedules, recordings, transcripts, client data, or secrets.
+
+Run:
+
+```bash
+python3 scripts/companion_smoke_check.py
+```
+
+Expected:
+
+- health endpoint reports `ok=true`
+- mode is fixture-only
+- writes are disabled
+- schema endpoint lists allowed collections and private-data restrictions
+- valid fake fixture returns preview counts
+- sensitive-looking fixture is rejected without echoing the sensitive value
+- non-loopback host configuration is rejected
+- no vault, database, private backup, or runtime data file is created
+
 ## Responsive Viewports
 
 - `360x640`
@@ -114,7 +135,10 @@ Assistant fixture:
 - secret/API key/client data 포함 없음
 - 실제 개인정보/연락처/통화기록/녹음/transcript fixture 없음
 - Workflow permissions가 최소 권한 유지
+- companion prototype is not deployed as part of GitHub Pages
 
 ## Residual Risk
 
 자동 브라우저 회귀 테스트는 아직 없다. UI 변경이 잦아지면 Playwright smoke test를 추가하는 것이 적절하다.
+
+Local companion UI integration is not implemented yet. Before adding browser `fetch`, define pairing/session token, CORS, CSP, and localhost origin policy.

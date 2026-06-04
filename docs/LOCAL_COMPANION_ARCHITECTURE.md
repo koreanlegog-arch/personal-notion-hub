@@ -323,7 +323,7 @@ Default for first sensitive implementation:
 2. Use current JSON export as migration input, but keep it demo/browser-only until encrypted export is approved.
 3. Add architecture docs and approval gates.
 4. Add a local companion proof of concept using fake fixture data only.
-5. Add `GET /health` and `POST /import/preview` before any vault write endpoint.
+5. Add `GET /api/health`, `GET /api/schema`, and `POST /api/import/preview` before any vault write endpoint.
 6. Add secure pairing between UI and companion.
 7. Add encrypted vault schema.
 8. Add encrypted export/import/delete validation.
@@ -371,7 +371,25 @@ Separate approval is required before:
 Create a fixture-only local companion prototype plan. The prototype should not store real personal data. It should prove:
 
 - local UI can detect companion status
-- fake capture can be written to a local vault
-- fake capture can be listed back in the UI
-- export/delete can be validated
+- fake fixture payloads can be validated by a loopback companion
+- fake captures can be counted and previewed without writing a vault
+- invalid or sensitive-looking fixture values are rejected
 - no private values appear in logs or repo
+
+## Fixture-Only Prototype Status
+
+The first implementation prototype is intentionally narrower than private companion mode.
+
+Current prototype boundary:
+
+- Python standard library only
+- `127.0.0.1` loopback only
+- `GET /api/health`
+- `GET /api/schema`
+- `POST /api/import/preview`
+- fake fixtures only
+- no vault/database/encryption package
+- no private data adapters
+- no browser UI connection yet
+
+The prototype is not a sensitive-data storage system. Its job is to validate the companion boundary and QA loop before pairing, CORS, encrypted storage, or real import adapters are approved.

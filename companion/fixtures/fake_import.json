@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "type": "projects",
+      "title": "Demo Workspace Refresh",
+      "body": "Fake fixture project for preview-only validation.",
+      "tags": ["demo", "fixture"],
+      "status": "active"
+    },
+    {
+      "type": "tasks",
+      "title": "Draft sample review checklist",
+      "body": "Use placeholder content only.",
+      "tags": ["qa"],
+      "status": "next"
+    },
+    {
+      "type": "notes",
+      "title": "Fixture note about routines",
+      "body": "No private contacts, calendar details, secrets, or real paths.",
+      "tags": ["note"]
+    },
+    {
+      "type": "routines",
+      "title": "Weekly demo reset",
+      "body": "Reset local demo data before screenshots.",
+      "tags": ["routine"],
+      "status": "scheduled"
+    },
+    {
+      "type": "links",
+      "title": "Example public reference",
+      "body": "https://example.invalid/public-demo",
+      "tags": ["reference"]
+    }
+  ]
+}

@@ -90,6 +90,40 @@ Personal_Notion_Hub web UI
 - `docs/PRIVATE_DATA_POLICY.md`
 - `docs/adr-0001-local-companion-vault.md`
 
+## Local Companion Prototype
+
+`companion/` contains a fixture-only local companion prototype.
+
+Current limits:
+
+- Python standard library only
+- `127.0.0.1` loopback only
+- no vault/database/encryption dependency
+- no real contacts, schedules, calls, recordings, transcripts, or private notes
+- no file write from import preview
+- no browser UI `fetch` integration yet
+
+Run the companion smoke check:
+
+```bash
+python3 scripts/companion_smoke_check.py
+```
+
+Run the local API manually:
+
+```bash
+python3 companion/server.py --host 127.0.0.1 --port 8765
+```
+
+Then inspect:
+
+```text
+http://127.0.0.1:8765/api/health
+http://127.0.0.1:8765/api/schema
+```
+
+Actual private data import, encrypted vault writes, CORS/pairing, and UI connection remain separate approval gates.
+
 ## Backup
 
 `Settings -> Export JSON`으로 현재 브라우저 데이터를 백업합니다.
@@ -125,6 +159,7 @@ GitHub Pages custom workflow 사용은 repository Pages settings에서 GitHub Ac
 - `docs/LOCAL_COMPANION_ARCHITECTURE.md`: long-term local companion and encrypted vault architecture
 - `docs/PRIVATE_DATA_POLICY.md`: private data handling rules
 - `docs/adr-0001-local-companion-vault.md`: architecture decision record
+- `companion/`: fixture-only local companion prototype and fake import fixtures
 
 ## Limitations
 
@@ -134,3 +169,4 @@ GitHub Pages custom workflow 사용은 repository Pages settings에서 GitHub Ac
 - collaboration 없음
 - localStorage와 IndexedDB 기반이므로 브라우저/기기 보안에 의존
 - assistant output은 rule-based draft이며 실제 일정 등록이나 메시지 전송은 하지 않음
+- local companion prototype은 preview-only이며 private-data vault가 아님

@@ -70,6 +70,29 @@ See:
 - `docs/PRIVATE_DATA_POLICY.md`
 - `docs/adr-0001-local-companion-vault.md`
 
+## Local Companion Prototype Security Boundary
+
+The current companion prototype is a fixture-only preview service, not a private-data vault.
+
+Allowed:
+
+- bind to `127.0.0.1`
+- health/schema/import-preview checks
+- fake fixture payloads
+- validation errors, counts, and sanitized summaries
+
+Forbidden:
+
+- real contacts, phone numbers, emails, call logs, schedules, recordings, transcripts, client data, tokens, credentials, or private notes
+- vault/database/private backup/runtime file writes
+- request body logging
+- external API calls
+- browser UI `fetch` integration before pairing/CORS/CSP design
+- wildcard CORS
+- non-loopback bind address
+
+The prototype may run locally only to validate the companion boundary. Pairing/session token design is a release blocker before any write endpoint or real-data adapter.
+
 ## XSS Mitigation
 
 - 사용자 입력은 text node로 렌더링한다.
@@ -109,3 +132,5 @@ permissions:
 - Pages URL에서 실제 개인 데이터가 없는지 확인
 - `assets/js/assistant-*.js`에 `fetch`, OAuth, token flow, external API가 없는지 확인
 - assistant demo fixture에 연락처, 전화번호, 이메일, 실제 일정, 녹음 transcript가 없는지 확인
+- companion fixtures contain fake data only
+- no `*.vault`, `*.sqlite`, `*.db`, `companion/private/`, `companion/runtime/`, or `companion/logs/` artifact is committed
