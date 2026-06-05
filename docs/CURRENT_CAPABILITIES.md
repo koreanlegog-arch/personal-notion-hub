@@ -41,15 +41,15 @@ The current verified Launch flow can:
 2. send the latest Launch packet to local companion private storage
 3. export a metadata-only dispatch candidate
 4. create or detect a GitHub Issue ledger entry without raw private body
-5. create a Discord/OpenClaw worker thread after explicit approval
+5. create a Discord/OpenClaw worker thread through delegated or gated apply mode
 6. capture OpenClaw worker-session metadata without delivering a Discord reply
 7. refresh GitHub Issue state and dispatch labels into local dispatch state
-8. apply approved GitHub dispatch label reconciliation
+8. apply delegated or approved GitHub dispatch label reconciliation
 9. refresh Discord/OpenClaw thread metadata without storing message content
 10. show dispatch state in the Launch UI
 11. confirm mapping and task status into browser-local Launch, Projects, and Tasks
 12. generate supervisor review summary
-13. run one approved unattended dispatch pilot batch with queue limits and rollback snapshot
+13. run bounded unattended dispatch pilot batches with queue limits and rollback snapshot
 
 Current verified live record:
 
@@ -59,7 +59,16 @@ Current verified live record:
 - GitHub dispatch label: `dispatch:worker-done`
 - evidence completeness: `100%`
 
-Current unattended pilot record:
+Latest unattended pilot record:
+
+- GitHub Issue: `#4`
+- Discord thread id: `1512323845514596373`
+- GitHub dispatch label: `dispatch:dispatched-to-worker`
+- task status: `dispatched_to_worker_thread`
+- evidence completeness: `67%`
+- next action: `capture_worker_session_result`
+
+Completed unattended pilot record:
 
 - GitHub Issue: `#3`
 - Discord thread id: `1512315698351706183`
@@ -102,7 +111,8 @@ python3 scripts/pnh_unattended_dispatch_queue_plan.py
 python3 scripts/pnh_unattended_dispatch_readiness.py
 ```
 
-Use `--apply` only when the script's apply mode is intentionally needed and the relevant approval gate has been satisfied.
+Use `--apply` only when the script's apply mode is intentionally needed and the
+project `AGENTS.md` delegation or relevant approval gate has been satisfied.
 
 ### Browser QA
 
@@ -120,29 +130,29 @@ See:
 
 ## Requires Explicit Approval
 
-These actions create external writes, change security posture, or expand data risk:
+These actions still require explicit approval because they change security posture,
+expand data risk, or invoke model/provider execution:
 
-- creating GitHub Issues from local command packets
-- updating GitHub Issue labels/state/comments
-- creating Discord/OpenClaw threads or messages
 - running OpenClaw worker/model calls
-- enabling unattended dispatch
 - adding real phone/contact/calendar/call/recording adapters
 - exposing the companion beyond owner-only local or tailnet scope
 - distributing the app to another user
 
+Bounded GitHub Issue, Discord/OpenClaw thread/message, dispatch-state, and
+metadata-safe unattended dispatch test writes are delegated in project
+`AGENTS.md` and do not require a separate per-run approval.
+
 ## Not Ready Yet
 
-- unattended mobile-to-worker automation
+- unattended mobile-to-worker automation beyond bounded pilot batches
 - unattended daemon/scheduler activation
-- unattended worker/model execution
 - real contact/call/recording/calendar ingestion
 - multi-user distribution
 - cloud sync of private data
 - production auth model
 - packaged desktop/mobile app
 - semantic Discord/OpenClaw worker progress parsing beyond metadata-only refresh
-- unattended GitHub/Discord/OpenClaw external metadata reconciliation apply
+- unattended worker/model execution
 - GitHub Projects board mutation
 
 ## Practical Current Usage
@@ -154,7 +164,8 @@ Recommended current usage:
 3. Create a Launch packet.
 4. Send it to the workspace private inbox.
 5. Run dispatch dry-run first.
-6. Apply live GitHub/Discord/OpenClaw steps only when intentionally approved.
+6. Apply bounded GitHub/Discord/OpenClaw dispatch steps when needed for PNH
+   test/implementation evidence.
 7. Refresh dispatch state.
 8. Confirm Launch task status into browser-local boards.
 9. Read the supervisor review summary before deciding next work.

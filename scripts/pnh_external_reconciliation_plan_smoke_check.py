@@ -30,6 +30,13 @@ def main() -> int:
                         "workerStatus": "done",
                         "workerEvidenceRef": "ops/runs/example/worker.json",
                         "privateNote": PRIVATE_MARKER,
+                    },
+                    "capture-reconcile-smoke-002": {
+                        "githubIssueNumber": 4,
+                        "githubIssueState": "open",
+                        "discordThreadId": "1512323845514596373",
+                        "workerStatus": "",
+                        "privateNote": PRIVATE_MARKER,
                     }
                 },
                 ensure_ascii=False,
@@ -43,6 +50,12 @@ def main() -> int:
                         {
                             "packetId": "capture-reconcile-smoke-001",
                             "githubIssueNumber": "2",
+                            "githubIssueState": "open",
+                            "githubIssueLabels": ["pnh", "dispatch:not-dispatched"],
+                        },
+                        {
+                            "packetId": "capture-reconcile-smoke-002",
+                            "githubIssueNumber": "4",
                             "githubIssueState": "open",
                             "githubIssueLabels": ["pnh", "dispatch:not-dispatched"],
                         }
@@ -75,7 +88,16 @@ def main() -> int:
         assert_true(payload["externalReconciliationPlan"] is True, "plan_flag_missing=true")
         assert_true(payload["externalWritesPerformed"] is False, "external_write_performed=true")
         assert_true(payload["approvalRequiredBeforeExternalWrite"] is True, "approval_gate_missing=true")
-        assert_true(payload["plannedExternalWrites"][0]["operation"] == "replace_dispatch_status_labels", "label_plan_missing=true")
+        planned = payload["plannedExternalWrites"]
+        assert_true(planned[0]["operation"] == "replace_dispatch_status_labels", "label_plan_missing=true")
+        assert_true(
+            any("dispatch:worker-done" in item["addLabels"] for item in planned),
+            "worker_done_label_plan_missing=true",
+        )
+        assert_true(
+            any("dispatch:dispatched-to-worker" in item["addLabels"] for item in planned),
+            "dispatched_to_worker_label_plan_missing=true",
+        )
 
     print("pnh_external_reconciliation_plan_smoke_check_pass=true")
     print("private_values_printed=false")

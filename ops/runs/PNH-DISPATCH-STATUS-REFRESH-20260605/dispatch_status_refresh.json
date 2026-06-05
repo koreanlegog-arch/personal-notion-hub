@@ -35,6 +35,26 @@
         "mobile-command",
         "command:project_brief",
         "priority:normal",
+        "dispatch:dispatched-to-worker"
+      ],
+      "githubIssueNumber": "4",
+      "githubIssueSet": true,
+      "githubIssueState": "open",
+      "githubIssueUpdatedAt": "2026-06-05T05:18:17Z",
+      "githubStatusRefreshed": true,
+      "needsFollowUp": false,
+      "packetId": "capture-3b8522ff102b0469c683b027",
+      "workerStatus": ""
+    },
+    {
+      "discordThreadSet": true,
+      "error": "",
+      "githubIssueClosedAt": "",
+      "githubIssueLabels": [
+        "pnh",
+        "mobile-command",
+        "command:project_brief",
+        "priority:normal",
         "dispatch:worker-done"
       ],
       "githubIssueNumber": "2",
@@ -61,10 +81,10 @@
       "workerStatus": "done"
     }
   ],
-  "recordsInspected": 3,
+  "recordsInspected": 4,
   "recordsNeedingFollowUp": 1,
-  "recordsRefreshed": 2,
-  "recordsWithGitHub": 2,
+  "recordsRefreshed": 3,
+  "recordsWithGitHub": 3,
   "tokenValuePrinted": false,
   "writesPerformed": true
 }

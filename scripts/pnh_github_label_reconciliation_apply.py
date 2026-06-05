@@ -196,6 +196,8 @@ def read_repo_labels(repo: str) -> list[str]:
 def label_color(label: str) -> str:
     if label == "dispatch:worker-done":
         return "0E8A16"
+    if label == "dispatch:dispatched-to-worker":
+        return "1D76DB"
     if label.startswith("dispatch:"):
         return "1D76DB"
     return "C5DEF5"
@@ -204,6 +206,8 @@ def label_color(label: str) -> str:
 def label_description(label: str) -> str:
     if label == "dispatch:worker-done":
         return "PNH dispatch worker session finished and evidence was captured"
+    if label == "dispatch:dispatched-to-worker":
+        return "PNH dispatch created the worker thread and is awaiting worker evidence"
     if label.startswith("dispatch:"):
         return "PNH dispatch status"
     return "PNH automation label"

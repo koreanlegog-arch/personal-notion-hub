@@ -99,10 +99,12 @@ def plan_record(packet_id: str, record: dict[str, Any], refresh: dict[str, Any])
     discord_thread_id = compact(record.get("discordThreadId"))
     external_plan = []
     local_plan = []
-    if github_issue_number and worker_status == "done":
-        desired_labels = ["dispatch:worker-done"]
-        remove_labels = [label for label in ["dispatch:not-dispatched"] if label in github_labels]
-        if remove_labels or not all(label in github_labels for label in desired_labels):
+    desired_dispatch_label = desired_dispatch_status_label(github_issue_number, discord_thread_id, worker_status)
+    if desired_dispatch_label:
+        dispatch_labels = ["dispatch:not-dispatched", "dispatch:dispatched-to-worker", "dispatch:worker-done"]
+        desired_labels = [desired_dispatch_label]
+        remove_labels = [label for label in dispatch_labels if label in github_labels and label != desired_dispatch_label]
+        if remove_labels or desired_dispatch_label not in github_labels:
             external_plan.append(
                 {
                     "system": "github",
@@ -158,6 +160,16 @@ def plan_record(packet_id: str, record: dict[str, Any], refresh: dict[str, Any])
         "externalWritePlan": external_plan,
         "localFollowUpPlan": local_plan,
     }
+
+
+def desired_dispatch_status_label(github_issue_number: str, discord_thread_id: str, worker_status: str) -> str:
+    if not github_issue_number:
+        return ""
+    if worker_status == "done":
+        return "dispatch:worker-done"
+    if discord_thread_id:
+        return "dispatch:dispatched-to-worker"
+    return ""
 
 
 def list_from_first_nonempty(*values: Any) -> list[str]:

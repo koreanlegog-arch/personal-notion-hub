@@ -2,7 +2,7 @@
   "discordThreadStatusRefresh": true,
   "externalWritesPerformed": false,
   "fixtureUsed": false,
-  "generatedAt": "2026-06-05T04:54:45+00:00",
+  "generatedAt": "2026-06-05T05:18:39+00:00",
   "localWritesPerformed": true,
   "messageContentStored": false,
   "mode": "apply",
@@ -11,7 +11,7 @@
   "records": [
     {
       "discordMessagesObserved": 0,
-      "discordReadCheckedAt": "2026-06-05T04:54:42+00:00",
+      "discordReadCheckedAt": "2026-06-05T05:18:32+00:00",
       "discordReadReturnCode": 0,
       "discordReadStdoutBytes": 146,
       "discordStatusRefreshed": true,
@@ -22,7 +22,18 @@
     },
     {
       "discordMessagesObserved": 0,
-      "discordReadCheckedAt": "2026-06-05T04:54:45+00:00",
+      "discordReadCheckedAt": "2026-06-05T05:18:35+00:00",
+      "discordReadReturnCode": 0,
+      "discordReadStdoutBytes": 146,
+      "discordStatusRefreshed": true,
+      "discordThreadId": "1512323845514596373",
+      "discordThreadSet": true,
+      "error": "",
+      "packetId": "capture-3b8522ff102b0469c683b027"
+    },
+    {
+      "discordMessagesObserved": 0,
+      "discordReadCheckedAt": "2026-06-05T05:18:39+00:00",
       "discordReadReturnCode": 0,
       "discordReadStdoutBytes": 146,
       "discordStatusRefreshed": true,
@@ -32,8 +43,8 @@
       "packetId": "capture-5345e37040604a2fca64f317"
     }
   ],
-  "recordsInspected": 2,
-  "recordsRefreshed": 2,
+  "recordsInspected": 3,
+  "recordsRefreshed": 3,
   "recordsWithErrors": 0,
   "tokenValuePrinted": false
 }

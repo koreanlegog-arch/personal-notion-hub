@@ -162,6 +162,29 @@ pilot record linked to GitHub Issue `#3`.
 - No worker output body was stored in tracked evidence.
 - No additional unattended queue item was dispatched.
 
+## 2026-06-05 - Second Unattended Dispatch Pilot
+
+### Summary
+
+Ran a second bounded unattended dispatch pilot batch under the PNH project
+`AGENTS.md` delegation for test and implementation dispatch writes.
+
+### Results
+
+- GitHub Issue `#4` created.
+- Discord thread `1512323845514596373` created.
+- selected capture: `capture-3b8522ff102b0469c683b027`
+- task status: `dispatched_to_worker_thread`
+- evidence completeness: `67`
+- GitHub dispatch label reconciled to `dispatch:dispatched-to-worker`
+- pending external reconciliation writes: `0`
+
+### Boundaries
+
+- No OpenClaw worker/model run was started.
+- No Discord reply was delivered.
+- No private command body was exported or printed.
+
 ## 2026-06-05 - Launch Status Sync Browser QA
 
 ### Summary

@@ -1,6 +1,7 @@
 # PNH Unattended Dispatch Runbook
 
-Status: readiness packet only; live unattended dispatch is not enabled.
+Status: bounded pilot batches are delegated for PNH test and implementation
+evidence; daemon/scheduler mode is not enabled.
 Date: 2026-06-05
 
 ## Purpose
@@ -14,7 +15,7 @@ that mode can be piloted.
 
 ## Current Boundary
 
-Current implementation supports a single approved pilot batch.
+Current implementation supports bounded pilot batches.
 
 It can:
 
@@ -23,14 +24,11 @@ It can:
 - skip already dispatched captures
 - enforce per-run and per-hour planning limits
 - produce rollback requirements
-- assess readiness for an approval-gated pilot
-- run one approved pilot batch with rollback snapshot and single-writer lock
+- assess readiness for a bounded pilot batch
+- run bounded pilot batches with rollback snapshot and single-writer lock
 
 It must not:
 
-- create GitHub Issues without `--apply --approve-unattended-pilot`
-- create Discord/OpenClaw threads without `--apply --approve-unattended-pilot`
-- post GitHub comments without `--apply --approve-unattended-pilot`
 - run OpenClaw worker/model calls automatically
 - run as a daemon or scheduled service
 - store raw private command bodies in reports
@@ -110,18 +108,49 @@ The readiness script checks:
 - `gh` is available
 - `openclaw` is available
 
-## Activation Gate
+## State Refresh Ordering
 
-Live unattended pilot activation required:
+Do not run GitHub status refresh and Discord thread refresh in parallel because
+both update `companion/private/pnh_dispatch_state.json`.
 
-```text
-APPROVE_PNH_UNATTENDED_DISPATCH_PILOT
+Use this order after a dispatch or label reconciliation:
+
+```bash
+python3 scripts/pnh_dispatch_status_refresh.py --github-read --apply
+python3 scripts/pnh_discord_thread_status_refresh.py --openclaw-read --approve-discord-read --apply --limit 10
+python3 scripts/pnh_dispatch_status_refresh.py --github-read --apply
+python3 scripts/pnh_external_reconciliation_plan.py
+python3 scripts/pnh_dispatch_evidence_summary.py
+python3 scripts/pnh_supervisor_review_summary.py
 ```
 
-Reason: activation would allow queued mobile captures to create external
-GitHub/Discord/OpenClaw records without per-item operator confirmation.
+The final GitHub refresh preserves issue state and label fields if a prior
+Discord refresh used an older state snapshot.
+
+## Activation Gate
+
+Live unattended pilot activation is delegated for bounded PNH test and
+implementation batches when the existing queue, rate-limit, rollback, redaction,
+and evidence scripts are used:
+
+```text
+project AGENTS.md bounded dispatch delegation
+```
+
+Reason: the supervisor delegated this class of test/implementation write to
+avoid micro-approval during PNH pipeline validation.
 
 ## Pilot Result
+
+Second pilot batch:
+
+- capture: `capture-3b8522ff102b0469c683b027`
+- GitHub Issue: `#4`
+- Discord thread: `1512323845514596373`
+- status: `dispatched_to_worker_thread`
+- GitHub dispatch label: `dispatch:dispatched-to-worker`
+- external reconciliation: no pending writes
+- next action: `capture_worker_session_result`
 
 First approved pilot batch:
 
