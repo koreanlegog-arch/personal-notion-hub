@@ -79,6 +79,8 @@ def run_candidate_export(args: argparse.Namespace, out_path: Path) -> dict[str, 
         command.extend(["--db", args.db])
     if args.capture_id:
         command.extend(["--capture-id", args.capture_id])
+    if args.state_file:
+        command.extend(["--state-file", args.state_file])
     if args.allow_plaintext:
         command.append("--allow-plaintext")
     if args.allow_external_db:

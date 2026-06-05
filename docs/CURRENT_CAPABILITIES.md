@@ -52,6 +52,8 @@ The current verified Launch flow can:
 13. confirm mapping and task status into browser-local Launch, Projects, and Tasks
 14. generate supervisor review summary
 15. run bounded unattended dispatch pilot batches with queue limits and rollback snapshot
+16. run metadata-only auto-dispatch dry-runs from the encrypted private inbox
+17. skip already-dispatched capture IDs before selecting an automatic dispatch candidate
 
 Current verified live record:
 
@@ -102,6 +104,7 @@ python3 scripts/private_inbox_status.py --include-recent
 
 ```bash
 python3 scripts/pnh_auto_dispatch_from_inbox.py --detect-existing-github
+python3 scripts/pnh_auto_dispatch_from_inbox_smoke_check.py
 python3 scripts/pnh_dispatch_state_status.py
 python3 scripts/pnh_dispatch_evidence_summary.py
 python3 scripts/pnh_supervisor_review_summary.py

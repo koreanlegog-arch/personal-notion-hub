@@ -22,6 +22,7 @@ from companion.private_store import DEFAULT_DB_PATH, PrivateStoreError, list_cap
 
 COMMAND_KINDS = {"project_brief", "task_request", "daily_command", "urgent_approval"}
 DEFAULT_OUT = ROOT / "ops" / "runs" / "PNH-DISPATCH-CANDIDATE-EXPORT-20260605" / "dispatch_candidate.json"
+DEFAULT_STATE = ROOT / "companion" / "private" / "pnh_dispatch_state.json"
 
 
 class CandidateExportError(ValueError):
@@ -34,8 +35,10 @@ def main() -> int:
     parser.add_argument("--limit", type=int, default=20, help="Recent captures to inspect.")
     parser.add_argument("--capture-id", default="", help="Specific capture id to export.")
     parser.add_argument("--out", default=str(DEFAULT_OUT), help="Output JSON path.")
+    parser.add_argument("--state-file", default=str(DEFAULT_STATE), help="Local dispatch state JSON used to skip already dispatched captures.")
     parser.add_argument("--allow-plaintext", action="store_true", help="Allow plaintext inbox candidates. Values are still not printed.")
     parser.add_argument("--allow-external-db", action="store_true", help="Allow a DB outside companion/private for fixture tests.")
+    parser.add_argument("--allow-dispatched", action="store_true", help="Allow captures already present in dispatch state.")
     args = parser.parse_args()
 
     try:
@@ -46,7 +49,14 @@ def main() -> int:
             create_if_missing=False,
             allow_external=args.allow_external_db,
         )
-        capture = select_capture(captures, args.capture_id, allow_plaintext=args.allow_plaintext)
+        dispatch_state = load_dispatch_state(Path(args.state_file))
+        capture = select_capture(
+            captures,
+            args.capture_id,
+            allow_plaintext=args.allow_plaintext,
+            dispatch_state=dispatch_state,
+            allow_dispatched=args.allow_dispatched,
+        )
         candidate = build_candidate(capture)
         out_path = Path(args.out)
         out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -71,24 +81,62 @@ def main() -> int:
         return 2
 
 
-def select_capture(captures: list[dict[str, Any]], capture_id: str, *, allow_plaintext: bool) -> dict[str, Any]:
-    candidates = [item for item in captures if is_command_candidate(item, allow_plaintext=allow_plaintext)]
+def load_dispatch_state(path: Path) -> dict[str, Any]:
+    if not path.exists():
+        return {}
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise CandidateExportError(f"dispatch state JSON is invalid: {exc.msg}") from exc
+    if not isinstance(value, dict):
+        raise CandidateExportError("dispatch state must be an object")
+    return value
+
+
+def select_capture(
+    captures: list[dict[str, Any]],
+    capture_id: str,
+    *,
+    allow_plaintext: bool,
+    dispatch_state: dict[str, Any],
+    allow_dispatched: bool,
+) -> dict[str, Any]:
+    candidates = [
+        item
+        for item in captures
+        if is_command_candidate(
+            item,
+            allow_plaintext=allow_plaintext,
+            dispatch_state=dispatch_state,
+            allow_dispatched=allow_dispatched,
+        )
+    ]
     if capture_id:
         for item in candidates:
             if item.get("id") == capture_id:
                 return item
+        if capture_id in dispatch_state and not allow_dispatched:
+            raise CandidateExportError("requested capture id is already present in dispatch state")
         raise CandidateExportError("requested capture id is not an exportable command candidate")
     if not candidates:
         raise CandidateExportError("no exportable command candidate found")
     return candidates[0]
 
 
-def is_command_candidate(item: dict[str, Any], *, allow_plaintext: bool) -> bool:
+def is_command_candidate(
+    item: dict[str, Any],
+    *,
+    allow_plaintext: bool,
+    dispatch_state: dict[str, Any],
+    allow_dispatched: bool,
+) -> bool:
     if item.get("kind") not in COMMAND_KINDS:
         return False
     if item.get("status") != "inbox":
         return False
     if item.get("storageMode") == "plaintext-inbox" and not allow_plaintext:
+        return False
+    if not allow_dispatched and str(item.get("id") or "") in dispatch_state:
         return False
     return True
 

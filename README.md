@@ -117,13 +117,15 @@ Expected:
 - repeated local start 중복 방지
 - paired local companion으로 Launch packet을 workspace private inbox/encrypted vault에 저장
 - 승인된 local operator command로 GitHub Issue ledger와 Discord/OpenClaw worker thread 연결
+- metadata-only auto-dispatch dry-run from the encrypted private inbox
+- bounded delegated unattended dispatch pilot with queue/rate-limit/rollback controls
 - worker-session metadata를 local dispatch state에 기록
 - Launch UI에서 dispatch mapping과 task status를 확인해 Projects/Tasks board에 반영
 
 제외 범위:
 
 - API token 또는 secret 저장
-- unattended Discord/GitHub/OpenClaw dispatch
+- unbounded or always-on unattended Discord/GitHub/OpenClaw dispatch
 - real phone/contact/calendar/call/recording adapters
 - cloud sync of private data
 - 자동 외부 서비스 연동
@@ -137,6 +139,7 @@ python3 scripts/pnh_dispatch_candidate_export_smoke_check.py
 python3 scripts/pnh_dispatch_job_smoke_check.py
 python3 scripts/pnh_dispatch_state_status_smoke_check.py
 python3 scripts/pnh_dispatch_rehearsal_smoke_check.py
+python3 scripts/pnh_auto_dispatch_from_inbox_smoke_check.py
 ```
 
 The bridge defaults to dry-run. Live GitHub Issue creation requires a separate
@@ -146,6 +149,10 @@ private command contents are not included by default.
 The dispatch job adds an idempotent local state layer for future
 GitHub-Issue-to-Discord/OpenClaw routing. Apply-mode state lives under ignored
 `companion/private/` storage.
+
+Auto-dispatch from the private inbox is metadata-only by default. It reads local
+dispatch state and skips capture IDs that already have dispatch or worker
+records, so repeated runs fail closed when no new command candidate exists.
 
 장기 방향:
 
@@ -211,7 +218,7 @@ http://127.0.0.1:8765/api/health
 http://127.0.0.1:8765/api/schema
 ```
 
-Actual phone/contact/calendar/recording adapters, external dispatch, non-loopback access, plaintext migration apply, OS keychain storage/retrieval, and packaging remain separate approval gates.
+Actual phone/contact/calendar/recording adapters, unbounded external dispatch, non-loopback access outside owner-only LAN/tailnet, plaintext migration apply, OS keychain storage/retrieval policy changes, and packaging remain separate approval gates.
 
 ## Browser Companion Bridge
 

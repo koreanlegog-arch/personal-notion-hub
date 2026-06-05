@@ -82,6 +82,48 @@ def main() -> int:
         assert_true(summary["privateValuesPrinted"] is False, "private_values_printed=true")
         assert_true(summary["liveApplyGate"]["requiredForApply"] is True, "live_apply_gate_missing=true")
 
+        state_path.write_text(
+            json.dumps(
+                {
+                    inserted["id"]: {
+                        "taskStatus": "worker_done",
+                        "workerStatus": "done",
+                    }
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        already_dispatched = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts" / "pnh_auto_dispatch_from_inbox.py"),
+                "--db",
+                str(db_path),
+                "--capture-id",
+                inserted["id"],
+                "--state-file",
+                str(state_path),
+                "--run-dir",
+                str(run_dir / "already-dispatched"),
+                "--repo",
+                "example/private-ledger",
+                "--discord-target",
+                "channel:123",
+                "--allow-plaintext",
+                "--allow-external-db",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=30,
+            check=False,
+        )
+        assert_true(already_dispatched.returncode == 2, "already_dispatched_capture_exported=true")
+        assert_true("already present in dispatch state" in already_dispatched.stderr, "already_dispatched_message_missing=true")
+        state_path.unlink()
+
         blocked_apply = subprocess.run(
             [
                 sys.executable,
