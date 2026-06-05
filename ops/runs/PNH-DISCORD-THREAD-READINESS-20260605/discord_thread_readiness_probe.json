@@ -30,14 +30,18 @@
   },
   "discordThreadReadinessProbe": true,
   "externalWritesPerformed": false,
-  "generatedAt": "2026-06-05T04:12:58+00:00",
+  "generatedAt": "2026-06-05T04:25:24+00:00",
   "liveRead": {
     "approvalReason": "Discord/OpenClaw read can expose private channel content even without writing.",
-    "performed": false,
-    "requested": false,
-    "requiresApproval": true
+    "contentPrintedInReport": false,
+    "performed": true,
+    "requested": true,
+    "requiresApproval": true,
+    "returnCode": 0,
+    "stderrFirstLine": "",
+    "stdoutBytes": 146
   },
-  "mode": "capability-only",
+  "mode": "live-read",
   "privateValuesPrinted": false,
   "recommendedNextStep": "implement_approval_gated_discord_thread_read_refresh",
   "tokenValuePrinted": false

@@ -64,6 +64,18 @@ This creates a redacted plan for stale external metadata such as replacing
 GitHub, Discord, or OpenClaw. Any planned external write requires a separate
 operator approval gate.
 
+Apply an approved GitHub label reconciliation plan:
+
+```bash
+python3 scripts/pnh_github_label_reconciliation_apply.py \
+  --apply \
+  --approve-external-write
+```
+
+This mutates GitHub Issue labels through the authenticated `gh` CLI. It stores
+before/after label names and does not print token values or private command
+bodies.
+
 Probe whether Discord/OpenClaw thread read-refresh can be implemented:
 
 ```bash
@@ -73,6 +85,19 @@ python3 scripts/pnh_discord_thread_readiness_probe.py
 Default mode checks local OpenClaw CLI capability only. Live Discord reads are
 blocked behind `--openclaw-read --approve-discord-read` because reading channel
 content can expose private thread messages even without writing.
+
+Refresh Discord thread metadata into local dispatch state:
+
+```bash
+python3 scripts/pnh_discord_thread_status_refresh.py \
+  --openclaw-read \
+  --approve-discord-read \
+  --apply
+```
+
+This performs a read-only Discord/OpenClaw call and stores metadata only:
+return code, observed message count, checked timestamp, and byte count. It does
+not store message content.
 
 Record a local worker-result rehearsal without external calls:
 

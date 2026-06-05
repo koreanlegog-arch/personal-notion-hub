@@ -37,6 +37,8 @@ mobile/browser Launch input
 | Launch UI can sync confirmed status to boards | Pass | Playwright Launch status sync QA |
 | Duplicate issue creation can be prevented | Pass | local state plus `--detect-existing-github` dry-run |
 | GitHub Issue status can be refreshed without external writes | Pass | `pnh_dispatch_status_refresh.py --github-read --apply` |
+| GitHub dispatch label reconciliation can be applied | Pass | Issue `#2` label changed to `dispatch:worker-done` |
+| Discord thread metadata can be refreshed without storing content | Pass | `pnh_discord_thread_status_refresh.py --openclaw-read --approve-discord-read --apply` |
 | Routine unattended operation | Not ready | requires explicit operator commands and approval gates |
 | Real phone/contact/calendar/recording adapters | Not ready | adapter-specific privacy gates remain blocked |
 
@@ -113,9 +115,8 @@ None for owner-operated MVP use.
 
 ## Known Non-Blocking Risks
 
-- GitHub Issue `#2` still has label `dispatch:not-dispatched`; updating labels is an external write gate.
-- Discord/OpenClaw thread read capability has a CLI candidate, but status refresh apply is not implemented yet.
-- GitHub Issue dispatch label reconciliation is planned only; applying it is an external write gate.
+- GitHub Issue `#2` dispatch label is reconciled to `dispatch:worker-done`.
+- Discord/OpenClaw thread metadata refresh is implemented, but semantic worker-progress parsing remains future work.
 - One older rehearsal record remains incomplete at 33% evidence completeness and is correctly marked as follow-up.
 - Browser-local boards are not an authoritative multi-device database.
 - Public GitHub Pages deployment remains static; private companion/vault features require local companion runtime.

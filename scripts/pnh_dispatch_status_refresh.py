@@ -12,6 +12,8 @@ import argparse
 import json
 import os
 import re
+import shutil
+import subprocess
 import sys
 import urllib.error
 import urllib.request
@@ -156,7 +158,7 @@ def read_github_issue(repo: str, issue_number: str, token_env: str) -> dict[str,
         raise DispatchStatusRefreshError("repo_unset")
     token = os.environ.get(token_env, "").strip()
     if not token:
-        raise DispatchStatusRefreshError(f"{token_env}_not_set")
+        return read_github_issue_with_gh(repo, issue_number)
     request = urllib.request.Request(
         f"https://api.github.com/repos/{repo}/issues/{issue_number}",
         headers={
@@ -174,6 +176,27 @@ def read_github_issue(repo: str, issue_number: str, token_env: str) -> dict[str,
         raise DispatchStatusRefreshError(f"github issue read failed with HTTP {exc.code}") from exc
     if not isinstance(payload, dict):
         raise DispatchStatusRefreshError("github issue read returned unexpected payload")
+    return redacted_issue_status(payload)
+
+
+def read_github_issue_with_gh(repo: str, issue_number: str) -> dict[str, Any]:
+    if not shutil.which("gh"):
+        raise DispatchStatusRefreshError("GITHUB_TOKEN_not_set_and_gh_unavailable")
+    result = subprocess.run(
+        ["gh", "api", f"repos/{repo}/issues/{issue_number}"],
+        capture_output=True,
+        text=True,
+        timeout=30,
+        check=False,
+    )
+    if result.returncode != 0:
+        raise DispatchStatusRefreshError(f"github issue read via gh failed: {first_line(result.stderr)}")
+    try:
+        payload = json.loads(result.stdout)
+    except json.JSONDecodeError as exc:
+        raise DispatchStatusRefreshError("github issue read via gh returned invalid JSON") from exc
+    if not isinstance(payload, dict):
+        raise DispatchStatusRefreshError("github issue read via gh returned unexpected payload")
     return redacted_issue_status(payload)
 
 
@@ -248,6 +271,10 @@ def safe_path_label(path: Path) -> str:
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+
+def first_line(value: str) -> str:
+    return value.strip().splitlines()[0] if value.strip() else ""
 
 
 if __name__ == "__main__":

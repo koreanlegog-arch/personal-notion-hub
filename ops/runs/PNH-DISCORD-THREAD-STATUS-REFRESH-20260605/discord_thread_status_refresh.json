@@ -1,0 +1,28 @@
+{
+  "discordThreadStatusRefresh": true,
+  "externalWritesPerformed": false,
+  "fixtureUsed": false,
+  "generatedAt": "2026-06-05T04:25:21+00:00",
+  "localWritesPerformed": true,
+  "messageContentStored": false,
+  "mode": "apply",
+  "openclawReadRequested": true,
+  "privateValuesPrinted": false,
+  "records": [
+    {
+      "discordMessagesObserved": 0,
+      "discordReadCheckedAt": "2026-06-05T04:25:21+00:00",
+      "discordReadReturnCode": 0,
+      "discordReadStdoutBytes": 146,
+      "discordStatusRefreshed": true,
+      "discordThreadId": "1512295718054793419",
+      "discordThreadSet": true,
+      "error": "",
+      "packetId": "capture-5345e37040604a2fca64f317"
+    }
+  ],
+  "recordsInspected": 1,
+  "recordsRefreshed": 1,
+  "recordsWithErrors": 0,
+  "tokenValuePrinted": false
+}

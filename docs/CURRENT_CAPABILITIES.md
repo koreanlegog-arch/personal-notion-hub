@@ -43,16 +43,19 @@ The current verified Launch flow can:
 4. create or detect a GitHub Issue ledger entry without raw private body
 5. create a Discord/OpenClaw worker thread after explicit approval
 6. capture OpenClaw worker-session metadata without delivering a Discord reply
-7. refresh GitHub Issue state into local dispatch state
-8. show dispatch state in the Launch UI
-9. confirm mapping and task status into browser-local Launch, Projects, and Tasks
-10. generate supervisor review summary
+7. refresh GitHub Issue state and dispatch labels into local dispatch state
+8. apply approved GitHub dispatch label reconciliation
+9. refresh Discord/OpenClaw thread metadata without storing message content
+10. show dispatch state in the Launch UI
+11. confirm mapping and task status into browser-local Launch, Projects, and Tasks
+12. generate supervisor review summary
 
 Current verified live record:
 
 - GitHub Issue: `#2`
 - Discord thread id: `1512295718054793419`
 - worker session: `pnh:capture-5345e37040604a2fca64f317:qa`
+- GitHub dispatch label: `dispatch:worker-done`
 - evidence completeness: `100%`
 
 ## Commands You Can Use
@@ -83,6 +86,8 @@ python3 scripts/pnh_supervisor_review_summary.py
 python3 scripts/pnh_dispatch_status_refresh.py --github-read
 python3 scripts/pnh_external_reconciliation_plan.py
 python3 scripts/pnh_discord_thread_readiness_probe.py
+python3 scripts/pnh_github_label_reconciliation_apply.py
+python3 scripts/pnh_discord_thread_status_refresh.py
 ```
 
 Use `--apply` only when the script's apply mode is intentionally needed and the relevant approval gate has been satisfied.
@@ -122,8 +127,8 @@ These actions create external writes, change security posture, or expand data ri
 - cloud sync of private data
 - production auth model
 - packaged desktop/mobile app
-- Discord/OpenClaw thread read-refresh, unless a stable read API is confirmed
-- GitHub/Discord/OpenClaw external metadata reconciliation apply
+- semantic Discord/OpenClaw worker progress parsing beyond metadata-only refresh
+- unattended GitHub/Discord/OpenClaw external metadata reconciliation apply
 - GitHub Projects board mutation
 
 ## Practical Current Usage

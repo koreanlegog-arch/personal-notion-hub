@@ -19,6 +19,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUT = ROOT / "ops" / "runs" / "PNH-DISCORD-THREAD-READINESS-20260605" / "discord_thread_readiness_probe.json"
+DEFAULT_OPENCLAW_ENV = Path.home() / ".config" / "openclaw" / "openclaw-gateway.env"
 
 
 class DiscordThreadReadinessError(ValueError):
@@ -31,6 +32,7 @@ def main() -> int:
     parser.add_argument("--out", default=str(DEFAULT_OUT), help="Output JSON path.")
     parser.add_argument("--openclaw-read", action="store_true", help="Perform a live read-only OpenClaw Discord read.")
     parser.add_argument("--approve-discord-read", action="store_true", help="Required with --openclaw-read.")
+    parser.add_argument("--openclaw-env", default=str(DEFAULT_OPENCLAW_ENV), help="Approved OpenClaw env file for live read.")
     parser.add_argument("--limit", type=int, default=5, help="Live read limit.")
     args = parser.parse_args()
 
@@ -73,7 +75,7 @@ def build_probe(args: argparse.Namespace) -> dict[str, Any]:
             raise DiscordThreadReadinessError("--openclaw-read requires --approve-discord-read")
         if not args.thread_id.strip():
             raise DiscordThreadReadinessError("--thread-id is required for live read")
-        live_read.update(run_live_read(args.thread_id.strip(), args.limit))
+        live_read.update(run_live_read(args.thread_id.strip(), args.limit, Path(args.openclaw_env)))
     return {
         "discordThreadReadinessProbe": True,
         "generatedAt": utc_now(),
@@ -110,8 +112,14 @@ def redact_help(commands: dict[str, dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def run_live_read(thread_id: str, limit: int) -> dict[str, Any]:
+def run_live_read(thread_id: str, limit: int, openclaw_env: Path) -> dict[str, Any]:
     bounded_limit = str(min(max(int(limit), 1), 25))
+    env = None
+    if openclaw_env.exists():
+        import os
+
+        env = os.environ.copy()
+        env.update(read_env_file(openclaw_env))
     result = subprocess.run(
         [
             "openclaw",
@@ -129,6 +137,7 @@ def run_live_read(thread_id: str, limit: int) -> dict[str, Any]:
         text=True,
         timeout=30,
         check=False,
+        env=env,
     )
     return {
         "performed": True,
@@ -137,6 +146,17 @@ def run_live_read(thread_id: str, limit: int) -> dict[str, Any]:
         "stderrFirstLine": first_line(result.stderr),
         "contentPrintedInReport": False,
     }
+
+
+def read_env_file(path: Path) -> dict[str, str]:
+    env: dict[str, str] = {}
+    for line in path.read_text(encoding="utf-8").splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#") or "=" not in stripped:
+            continue
+        key, value = stripped.split("=", 1)
+        env[key.strip()] = value.strip().strip('"').strip("'")
+    return env
 
 
 def recommended_next_step(capability: dict[str, Any]) -> str:

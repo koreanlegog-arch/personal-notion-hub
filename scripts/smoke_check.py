@@ -77,8 +77,12 @@ REQUIRED = [
     "scripts/pnh_dispatch_status_refresh_smoke_check.py",
     "scripts/pnh_external_reconciliation_plan.py",
     "scripts/pnh_external_reconciliation_plan_smoke_check.py",
+    "scripts/pnh_github_label_reconciliation_apply.py",
+    "scripts/pnh_github_label_reconciliation_apply_smoke_check.py",
     "scripts/pnh_discord_thread_readiness_probe.py",
     "scripts/pnh_discord_thread_readiness_probe_smoke_check.py",
+    "scripts/pnh_discord_thread_status_refresh.py",
+    "scripts/pnh_discord_thread_status_refresh_smoke_check.py",
     "scripts/pnh_dispatch_rehearsal.py",
     "scripts/pnh_dispatch_rehearsal_smoke_check.py",
     "scripts/pnh_worker_result_record.py",
@@ -219,8 +223,16 @@ def assert_github_ledger_bridge_contracts() -> None:
     reconciliation_plan_smoke = (ROOT / "scripts/pnh_external_reconciliation_plan_smoke_check.py").read_text(
         encoding="utf-8"
     )
+    github_label_apply = (ROOT / "scripts/pnh_github_label_reconciliation_apply.py").read_text(encoding="utf-8")
+    github_label_apply_smoke = (ROOT / "scripts/pnh_github_label_reconciliation_apply_smoke_check.py").read_text(
+        encoding="utf-8"
+    )
     discord_thread_probe = (ROOT / "scripts/pnh_discord_thread_readiness_probe.py").read_text(encoding="utf-8")
     discord_thread_probe_smoke = (ROOT / "scripts/pnh_discord_thread_readiness_probe_smoke_check.py").read_text(
+        encoding="utf-8"
+    )
+    discord_thread_status = (ROOT / "scripts/pnh_discord_thread_status_refresh.py").read_text(encoding="utf-8")
+    discord_thread_status_smoke = (ROOT / "scripts/pnh_discord_thread_status_refresh_smoke_check.py").read_text(
         encoding="utf-8"
     )
     rehearsal = (ROOT / "scripts/pnh_dispatch_rehearsal.py").read_text(encoding="utf-8")
@@ -260,10 +272,17 @@ def assert_github_ledger_bridge_contracts() -> None:
         "externalReconciliationPlan",
         "replace_dispatch_status_labels",
         "approvalRequiredBeforeExternalWrite",
+        "pnh_github_label_reconciliation_apply_smoke_check_pass=true",
+        "githubLabelReconciliation",
+        "gh auth",
         "pnh_discord_thread_readiness_probe_smoke_check_pass=true",
         "discordThreadReadinessProbe",
         "--approve-discord-read",
         "implement_approval_gated_discord_thread_read_refresh",
+        "pnh_discord_thread_status_refresh_smoke_check_pass=true",
+        "discordThreadStatusRefresh",
+        "messageContentStored",
+        "discordMessagesObserved",
         "githubDuplicateDetection",
         "--detect-existing-github",
         "pnh_dispatch_rehearsal_smoke_check_pass=true",
@@ -306,8 +325,12 @@ def assert_github_ledger_bridge_contracts() -> None:
             status_refresh_smoke,
             reconciliation_plan,
             reconciliation_plan_smoke,
+            github_label_apply,
+            github_label_apply_smoke,
             discord_thread_probe,
             discord_thread_probe_smoke,
+            discord_thread_status,
+            discord_thread_status_smoke,
             rehearsal,
             rehearsal_smoke,
             worker_result,

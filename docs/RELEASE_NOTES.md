@@ -49,6 +49,35 @@ Recorded in:
 
 - `ops/runs/PNH-EXTERNAL-RECONCILIATION-PLAN-20260605/`
 
+## 2026-06-05 - External Reconciliation Apply
+
+### Summary
+
+Applied the approved GitHub label reconciliation for the verified Launch packet
+and implemented metadata-only Discord/OpenClaw thread status refresh.
+
+### Included
+
+- `scripts/pnh_github_label_reconciliation_apply.py`
+- `scripts/pnh_github_label_reconciliation_apply_smoke_check.py`
+- `scripts/pnh_discord_thread_status_refresh.py`
+- `scripts/pnh_discord_thread_status_refresh_smoke_check.py`
+- `ops/runs/PNH-GITHUB-LABEL-RECONCILIATION-APPLY-20260605/`
+- `ops/runs/PNH-DISCORD-THREAD-STATUS-REFRESH-20260605/`
+
+### Results
+
+- GitHub Issue `#2` now uses `dispatch:worker-done`.
+- Discord thread metadata refresh passed without storing message content.
+- Reconciliation plan now reports no pending external writes for the verified
+  Launch packet.
+
+### Boundaries
+
+- No Discord/OpenClaw messages were posted.
+- No worker/model run was started.
+- No private command body or message body was stored in evidence.
+
 ## 2026-06-05 - Launch Status Sync Browser QA
 
 ### Summary
