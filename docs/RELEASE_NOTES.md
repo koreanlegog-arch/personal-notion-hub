@@ -1,5 +1,36 @@
 # Release Notes
 
+## 2026-06-05 - Owner Live Capture Readiness
+
+### Summary
+
+Added a readiness gate for the first real owner command capture session. The
+new check verifies encrypted local storage, queue state, reconciliation state,
+dispatch metadata, and owner-only phone/tailnet availability without starting a
+server or reading private command bodies.
+
+### Included
+
+- `scripts/pnh_owner_live_capture_readiness.py`
+- `scripts/pnh_owner_live_capture_readiness_smoke_check.py`
+- `docs/OWNER_LIVE_COMMAND_CAPTURE_RUNBOOK.md`
+- `ops/runs/PNH-OWNER-LIVE-CAPTURE-READINESS-20260605/readiness.json`
+
+### Results
+
+- verdict `ready_for_owner_action`
+- access mode `tailnet`
+- encrypted vault rows `9`
+- plaintext inbox rows `0`
+- dispatch queue `0`
+- pending external reconciliation writes `0`
+
+### Material Gate
+
+The next step must be performed by the owner because it requires pairing a
+browser session and entering real private command content. Codex must not
+receive or print the pairing code, browser session token, or raw private body.
+
 ## 2026-06-05 - Synthetic Single Command Packet Rehearsal
 
 ### Summary

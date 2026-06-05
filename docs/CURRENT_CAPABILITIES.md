@@ -32,6 +32,7 @@ This document summarizes what the current `Personal_Notion_Hub` can do now, what
 - private LAN phone ingress mode
 - Tailscale owner-only access runbook
 - phone browser can use the companion-served PNH UI when the local companion is running and the allowed origin matches
+- owner live capture readiness check for private pairing/input handoff
 
 ### Launch-To-Worker MVP
 
@@ -55,6 +56,7 @@ The current verified Launch flow can:
 16. run metadata-only auto-dispatch dry-runs from the encrypted private inbox
 17. skip already-dispatched capture IDs before selecting an automatic dispatch candidate
 18. seed a synthetic encrypted command capture for end-to-end dispatch rehearsal
+19. verify owner live capture readiness before the owner enters real private content
 
 Current verified live record:
 
@@ -84,6 +86,16 @@ Latest synthetic single command packet rehearsal:
 - evidence completeness: `100%`
 - raw private body read: `false`
 
+Latest owner live capture readiness:
+
+- verdict: `ready_for_owner_action`
+- access mode: `tailnet`
+- encrypted vault ready: `true`
+- plaintext inbox rows: `0`
+- queue count before owner input: `0`
+- pending external reconciliation writes: `0`
+- material gate: owner must pair locally and enter real private command content
+
 Previous completed unattended pilot record:
 
 - GitHub Issue: `#3`
@@ -110,6 +122,7 @@ python3 companion/server.py --host 127.0.0.1 --port 8765 --enable-private-inbox 
 python3 scripts/private_inbox_status.py
 python3 scripts/private_inbox_status.py --include-recent
 python3 scripts/pnh_seed_synthetic_command_capture.py
+python3 scripts/pnh_owner_live_capture_readiness.py
 ```
 
 ### Dispatch Pipeline
@@ -152,6 +165,7 @@ See:
 
 - `docs/TAILSCALE_REMOTE_ACCESS_RUNBOOK.md`
 - `docs/PHONE_INGRESS_SECURITY.md`
+- `docs/OWNER_LIVE_COMMAND_CAPTURE_RUNBOOK.md`
 
 ## Requires Explicit Approval
 

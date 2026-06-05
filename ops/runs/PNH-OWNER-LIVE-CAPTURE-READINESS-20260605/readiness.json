@@ -1,0 +1,134 @@
+{
+  "ownerLiveCaptureReadiness": {
+    "accessMode": "tailnet",
+    "checks": [
+      {
+        "name": "sensitive_owner_ready",
+        "pass": true
+      },
+      {
+        "name": "encrypted_vault_enabled",
+        "pass": true
+      },
+      {
+        "name": "no_plaintext_inbox_rows",
+        "pass": true
+      },
+      {
+        "name": "queue_currently_empty",
+        "pass": true
+      },
+      {
+        "name": "no_pending_external_reconciliation",
+        "pass": true
+      },
+      {
+        "name": "dispatch_state_available",
+        "pass": true
+      },
+      {
+        "name": "owner_only_access_path_available",
+        "pass": true
+      },
+      {
+        "name": "secret_values_not_printed",
+        "pass": true
+      }
+    ],
+    "commandsRun": [
+      {
+        "command": [
+          "python3",
+          "scripts/sensitive_owner_readiness_check.py"
+        ],
+        "returnCode": 0,
+        "stderrBytes": 0,
+        "stdoutBytes": 667,
+        "step": "sensitive_owner"
+      },
+      {
+        "command": [
+          "python3",
+          "scripts/private_inbox_status.py"
+        ],
+        "returnCode": 0,
+        "stderrBytes": 0,
+        "stdoutBytes": 2265,
+        "step": "private_inbox"
+      },
+      {
+        "command": [
+          "python3",
+          "scripts/pnh_unattended_dispatch_queue_plan.py"
+        ],
+        "returnCode": 0,
+        "stderrBytes": 0,
+        "stdoutBytes": 329,
+        "step": "queue_plan"
+      },
+      {
+        "command": [
+          "python3",
+          "scripts/pnh_external_reconciliation_plan.py"
+        ],
+        "returnCode": 0,
+        "stderrBytes": 0,
+        "stdoutBytes": 377,
+        "step": "reconciliation_plan"
+      },
+      {
+        "command": [
+          "python3",
+          "scripts/pnh_dispatch_state_status.py",
+          "--include-urls"
+        ],
+        "returnCode": 0,
+        "stderrBytes": 0,
+        "stdoutBytes": 4341,
+        "step": "dispatch_state"
+      },
+      {
+        "command": [
+          "python3",
+          "scripts/phone_ingress_lan_info.py"
+        ],
+        "returnCode": 0,
+        "stderrBytes": 0,
+        "stdoutBytes": 1229,
+        "step": "phone_lan_info"
+      }
+    ],
+    "dispatch": {
+      "discordLinked": 4,
+      "githubLinked": 4,
+      "totalRecords": 5,
+      "workerResults": 5
+    },
+    "externalWritesPerformed": false,
+    "failedChecks": [],
+    "generatedAt": "2026-06-05T07:41:30+00:00",
+    "materialGateReached": true,
+    "materialGateReason": "The next step requires the human owner to pair a browser session and enter real private command content. Codex must not receive or print the pairing code, session token, or raw private body.",
+    "nextOperatorAction": "Start the approved tailnet session, pair locally, enter the owner command in the phone browser, then run the single command packet wrapper.",
+    "phoneAccess": {
+      "safePhoneUrlCount": 0,
+      "tailnetAvailable": true,
+      "tailnetDnsNameSet": true,
+      "tailnetIpv4Set": true,
+      "tailnetRunning": true
+    },
+    "privateInbox": {
+      "statusCounts": {
+        "inbox": 9
+      },
+      "storageModeCounts": {
+        "encrypted-vault": 9,
+        "plaintext-inbox": 0
+      },
+      "totalCaptures": 9
+    },
+    "privateValuesPrinted": false,
+    "secretValuePrinted": false,
+    "verdict": "ready_for_owner_action"
+  }
+}

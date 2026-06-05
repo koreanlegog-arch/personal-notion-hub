@@ -30,7 +30,7 @@ def main() -> int:
             ),
             encoding="utf-8",
         )
-        reconciliation.write_text(json.dumps({"plannedExternalWriteCount": 0}), encoding="utf-8")
+        reconciliation.write_text(json.dumps({"plannedExternalWrites": []}), encoding="utf-8")
         discord.write_text(
             json.dumps({"discordThreadStatusRefresh": True, "messageContentStored": False}), encoding="utf-8"
         )
@@ -57,6 +57,33 @@ def main() -> int:
         assert_true(payload["pnhUnattendedDispatchReadiness"] is True, "readiness_flag_missing=true")
         assert_true(payload["activationGate"]["required"] is True, "activation_gate_missing=true")
         assert_true(payload["externalWritesPerformed"] is False, "external_write_performed=true")
+
+        reconciliation.write_text(
+            json.dumps({"plannedExternalWrites": [{"system": "github", "operation": "replace_dispatch_status_labels"}]}),
+            encoding="utf-8",
+        )
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts" / "pnh_unattended_dispatch_readiness.py"),
+                "--queue-plan",
+                str(queue),
+                "--reconciliation-json",
+                str(reconciliation),
+                "--discord-refresh-json",
+                str(discord),
+                "--out",
+                str(out),
+            ],
+            capture_output=True,
+            text=True,
+            timeout=10,
+            check=False,
+        )
+        assert_true(result.returncode == 0, f"readiness_pending_write_run_failed={result.stderr.strip()}")
+        payload = json.loads(out.read_text(encoding="utf-8"))
+        failed_names = {item["name"] for item in payload["failedChecks"]}
+        assert_true("no_pending_external_reconciliation" in failed_names, "pending_external_write_not_detected=true")
 
     print("pnh_unattended_dispatch_readiness_smoke_check_pass=true")
     print("external_writes_performed=false")

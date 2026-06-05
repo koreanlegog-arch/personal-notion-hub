@@ -183,6 +183,7 @@ Personal_Notion_Hub web UI
 
 - `docs/LOCAL_COMPANION_ARCHITECTURE.md`
 - `docs/PRIVATE_DATA_POLICY.md`
+- `docs/OWNER_LIVE_COMMAND_CAPTURE_RUNBOOK.md`
 - `docs/adr-0001-local-companion-vault.md`
 
 ## Local Companion Prototype

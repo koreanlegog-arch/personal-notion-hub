@@ -41,7 +41,7 @@ def build_readiness(queue_plan: dict[str, Any], reconciliation: dict[str, Any], 
     checks = [
         check("queue_plan_available", bool(queue_plan.get("pnhUnattendedDispatchQueuePlan")), "queue dry-run output exists"),
         check("queue_is_dry_run", queue_plan.get("mode") == "dry-run", "queue planner did not enable dispatch"),
-        check("no_pending_external_reconciliation", reconciliation.get("plannedExternalWriteCount", 0) == 0, "external reconciliation still has pending writes"),
+        check("no_pending_external_reconciliation", planned_external_write_count(reconciliation) == 0, "external reconciliation still has pending writes"),
         check("discord_refresh_available", bool(discord_refresh.get("discordThreadStatusRefresh")), "Discord metadata refresh evidence exists"),
         check("discord_refresh_does_not_store_content", discord_refresh.get("messageContentStored") is False, "Discord refresh must not store content"),
         check("gh_available", bool(shutil.which("gh")), "GitHub CLI is available"),
@@ -83,6 +83,15 @@ def load_json(path: Path) -> dict[str, Any]:
     except json.JSONDecodeError:
         return {}
     return payload if isinstance(payload, dict) else {}
+
+
+def planned_external_write_count(reconciliation: dict[str, Any]) -> int:
+    if isinstance(reconciliation.get("plannedExternalWriteCount"), int):
+        return int(reconciliation["plannedExternalWriteCount"])
+    planned = reconciliation.get("plannedExternalWrites")
+    if isinstance(planned, list):
+        return len(planned)
+    return 0
 
 
 def redact_stdout(result: dict[str, Any], out_path: Path) -> dict[str, Any]:

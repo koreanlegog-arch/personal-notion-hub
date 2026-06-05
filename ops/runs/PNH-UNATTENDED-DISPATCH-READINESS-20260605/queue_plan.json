@@ -1,9 +1,9 @@
 {
   "capturesInspected": 9,
-  "cooldownActive": true,
+  "cooldownActive": false,
   "eligibleCount": 0,
   "externalWritesPerformed": false,
-  "generatedAt": "2026-06-05T07:34:29+00:00",
+  "generatedAt": "2026-06-05T07:42:04+00:00",
   "lockPlan": {
     "lockFile": "companion/private/pnh_unattended_dispatch.lock",
     "singleWriter": true,
