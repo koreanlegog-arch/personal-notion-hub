@@ -1,0 +1,9 @@
+{
+  "discordLinked": 0,
+  "dispatchStateStatus": true,
+  "githubLinked": 0,
+  "privateValuesPrinted": false,
+  "records": [],
+  "stateFile": "companion/private/pnh_dispatch_state.json",
+  "totalRecords": 0
+}

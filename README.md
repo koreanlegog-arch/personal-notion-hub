@@ -128,6 +128,7 @@ python3 scripts/github_ledger_bridge_smoke_check.py
 python3 scripts/pnh_dispatch_candidate_export_smoke_check.py
 python3 scripts/pnh_dispatch_job_smoke_check.py
 python3 scripts/pnh_dispatch_state_status_smoke_check.py
+python3 scripts/pnh_dispatch_rehearsal_smoke_check.py
 ```
 
 The bridge defaults to dry-run. Live GitHub Issue creation requires a separate

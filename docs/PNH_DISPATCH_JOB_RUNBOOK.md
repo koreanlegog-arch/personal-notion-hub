@@ -44,6 +44,14 @@ URLs are hidden by default. Use `--include-urls` only for local operator inspect
 
 ## Dry Run
 
+Run the full local rehearsal:
+
+```bash
+python3 scripts/pnh_dispatch_rehearsal.py
+```
+
+The rehearsal performs candidate export, dispatch dry-run planning, and state status output. It does not create GitHub Issues or Discord/OpenClaw messages.
+
 Export a metadata-only candidate from the local private inbox:
 
 ```bash

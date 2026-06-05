@@ -1,0 +1,16 @@
+{
+  "body": "Private command body remains in the local vault and is intentionally not exported.",
+  "captureId": "capture-5345e37040604a2fca64f317",
+  "commandStatus": "stored",
+  "commandType": "project_brief",
+  "dispatchState": "not_dispatched",
+  "encrypted": true,
+  "id": "capture-5345e37040604a2fca64f317",
+  "payloadType": "pnh_mobile_command_packet",
+  "priority": "normal",
+  "sensitivity": "private",
+  "source": "mobile",
+  "storageMode": "encrypted-vault",
+  "storedAt": "2026-06-04T04:02:32+00:00",
+  "title": "PNH project_brief command packet (capture-5345e37040604a2fca64f317)"
+}
