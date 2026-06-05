@@ -189,6 +189,7 @@ Still pending:
 - map issue to PNH launch packet
 - no token in repo remains enforced
 - dedupe and repeated ledger update strategy
+- automatic extraction of stored PNH command packets into dispatch jobs
 
 Reference:
 
@@ -213,6 +214,12 @@ Still pending:
 - durable mapping stored back into PNH local state
 - real OpenClaw worker-session execution and result capture
 - gateway auth/sandbox hardening follow-up
+
+Dispatch job status:
+
+- `scripts/pnh_dispatch_job.py` prepares idempotent dry-run/apply flow.
+- Default apply-mode state path is ignored local private storage.
+- Live apply still requires explicit approval flags.
 
 ### Stage 5: Full Supervisor Mobile Loop
 

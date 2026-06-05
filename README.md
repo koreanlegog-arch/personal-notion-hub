@@ -125,11 +125,16 @@ GitHub ledger bridge:
 
 ```bash
 python3 scripts/github_ledger_bridge_smoke_check.py
+python3 scripts/pnh_dispatch_job_smoke_check.py
 ```
 
 The bridge defaults to dry-run. Live GitHub Issue creation requires a separate
 approval gate, a local runtime `GITHUB_TOKEN`, and explicit apply flags. Raw
 private command contents are not included by default.
+
+The dispatch job adds an idempotent local state layer for future
+GitHub-Issue-to-Discord/OpenClaw routing. Apply-mode state lives under ignored
+`companion/private/` storage.
 
 장기 방향:
 

@@ -31,6 +31,7 @@ REQUIRED = [
     "docs/REAL_DATA_ADAPTER_PRIVACY_GATE.md",
     "docs/PHONE_INGRESS_SECURITY.md",
     "docs/GITHUB_LEDGER_BRIDGE_DESIGN.md",
+    "docs/PNH_DISPATCH_JOB_RUNBOOK.md",
     "ops/templates/PRIVATE_DATA_ADAPTER_BRIEF_TEMPLATE.md",
     "ops/templates/PRIVATE_DATA_ADAPTER_SECURITY_GATE_TEMPLATE.md",
     "ops/checklists/PRIVATE_DATA_ADAPTER_QA_CHECKLIST.md",
@@ -66,6 +67,8 @@ REQUIRED = [
     "scripts/tailnet_ingress_smoke_check.py",
     "scripts/github_ledger_bridge.py",
     "scripts/github_ledger_bridge_smoke_check.py",
+    "scripts/pnh_dispatch_job.py",
+    "scripts/pnh_dispatch_job_smoke_check.py",
     "scripts/start_tailnet_session.sh",
     "scripts/stop_tailnet_session.sh",
     "tests/redacted-ui.spec.cjs",
@@ -177,21 +180,27 @@ def assert_secret_backend_contracts() -> None:
 
 def assert_github_ledger_bridge_contracts() -> None:
     design = (ROOT / "docs/GITHUB_LEDGER_BRIDGE_DESIGN.md").read_text(encoding="utf-8")
+    dispatch_runbook = (ROOT / "docs/PNH_DISPATCH_JOB_RUNBOOK.md").read_text(encoding="utf-8")
     bridge = (ROOT / "scripts/github_ledger_bridge.py").read_text(encoding="utf-8")
     smoke = (ROOT / "scripts/github_ledger_bridge_smoke_check.py").read_text(encoding="utf-8")
+    dispatch_job = (ROOT / "scripts/pnh_dispatch_job.py").read_text(encoding="utf-8")
+    dispatch_smoke = (ROOT / "scripts/pnh_dispatch_job_smoke_check.py").read_text(encoding="utf-8")
     expected = [
         "Dry-run is allowed",
         "APPROVE_PNH_GITHUB_ISSUE_LEDGER_APPLY",
         "--approve-external-write",
         "--approve-sensitive-github-body",
+        "--approve-discord-dispatch",
+        "companion/private/pnh_dispatch_state.json",
         "writesPerformed",
         "private_values_printed=false",
+        "pnh_dispatch_job_smoke_check_pass=true",
     ]
-    combined = "\n".join([design, bridge, smoke])
+    combined = "\n".join([design, dispatch_runbook, bridge, smoke, dispatch_job, dispatch_smoke])
     for token in expected:
         if token not in combined:
             raise SystemExit(f"missing_github_ledger_bridge_contract={token}")
-    if "print(token)" in bridge or "GITHUB_TOKEN=" in design:
+    if "print(token)" in bridge or "print(token)" in dispatch_job or "GITHUB_TOKEN=" in design:
         raise SystemExit("unsafe_github_ledger_token_contract=true")
 
 
