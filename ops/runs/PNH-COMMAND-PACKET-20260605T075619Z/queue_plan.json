@@ -1,10 +1,10 @@
 {
   "capturesInspected": 10,
   "commandAliasesLoaded": 1,
-  "cooldownActive": true,
-  "eligibleCount": 0,
+  "cooldownActive": false,
+  "eligibleCount": 1,
   "externalWritesPerformed": false,
-  "generatedAt": "2026-06-05T07:59:08+00:00",
+  "generatedAt": "2026-06-05T07:56:19+00:00",
   "lockPlan": {
     "lockFile": "companion/private/pnh_unattended_dispatch.lock",
     "singleWriter": true,
@@ -21,10 +21,22 @@
   "privateValuesPrinted": false,
   "queueActivationGateReason": "unattended dispatch can create GitHub Issues, Discord/OpenClaw threads, GitHub comments, and worker/model calls without an operator present.",
   "queueActivationGateRequired": true,
-  "queued": [],
-  "queuedCount": 0,
-  "recentExternalWriteCount1h": 2,
-  "remainingExternalWriteCapacity1h": 1,
+  "queued": [
+    {
+      "captureId": "assistant-capture-capture-mq0mgu4q-uvzyzm0s",
+      "commandAliasApplied": true,
+      "commandType": "task_request",
+      "eligible": true,
+      "encrypted": true,
+      "originalKind": "assistant_capture",
+      "sensitivity": "internal",
+      "skipReason": "",
+      "storageMode": "encrypted-vault"
+    }
+  ],
+  "queuedCount": 1,
+  "recentExternalWriteCount1h": 1,
+  "remainingExternalWriteCapacity1h": 2,
   "rollbackPlan": {
     "beforeApply": [
       "snapshot companion/private/pnh_dispatch_state.json",
@@ -41,17 +53,6 @@
   },
   "rollbackRequiredBeforeApply": true,
   "skipped": [
-    {
-      "captureId": "assistant-capture-capture-mq0mgu4q-uvzyzm0s",
-      "commandAliasApplied": true,
-      "commandType": "task_request",
-      "eligible": false,
-      "encrypted": true,
-      "originalKind": "assistant_capture",
-      "sensitivity": "internal",
-      "skipReason": "already_in_dispatch_state",
-      "storageMode": "encrypted-vault"
-    },
     {
       "captureId": "capture-40fc5ea5d769acebdb130781",
       "commandAliasApplied": false,
@@ -152,6 +153,6 @@
       "storageMode": "encrypted-vault"
     }
   ],
-  "skippedCount": 10,
+  "skippedCount": 9,
   "tokenValuePrinted": false
 }

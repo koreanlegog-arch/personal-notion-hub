@@ -1,0 +1,13 @@
+{
+  "aliasFile": "companion/private/pnh_command_aliases.json",
+  "captureId": "assistant-capture-capture-mq0mgu4q-uvzyzm0s",
+  "commandType": "task_request",
+  "dbContentModified": false,
+  "encrypted": true,
+  "originalKind": "assistant_capture",
+  "out": "",
+  "pnhCaptureCommandAlias": true,
+  "privateValuesPrinted": false,
+  "rawPrivateBodyRead": false,
+  "storageMode": "encrypted-vault"
+}

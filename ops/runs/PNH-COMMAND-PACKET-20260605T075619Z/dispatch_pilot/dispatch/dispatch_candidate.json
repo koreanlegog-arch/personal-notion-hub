@@ -1,0 +1,18 @@
+{
+  "body": "Private command body remains in the local vault and is intentionally not exported.",
+  "captureId": "assistant-capture-capture-mq0mgu4q-uvzyzm0s",
+  "commandAliasApplied": true,
+  "commandStatus": "stored",
+  "commandType": "task_request",
+  "dispatchState": "not_dispatched",
+  "encrypted": true,
+  "id": "assistant-capture-capture-mq0mgu4q-uvzyzm0s",
+  "originalKind": "assistant_capture",
+  "payloadType": "pnh_mobile_command_packet",
+  "priority": "normal",
+  "sensitivity": "internal",
+  "source": "mobile_web",
+  "storageMode": "encrypted-vault",
+  "storedAt": "2026-06-05T07:48:14+00:00",
+  "title": "PNH task_request command packet (assistant-capture-capture-mq0mgu4q-uvzyzm0s)"
+}

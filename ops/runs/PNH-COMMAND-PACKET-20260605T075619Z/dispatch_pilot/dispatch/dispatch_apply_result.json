@@ -1,0 +1,61 @@
+{
+  "discordTargetSet": true,
+  "discordThreadId": "1512364450869547130",
+  "generatedAt": "2026-06-05T07:56:19+00:00",
+  "githubIssueUrl": "https://github.com/koreanlegog-arch/personal-notion-hub/issues/6",
+  "idempotency": {
+    "existingDiscordThread": false,
+    "existingGitHubIssue": false,
+    "githubDuplicateDetection": {
+      "candidatesChecked": 0,
+      "enabled": true,
+      "ghAuthUsed": true,
+      "issueNumber": "",
+      "issueUrl": "",
+      "labelsUsed": [
+        "pnh",
+        "mobile-command",
+        "command:task_request",
+        "priority:normal",
+        "dispatch:not-dispatched"
+      ],
+      "match": false,
+      "privateValuesIncluded": false,
+      "tokenSet": false
+    }
+  },
+  "mode": "apply",
+  "packetId": "assistant-capture-capture-mq0mgu4q-uvzyzm0s",
+  "planned": {
+    "discordMessages": [
+      "`/task create`\nTask ID: `assistant-capture-capture-mq0mgu4q-uvzyzm0s`\nObjective: route PNH command packet through ledger-backed worker control.",
+      "`/task assign`\nAssigned: `worker-orchestrator`\nGate: implementation starts only from a scoped task packet.",
+      "`/review`\nCheck: private body is not posted; ledger and thread references are present.",
+      "`/qa`\nCheck: duplicate dispatch is prevented by local dispatch state.",
+      "`/task done`\nResult: dispatch job reached ledger/thread routing stage."
+    ],
+    "discordThreadName": "PNH-assistant-capture-capture-mq0mgu4q-uvzyzm0s-dispatch",
+    "githubIssue": {
+      "bodyLength": 841,
+      "labels": [
+        "pnh",
+        "mobile-command",
+        "command:task_request",
+        "priority:normal",
+        "dispatch:not-dispatched"
+      ],
+      "title": "[PNH] task_request command packet (assistant-capture-capture-mq0mgu4q-uvzyzm0s)"
+    }
+  },
+  "privateValuesIncluded": false,
+  "repo": "koreanlegog-arch/personal-notion-hub",
+  "reused": [],
+  "stateFile": "local-private-state",
+  "tokenValuePrinted": false,
+  "writes": [
+    "github_issue",
+    "discord_thread",
+    "github_comment"
+  ],
+  "writesPerformed": true
+}

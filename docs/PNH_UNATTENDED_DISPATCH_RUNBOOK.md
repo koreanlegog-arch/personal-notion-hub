@@ -44,10 +44,25 @@ companion/private/pnh_private_inbox.sqlite
 Eligible capture metadata:
 
 - `kind` in `project_brief`, `task_request`, `daily_command`, `urgent_approval`
+- or an explicit command alias in `companion/private/pnh_command_aliases.json`
+  that maps an encrypted `assistant_capture` to one of those command types
 - `status` is `inbox`
 - capture id is not already present in `companion/private/pnh_dispatch_state.json`
 - encrypted vault storage by default
 - plaintext rows are blocked unless fixture-only `--allow-plaintext` is used
+
+Command alias flow:
+
+```bash
+python3 scripts/pnh_capture_command_alias.py \
+  --capture-id "<capture-id>" \
+  --command-type task_request
+python3 scripts/pnh_unattended_dispatch_queue_plan.py
+```
+
+This overlay is for dispatch interpretation only. It does not change encrypted
+vault metadata because changing authenticated metadata would break future
+decryption.
 
 Dry-run command:
 
@@ -141,6 +156,27 @@ Reason: the supervisor delegated this class of test/implementation write to
 avoid micro-approval during PNH pipeline validation.
 
 ## Pilot Result
+
+Owner live assistant-capture dispatch:
+
+- capture: `assistant-capture-capture-mq0mgu4q-uvzyzm0s`
+- command alias: `task_request`
+- GitHub Issue: `#6`
+- Discord thread: `1512364450869547130`
+- worker session: `pnh:assistant-capture-capture-mq0mgu4q-uvzyzm0s:qa`
+- status: `worker_done`
+- evidence completeness: `100%`
+- raw private body read: no
+
+Synthetic single command packet rehearsal:
+
+- capture: `capture-40fc5ea5d769acebdb130781`
+- GitHub Issue: `#5`
+- Discord thread: `1512357660807270561`
+- worker session: `pnh:capture-40fc5ea5d769acebdb130781:qa`
+- status: `worker_done`
+- GitHub dispatch label: `dispatch:worker-done`
+- evidence completeness: `100%`
 
 Second pilot batch:
 

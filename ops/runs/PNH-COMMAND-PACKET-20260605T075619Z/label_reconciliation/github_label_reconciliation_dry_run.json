@@ -1,0 +1,22 @@
+{
+  "actions": [
+    {
+      "addLabels": [
+        "dispatch:worker-done"
+      ],
+      "githubIssueNumber": "6",
+      "operation": "replace_dispatch_status_labels",
+      "removeLabels": [
+        "dispatch:not-dispatched"
+      ]
+    }
+  ],
+  "externalWritesPerformed": false,
+  "generatedAt": "2026-06-05T07:57:40+00:00",
+  "githubLabelReconciliation": true,
+  "mode": "dry-run",
+  "plannedActionCount": 1,
+  "privateValuesPrinted": false,
+  "repo": "koreanlegog-arch/personal-notion-hub",
+  "tokenValuePrinted": false
+}

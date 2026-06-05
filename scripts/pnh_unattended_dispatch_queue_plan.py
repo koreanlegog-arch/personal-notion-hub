@@ -25,6 +25,7 @@ from companion.private_store import DEFAULT_DB_PATH, PrivateStoreError, list_cap
 
 DEFAULT_STATE = ROOT / "companion" / "private" / "pnh_dispatch_state.json"
 DEFAULT_HISTORY = ROOT / "companion" / "private" / "pnh_unattended_dispatch_history.json"
+DEFAULT_COMMAND_ALIASES = ROOT / "companion" / "private" / "pnh_command_aliases.json"
 DEFAULT_OUT = ROOT / "ops" / "runs" / "PNH-UNATTENDED-DISPATCH-READINESS-20260605" / "queue_plan.json"
 COMMAND_KINDS = {"project_brief", "task_request", "daily_command", "urgent_approval"}
 
@@ -38,6 +39,7 @@ def main() -> int:
     parser.add_argument("--db", default=str(DEFAULT_DB_PATH), help="Private inbox SQLite DB path.")
     parser.add_argument("--state-file", default=str(DEFAULT_STATE), help="Local dispatch state JSON.")
     parser.add_argument("--history-json", default=str(DEFAULT_HISTORY), help="Optional prior dispatch history JSON.")
+    parser.add_argument("--command-aliases", default=str(DEFAULT_COMMAND_ALIASES), help="Metadata-only command alias JSON.")
     parser.add_argument("--out", default=str(DEFAULT_OUT), help="Output JSON path.")
     parser.add_argument("--limit", type=int, default=50, help="Recent captures to inspect.")
     parser.add_argument("--max-jobs-per-run", type=int, default=1, help="Maximum queued jobs per run.")
@@ -69,6 +71,7 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
     )
     state = load_json_object(Path(args.state_file), missing_ok=True, label="dispatch state")
     history = load_json_object(Path(args.history_json), missing_ok=True, label="dispatch history") if args.history_json else {}
+    aliases = load_command_aliases(Path(args.command_aliases))
     policy = {
         "maxJobsPerRun": bounded(args.max_jobs_per_run, 1, 10),
         "maxExternalWritesPerHour": bounded(args.max_external_writes_per_hour, 1, 50),
@@ -80,7 +83,7 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
     skipped = []
     eligible = []
     for capture in captures:
-        decision = classify_capture(capture, state, allow_plaintext=args.allow_plaintext)
+        decision = classify_capture(capture, state, aliases, allow_plaintext=args.allow_plaintext)
         if decision["eligible"]:
             eligible.append(decision)
         else:
@@ -98,6 +101,7 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
         "mode": "dry-run",
         "policy": policy,
         "capturesInspected": len(captures),
+        "commandAliasesLoaded": len(aliases),
         "eligibleCount": len(eligible),
         "queuedCount": len(queued),
         "skippedCount": len(skipped),
@@ -117,14 +121,26 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
     }
 
 
-def classify_capture(capture: dict[str, Any], state: dict[str, Any], *, allow_plaintext: bool) -> dict[str, Any]:
+def classify_capture(
+    capture: dict[str, Any],
+    state: dict[str, Any],
+    aliases: dict[str, dict[str, Any]],
+    *,
+    allow_plaintext: bool,
+) -> dict[str, Any]:
     capture_id = compact(capture.get("id"))
-    kind = compact(capture.get("kind"))
+    original_kind = compact(capture.get("kind"))
+    alias = aliases.get(capture_id, {})
+    kind = compact(alias.get("commandType") or original_kind)
     storage_mode = compact(capture.get("storageMode"))
     encrypted = bool(capture.get("encrypted"))
+    aliased = bool(alias)
     eligible = True
     reason = ""
-    if kind not in COMMAND_KINDS:
+    if alias and kind not in COMMAND_KINDS:
+        eligible = False
+        reason = "invalid_command_alias"
+    elif kind not in COMMAND_KINDS:
         eligible = False
         reason = "not_dispatch_command_kind"
     elif capture.get("status") != "inbox":
@@ -139,6 +155,8 @@ def classify_capture(capture: dict[str, Any], state: dict[str, Any], *, allow_pl
     return {
         "captureId": capture_id,
         "commandType": kind,
+        "originalKind": original_kind,
+        "commandAliasApplied": aliased,
         "storageMode": storage_mode,
         "encrypted": encrypted,
         "sensitivity": compact(capture.get("sensitivity")),
@@ -226,10 +244,30 @@ def load_json_object(path: Path, *, missing_ok: bool, label: str) -> dict[str, A
     return payload
 
 
+def load_command_aliases(path: Path) -> dict[str, dict[str, Any]]:
+    if not path.exists():
+        return {}
+    payload = load_json_object(path, missing_ok=False, label="command aliases")
+    aliases = payload.get("aliases", payload)
+    if not isinstance(aliases, dict):
+        raise QueuePlanError("command aliases JSON must contain an object")
+    result: dict[str, dict[str, Any]] = {}
+    for capture_id, alias in aliases.items():
+        capture_id_text = compact(capture_id)
+        if not capture_id_text or not isinstance(alias, dict):
+            continue
+        command_type = compact(alias.get("commandType"))
+        if command_type:
+            result[capture_id_text] = {**alias, "commandType": command_type}
+    return result
+
+
 def redacted_decision(item: dict[str, Any]) -> dict[str, Any]:
     return {
         "captureId": item["captureId"],
         "commandType": item["commandType"],
+        "originalKind": item["originalKind"],
+        "commandAliasApplied": item["commandAliasApplied"],
         "storageMode": item["storageMode"],
         "encrypted": item["encrypted"],
         "sensitivity": item["sensitivity"],

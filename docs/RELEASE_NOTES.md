@@ -1,5 +1,40 @@
 # Release Notes
 
+## 2026-06-05 - Owner Live Capture Dispatch
+
+### Summary
+
+Dispatched the first real owner phone/browser capture through the bounded PNH
+command packet workflow without reading the raw private command body.
+
+The live input was stored as `assistant_capture`, so a metadata-only command
+alias overlay was added. The encrypted vault row was not modified.
+
+### Included
+
+- `scripts/pnh_capture_command_alias.py`
+- `scripts/pnh_capture_command_alias_smoke_check.py`
+- command alias support in queue planning and candidate export
+- `ops/runs/PNH-COMMAND-PACKET-20260605T075619Z/`
+
+### Results
+
+- capture `assistant-capture-capture-mq0mgu4q-uvzyzm0s`
+- command alias `task_request`
+- GitHub Issue `#6`
+- Discord thread `1512364450869547130`
+- worker session `pnh:assistant-capture-capture-mq0mgu4q-uvzyzm0s:qa`
+- task status `worker_done`
+- evidence completeness `100%`
+- repeat queue planning returned `queuedCount=0`
+
+### Safety
+
+- raw private body read: no
+- private values printed: no
+- token values printed: no
+- encrypted vault row modified: no
+
 ## 2026-06-05 - Owner Live Capture Readiness
 
 ### Summary

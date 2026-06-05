@@ -51,6 +51,8 @@ Required:
   - `task_request`
   - `daily_command`
   - `urgent_approval`
+  - or an explicit metadata-only command alias for an encrypted
+    `assistant_capture`
 - `gh` authenticated for `koreanlegog-arch/personal-notion-hub`
 - OpenClaw gateway available
 - Discord/OpenClaw target channel configured
@@ -70,6 +72,19 @@ python3 scripts/pnh_seed_synthetic_command_capture.py
 The seeder writes one metadata-safe synthetic command capture into encrypted
 vault storage. Use it for end-to-end dispatch rehearsals when no real owner
 command should be used.
+
+Assistant capture alias input:
+
+```bash
+python3 scripts/pnh_capture_command_alias.py \
+  --capture-id "<capture-id>" \
+  --command-type task_request
+```
+
+Use this when the phone/browser UI stores an owner request as
+`assistant_capture` but the supervisor explicitly wants it dispatched as a
+command packet. The alias file lives under `companion/private/`, is ignored by
+Git, does not decrypt the capture, and does not modify the encrypted vault row.
 
 ## Output Evidence
 

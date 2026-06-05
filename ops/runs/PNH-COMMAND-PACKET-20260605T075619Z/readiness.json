@@ -1,0 +1,57 @@
+{
+  "activationGate": {
+    "name": "APPROVE_PNH_UNATTENDED_DISPATCH_PILOT",
+    "reason": "pilot activation would allow queued mobile captures to create external GitHub/Discord/OpenClaw records without per-item operator confirmation.",
+    "required": true
+  },
+  "checks": [
+    {
+      "detail": "queue dry-run output exists",
+      "name": "queue_plan_available",
+      "pass": true
+    },
+    {
+      "detail": "queue planner did not enable dispatch",
+      "name": "queue_is_dry_run",
+      "pass": true
+    },
+    {
+      "detail": "external reconciliation still has pending writes",
+      "name": "no_pending_external_reconciliation",
+      "pass": true
+    },
+    {
+      "detail": "Discord metadata refresh evidence exists",
+      "name": "discord_refresh_available",
+      "pass": true
+    },
+    {
+      "detail": "Discord refresh must not store content",
+      "name": "discord_refresh_does_not_store_content",
+      "pass": true
+    },
+    {
+      "detail": "GitHub CLI is available",
+      "name": "gh_available",
+      "pass": true
+    },
+    {
+      "detail": "OpenClaw CLI is available",
+      "name": "openclaw_available",
+      "pass": true
+    }
+  ],
+  "externalWritesPerformed": false,
+  "failedChecks": [],
+  "generatedAt": "2026-06-05T07:56:19+00:00",
+  "pilotLimits": {
+    "cooldownMinutes": 10,
+    "maxExternalWritesPerHour": 3,
+    "maxJobsPerRun": 1
+  },
+  "pnhUnattendedDispatchReadiness": true,
+  "privateValuesPrinted": false,
+  "rollbackRequired": true,
+  "tokenValuePrinted": false,
+  "verdict": "ready_for_approval_gated_pilot"
+}

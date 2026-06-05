@@ -2,7 +2,7 @@
   "discordThreadStatusRefresh": true,
   "externalWritesPerformed": false,
   "fixtureUsed": false,
-  "generatedAt": "2026-06-05T07:31:42+00:00",
+  "generatedAt": "2026-06-05T07:57:38+00:00",
   "localWritesPerformed": true,
   "messageContentStored": false,
   "mode": "apply",
@@ -11,7 +11,18 @@
   "records": [
     {
       "discordMessagesObserved": 0,
-      "discordReadCheckedAt": "2026-06-05T07:31:31+00:00",
+      "discordReadCheckedAt": "2026-06-05T07:57:22+00:00",
+      "discordReadReturnCode": 0,
+      "discordReadStdoutBytes": 146,
+      "discordStatusRefreshed": true,
+      "discordThreadId": "1512364450869547130",
+      "discordThreadSet": true,
+      "error": "",
+      "packetId": "assistant-capture-capture-mq0mgu4q-uvzyzm0s"
+    },
+    {
+      "discordMessagesObserved": 0,
+      "discordReadCheckedAt": "2026-06-05T07:57:26+00:00",
       "discordReadReturnCode": 0,
       "discordReadStdoutBytes": 146,
       "discordStatusRefreshed": true,
@@ -22,7 +33,7 @@
     },
     {
       "discordMessagesObserved": 0,
-      "discordReadCheckedAt": "2026-06-05T07:31:34+00:00",
+      "discordReadCheckedAt": "2026-06-05T07:57:30+00:00",
       "discordReadReturnCode": 0,
       "discordReadStdoutBytes": 146,
       "discordStatusRefreshed": true,
@@ -33,7 +44,7 @@
     },
     {
       "discordMessagesObserved": 0,
-      "discordReadCheckedAt": "2026-06-05T07:31:38+00:00",
+      "discordReadCheckedAt": "2026-06-05T07:57:34+00:00",
       "discordReadReturnCode": 0,
       "discordReadStdoutBytes": 146,
       "discordStatusRefreshed": true,
@@ -44,7 +55,7 @@
     },
     {
       "discordMessagesObserved": 0,
-      "discordReadCheckedAt": "2026-06-05T07:31:42+00:00",
+      "discordReadCheckedAt": "2026-06-05T07:57:38+00:00",
       "discordReadReturnCode": 0,
       "discordReadStdoutBytes": 146,
       "discordStatusRefreshed": true,
@@ -54,8 +65,8 @@
       "packetId": "capture-5345e37040604a2fca64f317"
     }
   ],
-  "recordsInspected": 4,
-  "recordsRefreshed": 4,
+  "recordsInspected": 5,
+  "recordsRefreshed": 5,
   "recordsWithErrors": 0,
   "tokenValuePrinted": false
 }
