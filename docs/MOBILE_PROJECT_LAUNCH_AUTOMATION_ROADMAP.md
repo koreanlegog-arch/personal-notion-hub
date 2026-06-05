@@ -189,7 +189,7 @@ Still pending:
 - map issue to PNH launch packet
 - no token in repo remains enforced
 - dedupe and repeated ledger update strategy
-- automatic extraction of stored PNH command packets into dispatch jobs
+- metadata-only extraction of stored PNH command packets into dispatch jobs
 
 Reference:
 
@@ -218,6 +218,7 @@ Still pending:
 Dispatch job status:
 
 - `scripts/pnh_dispatch_job.py` prepares idempotent dry-run/apply flow.
+- `scripts/pnh_dispatch_candidate_export.py` prepares a metadata-only command packet from the local private inbox.
 - Default apply-mode state path is ignored local private storage.
 - Live apply still requires explicit approval flags.
 

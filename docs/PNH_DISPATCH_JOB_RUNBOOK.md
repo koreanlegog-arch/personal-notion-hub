@@ -36,9 +36,18 @@ This path is ignored by Git. It stores external IDs and timestamps, not secret v
 
 ## Dry Run
 
+Export a metadata-only candidate from the local private inbox:
+
+```bash
+python3 scripts/pnh_dispatch_candidate_export.py \
+  --out ops/runs/PNH-DISPATCH-CANDIDATE-EXPORT-20260605/dispatch_candidate.json
+```
+
+Then generate a dispatch plan:
+
 ```bash
 python3 scripts/pnh_dispatch_job.py \
-  --input-json ops/runs/PNH-GITHUB-LEDGER-BRIDGE-20260605/sample_command_packet.json \
+  --input-json ops/runs/PNH-DISPATCH-CANDIDATE-EXPORT-20260605/dispatch_candidate.json \
   --repo koreanlegog-arch/personal-notion-hub \
   --discord-target channel:1511691320136306718
 ```
@@ -60,10 +69,10 @@ Apply mode requires:
 - Token values are never printed.
 - GitHub Issue body records metadata and local capture references only.
 - Discord messages are routing summaries only.
+- Candidate export does not decrypt private bodies by default.
 
 ## Remaining Work
 
-- Extract the latest stored launch packet from browser/local companion state automatically.
 - Store `githubIssueUrl` and `discordThreadId` back into PNH browser state or companion metadata.
 - Add duplicate detection against existing GitHub Issues if local state is missing.
 - Capture real OpenClaw worker-session result IDs after actual worker execution is enabled.
