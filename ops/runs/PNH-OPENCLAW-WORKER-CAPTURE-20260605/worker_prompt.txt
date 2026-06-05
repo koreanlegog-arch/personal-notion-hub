@@ -1,0 +1,1 @@
+PNH worker capture rehearsal. Do not modify files, do not run commands, do not contact external services, and do not include any private data. Return a concise status stating that this worker-session capture path is reachable and suitable for metadata-only recording.

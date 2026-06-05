@@ -185,6 +185,7 @@ Implemented inside the approved local/private boundary:
 - redacted local dispatch mapping can be read by the PNH UI and matched back to Launch packets
 - operator-confirmed GitHub/Discord external ID metadata can be persisted into browser-local Launch records
 - local worker-result metadata can be recorded into dispatch state through a dry-run-first script
+- OpenClaw worker-session metadata can be captured without delivering Discord replies
 
 Still pending:
 
@@ -217,7 +218,7 @@ Implemented:
 Still pending:
 
 - automatic dispatch job from PNH local command packet
-- real OpenClaw worker-session execution and automatic result capture
+- task status synthesis from captured OpenClaw worker-session metadata
 - gateway auth/sandbox hardening follow-up
 
 Dispatch job status:

@@ -77,6 +77,8 @@ REQUIRED = [
     "scripts/pnh_dispatch_rehearsal_smoke_check.py",
     "scripts/pnh_worker_result_record.py",
     "scripts/pnh_worker_result_record_smoke_check.py",
+    "scripts/pnh_openclaw_worker_capture.py",
+    "scripts/pnh_openclaw_worker_capture_smoke_check.py",
     "scripts/start_tailnet_session.sh",
     "scripts/stop_tailnet_session.sh",
     "tests/redacted-ui.spec.cjs",
@@ -201,6 +203,8 @@ def assert_github_ledger_bridge_contracts() -> None:
     rehearsal_smoke = (ROOT / "scripts/pnh_dispatch_rehearsal_smoke_check.py").read_text(encoding="utf-8")
     worker_result = (ROOT / "scripts/pnh_worker_result_record.py").read_text(encoding="utf-8")
     worker_result_smoke = (ROOT / "scripts/pnh_worker_result_record_smoke_check.py").read_text(encoding="utf-8")
+    openclaw_capture = (ROOT / "scripts/pnh_openclaw_worker_capture.py").read_text(encoding="utf-8")
+    openclaw_capture_smoke = (ROOT / "scripts/pnh_openclaw_worker_capture_smoke_check.py").read_text(encoding="utf-8")
     expected = [
         "Dry-run is allowed",
         "APPROVE_PNH_GITHUB_ISSUE_LEDGER_APPLY",
@@ -222,6 +226,10 @@ def assert_github_ledger_bridge_contracts() -> None:
         "pnh_worker_result_record_smoke_check_pass=true",
         "workerResultSet",
         "workerSessionId",
+        "pnh_openclaw_worker_capture_smoke_check_pass=true",
+        "--approve-openclaw-agent-run",
+        "replyDelivered",
+        "externalAgentRunPerformed",
     ]
     combined = "\n".join(
         [
@@ -239,6 +247,8 @@ def assert_github_ledger_bridge_contracts() -> None:
             rehearsal_smoke,
             worker_result,
             worker_result_smoke,
+            openclaw_capture,
+            openclaw_capture_smoke,
         ]
     )
     for token in expected:

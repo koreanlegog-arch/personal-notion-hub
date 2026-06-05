@@ -56,6 +56,17 @@ python3 scripts/pnh_worker_result_record.py \
 
 Add `--apply` only when the dry-run output is correct. The script records metadata only and does not store private command bodies.
 
+Run an OpenClaw worker turn and capture metadata without delivering a Discord reply:
+
+```bash
+python3 scripts/pnh_openclaw_worker_capture.py \
+  --packet-id <capture_or_packet_id> \
+  --agent qa \
+  --message-file ops/runs/<run-id>/worker_prompt.txt
+```
+
+Apply mode requires both `--apply` and `--approve-openclaw-agent-run` because it can invoke the configured model provider through OpenClaw. The script stores only session/status/evidence metadata in local dispatch state.
+
 ## Dry Run
 
 Run the full local rehearsal:
@@ -105,4 +116,4 @@ Apply mode requires:
 
 - Add status refresh for already-linked GitHub Issues and Discord/OpenClaw threads.
 - Add duplicate detection against existing GitHub Issues if local state is missing.
-- Capture real OpenClaw worker-session result IDs automatically after actual worker execution is enabled.
+- Convert captured OpenClaw worker-session metadata into higher-level task status and evidence summaries.
