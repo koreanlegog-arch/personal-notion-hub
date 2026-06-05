@@ -284,6 +284,8 @@ def assert_github_ledger_bridge_contracts() -> None:
     command_packet_status_smoke = (ROOT / "scripts" / "pnh_command_packet_status_smoke_check.py").read_text(
         encoding="utf-8"
     )
+    app_js = (ROOT / "assets" / "js" / "app.js").read_text(encoding="utf-8")
+    app_css = (ROOT / "assets" / "css" / "styles.css").read_text(encoding="utf-8")
     single_packet_browser_runner = (ROOT / "companion" / "single_command_packet_runner.py").read_text(
         encoding="utf-8"
     )
@@ -379,6 +381,9 @@ def assert_github_ledger_bridge_contracts() -> None:
         "pnh_command_packet_status_smoke_check_pass=true",
         "build_command_packet_status",
         "metadata-only",
+        "stageSteps",
+        "Review ready",
+        "command-packet-stage-rail",
         "/api/private/command-packet-status",
         "/api/private/single-command-packet/run",
         "pnh_single_command_packet_browser_run_smoke_check_pass=true",
@@ -434,6 +439,8 @@ def assert_github_ledger_bridge_contracts() -> None:
             single_packet_smoke,
             command_packet_status,
             command_packet_status_smoke,
+            app_js,
+            app_css,
             single_packet_browser_runner,
             single_packet_browser_smoke,
             companion_server,

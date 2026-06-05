@@ -544,6 +544,41 @@ h1 {
   border-style: dashed;
 }
 
+.command-packet-stage-rail {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  margin: 10px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.command-packet-stage {
+  min-height: 34px;
+  display: grid;
+  place-items: center;
+  padding: 6px 4px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-muted);
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.command-packet-stage-done {
+  border-color: color-mix(in srgb, var(--success) 48%, var(--line));
+  background: color-mix(in srgb, var(--success) 10%, var(--surface-strong));
+  color: var(--ink);
+}
+
+.command-packet-stage-current {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface-strong));
+  color: var(--ink);
+}
+
 .operator-action-banner {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);

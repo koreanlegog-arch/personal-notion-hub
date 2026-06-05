@@ -31,11 +31,15 @@ def build_command_packet_status(
     queue_count = _int_value(latest_run.get("queuedCount")) if latest_run else 0
     worker_status = str(latest_dispatch.get("workerStatus") or latest_run.get("workerStatus") or "")
     next_action = str(latest_dispatch.get("nextAction") or _next_action_for_run(latest_run, queue_count))
+    stage = _status_stage(latest_dispatch, latest_run, queue_count)
 
     return {
         "queueCount": queue_count,
         "latestRun": latest_run,
         "latestDispatch": latest_dispatch,
+        "stage": stage,
+        "stageLabel": _stage_label(stage),
+        "stageSteps": _stage_steps(latest_dispatch, latest_run, queue_count),
         "lastIssue": latest_dispatch.get("githubIssueNumber", ""),
         "lastWorkerStatus": worker_status,
         "nextAction": next_action,
@@ -119,6 +123,73 @@ def _next_action_for_run(run: dict[str, Any], queue_count: int) -> str:
     if run.get("workerRunPerformed"):
         return "refresh_dispatch_evidence_and_supervisor_summary"
     return "review_command_packet_wrapper_result"
+
+
+def _status_stage(dispatch: dict[str, Any], run: dict[str, Any], queue_count: int) -> str:
+    if dispatch.get("taskStatus") == "worker_done":
+        return "review_ready"
+    if dispatch.get("workerResultSet") or dispatch.get("workerStatus"):
+        return "worker_result"
+    if dispatch.get("discordThreadSet"):
+        return "worker_thread"
+    if dispatch.get("githubIssueSet"):
+        return "ledger_ready"
+    if queue_count > 0:
+        return "queued"
+    if run.get("message") == "queue_empty" or queue_count == 0:
+        return "idle"
+    return "unknown"
+
+
+def _stage_label(stage: str) -> str:
+    labels = {
+        "idle": "Idle",
+        "queued": "Queued",
+        "ledger_ready": "Ledger ready",
+        "worker_thread": "Worker thread",
+        "worker_result": "Worker result",
+        "review_ready": "Review ready",
+        "unknown": "Unknown",
+    }
+    return labels.get(stage, "Unknown")
+
+
+def _stage_steps(dispatch: dict[str, Any], run: dict[str, Any], queue_count: int) -> list[dict[str, Any]]:
+    return [
+        {
+            "key": "queued",
+            "label": "Inbox",
+            "state": _step_state(queue_count > 0 or bool(dispatch) or bool(run), True),
+        },
+        {
+            "key": "github",
+            "label": "Ledger",
+            "state": _step_state(bool(dispatch.get("githubIssueSet")), bool(dispatch) or queue_count > 0),
+        },
+        {
+            "key": "discord",
+            "label": "Thread",
+            "state": _step_state(bool(dispatch.get("discordThreadSet")), bool(dispatch.get("githubIssueSet"))),
+        },
+        {
+            "key": "worker",
+            "label": "Worker",
+            "state": _step_state(bool(dispatch.get("workerResultSet") or dispatch.get("workerStatus")), bool(dispatch.get("discordThreadSet"))),
+        },
+        {
+            "key": "review",
+            "label": "Review",
+            "state": _step_state(dispatch.get("taskStatus") == "worker_done", bool(dispatch.get("workerResultSet") or dispatch.get("workerStatus"))),
+        },
+    ]
+
+
+def _step_state(done: bool, available: bool) -> str:
+    if done:
+        return "done"
+    if available:
+        return "current"
+    return "waiting"
 
 
 def _int_value(value: Any) -> int:

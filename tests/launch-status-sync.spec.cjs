@@ -90,6 +90,15 @@ test.describe("Launch dispatch status sync", () => {
           workerRunPerformed: false,
         },
         latestDispatch: dispatchState.records[0],
+        stage: "review_ready",
+        stageLabel: "Review ready",
+        stageSteps: [
+          { key: "queued", label: "Inbox", state: "done" },
+          { key: "github", label: "Ledger", state: "done" },
+          { key: "discord", label: "Thread", state: "done" },
+          { key: "worker", label: "Worker", state: "done" },
+          { key: "review", label: "Review", state: "done" },
+        ],
         lastIssue: 2,
         lastWorkerStatus: "done",
         nextAction: "summarize_worker_result_for_supervisor_review",
@@ -133,7 +142,14 @@ test.describe("Launch dispatch status sync", () => {
     const packetStatusCard = page.locator(".command-packet-status");
     await expect(packetStatusCard.getByText("Single command packet")).toBeVisible();
     await expect(packetStatusCard.getByText("Operator action: review worker evidence")).toBeVisible();
-    await expect(packetStatusCard.getByText("Review ready")).toBeVisible();
+    await expect(packetStatusCard.locator(".operator-action-banner .badge", { hasText: "Review ready" })).toBeVisible();
+    await expect(packetStatusCard.getByText("Stage:")).toBeVisible();
+    const stageRail = packetStatusCard.locator(".command-packet-stage-rail");
+    await expect(stageRail.locator(".command-packet-stage", { hasText: "Inbox" })).toBeVisible();
+    await expect(stageRail.locator(".command-packet-stage", { hasText: "Ledger" })).toBeVisible();
+    await expect(stageRail.locator(".command-packet-stage", { hasText: "Thread" })).toBeVisible();
+    await expect(stageRail.locator(".command-packet-stage", { hasText: "Worker" })).toBeVisible();
+    await expect(stageRail.locator(".command-packet-stage", { hasText: "Review" })).toBeVisible();
     await expect(packetStatusCard.getByText("Issue:")).toBeVisible();
     await expect(packetStatusCard.getByText("#2", { exact: true })).toBeVisible();
     await expect(packetStatusCard.getByText("Worker:")).toBeVisible();
@@ -142,6 +158,7 @@ test.describe("Launch dispatch status sync", () => {
     await page.getByRole("button", { name: "Run Dry-Run" }).click();
     await expect(packetStatusCard.getByText("Last browser run: dry-run · external writes no · worker run no")).toBeVisible();
     const launchCard = page.locator(".item-card").filter({ hasText: "Synthetic Launch Status Sync" });
+    await expect(launchCard.getByText("Stage: Review ready")).toBeVisible();
     await expect(launchCard.getByText("Dispatch mapping: ledger_and_discord_linked")).toBeVisible();
     await expect(launchCard.getByText("Task worker_done")).toBeVisible();
     await expect(launchCard.getByText("Evidence 100%")).toBeVisible();

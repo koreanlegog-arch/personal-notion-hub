@@ -718,12 +718,14 @@ function commandPacketStatusCard(status) {
   const latestRun = status.latestRun || {};
   const latestDispatch = status.latestDispatch || {};
   const facts = [
+    ["Stage", status.stageLabel || commandPacketStageLabel(latestDispatch)],
     ["Queue", status.queueCount ?? 0],
     ["Last run", latestRun.runDir || "-"],
     ["Issue", status.lastIssue ? `#${status.lastIssue}` : latestDispatch.githubIssueNumber ? `#${latestDispatch.githubIssueNumber}` : "-"],
     ["Worker", status.lastWorkerStatus || latestRun.workerStatus || "-"],
     ["Next", status.nextAction || "-"],
   ];
+  card.append(commandPacketStageRail(status.stageSteps || commandPacketStageSteps(latestDispatch, status.queueCount ?? 0)));
   facts.forEach(([label, value]) => {
     const row = make("p", "fine-print command-packet-status-row");
     row.append(make("span", "", `${label}: `));
@@ -739,6 +741,35 @@ function commandPacketStatusCard(status) {
   }
   card.append(make("p", "fine-print", "metadata-only · private body hidden"));
   return card;
+}
+
+function commandPacketStageRail(steps) {
+  const rail = make("ol", "command-packet-stage-rail");
+  steps.forEach((step) => {
+    const item = make("li", `command-packet-stage command-packet-stage-${step.state || "waiting"}`);
+    item.append(make("span", "", step.label || step.key || "Step"));
+    rail.append(item);
+  });
+  return rail;
+}
+
+function commandPacketStageSteps(record, queueCount = 0) {
+  return [
+    { key: "queued", label: "Inbox", state: queueCount > 0 || record ? "done" : "current" },
+    { key: "github", label: "Ledger", state: record?.githubIssueSet ? "done" : record ? "current" : "waiting" },
+    { key: "discord", label: "Thread", state: record?.discordThreadSet ? "done" : record?.githubIssueSet ? "current" : "waiting" },
+    { key: "worker", label: "Worker", state: record?.workerResultSet || record?.workerStatus ? "done" : record?.discordThreadSet ? "current" : "waiting" },
+    { key: "review", label: "Review", state: record?.taskStatus === "worker_done" ? "done" : record?.workerResultSet ? "current" : "waiting" },
+  ];
+}
+
+function commandPacketStageLabel(record) {
+  if (!record) return "Idle";
+  if (record.taskStatus === "worker_done") return "Review ready";
+  if (record.workerResultSet || record.workerStatus) return "Worker result";
+  if (record.discordThreadSet) return "Worker thread";
+  if (record.githubIssueSet) return "Ledger ready";
+  return "Queued";
 }
 
 function commandPacketOperatorAction(status, run) {
@@ -1355,7 +1386,9 @@ function launchPacketCard(launch) {
   const dispatchRecord = dispatchRecordForLaunch(launch);
   if (dispatchRecord) {
     const mappedDispatchState = dispatchRecordLabel(dispatchRecord);
+    const stage = commandPacketStageLabel(dispatchRecord);
     const statusLine = [
+      `Stage: ${stage}`,
       `Dispatch mapping: ${mappedDispatchState}`,
       dispatchRecord.githubIssueNumber ? `GitHub #${dispatchRecord.githubIssueNumber}` : "",
       dispatchRecord.discordThreadId ? `Discord ${dispatchRecord.discordThreadId}` : "",
