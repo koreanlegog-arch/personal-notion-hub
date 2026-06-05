@@ -13,6 +13,7 @@ import os
 import subprocess
 import sys
 import urllib.error
+import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
@@ -47,6 +48,7 @@ def main() -> int:
     parser.add_argument("--approve-external-write", action="store_true", help="Required with --apply.")
     parser.add_argument("--approve-discord-dispatch", action="store_true", help="Required with --apply and Discord dispatch.")
     parser.add_argument("--omit-labels", action="store_true", help="Do not include labels in GitHub issue payload.")
+    parser.add_argument("--detect-existing-github", action="store_true", help="Read GitHub Issues and reuse an exact-title match before creating a new issue.")
     args = parser.parse_args()
 
     try:
@@ -61,6 +63,15 @@ def main() -> int:
             approve_sensitive=False,
             omit_labels=args.omit_labels,
         )
+        github_detection = detect_existing_github_issue(args.repo, args.github_token_env, issue) if args.detect_existing_github else {"enabled": False}
+        effective_existing = dict(existing)
+        if github_detection.get("match") and not effective_existing.get("githubIssueUrl"):
+            effective_existing.update(
+                {
+                    "githubIssueNumber": github_detection.get("issueNumber", ""),
+                    "githubIssueUrl": github_detection.get("issueUrl", ""),
+                }
+            )
         result: dict[str, Any] = {
             "generatedAt": utc_now(),
             "mode": "apply" if args.apply else "dry-run",
@@ -72,17 +83,18 @@ def main() -> int:
             "tokenValuePrinted": False,
             "privateValuesIncluded": False,
             "idempotency": {
-                "existingGitHubIssue": bool(existing.get("githubIssueUrl")),
-                "existingDiscordThread": bool(existing.get("discordThreadId")),
+                "existingGitHubIssue": bool(effective_existing.get("githubIssueUrl")),
+                "existingDiscordThread": bool(effective_existing.get("discordThreadId")),
+                "githubDuplicateDetection": github_detection,
             },
             "planned": {
                 "githubIssue": redact_issue(issue),
                 "discordThreadName": thread_name(packet_id),
-                "discordMessages": dispatch_messages(packet_id, existing.get("githubIssueUrl", "")),
+                "discordMessages": dispatch_messages(packet_id, effective_existing.get("githubIssueUrl", "")),
             },
         }
         if args.apply:
-            apply_result = apply_dispatch(args, packet_id, issue, state, state_path)
+            apply_result = apply_dispatch(args, packet_id, issue, state, state_path, github_detection=github_detection)
             result.update(apply_result)
         else:
             out_path = Path(args.out)
@@ -129,20 +141,33 @@ def apply_dispatch(
     issue: dict[str, Any],
     state: dict[str, Any],
     state_path: Path,
+    github_detection: dict[str, Any],
 ) -> dict[str, Any]:
     if not args.approve_external_write:
         raise DispatchJobError("--apply requires --approve-external-write")
     record = dict(state.get(packet_id, {}))
     writes: list[str] = []
+    reused: list[str] = []
     if not record.get("githubIssueUrl"):
-        created = create_issue(args.repo, args.github_token_env, issue)
-        record.update(
-            {
-                "githubIssueNumber": created["number"],
-                "githubIssueUrl": created["html_url"],
-            }
-        )
-        writes.append("github_issue")
+        if github_detection.get("match"):
+            record.update(
+                {
+                    "githubIssueNumber": github_detection.get("issueNumber", ""),
+                    "githubIssueUrl": github_detection.get("issueUrl", ""),
+                }
+            )
+            reused.append("github_issue")
+        else:
+            if args.detect_existing_github and github_detection.get("error"):
+                raise DispatchJobError(f"github duplicate detection failed: {github_detection.get('error')}")
+            created = create_issue(args.repo, args.github_token_env, issue)
+            record.update(
+                {
+                    "githubIssueNumber": created["number"],
+                    "githubIssueUrl": created["html_url"],
+                }
+            )
+            writes.append("github_issue")
     if args.discord_target and not record.get("discordThreadId"):
         if not args.approve_discord_dispatch:
             raise DispatchJobError("Discord dispatch requires --approve-discord-dispatch")
@@ -164,9 +189,75 @@ def apply_dispatch(
     return {
         "writesPerformed": bool(writes),
         "writes": writes,
+        "reused": reused,
         "githubIssueUrl": record.get("githubIssueUrl", ""),
         "discordThreadId": record.get("discordThreadId", ""),
     }
+
+
+def detect_existing_github_issue(repo: str, token_env: str, issue: dict[str, Any]) -> dict[str, Any]:
+    result: dict[str, Any] = {
+        "enabled": True,
+        "tokenSet": bool(os.environ.get(token_env, "").strip()),
+        "match": False,
+        "issueNumber": "",
+        "issueUrl": "",
+        "labelsUsed": issue.get("labels", [])[:5] if isinstance(issue.get("labels"), list) else [],
+        "privateValuesIncluded": False,
+    }
+    if not repo or "/" not in repo:
+        result["error"] = "repo_unset"
+        return result
+    token = os.environ.get(token_env, "").strip()
+    if not token:
+        result["error"] = f"{token_env}_not_set"
+        return result
+    title = str(issue.get("title") or "").strip()
+    if not title:
+        result["error"] = "issue_title_missing"
+        return result
+    labels = issue.get("labels", []) if isinstance(issue.get("labels"), list) else []
+    query = {
+        "state": "all",
+        "per_page": "30",
+    }
+    if labels:
+        query["labels"] = ",".join(str(label) for label in labels[:5])
+    endpoint = f"https://api.github.com/repos/{repo.strip().strip('/')}/issues?{urllib.parse.urlencode(query)}"
+    request = urllib.request.Request(
+        endpoint,
+        headers={
+            "Accept": "application/vnd.github+json",
+            "Authorization": f"Bearer {token}",
+            "User-Agent": "pnh-dispatch-job",
+            "X-GitHub-Api-Version": "2022-11-28",
+        },
+        method="GET",
+    )
+    try:
+        payload = github_request_json(request, "github issue duplicate detection")
+    except DispatchJobError as exc:
+        result["error"] = str(exc)
+        return result
+    if not isinstance(payload, list):
+        result["error"] = "github_issue_list_unexpected_payload"
+        return result
+    result["candidatesChecked"] = len(payload)
+    for item in payload:
+        if not isinstance(item, dict) or "pull_request" in item:
+            continue
+        if str(item.get("title") or "").strip() == title:
+            result.update(
+                {
+                    "match": True,
+                    "issueNumber": item.get("number", ""),
+                    "issueUrl": item.get("html_url", ""),
+                    "issueState": item.get("state", ""),
+                    "issueUpdatedAt": item.get("updated_at", ""),
+                }
+            )
+            break
+    return result
 
 
 def create_issue(repo: str, token_env: str, issue: dict[str, Any]) -> dict[str, Any]:
@@ -210,13 +301,18 @@ def comment_issue(repo: str, token_env: str, issue_number: int, body: str) -> No
 
 
 def github_json(request: urllib.request.Request, label: str) -> dict[str, Any]:
+    payload = github_request_json(request, label)
+    if not isinstance(payload, dict):
+        raise DispatchJobError(f"{label} returned unexpected payload")
+    return payload
+
+
+def github_request_json(request: urllib.request.Request, label: str) -> Any:
     try:
         with urllib.request.urlopen(request, timeout=15) as response:
             payload = json.loads(response.read().decode("utf-8"))
     except urllib.error.HTTPError as exc:
         raise DispatchJobError(f"{label} failed with HTTP {exc.code}") from exc
-    if not isinstance(payload, dict):
-        raise DispatchJobError(f"{label} returned unexpected payload")
     return payload
 
 

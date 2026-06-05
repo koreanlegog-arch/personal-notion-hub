@@ -22,10 +22,12 @@ This summary is generated from redacted dispatch evidence. It must not include p
 - missing evidence: none
 - next action: summarize_worker_result_for_supervisor_review
 - GitHub issue: #2
+- GitHub issue state: open
+- GitHub status checked at: 2026-06-05T03:59:29+00:00
 - Discord thread id: 1512295718054793419
 - worker session id: pnh:capture-5345e37040604a2fca64f317:qa
 - worker status: done
-- updated at: 2026-06-05T03:28:43+00:00
+- updated at: 2026-06-05T03:59:29+00:00
 
 ### pnh-live-openclaw-capture-20260605
 
@@ -34,6 +36,8 @@ This summary is generated from redacted dispatch evidence. It must not include p
 - missing evidence: github_issue, discord_thread
 - next action: link_ledger_and_thread_before_delivery
 - GitHub issue: #-
+- GitHub issue state: -
+- GitHub status checked at: -
 - Discord thread id: -
 - worker session id: pnh-live-openclaw-capture-20260605-qa
 - worker status: done

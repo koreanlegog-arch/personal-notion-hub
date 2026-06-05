@@ -40,6 +40,7 @@ def main() -> int:
     parser.add_argument("--allow-plaintext", action="store_true", help="Allow plaintext inbox rows for fixture compatibility.")
     parser.add_argument("--allow-external-db", action="store_true", help="Allow DB outside companion/private for fixture tests.")
     parser.add_argument("--omit-labels", action="store_true", help="Do not include labels in GitHub issue payload.")
+    parser.add_argument("--detect-existing-github", action="store_true", help="Read GitHub Issues and reuse an exact-title match in the dispatch job.")
     parser.add_argument("--apply", action="store_true", help="Create missing external records.")
     parser.add_argument("--approve-live-dispatch", action="store_true", help="Required with --apply.")
     parser.add_argument("--approve-external-write", action="store_true", help="Passed to dispatch job apply mode.")
@@ -107,6 +108,8 @@ def run_dispatch_job(args: argparse.Namespace, candidate_out: Path, result_out: 
         command.extend(["--state-file", args.state_file])
     if args.omit_labels:
         command.append("--omit-labels")
+    if args.detect_existing_github:
+        command.append("--detect-existing-github")
     if args.apply:
         command.append("--apply")
         if args.approve_external_write:

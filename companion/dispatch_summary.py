@@ -28,6 +28,8 @@ def summarize_dispatch_record(packet_id: str, value: dict[str, Any]) -> dict[str
         "packetId": str(packet_id),
         "githubIssueNumber": value.get("githubIssueNumber", ""),
         "githubIssueSet": github_issue_set,
+        "githubIssueState": value.get("githubIssueState", ""),
+        "githubStatusCheckedAt": value.get("githubStatusCheckedAt", ""),
         "discordThreadId": value.get("discordThreadId", ""),
         "discordThreadSet": discord_thread_set,
         "workerSessionId": value.get("workerSessionId", ""),

@@ -45,6 +45,14 @@ python3 scripts/pnh_dispatch_state_status.py
 
 URLs are hidden by default. Use `--include-urls` only for local operator inspection.
 
+Refresh linked GitHub Issue status into local dispatch state:
+
+```bash
+python3 scripts/pnh_dispatch_status_refresh.py --github-read
+```
+
+Default mode writes a redacted dry-run output only. Add `--apply` to update the ignored local dispatch state with GitHub issue state, labels, and checked timestamp. This script performs no GitHub, Discord, or OpenClaw writes.
+
 Record a local worker-result rehearsal without external calls:
 
 ```bash
@@ -108,13 +116,16 @@ Then generate a dispatch plan:
 python3 scripts/pnh_dispatch_job.py \
   --input-json ops/runs/PNH-DISPATCH-CANDIDATE-EXPORT-20260605/dispatch_candidate.json \
   --repo koreanlegog-arch/personal-notion-hub \
-  --discord-target channel:1511691320136306718
+  --discord-target channel:1511691320136306718 \
+  --detect-existing-github
 ```
+
+`--detect-existing-github` performs a read-only exact-title GitHub Issue check when a runtime token is available. In dry-run mode, missing token status is reported in the plan without creating anything. In apply mode, a failed duplicate read-check fails closed before creating a new issue.
 
 Run the operational auto-dispatch dry-run from the local private inbox:
 
 ```bash
-python3 scripts/pnh_auto_dispatch_from_inbox.py
+python3 scripts/pnh_auto_dispatch_from_inbox.py --detect-existing-github
 ```
 
 This wrapper exports a metadata-only candidate from the local private inbox, generates a dispatch plan, and writes:
@@ -151,6 +162,5 @@ The live-dispatch approval gate exists because apply mode can create GitHub Issu
 
 ## Remaining Work
 
-- Add status refresh for already-linked GitHub Issues and Discord/OpenClaw threads.
-- Add duplicate detection against existing GitHub Issues if local state is missing.
+- Add Discord/OpenClaw thread status read-refresh if the gateway exposes a stable read API for thread metadata.
 - Convert confirmed Launch task status into project/task board progress.

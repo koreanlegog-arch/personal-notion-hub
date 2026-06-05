@@ -74,7 +74,10 @@ Live issue creation requires all of:
 - Missing token in apply mode: fail closed.
 - HTTP error from GitHub: print status and redacted error body only.
 - Private body request without explicit sensitive-data approval: fail closed.
-- Duplicate prevention is not implemented yet; use dry-run and issue title review until a dedupe strategy is approved.
+- Duplicate prevention is available in two layers:
+  - local dispatch state prevents repeated apply runs from creating duplicate records
+  - optional `--detect-existing-github` performs a read-only GitHub Issue exact-title check before issue creation
+- If duplicate detection is requested but GitHub read fails in apply mode, the dispatch job fails closed before creating a new issue.
 
 ## Future Projects Integration
 

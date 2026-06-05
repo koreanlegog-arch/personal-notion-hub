@@ -192,15 +192,16 @@ Implemented inside the approved local/private boundary:
 - stored PNH command packets can be exported into dispatch candidates with metadata only
 - automatic dispatch dry-run from the local private inbox can generate a redacted dispatch plan
 - worker-session evidence can be captured for the dispatched packet and summarized for supervisor review
+- dispatch job can perform read-only GitHub duplicate detection before live issue creation
+- linked GitHub Issue status can be refreshed into local dispatch state without external writes
 
 Still pending:
 
 - update issue status
-- issue/thread status refresh after the first confirmed mapping
 - no token in repo remains enforced
-- dedupe and repeated ledger update strategy
 - approved live apply from the auto-dispatch dry-run
-- status refresh and dedupe for repeated auto-dispatch runs
+- Discord/OpenClaw thread status refresh if a stable read API is available
+- repeated ledger update strategy after refreshed status indicates changed issue state
 - operator confirmation of the final `worker_done` status inside the browser Launch UI
 
 Reference:
@@ -234,6 +235,7 @@ Dispatch job status:
 - `scripts/pnh_dispatch_candidate_export.py` prepares a metadata-only command packet from the local private inbox.
 - `scripts/pnh_auto_dispatch_from_inbox.py` wraps candidate export and dispatch planning for local dry-run operation.
 - `scripts/pnh_supervisor_review_summary.py` converts redacted dispatch evidence into a supervisor review handoff.
+- `scripts/pnh_dispatch_status_refresh.py` refreshes linked GitHub Issue status into local state without external writes.
 - Default apply-mode state path is ignored local private storage.
 - Live apply still requires explicit approval flags.
 

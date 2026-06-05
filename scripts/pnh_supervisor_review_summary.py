@@ -115,6 +115,8 @@ def record_lines(record: dict[str, Any]) -> list[str]:
         f"- missing evidence: {missing_label}",
         f"- next action: {record.get('nextAction', 'review_dispatch_evidence')}",
         f"- GitHub issue: #{record.get('githubIssueNumber') or '-'}",
+        f"- GitHub issue state: {record.get('githubIssueState') or '-'}",
+        f"- GitHub status checked at: {record.get('githubStatusCheckedAt') or '-'}",
         f"- Discord thread id: {record.get('discordThreadId') or '-'}",
         f"- worker session id: {record.get('workerSessionId') or '-'}",
         f"- worker status: {record.get('workerStatus') or '-'}",

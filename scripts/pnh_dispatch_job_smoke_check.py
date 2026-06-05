@@ -106,6 +106,36 @@ def main() -> int:
         assert_true(idempotent_plan["idempotency"]["existingGitHubIssue"] is True, "dry_run_did_not_read_existing_issue=true")
         assert_true(idempotent_plan["idempotency"]["existingDiscordThread"] is True, "dry_run_did_not_read_existing_thread=true")
 
+        duplicate_detection_no_token = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts" / "pnh_dispatch_job.py"),
+                "--input-json",
+                str(packet),
+                "--repo",
+                "example/private-ledger",
+                "--discord-target",
+                "channel:123",
+                "--state-file",
+                str(temp_root / "empty-state.json"),
+                "--out",
+                str(out),
+                "--detect-existing-github",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=10,
+            check=False,
+            env={"PATH": ""},
+        )
+        assert_true(duplicate_detection_no_token.returncode == 0, f"duplicate_detection_dry_run_failed={duplicate_detection_no_token.stderr.strip()}")
+        duplicate_plan = json.loads(out.read_text(encoding="utf-8"))
+        detection = duplicate_plan["idempotency"]["githubDuplicateDetection"]
+        assert_true(detection["enabled"] is True, "github_duplicate_detection_not_enabled=true")
+        assert_true(detection["tokenSet"] is False, "github_duplicate_detection_token_unexpected=true")
+        assert_true(detection["match"] is False, "github_duplicate_detection_false_match=true")
+        assert_true("not_set" in detection["error"], "github_duplicate_detection_error_missing=true")
+
         blocked_apply = subprocess.run(
             [
                 sys.executable,

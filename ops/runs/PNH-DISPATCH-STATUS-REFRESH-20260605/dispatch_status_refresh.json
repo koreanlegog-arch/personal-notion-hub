@@ -1,0 +1,50 @@
+{
+  "dispatchStatusRefresh": true,
+  "externalWritesPerformed": false,
+  "fixtureUsed": false,
+  "githubReadRequested": true,
+  "mode": "apply",
+  "privateValuesPrinted": false,
+  "records": [
+    {
+      "discordThreadSet": true,
+      "error": "",
+      "githubIssueClosedAt": "",
+      "githubIssueLabels": [
+        "pnh",
+        "mobile-command",
+        "command:project_brief",
+        "priority:normal",
+        "dispatch:not-dispatched"
+      ],
+      "githubIssueNumber": "2",
+      "githubIssueSet": true,
+      "githubIssueState": "open",
+      "githubIssueUpdatedAt": "2026-06-05T03:23:35Z",
+      "githubStatusRefreshed": true,
+      "needsFollowUp": false,
+      "packetId": "capture-5345e37040604a2fca64f317",
+      "workerStatus": "done"
+    },
+    {
+      "discordThreadSet": false,
+      "error": "github_issue_reference_missing",
+      "githubIssueClosedAt": "",
+      "githubIssueLabels": [],
+      "githubIssueNumber": "",
+      "githubIssueSet": false,
+      "githubIssueState": "",
+      "githubIssueUpdatedAt": "",
+      "githubStatusRefreshed": false,
+      "needsFollowUp": true,
+      "packetId": "pnh-live-openclaw-capture-20260605",
+      "workerStatus": "done"
+    }
+  ],
+  "recordsInspected": 2,
+  "recordsNeedingFollowUp": 1,
+  "recordsRefreshed": 1,
+  "recordsWithGitHub": 1,
+  "tokenValuePrinted": false,
+  "writesPerformed": true
+}

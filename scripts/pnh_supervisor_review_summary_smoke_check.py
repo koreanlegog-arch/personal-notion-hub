@@ -34,6 +34,8 @@ def main() -> int:
                             "packetId": "capture-review-smoke-001",
                             "githubIssueNumber": 7,
                             "githubIssueSet": True,
+                            "githubIssueState": "open",
+                            "githubStatusCheckedAt": "2026-06-05T00:00:00+00:00",
                             "discordThreadId": "1234567890",
                             "discordThreadSet": True,
                             "workerSessionId": "worker-review-smoke-001",
@@ -83,6 +85,7 @@ def main() -> int:
         assert_true("complete review ready: 1" in combined, "complete_review_ready_missing=true")
         assert_true("needs follow-up: 1" in combined, "needs_follow_up_missing=true")
         assert_true("capture-review-smoke-001" in combined, "record_missing=true")
+        assert_true("GitHub issue state: open" in combined, "github_issue_state_missing=true")
         assert_true("Confirm the linked GitHub Issue" in combined, "supervisor_check_missing=true")
 
     print("pnh_supervisor_review_summary_smoke_check_pass=true")

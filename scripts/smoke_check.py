@@ -73,6 +73,8 @@ REQUIRED = [
     "scripts/pnh_dispatch_candidate_export_smoke_check.py",
     "scripts/pnh_dispatch_state_status.py",
     "scripts/pnh_dispatch_state_status_smoke_check.py",
+    "scripts/pnh_dispatch_status_refresh.py",
+    "scripts/pnh_dispatch_status_refresh_smoke_check.py",
     "scripts/pnh_dispatch_rehearsal.py",
     "scripts/pnh_dispatch_rehearsal_smoke_check.py",
     "scripts/pnh_worker_result_record.py",
@@ -207,6 +209,8 @@ def assert_github_ledger_bridge_contracts() -> None:
     candidate_smoke = (ROOT / "scripts/pnh_dispatch_candidate_export_smoke_check.py").read_text(encoding="utf-8")
     state_status = (ROOT / "scripts/pnh_dispatch_state_status.py").read_text(encoding="utf-8")
     state_smoke = (ROOT / "scripts/pnh_dispatch_state_status_smoke_check.py").read_text(encoding="utf-8")
+    status_refresh = (ROOT / "scripts/pnh_dispatch_status_refresh.py").read_text(encoding="utf-8")
+    status_refresh_smoke = (ROOT / "scripts/pnh_dispatch_status_refresh_smoke_check.py").read_text(encoding="utf-8")
     rehearsal = (ROOT / "scripts/pnh_dispatch_rehearsal.py").read_text(encoding="utf-8")
     rehearsal_smoke = (ROOT / "scripts/pnh_dispatch_rehearsal_smoke_check.py").read_text(encoding="utf-8")
     worker_result = (ROOT / "scripts/pnh_worker_result_record.py").read_text(encoding="utf-8")
@@ -235,6 +239,13 @@ def assert_github_ledger_bridge_contracts() -> None:
         "Private command body remains in the local vault",
         "pnh_dispatch_state_status_smoke_check_pass=true",
         "--include-urls",
+        "pnh_dispatch_status_refresh_smoke_check_pass=true",
+        "dispatchStatusRefresh",
+        "--github-read",
+        "externalWritesPerformed",
+        "githubIssueState",
+        "githubDuplicateDetection",
+        "--detect-existing-github",
         "pnh_dispatch_rehearsal_smoke_check_pass=true",
         "pnhDispatchRehearsal",
         "pnh_worker_result_record_smoke_check_pass=true",
@@ -254,6 +265,7 @@ def assert_github_ledger_bridge_contracts() -> None:
         "pnhAutoDispatchFromInbox",
         "--approve-live-dispatch",
         "liveApplyGate",
+        "--detect-existing-github",
         "pnh_supervisor_review_summary_smoke_check_pass=true",
         "pnhSupervisorReviewSummary",
         "Supervisor Checks",
@@ -270,6 +282,8 @@ def assert_github_ledger_bridge_contracts() -> None:
             candidate_smoke,
             state_status,
             state_smoke,
+            status_refresh,
+            status_refresh_smoke,
             rehearsal,
             rehearsal_smoke,
             worker_result,
