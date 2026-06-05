@@ -1,0 +1,20 @@
+{
+  "approvalRequiredForApply": true,
+  "externalWritesPerformed": false,
+  "generatedAt": "2026-06-05T14:58:29+00:00",
+  "mode": "dry-run",
+  "outputs": {
+    "runDir": "ops/runs/PNH-COMMAND-PACKET-20260605T145829Z/dispatch_pilot"
+  },
+  "pilotLimits": {
+    "cooldownMinutes": 10,
+    "maxExternalWritesPerHour": 3,
+    "maxJobsPerRun": 1
+  },
+  "pnhUnattendedDispatchPilot": true,
+  "privateValuesPrinted": false,
+  "selectedCaptureId": "launch-packet-launch-mq11rzo5-8kcrgo",
+  "selectedCommandType": "task_request",
+  "tokenValuePrinted": false,
+  "wouldApply": true
+}

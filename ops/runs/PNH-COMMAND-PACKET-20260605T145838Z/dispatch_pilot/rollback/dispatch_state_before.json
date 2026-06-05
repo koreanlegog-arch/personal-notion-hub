@@ -1,0 +1,129 @@
+{
+  "assistant-capture-capture-mq0mgu4q-uvzyzm0s": {
+    "discordMessagesObserved": 0,
+    "discordReadCheckedAt": "2026-06-05T07:57:22+00:00",
+    "discordReadReturnCode": 0,
+    "discordThreadId": "1512364450869547130",
+    "githubIssueClosedAt": "2026-06-05T14:47:01Z",
+    "githubIssueLabels": [
+      "pnh",
+      "mobile-command",
+      "priority:normal",
+      "dispatch:worker-done",
+      "command:task_request"
+    ],
+    "githubIssueNumber": 6,
+    "githubIssueState": "closed",
+    "githubIssueUpdatedAt": "2026-06-05T14:47:01Z",
+    "githubIssueUrl": "https://github.com/koreanlegog-arch/personal-notion-hub/issues/6",
+    "githubStatusCheckedAt": "2026-06-05T14:47:31+00:00",
+    "updatedAt": "2026-06-05T14:47:31+00:00",
+    "workerEvidenceRef": "ops/runs/PNH-COMMAND-PACKET-20260605T075619Z/worker_capture/openclaw_worker_capture_metadata.json",
+    "workerResultRecordedAt": "2026-06-05T07:57:17+00:00",
+    "workerSessionId": "pnh:assistant-capture-capture-mq0mgu4q-uvzyzm0s:qa",
+    "workerStatus": "done"
+  },
+  "capture-2a0fcdefc3f169ec30c6497f": {
+    "discordMessagesObserved": 0,
+    "discordReadCheckedAt": "2026-06-05T07:57:26+00:00",
+    "discordReadReturnCode": 0,
+    "discordThreadId": "1512315698351706183",
+    "githubIssueClosedAt": "2026-06-05T14:47:03Z",
+    "githubIssueLabels": [
+      "pnh",
+      "mobile-command",
+      "command:project_brief",
+      "priority:normal",
+      "dispatch:worker-done"
+    ],
+    "githubIssueNumber": 3,
+    "githubIssueState": "closed",
+    "githubIssueUpdatedAt": "2026-06-05T14:47:03Z",
+    "githubIssueUrl": "https://github.com/koreanlegog-arch/personal-notion-hub/issues/3",
+    "githubStatusCheckedAt": "2026-06-05T14:47:31+00:00",
+    "updatedAt": "2026-06-05T14:47:31+00:00",
+    "workerEvidenceRef": "ops/runs/PNH-UNATTENDED-WORKER-SESSION-CAPTURE-20260605/openclaw_worker_capture_metadata.json",
+    "workerResultRecordedAt": "2026-06-05T04:50:08+00:00",
+    "workerSessionId": "pnh:capture-2a0fcdefc3f169ec30c6497f:qa",
+    "workerStatus": "done"
+  },
+  "capture-3b8522ff102b0469c683b027": {
+    "discordMessagesObserved": 0,
+    "discordReadCheckedAt": "2026-06-05T07:57:30+00:00",
+    "discordReadReturnCode": 0,
+    "discordThreadId": "1512323845514596373",
+    "githubIssueClosedAt": "2026-06-05T14:47:06Z",
+    "githubIssueLabels": [
+      "pnh",
+      "mobile-command",
+      "command:project_brief",
+      "priority:normal",
+      "dispatch:worker-done"
+    ],
+    "githubIssueNumber": 4,
+    "githubIssueState": "closed",
+    "githubIssueUpdatedAt": "2026-06-05T14:47:06Z",
+    "githubIssueUrl": "https://github.com/koreanlegog-arch/personal-notion-hub/issues/4",
+    "githubStatusCheckedAt": "2026-06-05T14:47:31+00:00",
+    "updatedAt": "2026-06-05T14:47:31+00:00",
+    "workerEvidenceRef": "ops/runs/PNH-ISSUE4-WORKER-SESSION-CAPTURE-20260605/openclaw_worker_capture_metadata.json",
+    "workerResultRecordedAt": "2026-06-05T05:28:05+00:00",
+    "workerSessionId": "pnh:capture-3b8522ff102b0469c683b027:qa",
+    "workerStatus": "done"
+  },
+  "capture-40fc5ea5d769acebdb130781": {
+    "discordMessagesObserved": 0,
+    "discordReadCheckedAt": "2026-06-05T07:57:34+00:00",
+    "discordReadReturnCode": 0,
+    "discordThreadId": "1512357660807270561",
+    "githubIssueClosedAt": "2026-06-05T14:47:09Z",
+    "githubIssueLabels": [
+      "pnh",
+      "mobile-command",
+      "command:project_brief",
+      "priority:normal",
+      "dispatch:worker-done"
+    ],
+    "githubIssueNumber": 5,
+    "githubIssueState": "closed",
+    "githubIssueUpdatedAt": "2026-06-05T14:47:09Z",
+    "githubIssueUrl": "https://github.com/koreanlegog-arch/personal-notion-hub/issues/5",
+    "githubStatusCheckedAt": "2026-06-05T14:47:31+00:00",
+    "updatedAt": "2026-06-05T14:47:31+00:00",
+    "workerEvidenceRef": "ops/runs/PNH-COMMAND-PACKET-20260605T072917Z/worker_capture/openclaw_worker_capture_metadata.json",
+    "workerResultRecordedAt": "2026-06-05T07:31:26+00:00",
+    "workerSessionId": "pnh:capture-40fc5ea5d769acebdb130781:qa",
+    "workerStatus": "done"
+  },
+  "capture-5345e37040604a2fca64f317": {
+    "discordMessagesObserved": 0,
+    "discordReadCheckedAt": "2026-06-05T07:57:38+00:00",
+    "discordReadReturnCode": 0,
+    "discordThreadId": "1512295718054793419",
+    "githubIssueClosedAt": "2026-06-05T14:47:16Z",
+    "githubIssueLabels": [
+      "pnh",
+      "mobile-command",
+      "command:project_brief",
+      "priority:normal",
+      "dispatch:worker-done"
+    ],
+    "githubIssueNumber": 2,
+    "githubIssueState": "closed",
+    "githubIssueUpdatedAt": "2026-06-05T14:47:16Z",
+    "githubIssueUrl": "https://github.com/koreanlegog-arch/personal-notion-hub/issues/2",
+    "githubStatusCheckedAt": "2026-06-05T14:47:31+00:00",
+    "updatedAt": "2026-06-05T14:47:31+00:00",
+    "workerEvidenceRef": "ops/runs/PNH-WORKER-SESSION-CAPTURE-20260605/openclaw_worker_capture_metadata.json",
+    "workerResultRecordedAt": "2026-06-05T03:28:43+00:00",
+    "workerSessionId": "pnh:capture-5345e37040604a2fca64f317:qa",
+    "workerStatus": "done"
+  },
+  "pnh-live-openclaw-capture-20260605": {
+    "updatedAt": "2026-06-05T02:42:49+00:00",
+    "workerEvidenceRef": "ops/runs/PNH-OPENCLAW-WORKER-CAPTURE-20260605/openclaw_worker_capture_metadata.json",
+    "workerResultRecordedAt": "2026-06-05T02:42:49+00:00",
+    "workerSessionId": "pnh-live-openclaw-capture-20260605-qa",
+    "workerStatus": "done"
+  }
+}

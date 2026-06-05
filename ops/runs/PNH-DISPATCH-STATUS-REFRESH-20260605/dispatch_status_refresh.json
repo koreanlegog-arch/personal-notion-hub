@@ -107,6 +107,26 @@
       "workerStatus": "done"
     },
     {
+      "discordThreadSet": true,
+      "error": "",
+      "githubIssueClosedAt": "2026-06-05T15:04:02Z",
+      "githubIssueLabels": [
+        "pnh",
+        "mobile-command",
+        "priority:normal",
+        "dispatch:worker-done",
+        "command:task_request"
+      ],
+      "githubIssueNumber": "7",
+      "githubIssueSet": true,
+      "githubIssueState": "closed",
+      "githubIssueUpdatedAt": "2026-06-05T15:04:02Z",
+      "githubStatusRefreshed": true,
+      "needsFollowUp": false,
+      "packetId": "launch-packet-launch-mq11rzo5-8kcrgo",
+      "workerStatus": "done"
+    },
+    {
       "discordThreadSet": false,
       "error": "github_issue_reference_missing",
       "githubIssueClosedAt": "",
@@ -121,10 +141,10 @@
       "workerStatus": "done"
     }
   ],
-  "recordsInspected": 6,
+  "recordsInspected": 7,
   "recordsNeedingFollowUp": 1,
-  "recordsRefreshed": 5,
-  "recordsWithGitHub": 5,
+  "recordsRefreshed": 6,
+  "recordsWithGitHub": 6,
   "tokenValuePrinted": false,
   "writesPerformed": true
 }

@@ -4,7 +4,7 @@
       "addLabels": [
         "dispatch:worker-done"
       ],
-      "githubIssueNumber": "3",
+      "githubIssueNumber": "7",
       "operation": "replace_dispatch_status_labels",
       "removeLabels": [
         "dispatch:not-dispatched"
@@ -19,20 +19,20 @@
       "afterLabels": [
         "pnh",
         "mobile-command",
-        "command:project_brief",
         "priority:normal",
-        "dispatch:worker-done"
+        "dispatch:worker-done",
+        "command:task_request"
       ],
       "beforeLabels": [
         "pnh",
         "mobile-command",
-        "command:project_brief",
         "priority:normal",
-        "dispatch:not-dispatched"
+        "dispatch:not-dispatched",
+        "command:task_request"
       ],
       "contentPrinted": false,
       "createdLabels": [],
-      "githubIssueNumber": "3",
+      "githubIssueNumber": "7",
       "removeLabels": [
         "dispatch:not-dispatched"
       ]
@@ -40,7 +40,7 @@
   ],
   "appliedActionCount": 1,
   "externalWritesPerformed": true,
-  "generatedAt": "2026-06-05T04:54:24+00:00",
+  "generatedAt": "2026-06-05T15:03:54+00:00",
   "githubLabelReconciliation": true,
   "mode": "apply",
   "plannedActionCount": 1,

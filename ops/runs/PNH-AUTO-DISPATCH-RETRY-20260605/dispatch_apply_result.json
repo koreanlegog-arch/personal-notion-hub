@@ -1,0 +1,64 @@
+{
+  "discordTargetSet": true,
+  "discordThreadId": "1512471203754020976",
+  "generatedAt": "2026-06-05T15:00:32+00:00",
+  "githubIssueUrl": "https://github.com/koreanlegog-arch/personal-notion-hub/issues/7",
+  "idempotency": {
+    "existingDiscordThread": false,
+    "existingGitHubIssue": true,
+    "githubDuplicateDetection": {
+      "candidatesChecked": 1,
+      "enabled": true,
+      "ghAuthUsed": true,
+      "issueNumber": 7,
+      "issueState": "open",
+      "issueUpdatedAt": "2026-06-05T14:58:40Z",
+      "issueUrl": "https://github.com/koreanlegog-arch/personal-notion-hub/issues/7",
+      "labelsUsed": [
+        "pnh",
+        "mobile-command",
+        "command:task_request",
+        "priority:normal",
+        "dispatch:not-dispatched"
+      ],
+      "match": true,
+      "privateValuesIncluded": false,
+      "tokenSet": false
+    }
+  },
+  "mode": "apply",
+  "packetId": "launch-packet-launch-mq11rzo5-8kcrgo",
+  "planned": {
+    "discordMessages": [
+      "`/task create`\nTask ID: `launch-packet-launch-mq11rzo5-8kcrgo`\nLedger: https://github.com/koreanlegog-arch/personal-notion-hub/issues/7\nObjective: route PNH command packet through ledger-backed worker control.",
+      "`/task assign`\nAssigned: `worker-orchestrator`\nGate: implementation starts only from a scoped task packet.",
+      "`/review`\nCheck: private body is not posted; ledger and thread references are present.",
+      "`/qa`\nCheck: duplicate dispatch is prevented by local dispatch state.",
+      "`/task done`\nResult: dispatch job reached ledger/thread routing stage."
+    ],
+    "discordThreadName": "PNH-launch-packet-launch-mq11rzo5-8kcrgo-dispatch",
+    "githubIssue": {
+      "bodyLength": 834,
+      "labels": [
+        "pnh",
+        "mobile-command",
+        "command:task_request",
+        "priority:normal",
+        "dispatch:not-dispatched"
+      ],
+      "title": "[PNH] task_request command packet (launch-packet-launch-mq11rzo5-8kcrgo)"
+    }
+  },
+  "privateValuesIncluded": false,
+  "repo": "koreanlegog-arch/personal-notion-hub",
+  "reused": [
+    "github_issue"
+  ],
+  "stateFile": "local-private-state",
+  "tokenValuePrinted": false,
+  "writes": [
+    "discord_thread",
+    "github_comment"
+  ],
+  "writesPerformed": true
+}

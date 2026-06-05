@@ -2,9 +2,9 @@
   "capturesInspected": 12,
   "commandAliasesLoaded": 1,
   "cooldownActive": false,
-  "eligibleCount": 0,
+  "eligibleCount": 1,
   "externalWritesPerformed": false,
-  "generatedAt": "2026-06-05T15:05:37+00:00",
+  "generatedAt": "2026-06-05T14:58:29+00:00",
   "lockPlan": {
     "lockFile": "companion/private/pnh_unattended_dispatch.lock",
     "singleWriter": true,
@@ -21,8 +21,20 @@
   "privateValuesPrinted": false,
   "queueActivationGateReason": "unattended dispatch can create GitHub Issues, Discord/OpenClaw threads, GitHub comments, and worker/model calls without an operator present.",
   "queueActivationGateRequired": true,
-  "queued": [],
-  "queuedCount": 0,
+  "queued": [
+    {
+      "captureId": "launch-packet-launch-mq11rzo5-8kcrgo",
+      "commandAliasApplied": false,
+      "commandType": "task_request",
+      "eligible": true,
+      "encrypted": true,
+      "originalKind": "task_request",
+      "sensitivity": "internal",
+      "skipReason": "",
+      "storageMode": "encrypted-vault"
+    }
+  ],
+  "queuedCount": 1,
   "recentExternalWriteCount1h": 0,
   "remainingExternalWriteCapacity1h": 3,
   "rollbackPlan": {
@@ -41,17 +53,6 @@
   },
   "rollbackRequiredBeforeApply": true,
   "skipped": [
-    {
-      "captureId": "launch-packet-launch-mq11rzo5-8kcrgo",
-      "commandAliasApplied": false,
-      "commandType": "task_request",
-      "eligible": false,
-      "encrypted": true,
-      "originalKind": "task_request",
-      "sensitivity": "internal",
-      "skipReason": "already_in_dispatch_state",
-      "storageMode": "encrypted-vault"
-    },
     {
       "captureId": "assistant-capture-capture-mq0ngj6i-wgo6j2sd",
       "commandAliasApplied": false,
@@ -174,6 +175,6 @@
       "storageMode": "encrypted-vault"
     }
   ],
-  "skippedCount": 12,
+  "skippedCount": 11,
   "tokenValuePrinted": false
 }

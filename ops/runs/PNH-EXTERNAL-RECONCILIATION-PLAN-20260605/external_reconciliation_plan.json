@@ -3,7 +3,7 @@
   "approvalRequiredBeforeExternalWrite": false,
   "externalReconciliationPlan": true,
   "externalWritesPerformed": false,
-  "generatedAt": "2026-06-05T14:49:52+00:00",
+  "generatedAt": "2026-06-05T15:05:37+00:00",
   "mode": "dry-run",
   "plannedExternalWrites": [],
   "plannedLocalFollowUps": [
@@ -30,6 +30,11 @@
     {
       "operation": "keep_local_dispatch_state_as_source_of_mapping",
       "packetId": "capture-5345e37040604a2fca64f317",
+      "reason": "ledger and thread ids are already linked locally"
+    },
+    {
+      "operation": "keep_local_dispatch_state_as_source_of_mapping",
+      "packetId": "launch-packet-launch-mq11rzo5-8kcrgo",
       "reason": "ledger and thread ids are already linked locally"
     },
     {
@@ -171,6 +176,31 @@
       "workerStatus": "done"
     },
     {
+      "discordThreadId": "1512471203754020976",
+      "discordThreadSet": true,
+      "externalWritePlan": [],
+      "githubIssueLabels": [
+        "pnh",
+        "mobile-command",
+        "priority:normal",
+        "dispatch:worker-done",
+        "command:task_request"
+      ],
+      "githubIssueNumber": "7",
+      "githubIssueSet": true,
+      "githubIssueState": "closed",
+      "githubLabelsKnown": true,
+      "localFollowUpPlan": [
+        {
+          "operation": "keep_local_dispatch_state_as_source_of_mapping",
+          "packetId": "launch-packet-launch-mq11rzo5-8kcrgo",
+          "reason": "ledger and thread ids are already linked locally"
+        }
+      ],
+      "packetId": "launch-packet-launch-mq11rzo5-8kcrgo",
+      "workerStatus": "done"
+    },
+    {
       "discordThreadId": "",
       "discordThreadSet": false,
       "externalWritePlan": [],
@@ -195,6 +225,6 @@
       "workerStatus": "done"
     }
   ],
-  "recordsInspected": 6,
+  "recordsInspected": 7,
   "tokenValuePrinted": false
 }
