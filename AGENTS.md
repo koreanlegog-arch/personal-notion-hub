@@ -73,6 +73,16 @@ will happen after approval.
   execute the next scoped PNH task autonomously until a material gate is actually reached.
 - Do not ask whether to run smoke checks, browser QA, dry-runs, scoped commits, or pushes
   when they are needed to verify a PNH implementation slice.
+- Do not stop with a final-style report after each small slice when an obvious next
+  scoped PNH task remains and no material gate is present. Continue into the next
+  task instead.
+- Use final-style reports only when at least one of these is true:
+  - the active phase is complete and no immediate next scoped task is apparent
+  - a material approval gate is reached
+  - progress is blocked by missing external state or supervisor-only action
+  - the supervisor explicitly asks for status, summary, or review
+- If reporting because of a material gate or blocker, state the exact reason work must
+  stop and the next action that will happen after supervisor input.
 - Prefer dry-run, metadata-safe evidence, and redacted artifacts for external workflow
   rehearsals.
 - Never print secret values or raw private command bodies in reports, logs, screenshots,
