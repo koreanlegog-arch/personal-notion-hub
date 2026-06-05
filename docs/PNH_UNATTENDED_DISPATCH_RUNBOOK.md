@@ -29,7 +29,7 @@ It can:
 
 It must not:
 
-- run OpenClaw worker/model calls automatically
+- run unbounded OpenClaw worker/model calls or include raw private command bodies
 - run as a daemon or scheduled service
 - store raw private command bodies in reports
 
@@ -147,10 +147,11 @@ Second pilot batch:
 - capture: `capture-3b8522ff102b0469c683b027`
 - GitHub Issue: `#4`
 - Discord thread: `1512323845514596373`
-- status: `dispatched_to_worker_thread`
-- GitHub dispatch label: `dispatch:dispatched-to-worker`
+- worker session: `pnh:capture-3b8522ff102b0469c683b027:qa`
+- status: `worker_done`
+- GitHub dispatch label: `dispatch:worker-done`
 - external reconciliation: no pending writes
-- next action: `capture_worker_session_result`
+- next action: `summarize_worker_result_for_supervisor_review`
 
 First approved pilot batch:
 

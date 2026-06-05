@@ -1,11 +1,24 @@
 {
   "approvalReason": "GitHub label/state/comment mutation or Discord/OpenClaw message/thread mutation would write to external systems.",
-  "approvalRequiredBeforeExternalWrite": false,
+  "approvalRequiredBeforeExternalWrite": true,
   "externalReconciliationPlan": true,
   "externalWritesPerformed": false,
-  "generatedAt": "2026-06-05T05:28:47+00:00",
+  "generatedAt": "2026-06-05T05:28:43+00:00",
   "mode": "dry-run",
-  "plannedExternalWrites": [],
+  "plannedExternalWrites": [
+    {
+      "addLabels": [
+        "dispatch:worker-done"
+      ],
+      "githubIssueNumber": "4",
+      "operation": "replace_dispatch_status_labels",
+      "removeLabels": [
+        "dispatch:dispatched-to-worker"
+      ],
+      "requiresApproval": true,
+      "system": "github"
+    }
+  ],
   "plannedLocalFollowUps": [
     {
       "operation": "keep_local_dispatch_state_as_source_of_mapping",
@@ -63,13 +76,26 @@
     {
       "discordThreadId": "1512323845514596373",
       "discordThreadSet": true,
-      "externalWritePlan": [],
+      "externalWritePlan": [
+        {
+          "addLabels": [
+            "dispatch:worker-done"
+          ],
+          "githubIssueNumber": "4",
+          "operation": "replace_dispatch_status_labels",
+          "removeLabels": [
+            "dispatch:dispatched-to-worker"
+          ],
+          "requiresApproval": true,
+          "system": "github"
+        }
+      ],
       "githubIssueLabels": [
         "pnh",
         "mobile-command",
         "command:project_brief",
         "priority:normal",
-        "dispatch:worker-done"
+        "dispatch:dispatched-to-worker"
       ],
       "githubIssueNumber": "4",
       "githubIssueSet": true,

@@ -1,0 +1,50 @@
+{
+  "actions": [
+    {
+      "addLabels": [
+        "dispatch:worker-done"
+      ],
+      "githubIssueNumber": "4",
+      "operation": "replace_dispatch_status_labels",
+      "removeLabels": [
+        "dispatch:dispatched-to-worker"
+      ]
+    }
+  ],
+  "applied": [
+    {
+      "addLabels": [
+        "dispatch:worker-done"
+      ],
+      "afterLabels": [
+        "pnh",
+        "mobile-command",
+        "command:project_brief",
+        "priority:normal",
+        "dispatch:worker-done"
+      ],
+      "beforeLabels": [
+        "pnh",
+        "mobile-command",
+        "command:project_brief",
+        "priority:normal",
+        "dispatch:dispatched-to-worker"
+      ],
+      "contentPrinted": false,
+      "createdLabels": [],
+      "githubIssueNumber": "4",
+      "removeLabels": [
+        "dispatch:dispatched-to-worker"
+      ]
+    }
+  ],
+  "appliedActionCount": 1,
+  "externalWritesPerformed": true,
+  "generatedAt": "2026-06-05T05:28:43+00:00",
+  "githubLabelReconciliation": true,
+  "mode": "apply",
+  "plannedActionCount": 1,
+  "privateValuesPrinted": false,
+  "repo": "koreanlegog-arch/personal-notion-hub",
+  "tokenValuePrinted": false
+}

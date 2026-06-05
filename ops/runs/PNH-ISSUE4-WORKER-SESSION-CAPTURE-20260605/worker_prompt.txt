@@ -1,0 +1,15 @@
+You are the QA worker for Personal_Notion_Hub Issue #4.
+
+Task:
+Review the metadata-only PNH dispatch record for packet capture-3b8522ff102b0469c683b027 and provide a concise QA status for the supervisor.
+
+Important boundaries:
+- Do not request or expose raw private command body content.
+- Treat the private command body as local-vault only.
+- Use only metadata-safe facts: GitHub Issue #4, Discord thread 1512323845514596373, task status dispatched_to_worker_thread, label dispatch:dispatched-to-worker, missing worker_session evidence.
+- Do not deliver a Discord reply; this run is metadata capture only.
+
+Expected output:
+- session status
+- whether the dispatch record is ready for supervisor review after worker metadata capture
+- remaining risks or next action

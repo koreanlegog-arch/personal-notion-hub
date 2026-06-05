@@ -185,6 +185,27 @@ Ran a second bounded unattended dispatch pilot batch under the PNH project
 - No Discord reply was delivered.
 - No private command body was exported or printed.
 
+## 2026-06-05 - Issue 4 Worker Session Capture
+
+### Summary
+
+Ran a bounded metadata-safe OpenClaw QA worker session for GitHub Issue `#4`
+under the project `AGENTS.md` delegation.
+
+### Results
+
+- worker session: `pnh:capture-3b8522ff102b0469c683b027:qa`
+- worker status: `done`
+- evidence completeness for Issue `#4`: `100`
+- GitHub dispatch label reconciled to `dispatch:worker-done`
+- pending external reconciliation writes: `0`
+
+### Boundaries
+
+- No Discord reply was delivered.
+- No private command body was sent to the worker.
+- Worker output body was not stored in tracked evidence.
+
 ## 2026-06-05 - Launch Status Sync Browser QA
 
 ### Summary

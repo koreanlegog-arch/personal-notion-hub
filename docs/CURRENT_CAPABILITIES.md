@@ -42,7 +42,7 @@ The current verified Launch flow can:
 3. export a metadata-only dispatch candidate
 4. create or detect a GitHub Issue ledger entry without raw private body
 5. create a Discord/OpenClaw worker thread through delegated or gated apply mode
-6. capture OpenClaw worker-session metadata without delivering a Discord reply
+6. capture bounded OpenClaw worker-session metadata without delivering a Discord reply
 7. refresh GitHub Issue state and dispatch labels into local dispatch state
 8. apply delegated or approved GitHub dispatch label reconciliation
 9. refresh Discord/OpenClaw thread metadata without storing message content
@@ -59,16 +59,17 @@ Current verified live record:
 - GitHub dispatch label: `dispatch:worker-done`
 - evidence completeness: `100%`
 
-Latest unattended pilot record:
+Latest completed unattended pilot record:
 
 - GitHub Issue: `#4`
 - Discord thread id: `1512323845514596373`
-- GitHub dispatch label: `dispatch:dispatched-to-worker`
-- task status: `dispatched_to_worker_thread`
-- evidence completeness: `67%`
-- next action: `capture_worker_session_result`
+- worker session: `pnh:capture-3b8522ff102b0469c683b027:qa`
+- GitHub dispatch label: `dispatch:worker-done`
+- task status: `worker_done`
+- evidence completeness: `100%`
+- next action: `summarize_worker_result_for_supervisor_review`
 
-Completed unattended pilot record:
+Previous completed unattended pilot record:
 
 - GitHub Issue: `#3`
 - Discord thread id: `1512315698351706183`
@@ -130,21 +131,21 @@ See:
 
 ## Requires Explicit Approval
 
-These actions still require explicit approval because they change security posture,
-expand data risk, or invoke model/provider execution:
+These actions still require explicit approval because they change security posture
+or expand data risk:
 
-- running OpenClaw worker/model calls
 - adding real phone/contact/calendar/call/recording adapters
 - exposing the companion beyond owner-only local or tailnet scope
 - distributing the app to another user
 
 Bounded GitHub Issue, Discord/OpenClaw thread/message, dispatch-state, and
-metadata-safe unattended dispatch test writes are delegated in project
-`AGENTS.md` and do not require a separate per-run approval.
+metadata-safe unattended dispatch and worker/model test writes are delegated in
+project `AGENTS.md` and do not require a separate per-run approval.
 
 ## Not Ready Yet
 
-- unattended mobile-to-worker automation beyond bounded pilot batches
+- unattended mobile-to-worker automation beyond bounded pilot batches and
+  metadata-safe worker captures
 - unattended daemon/scheduler activation
 - real contact/call/recording/calendar ingestion
 - multi-user distribution
@@ -152,7 +153,7 @@ metadata-safe unattended dispatch test writes are delegated in project
 - production auth model
 - packaged desktop/mobile app
 - semantic Discord/OpenClaw worker progress parsing beyond metadata-only refresh
-- unattended worker/model execution
+- unattended unbounded worker/model execution
 - GitHub Projects board mutation
 
 ## Practical Current Usage
