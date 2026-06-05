@@ -75,6 +75,14 @@ python3 scripts/pnh_dispatch_evidence_summary.py
 
 The summary derives `taskStatus`, `evidenceCompleteness`, `missingEvidence`, and `nextAction` without reading or printing private command bodies.
 
+Export a Markdown review summary for supervisor handoff:
+
+```bash
+python3 scripts/pnh_supervisor_review_summary.py
+```
+
+This converts redacted dispatch evidence into a review checklist and per-packet status summary. It does not include raw private command bodies, token values, or secret values.
+
 After refreshing dispatch state in the Launch UI, use `Confirm Task Status` to persist the synthesized task/evidence metadata into the browser-local Launch record and update the Projects/Tasks board. This stores status fields and evidence references only, not private command bodies.
 
 ## Dry Run

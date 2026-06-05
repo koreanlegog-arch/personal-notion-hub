@@ -83,6 +83,8 @@ REQUIRED = [
     "scripts/pnh_dispatch_evidence_summary_smoke_check.py",
     "scripts/pnh_auto_dispatch_from_inbox.py",
     "scripts/pnh_auto_dispatch_from_inbox_smoke_check.py",
+    "scripts/pnh_supervisor_review_summary.py",
+    "scripts/pnh_supervisor_review_summary_smoke_check.py",
     "scripts/start_tailnet_session.sh",
     "scripts/stop_tailnet_session.sh",
     "tests/redacted-ui.spec.cjs",
@@ -213,6 +215,8 @@ def assert_github_ledger_bridge_contracts() -> None:
     evidence_summary_smoke = (ROOT / "scripts/pnh_dispatch_evidence_summary_smoke_check.py").read_text(encoding="utf-8")
     auto_dispatch = (ROOT / "scripts" / "pnh_auto_dispatch_from_inbox.py").read_text(encoding="utf-8")
     auto_dispatch_smoke = (ROOT / "scripts" / "pnh_auto_dispatch_from_inbox_smoke_check.py").read_text(encoding="utf-8")
+    supervisor_review = (ROOT / "scripts" / "pnh_supervisor_review_summary.py").read_text(encoding="utf-8")
+    supervisor_review_smoke = (ROOT / "scripts" / "pnh_supervisor_review_summary_smoke_check.py").read_text(encoding="utf-8")
     expected = [
         "Dry-run is allowed",
         "APPROVE_PNH_GITHUB_ISSUE_LEDGER_APPLY",
@@ -248,6 +252,9 @@ def assert_github_ledger_bridge_contracts() -> None:
         "pnhAutoDispatchFromInbox",
         "--approve-live-dispatch",
         "liveApplyGate",
+        "pnh_supervisor_review_summary_smoke_check_pass=true",
+        "pnhSupervisorReviewSummary",
+        "Supervisor Checks",
     ]
     combined = "\n".join(
         [
@@ -271,6 +278,8 @@ def assert_github_ledger_bridge_contracts() -> None:
             evidence_summary_smoke,
             auto_dispatch,
             auto_dispatch_smoke,
+            supervisor_review,
+            supervisor_review_smoke,
         ]
     )
     for token in expected:
