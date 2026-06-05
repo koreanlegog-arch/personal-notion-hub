@@ -49,6 +49,7 @@ The current verified Launch flow can:
 10. show dispatch state in the Launch UI
 11. confirm mapping and task status into browser-local Launch, Projects, and Tasks
 12. generate supervisor review summary
+13. run one approved unattended dispatch pilot batch with queue limits and rollback snapshot
 
 Current verified live record:
 
@@ -57,6 +58,13 @@ Current verified live record:
 - worker session: `pnh:capture-5345e37040604a2fca64f317:qa`
 - GitHub dispatch label: `dispatch:worker-done`
 - evidence completeness: `100%`
+
+Current unattended pilot record:
+
+- GitHub Issue: `#3`
+- Discord thread id: `1512315698351706183`
+- task status: `dispatched_to_worker_thread`
+- next gate: worker-session capture
 
 ## Commands You Can Use
 
@@ -124,7 +132,8 @@ These actions create external writes, change security posture, or expand data ri
 ## Not Ready Yet
 
 - unattended mobile-to-worker automation
-- unattended dispatch pilot activation
+- unattended daemon/scheduler activation
+- unattended worker/model execution
 - real contact/call/recording/calendar ingestion
 - multi-user distribution
 - cloud sync of private data

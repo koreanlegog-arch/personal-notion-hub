@@ -25,6 +25,7 @@ def main() -> int:
         temp_path = Path(temp_dir)
         db_path = temp_path / "private" / "pnh_private_inbox.sqlite"
         state_path = temp_path / "state.json"
+        history_path = temp_path / "history.json"
         out = temp_path / "queue_plan.json"
         inserted = insert_capture(
             db_path,
@@ -38,6 +39,7 @@ def main() -> int:
             allow_external=True,
         )
         state_path.write_text(json.dumps({}, ensure_ascii=False), encoding="utf-8")
+        history_path.write_text(json.dumps({"events": []}, ensure_ascii=False), encoding="utf-8")
         result = subprocess.run(
             [
                 sys.executable,
@@ -46,6 +48,8 @@ def main() -> int:
                 str(db_path),
                 "--state-file",
                 str(state_path),
+                "--history-json",
+                str(history_path),
                 "--out",
                 str(out),
                 "--allow-plaintext",

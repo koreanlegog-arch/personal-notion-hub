@@ -107,6 +107,34 @@ unattended dispatch pilot.
 - No GitHub/Discord/OpenClaw records were created by the readiness tooling.
 - Activation requires `APPROVE_PNH_UNATTENDED_DISPATCH_PILOT`.
 
+## 2026-06-05 - Unattended Dispatch Pilot
+
+### Summary
+
+Ran the first approved PNH unattended dispatch pilot batch with one queued
+encrypted `project_brief` capture.
+
+### Included
+
+- `scripts/pnh_unattended_dispatch_pilot.py`
+- `scripts/pnh_unattended_dispatch_pilot_smoke_check.py`
+- GitHub `gh` fallback for dispatch job duplicate detection and issue/comment creation
+- `ops/runs/PNH-UNATTENDED-DISPATCH-PILOT-20260605/`
+
+### Results
+
+- GitHub Issue `#3` created.
+- Discord thread `1512315698351706183` created.
+- Local dispatch state refreshed.
+- Queue cooldown is active and current queued count is `0`.
+
+### Boundaries
+
+- No OpenClaw worker/model run was started.
+- No daemon or scheduler was installed.
+- Private command body was not exported.
+- Next gate is worker-session execution for Issue `#3`.
+
 ## 2026-06-05 - Launch Status Sync Browser QA
 
 ### Summary

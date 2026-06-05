@@ -14,7 +14,7 @@ that mode can be piloted.
 
 ## Current Boundary
 
-Current implementation is dry-run/readiness only.
+Current implementation supports a single approved pilot batch.
 
 It can:
 
@@ -24,12 +24,13 @@ It can:
 - enforce per-run and per-hour planning limits
 - produce rollback requirements
 - assess readiness for an approval-gated pilot
+- run one approved pilot batch with rollback snapshot and single-writer lock
 
 It must not:
 
-- create GitHub Issues automatically
-- create Discord/OpenClaw threads automatically
-- post GitHub comments automatically
+- create GitHub Issues without `--apply --approve-unattended-pilot`
+- create Discord/OpenClaw threads without `--apply --approve-unattended-pilot`
+- post GitHub comments without `--apply --approve-unattended-pilot`
 - run OpenClaw worker/model calls automatically
 - run as a daemon or scheduled service
 - store raw private command bodies in reports
@@ -87,6 +88,7 @@ The pilot must use bounded external writes:
 - maximum three external write events per hour by default
 - minimum ten-minute cooldown between unattended runs
 - no retry storm; failed items require explicit review before retry
+- queue planner returns zero queued items while cooldown is active
 
 Rate limit enforcement is currently a dry-run planning contract. Future apply
 mode must persist dispatch history before it can be considered safe.
@@ -110,7 +112,7 @@ The readiness script checks:
 
 ## Activation Gate
 
-Live unattended pilot activation requires:
+Live unattended pilot activation required:
 
 ```text
 APPROVE_PNH_UNATTENDED_DISPATCH_PILOT
@@ -119,10 +121,18 @@ APPROVE_PNH_UNATTENDED_DISPATCH_PILOT
 Reason: activation would allow queued mobile captures to create external
 GitHub/Discord/OpenClaw records without per-item operator confirmation.
 
+## Pilot Result
+
+First approved pilot batch:
+
+- capture: `capture-2a0fcdefc3f169ec30c6497f`
+- GitHub Issue: `#3`
+- Discord thread: `1512315698351706183`
+- status: `dispatched_to_worker_thread`
+- next gate: OpenClaw worker/model execution
+
 ## Not Yet Implemented
 
-- actual unattended apply runner
-- durable dispatch history store
 - daemon/service/scheduler integration
 - automatic retry/backoff state machine
 - semantic Discord worker-progress parsing

@@ -97,6 +97,8 @@ REQUIRED = [
     "scripts/pnh_unattended_dispatch_queue_plan_smoke_check.py",
     "scripts/pnh_unattended_dispatch_readiness.py",
     "scripts/pnh_unattended_dispatch_readiness_smoke_check.py",
+    "scripts/pnh_unattended_dispatch_pilot.py",
+    "scripts/pnh_unattended_dispatch_pilot_smoke_check.py",
     "scripts/pnh_supervisor_review_summary.py",
     "scripts/pnh_supervisor_review_summary_smoke_check.py",
     "scripts/start_tailnet_session.sh",
@@ -257,6 +259,10 @@ def assert_github_ledger_bridge_contracts() -> None:
     unattended_readiness_smoke = (
         ROOT / "scripts" / "pnh_unattended_dispatch_readiness_smoke_check.py"
     ).read_text(encoding="utf-8")
+    unattended_pilot = (ROOT / "scripts" / "pnh_unattended_dispatch_pilot.py").read_text(encoding="utf-8")
+    unattended_pilot_smoke = (ROOT / "scripts" / "pnh_unattended_dispatch_pilot_smoke_check.py").read_text(
+        encoding="utf-8"
+    )
     supervisor_review = (ROOT / "scripts" / "pnh_supervisor_review_summary.py").read_text(encoding="utf-8")
     supervisor_review_smoke = (ROOT / "scripts" / "pnh_supervisor_review_summary_smoke_check.py").read_text(encoding="utf-8")
     expected = [
@@ -324,6 +330,10 @@ def assert_github_ledger_bridge_contracts() -> None:
         "pnh_unattended_dispatch_readiness_smoke_check_pass=true",
         "pnhUnattendedDispatchReadiness",
         "APPROVE_PNH_UNATTENDED_DISPATCH_PILOT",
+        "pnh_unattended_dispatch_pilot_smoke_check_pass=true",
+        "pnhUnattendedDispatchPilot",
+        "--approve-unattended-pilot",
+        "pnh_unattended_dispatch.lock",
         "--detect-existing-github",
         "pnh_supervisor_review_summary_smoke_check_pass=true",
         "pnhSupervisorReviewSummary",
@@ -365,6 +375,8 @@ def assert_github_ledger_bridge_contracts() -> None:
             unattended_queue_smoke,
             unattended_readiness,
             unattended_readiness_smoke,
+            unattended_pilot,
+            unattended_pilot_smoke,
             supervisor_review,
             supervisor_review_smoke,
         ]

@@ -10,8 +10,10 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
 import subprocess
 import sys
+import tempfile
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -210,8 +212,7 @@ def detect_existing_github_issue(repo: str, token_env: str, issue: dict[str, Any
         return result
     token = os.environ.get(token_env, "").strip()
     if not token:
-        result["error"] = f"{token_env}_not_set"
-        return result
+        return detect_existing_github_issue_with_gh(repo, issue, result)
     title = str(issue.get("title") or "").strip()
     if not title:
         result["error"] = "issue_title_missing"
@@ -265,7 +266,7 @@ def create_issue(repo: str, token_env: str, issue: dict[str, Any]) -> dict[str, 
         raise DispatchJobError("--repo owner/repo is required in apply mode")
     token = os.environ.get(token_env, "").strip()
     if not token:
-        raise DispatchJobError(f"{token_env} is not set")
+        return create_issue_with_gh(repo, issue)
     request = urllib.request.Request(
         f"https://api.github.com/repos/{repo.strip().strip('/')}/issues",
         data=json.dumps(issue, ensure_ascii=False).encode("utf-8"),
@@ -284,7 +285,8 @@ def create_issue(repo: str, token_env: str, issue: dict[str, Any]) -> dict[str, 
 def comment_issue(repo: str, token_env: str, issue_number: int, body: str) -> None:
     token = os.environ.get(token_env, "").strip()
     if not token:
-        raise DispatchJobError(f"{token_env} is not set")
+        comment_issue_with_gh(repo, issue_number, body)
+        return
     request = urllib.request.Request(
         f"https://api.github.com/repos/{repo.strip().strip('/')}/issues/{issue_number}/comments",
         data=json.dumps({"body": body}, ensure_ascii=False).encode("utf-8"),
@@ -314,6 +316,97 @@ def github_request_json(request: urllib.request.Request, label: str) -> Any:
     except urllib.error.HTTPError as exc:
         raise DispatchJobError(f"{label} failed with HTTP {exc.code}") from exc
     return payload
+
+
+def detect_existing_github_issue_with_gh(repo: str, issue: dict[str, Any], result: dict[str, Any]) -> dict[str, Any]:
+    if not gh_available():
+        result["error"] = "GITHUB_TOKEN_not_set_and_gh_unavailable"
+        return result
+    title = str(issue.get("title") or "").strip()
+    if not title:
+        result["error"] = "issue_title_missing"
+        return result
+    labels = issue.get("labels", []) if isinstance(issue.get("labels"), list) else []
+    endpoint = f"repos/{repo.strip().strip('/')}/issues"
+    args = ["gh", "api", endpoint, "--method", "GET", "-f", "state=all", "-f", "per_page=30"]
+    if labels:
+        args.extend(["-f", f"labels={','.join(str(label) for label in labels[:5])}"])
+    payload = gh_json(args, "github issue duplicate detection via gh")
+    if not isinstance(payload, list):
+        result["error"] = "github_issue_list_unexpected_payload"
+        return result
+    result["tokenSet"] = False
+    result["ghAuthUsed"] = True
+    result["candidatesChecked"] = len(payload)
+    for item in payload:
+        if not isinstance(item, dict) or "pull_request" in item:
+            continue
+        if str(item.get("title") or "").strip() == title:
+            result.update(
+                {
+                    "match": True,
+                    "issueNumber": item.get("number", ""),
+                    "issueUrl": item.get("html_url", ""),
+                    "issueState": item.get("state", ""),
+                    "issueUpdatedAt": item.get("updated_at", ""),
+                }
+            )
+            break
+    return result
+
+
+def create_issue_with_gh(repo: str, issue: dict[str, Any]) -> dict[str, Any]:
+    if not gh_available():
+        raise DispatchJobError("GITHUB_TOKEN is not set and gh auth is unavailable")
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".json", delete=False) as handle:
+        json.dump(issue, handle, ensure_ascii=False)
+        issue_path = handle.name
+    try:
+        payload = gh_json(["gh", "api", f"repos/{repo.strip().strip('/')}/issues", "-X", "POST", "--input", issue_path], "github issue create via gh")
+    finally:
+        try:
+            os.unlink(issue_path)
+        except OSError:
+            pass
+    if not isinstance(payload, dict):
+        raise DispatchJobError("github issue create via gh returned unexpected payload")
+    return payload
+
+
+def comment_issue_with_gh(repo: str, issue_number: int, body: str) -> None:
+    if not gh_available():
+        raise DispatchJobError("GITHUB_TOKEN is not set and gh auth is unavailable")
+    payload = gh_json(
+        [
+            "gh",
+            "api",
+            f"repos/{repo.strip().strip('/')}/issues/{issue_number}/comments",
+            "-X",
+            "POST",
+            "-f",
+            f"body={body}",
+        ],
+        "github issue comment via gh",
+    )
+    if not isinstance(payload, dict):
+        raise DispatchJobError("github issue comment via gh returned unexpected payload")
+
+
+def gh_available() -> bool:
+    if not shutil.which("gh"):
+        return False
+    result = subprocess.run(["gh", "auth", "status"], capture_output=True, text=True, timeout=15, check=False)
+    return result.returncode == 0
+
+
+def gh_json(command: list[str], label: str) -> Any:
+    result = subprocess.run(command, capture_output=True, text=True, timeout=30, check=False)
+    if result.returncode != 0:
+        raise DispatchJobError(f"{label} failed: {first_line(result.stderr) or first_line(result.stdout)}")
+    try:
+        return json.loads(result.stdout)
+    except json.JSONDecodeError as exc:
+        raise DispatchJobError(f"{label} returned invalid JSON") from exc
 
 
 def create_discord_thread(openclaw_env: str, target: str, packet_id: str, issue_url: str) -> str:

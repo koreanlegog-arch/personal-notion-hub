@@ -24,6 +24,7 @@ from companion.private_store import DEFAULT_DB_PATH, PrivateStoreError, list_cap
 
 
 DEFAULT_STATE = ROOT / "companion" / "private" / "pnh_dispatch_state.json"
+DEFAULT_HISTORY = ROOT / "companion" / "private" / "pnh_unattended_dispatch_history.json"
 DEFAULT_OUT = ROOT / "ops" / "runs" / "PNH-UNATTENDED-DISPATCH-READINESS-20260605" / "queue_plan.json"
 COMMAND_KINDS = {"project_brief", "task_request", "daily_command", "urgent_approval"}
 
@@ -36,7 +37,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Build a safe dry-run queue plan for PNH unattended dispatch.")
     parser.add_argument("--db", default=str(DEFAULT_DB_PATH), help="Private inbox SQLite DB path.")
     parser.add_argument("--state-file", default=str(DEFAULT_STATE), help="Local dispatch state JSON.")
-    parser.add_argument("--history-json", default="", help="Optional prior dispatch history JSON.")
+    parser.add_argument("--history-json", default=str(DEFAULT_HISTORY), help="Optional prior dispatch history JSON.")
     parser.add_argument("--out", default=str(DEFAULT_OUT), help="Output JSON path.")
     parser.add_argument("--limit", type=int, default=50, help="Recent captures to inspect.")
     parser.add_argument("--max-jobs-per-run", type=int, default=1, help="Maximum queued jobs per run.")
@@ -75,6 +76,7 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
     }
     now = utc_now()
     recent_writes = count_recent_external_writes(history, within_hours=1)
+    cooldown_active = cooldown_is_active(history, cooldown_minutes=policy["cooldownMinutes"])
     skipped = []
     eligible = []
     for capture in captures:
@@ -84,7 +86,7 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
         else:
             skipped.append(decision)
     capacity = max(0, policy["maxExternalWritesPerHour"] - recent_writes)
-    queue_limit = min(policy["maxJobsPerRun"], capacity)
+    queue_limit = 0 if cooldown_active else min(policy["maxJobsPerRun"], capacity)
     queued = eligible[:queue_limit]
     for decision in eligible[queue_limit:]:
         decision["eligible"] = False
@@ -101,6 +103,7 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
         "skippedCount": len(skipped),
         "recentExternalWriteCount1h": recent_writes,
         "remainingExternalWriteCapacity1h": capacity,
+        "cooldownActive": cooldown_active,
         "queueActivationGateRequired": True,
         "queueActivationGateReason": "unattended dispatch can create GitHub Issues, Discord/OpenClaw threads, GitHub comments, and worker/model calls without an operator present.",
         "rollbackRequiredBeforeApply": True,
@@ -158,6 +161,27 @@ def count_recent_external_writes(history: dict[str, Any], *, within_hours: int) 
         if timestamp >= cutoff:
             count += 1
     return count
+
+
+def cooldown_is_active(history: dict[str, Any], *, cooldown_minutes: int) -> bool:
+    newest = newest_external_write_at(history)
+    if newest is None:
+        return False
+    return newest + timedelta(minutes=cooldown_minutes) > datetime.now(timezone.utc)
+
+
+def newest_external_write_at(history: dict[str, Any]) -> datetime | None:
+    newest: datetime | None = None
+    for item in history.get("events", []):
+        if not isinstance(item, dict) or not item.get("externalWrite"):
+            continue
+        try:
+            timestamp = datetime.fromisoformat(str(item.get("at")).replace("Z", "+00:00"))
+        except ValueError:
+            continue
+        if newest is None or timestamp > newest:
+            newest = timestamp
+    return newest
 
 
 def rollback_plan() -> dict[str, Any]:

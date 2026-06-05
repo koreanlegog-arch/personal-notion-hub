@@ -1,0 +1,37 @@
+{
+  "candidate": {
+    "captureId": "capture-2a0fcdefc3f169ec30c6497f",
+    "commandType": "project_brief",
+    "encrypted": true,
+    "storageMode": "encrypted-vault"
+  },
+  "dispatch": {
+    "discordTargetSet": true,
+    "discordThreadSet": true,
+    "existingDiscordThread": false,
+    "existingGitHubIssue": false,
+    "githubIssueSet": true,
+    "packetId": "capture-2a0fcdefc3f169ec30c6497f",
+    "repo": "koreanlegog-arch/personal-notion-hub"
+  },
+  "externalWritePerformed": true,
+  "liveApplyGate": {
+    "reason": "apply mode can create GitHub Issues, Discord threads, GitHub comments, and OpenClaw messages",
+    "requiredFlags": [
+      "--apply",
+      "--approve-live-dispatch",
+      "--approve-external-write",
+      "--approve-discord-dispatch"
+    ],
+    "requiredForApply": true
+  },
+  "mode": "apply",
+  "outputs": {
+    "candidate": "ops/runs/PNH-UNATTENDED-DISPATCH-PILOT-20260605/dispatch/dispatch_candidate.json",
+    "dispatchPlan": "ops/runs/PNH-UNATTENDED-DISPATCH-PILOT-20260605/dispatch/dispatch_apply_result.json"
+  },
+  "pnhAutoDispatchFromInbox": true,
+  "privateValuesPrinted": false,
+  "tokenValuePrinted": false,
+  "writesPerformed": true
+}

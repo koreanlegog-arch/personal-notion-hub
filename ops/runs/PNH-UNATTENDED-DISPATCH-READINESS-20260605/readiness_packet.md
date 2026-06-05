@@ -6,7 +6,7 @@ Date: 2026-06-05
 
 Ready for approval-gated pilot.
 
-Not enabled.
+One approved pilot batch has now been executed.
 
 ## Scope Covered
 
@@ -21,8 +21,8 @@ private inbox metadata
 ## Current Queue Result
 
 - captures inspected: `8`
-- queued for pilot candidate: `1`
-- skipped: `7`
+- queued for pilot candidate: `0` after pilot cooldown
+- skipped: `8`
 - external writes performed: `false`
 - private values printed: `false`
 
@@ -54,10 +54,9 @@ GitHub comments, and worker/model calls without per-item operator confirmation.
 
 ## Current Non-Blocking Notes
 
-- One encrypted `project_brief` capture is eligible for the first pilot queue
-  item.
+- One encrypted `project_brief` capture was dispatched by the first pilot batch.
 - One additional encrypted `project_brief` capture is eligible but skipped by
-  the one-job-per-run pilot limit.
+  cooldown/rate-limit controls.
 - `assistant_capture` records are correctly skipped because they are not command
   dispatch kinds.
 

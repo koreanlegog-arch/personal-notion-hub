@@ -46,6 +46,8 @@ Default pilot:
 - `cooldownMinutes=10`
 
 The first pilot should prioritize correctness and auditability over throughput.
+After a pilot write, the queue planner must report zero queued items while the
+cooldown window is active.
 
 ## Rollback
 
