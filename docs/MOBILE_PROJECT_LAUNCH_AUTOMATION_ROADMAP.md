@@ -171,7 +171,7 @@ Implemented:
 
 ### Stage 3: Approved GitHub Ledger Bridge
 
-Status: design and dry-run bridge prepared; live GitHub mutation remains the next material gate.
+Status: first privacy-preserving live issue rehearsal completed.
 
 Implemented inside the approved local/private boundary:
 
@@ -180,27 +180,39 @@ Implemented inside the approved local/private boundary:
 - queued/not-dispatched metadata for future routing
 - privacy-preserving GitHub Issue payload dry-run
 - apply-mode approval flags for future live issue creation
+- approved live GitHub issue creation without raw private body
+- GitHub issue comment linked to Discord/OpenClaw dispatch rehearsal
 
-Next material gate:
+Still pending:
 
-- create issue from launch packet
 - update issue status
 - map issue to PNH launch packet
-- no token in repo
+- no token in repo remains enforced
+- dedupe and repeated ledger update strategy
 
 Reference:
 
 - `docs/GITHUB_LEDGER_BRIDGE_DESIGN.md`
 - `scripts/github_ledger_bridge.py`
+- `ops/runs/PNH-GITHUB-LEDGER-BRIDGE-20260605/`
 
 ### Stage 4: Approved Discord/OpenClaw Dispatch
 
-Add after approval:
+Status: first controlled Discord/OpenClaw routing rehearsal completed.
 
-- dispatch packet to Discord channel
-- task ID/thread mapping
-- approval channel checks
-- result/evidence return path
+Implemented:
+
+- OpenClaw Discord thread creation in `#command-center`
+- worker lifecycle rehearsal messages
+- `#audit-log` mapping message
+- GitHub issue comment linking ledger and Discord thread
+
+Still pending:
+
+- automatic dispatch job from PNH local command packet
+- durable mapping stored back into PNH local state
+- real OpenClaw worker-session execution and result capture
+- gateway auth/sandbox hardening follow-up
 
 ### Stage 5: Full Supervisor Mobile Loop
 

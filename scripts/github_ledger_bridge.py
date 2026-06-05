@@ -34,6 +34,7 @@ def main() -> int:
     parser.add_argument("--approve-external-write", action="store_true", help="Required with --apply.")
     parser.add_argument("--include-sensitive-fields", action="store_true", help="Include raw title/body. Requires approval flag.")
     parser.add_argument("--approve-sensitive-github-body", action="store_true", help="Required with --include-sensitive-fields.")
+    parser.add_argument("--omit-labels", action="store_true", help="Do not include labels in the GitHub issue payload.")
     args = parser.parse_args()
 
     try:
@@ -42,6 +43,7 @@ def main() -> int:
             packet,
             include_sensitive_fields=args.include_sensitive_fields,
             approve_sensitive=args.approve_sensitive_github_body,
+            omit_labels=args.omit_labels,
         )
         result = {
             "generatedAt": utc_now(),
@@ -87,7 +89,13 @@ def load_packet(path: Path) -> dict[str, Any]:
     return packet
 
 
-def build_issue_payload(packet: dict[str, Any], *, include_sensitive_fields: bool, approve_sensitive: bool) -> dict[str, Any]:
+def build_issue_payload(
+    packet: dict[str, Any],
+    *,
+    include_sensitive_fields: bool,
+    approve_sensitive: bool,
+    omit_labels: bool,
+) -> dict[str, Any]:
     if include_sensitive_fields and not approve_sensitive:
         raise LedgerBridgeError("--include-sensitive-fields requires --approve-sensitive-github-body")
     command_type = compact(packet.get("commandType") or packet.get("kind") or "project_brief")
@@ -116,7 +124,10 @@ def build_issue_payload(packet: dict[str, Any], *, include_sensitive_fields: boo
             "dispatch:not-dispatched",
         ]
     )
-    return {"title": title, "body": body, "labels": labels}
+    issue = {"title": title, "body": body}
+    if not omit_labels:
+        issue["labels"] = labels
+    return issue
 
 
 def build_title(packet: dict[str, Any], command_type: str, capture_id: str, *, include_sensitive_fields: bool) -> str:

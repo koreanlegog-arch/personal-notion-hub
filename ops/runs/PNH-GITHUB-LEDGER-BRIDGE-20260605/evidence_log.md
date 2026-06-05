@@ -37,6 +37,18 @@ git diff --check
 - Secret pattern scan:
   - matches were existing synthetic fixture text, companion runtime pairing-code print location, and prior evidence command text
   - no GitHub token, Discord token, OpenAI key, or new secret value was identified in this bridge change
+- Live GitHub issue apply after supervisor approval:
+  - approval phrase: `APPROVE_PNH_GITHUB_ISSUE_LEDGER_APPLY`
+  - command used `GITHUB_TOKEN` from `gh auth token` without printing the token value
+  - command included `--apply --approve-external-write --omit-labels`
+  - `writesPerformed=true`
+  - `tokenValuePrinted=false`
+  - `privateValuesIncluded=false`
+  - GitHub issue: https://github.com/koreanlegog-arch/personal-notion-hub/issues/1
+- GitHub issue ledger comment:
+  - URL: https://github.com/koreanlegog-arch/personal-notion-hub/issues/1#issuecomment-4627177556
+  - recorded Discord thread and audit-log message IDs
+  - raw private command body was not posted
 
 ## Security Notes
 
@@ -45,3 +57,4 @@ git diff --check
 - Live GitHub issue creation is blocked behind approval flags.
 - Sensitive packet title/body are excluded by default.
 - GitHub Projects mutation is not implemented in this phase.
+- Live issue creation used `--omit-labels` to avoid introducing label-management side effects during the first rehearsal.
