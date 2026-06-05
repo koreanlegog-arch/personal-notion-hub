@@ -1,0 +1,18 @@
+PNH worker-session capture for a dispatched project_brief command packet.
+
+Scope:
+- Do not modify files.
+- Do not run commands.
+- Do not contact external services.
+- Do not request or include private command body content.
+- Review only the metadata in this prompt.
+
+Metadata:
+- Packet ID: capture-5345e37040604a2fca64f317
+- GitHub Issue: https://github.com/koreanlegog-arch/personal-notion-hub/issues/2
+- Discord Thread ID: 1512295718054793419
+- Current dispatch status: dispatched_to_worker_thread
+- Missing evidence before this run: worker_session
+
+Task:
+Return a concise QA worker status stating whether the dispatch record is ready for supervisor review as a metadata-only worker-session capture. Mention any remaining non-sensitive next action.
