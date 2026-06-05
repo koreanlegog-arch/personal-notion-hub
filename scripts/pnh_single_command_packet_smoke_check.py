@@ -86,6 +86,10 @@ def main() -> int:
         assert_true(inserted["id"] in combined, "selected_capture_missing=true")
         assert_true(PRIVATE_TITLE not in combined, "private_title_leaked=true")
         assert_true(PRIVATE_BODY not in combined, "private_body_leaked=true")
+        source = (ROOT / "scripts" / "pnh_single_command_packet.py").read_text(encoding="utf-8")
+        assert_true("partial_dispatch_recovery_policy.json" in source, "partial_dispatch_recovery_policy_missing=true")
+        assert_true("dispatch_pilot_recovery" in source, "dispatch_pilot_recovery_step_missing=true")
+        assert_true("--no-auto-recover-partial-dispatch" in source, "recovery_disable_flag_missing=true")
 
     print("pnh_single_command_packet_smoke_check_pass=true")
     print("external_writes_performed=false")

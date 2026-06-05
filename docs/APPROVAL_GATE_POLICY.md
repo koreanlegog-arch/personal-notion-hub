@@ -30,6 +30,7 @@ These gates were previously approval-required, but are now approved, implemented
 | Windows DPAPI file passphrase provider | closed | `ops/runs/PNH-SENSITIVE-LOCAL-OWNER-MVP-20260605/` |
 | Redacted browser QA for current UI | closed | `ops/runs/PNH-REDACTED-BROWSER-QA-20260604/` |
 | Owner-only Tailscale remote ingress rehearsal | closed | `ops/runs/PNH-REMOTE-ACCESS-TAILSCALE-20260605/` and `ops/runs/PNH-TAILNET-MANUAL-QA-20260605/` |
+| Bounded PNH GitHub/Discord/OpenClaw dispatch rehearsal and implementation writes | closed | `AGENTS.md`, `ops/runs/PNH-COMMAND-PACKET-20260605T145838Z/`, `ops/runs/PNH-AUTO-DISPATCH-RETRY-20260605/` |
 
 Closed does not mean unrestricted. It means repeat work inside the same approved boundary should not request fresh supervisor approval unless risk changes.
 
@@ -37,8 +38,8 @@ Closed does not mean unrestricted. It means repeat work inside the same approved
 
 These still require supervisor approval before implementation or live activation:
 
-- Automatic GitHub Issues/Projects creation or mutation.
-- Automatic Discord/OpenClaw worker dispatch.
+- GitHub Issues/Projects creation or mutation outside the bounded PNH workflow.
+- Discord/OpenClaw worker dispatch outside the bounded PNH workflow, without metadata-safe prompts, beyond queue/rate-limit controls, or targeting non-PNH systems.
 - Any new external API, OAuth, cloud sync, hosted backend, or public tunnel.
 - Any token, credential, or secret storage workflow beyond the approved local provider.
 - Phone/contact/calendar/call/recording adapter activation with real data.
@@ -49,6 +50,11 @@ These still require supervisor approval before implementation or live activation
 - Accepting plaintext sensitive-data storage risk.
 - Client-facing deployment or public internet exposure.
 - Screenshot, browser QA, logs, or reports containing real sensitive values.
+
+Do not reopen a material gate only because a command internally passes an
+`--approve-*` flag for an already delegated PNH workflow. Those flags are script
+safety interlocks, not a fresh supervisor prompt, when the action remains inside
+the closed bounded PNH scope above.
 
 ## No-Approval Fast Path
 
@@ -66,4 +72,3 @@ No new approval is needed for:
 When an old packet says "separate approval required", check this document and newer `ops/runs/*/release_readiness.md` before escalating.
 
 If a gate appears in both "Closed Gates" and "Active Material Gates", the active gate wins only for materially broader use. Example: owner-only Tailscale manual ingress is closed; public tunnel or always-on remote service remains active material gate.
-

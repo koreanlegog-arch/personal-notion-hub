@@ -58,6 +58,7 @@ def main() -> int:
     parser.add_argument("--allow-plaintext", action="store_true", help="Fixture-only plaintext inbox compatibility.")
     parser.add_argument("--allow-external-db", action="store_true", help="Fixture-only DB outside companion/private.")
     parser.add_argument("--no-detect-existing-github", action="store_true", help="Disable duplicate detection in apply mode.")
+    parser.add_argument("--no-auto-recover-partial-dispatch", action="store_true", help="Disable one bounded apply-mode dispatch recovery retry.")
     parser.add_argument("--apply", action="store_true", help="Execute bounded external writes and worker capture.")
     args = parser.parse_args()
 
@@ -85,7 +86,12 @@ def main() -> int:
             print(json.dumps(redact_stdout(result), ensure_ascii=False, sort_keys=True))
             return 0
 
-        pilot = run_pilot(args, paths, commands_run)
+        try:
+            pilot = run_pilot(args, paths, commands_run)
+        except SinglePacketError as exc:
+            if not should_recover_partial_dispatch(args):
+                raise
+            pilot = run_pilot_recovery(args, paths, commands_run, exc)
         packet_id = str(pilot.get("selectedCaptureId") or "").strip()
         if not packet_id:
             result = build_empty_result(args, run_id, run_dir, paths, queue, commands_run)
@@ -202,13 +208,56 @@ def run_readiness(paths: dict[str, Path], commands_run: list[dict[str, Any]]) ->
 
 
 def run_pilot(args: argparse.Namespace, paths: dict[str, Path], commands_run: list[dict[str, Any]]) -> dict[str, Any]:
+    return run_pilot_command(args, paths["queue"] / "queue_plan.json", paths["pilot"], "dispatch_pilot", commands_run)
+
+
+def run_pilot_recovery(
+    args: argparse.Namespace,
+    paths: dict[str, Path],
+    commands_run: list[dict[str, Any]],
+    initial_error: Exception,
+) -> dict[str, Any]:
+    recovery_dir = paths["pilot"] / "recovery"
+    recovery_dir.mkdir(parents=True, exist_ok=True)
+    policy = {
+        "pnhPartialDispatchRecovery": True,
+        "generatedAt": utc_now(),
+        "reason": "apply-mode dispatch pilot failed after possible partial external write",
+        "recoveryMode": "single bounded retry",
+        "duplicateControls": [
+            "local dispatch state checkpoint after GitHub Issue acquisition",
+            "local dispatch state checkpoint after Discord thread acquisition",
+            "GitHub exact-title duplicate detection unless disabled",
+        ],
+        "initialError": SECRET_SCAN_RE.sub("[redacted]", str(initial_error))[:500],
+        "privateValuesPrinted": False,
+        "tokenValuePrinted": False,
+    }
+    (recovery_dir / "partial_dispatch_recovery_policy.json").write_text(
+        json.dumps(policy, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    return run_pilot_command(args, paths["queue"] / "queue_plan.json", recovery_dir, "dispatch_pilot_recovery", commands_run)
+
+
+def should_recover_partial_dispatch(args: argparse.Namespace) -> bool:
+    return bool(args.apply and not args.no_auto_recover_partial_dispatch and not args.no_detect_existing_github)
+
+
+def run_pilot_command(
+    args: argparse.Namespace,
+    queue_plan_path: Path,
+    pilot_dir: Path,
+    step: str,
+    commands_run: list[dict[str, Any]],
+) -> dict[str, Any]:
     command = [
         sys.executable,
         str(ROOT / "scripts" / "pnh_unattended_dispatch_pilot.py"),
         "--queue-plan",
-        str(paths["queue"] / "queue_plan.json"),
+        str(queue_plan_path),
         "--run-dir",
-        str(paths["pilot"]),
+        str(pilot_dir),
         "--state-file",
         args.state_file,
         "--history-json",
@@ -222,8 +271,8 @@ def run_pilot(args: argparse.Namespace, paths: dict[str, Path], commands_run: li
         command.append("--detect-existing-github")
     if args.apply:
         command.extend(["--apply", "--approve-unattended-pilot"])
-    run_command(command, "dispatch_pilot", commands_run, timeout=150)
-    return load_json_object(paths["pilot"] / "pilot_result.json", "pilot result")
+    run_command(command, step, commands_run, timeout=150)
+    return load_json_object(pilot_dir / "pilot_result.json", "pilot result")
 
 
 def refresh_state(commands_run: list[dict[str, Any]]) -> None:

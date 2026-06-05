@@ -375,6 +375,8 @@ The wrapper enforces:
 - single-packet apply lock
 - queue planning before apply
 - bounded pilot apply
+- one bounded apply-mode partial-dispatch recovery retry
+- GitHub Issue and Discord thread duplicate controls before recovery
 - sequential GitHub/Discord/GitHub refresh
 - metadata-safe worker prompt generation
 - OpenClaw worker capture without Discord reply delivery
@@ -388,3 +390,27 @@ scheduler, or background unattended service.
 
 Future work can add a higher-level batch runner if repeated unattended
 processing is needed.
+
+## Partial Dispatch Recovery
+
+Apply mode now treats a failed dispatch pilot as a recoverable partial-write
+case only when these controls are active:
+
+- `--detect-existing-github` remains enabled.
+- the dispatch job checkpoints local state immediately after GitHub Issue
+  acquisition.
+- the dispatch job checkpoints local state immediately after Discord thread
+  acquisition.
+- only one recovery retry is attempted for the wrapper invocation.
+- recovery evidence is written under
+  `ops/runs/<RUN_ID>/dispatch_pilot/recovery/`.
+
+This policy is intended to prevent duplicate GitHub Issues or Discord threads
+when a run fails after a partial external write. Disable it for diagnosis with:
+
+```bash
+python3 scripts/pnh_single_command_packet.py --apply --no-auto-recover-partial-dispatch
+```
+
+The recovery retry is still bounded to the existing single-packet queue,
+rate-limit, redaction, and evidence controls. It is not a background retry loop.

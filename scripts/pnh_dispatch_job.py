@@ -159,6 +159,7 @@ def apply_dispatch(
                 }
             )
             reused.append("github_issue")
+            checkpoint_dispatch_state(state, state_path, packet_id, record, "github_issue_reused")
         else:
             if args.detect_existing_github and github_detection.get("error"):
                 raise DispatchJobError(f"github duplicate detection failed: {github_detection.get('error')}")
@@ -170,12 +171,14 @@ def apply_dispatch(
                 }
             )
             writes.append("github_issue")
+            checkpoint_dispatch_state(state, state_path, packet_id, record, "github_issue_created")
     if args.discord_target and not record.get("discordThreadId"):
         if not args.approve_discord_dispatch:
             raise DispatchJobError("Discord dispatch requires --approve-discord-dispatch")
         thread_id = create_discord_thread(args.openclaw_env, args.discord_target, packet_id, record.get("githubIssueUrl", ""))
         record["discordThreadId"] = thread_id
         writes.append("discord_thread")
+        checkpoint_dispatch_state(state, state_path, packet_id, record, "discord_thread_created")
         post_dispatch_messages(args.openclaw_env, thread_id, packet_id, record.get("githubIssueUrl", ""))
         if record.get("githubIssueNumber"):
             comment_issue(
@@ -185,6 +188,7 @@ def apply_dispatch(
                 f"Discord/OpenClaw dispatch job linked thread `{thread_id}`.\n\nRaw private command body was not posted.",
             )
             writes.append("github_comment")
+            checkpoint_dispatch_state(state, state_path, packet_id, record, "github_comment_created")
     record["updatedAt"] = utc_now()
     state[packet_id] = record
     save_state(state_path, state)
@@ -195,6 +199,19 @@ def apply_dispatch(
         "githubIssueUrl": record.get("githubIssueUrl", ""),
         "discordThreadId": record.get("discordThreadId", ""),
     }
+
+
+def checkpoint_dispatch_state(
+    state: dict[str, Any],
+    state_path: Path,
+    packet_id: str,
+    record: dict[str, Any],
+    checkpoint: str,
+) -> None:
+    record["updatedAt"] = utc_now()
+    record["lastDispatchCheckpoint"] = checkpoint
+    state[packet_id] = record
+    save_state(state_path, state)
 
 
 def detect_existing_github_issue(repo: str, token_env: str, issue: dict[str, Any]) -> dict[str, Any]:
