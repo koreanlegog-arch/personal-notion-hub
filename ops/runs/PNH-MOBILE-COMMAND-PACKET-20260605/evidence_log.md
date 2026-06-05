@@ -27,6 +27,15 @@ git diff --check
 - `bash scripts/run_playwright_redacted_ui_qa.sh`: passed
   - `2 passed`
   - `playwright_redacted_ui_qa_pass=true`
+- Follow-up local status UI validation:
+  - `python3 scripts/smoke_check.py`: passed
+  - `python3 scripts/redacted_browser_qa_check.py`: passed
+  - `bash scripts/run_playwright_redacted_ui_qa.sh`: passed
+  - `git diff --check`: passed
+- Secret/redaction scan:
+  - pattern scan excluding private vault, `.git`, `node_modules`, Playwright reports, and test results: reviewed
+  - matches were known synthetic fixtures or prior evidence command text
+  - no new actual secret value was identified in this change
 
 ## Security Notes
 
@@ -34,3 +43,4 @@ git diff --check
 - No token or secret workflow changed.
 - Command packets use the existing exact-origin paired browser bridge.
 - Responses remain metadata-only.
+- Launch packets record local status as `stored` and `not_dispatched`; workspace dispatch remains blocked until an external ledger or worker-dispatch gate is approved.

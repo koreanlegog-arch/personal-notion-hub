@@ -143,6 +143,8 @@ const seedState = {
       sensitivity: "internal",
       deliveryTarget: "local_packet",
       status: "draft",
+      commandStatus: "queued",
+      dispatchState: "not_dispatched",
       createdProjectId: "",
       createdTaskIds: [],
       createdAt: nowISO(),
@@ -523,6 +525,8 @@ function launchField(name, labelText, type, value, options = []) {
 function normalizeLaunch(launch) {
   return {
     commandType: "project_brief",
+    commandStatus: "queued",
+    dispatchState: "not_dispatched",
     ...launch,
   };
 }
@@ -761,10 +765,16 @@ async function sendLatestLaunchToCompanion() {
       ...companionState,
       online: true,
       paired: true,
-      lastResult: result.writesPerformed ? "Latest launch packet sent to private inbox." : "Companion responded without a private write.",
+      lastResult: result.writesPerformed ? "Latest mobile command packet stored in private inbox." : "Companion responded without a private write.",
     };
+    launch.commandStatus = result.writesPerformed ? "stored" : "send_failed";
+    launch.dispatchState = "not_dispatched";
+    launch.workspaceSentAt = nowISO();
+    launch.workspaceCaptureId = result.captureId;
+    launch.updatedAt = nowISO();
+    writeStoredState();
     render();
-    toast("Launch packet sent", "Local companion private inbox에 metadata-only 응답으로 저장했습니다.");
+    toast("Command packet stored", "Local companion private inbox에 metadata-only 응답으로 저장했습니다.");
   } catch (error) {
     companionState = {
       ...companionState,
@@ -797,6 +807,8 @@ function handleLaunchSubmit(event) {
     sensitivity: data.sensitivity || "internal",
     deliveryTarget: data.deliveryTarget || "local_packet",
     status: "draft",
+    commandStatus: "queued",
+    dispatchState: "not_dispatched",
     createdProjectId: "",
     createdTaskIds: [],
     createdAt: nowISO(),
@@ -833,7 +845,21 @@ function launchPacketCard(launch) {
   const card = itemShell(launch.title);
   const title = card.querySelector(".item-title");
   if (title) sensitive(title);
-  card.append(metaRow([commandTypeLabel(launch.commandType), launch.status, launch.priority, launch.sensitivity, launch.deliveryTarget, launch.deadline], launch.priority));
+  card.append(
+    metaRow(
+      [
+        commandTypeLabel(launch.commandType),
+        launch.commandStatus || "queued",
+        launch.dispatchState || "not_dispatched",
+        launch.status,
+        launch.priority,
+        launch.sensitivity,
+        launch.deliveryTarget,
+        launch.deadline,
+      ],
+      launch.priority
+    )
+  );
   card.append(sensitive(make("p", "", launch.objective)));
   if (launch.desiredOutcome) card.append(sensitive(make("p", "", `Outcome: ${launch.desiredOutcome}`)));
   if (launch.constraints) card.append(sensitive(make("p", "", `Constraints: ${launch.constraints}`)));
@@ -851,6 +877,9 @@ function launchPacketCard(launch) {
 
   if (launch.createdProjectId || launch.createdTaskIds?.length) {
     card.append(make("p", "fine-print", `Local start created project/tasks: ${[launch.createdProjectId, ...(launch.createdTaskIds || [])].filter(Boolean).length}`));
+  }
+  if (launch.workspaceSentAt) {
+    card.append(make("p", "fine-print", `Workspace private inbox: ${launch.commandStatus || "stored"} at ${launch.workspaceSentAt}`));
   }
   return card;
 }
