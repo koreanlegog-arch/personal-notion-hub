@@ -1171,12 +1171,21 @@ async function runSingleCommandPacketDryRun() {
     };
     render();
     const run = await bridge.runSingleCommandPacket("dry-run");
+    const mergedStatus = mergeSingleCommandPacketRunStatus(companionState.commandPacketStatus, run);
     companionState = {
       ...companionState,
       singleCommandPacketRun: run,
+      commandPacketStatus: mergedStatus,
       lastResult: run.ok === false ? "Single command packet dry-run failed." : "Single command packet dry-run completed.",
     };
     await refreshDispatchState({ silent: true });
+    companionState = {
+      ...companionState,
+      singleCommandPacketRun: run,
+      commandPacketStatus: mergeSingleCommandPacketRunStatus(companionState.commandPacketStatus, run),
+      lastResult: run.ok === false ? "Single command packet dry-run failed." : "Single command packet dry-run completed.",
+    };
+    render();
     toast("Dry-run completed", "wrapper summary와 dispatch metadata를 갱신했습니다.");
   } catch (error) {
     companionState = {
@@ -1194,6 +1203,63 @@ async function runSingleCommandPacketDryRun() {
     render();
     toast("Dry-run failed");
   }
+}
+
+function mergeSingleCommandPacketRunStatus(currentStatus, run) {
+  const summary = run?.summary || {};
+  const latestRun = {
+    ...(currentStatus?.latestRun || {}),
+    runDir: summary.runDir || currentStatus?.latestRun?.runDir || "",
+    runId: summary.runId || run?.runId || currentStatus?.latestRun?.runId || "",
+    mode: summary.mode || run?.mode || currentStatus?.latestRun?.mode || "",
+    selectedCaptureId: summary.selectedCaptureId || currentStatus?.latestRun?.selectedCaptureId || "",
+    queuedCount: Number(summary.queuedCount ?? currentStatus?.latestRun?.queuedCount ?? currentStatus?.queueCount ?? 0),
+    externalWritesPerformed: Boolean(summary.externalWritesPerformed ?? run?.externalWritesPerformed),
+    workerRunPerformed: Boolean(summary.workerRunPerformed ?? run?.workerRunPerformed),
+    pendingExternalWriteCount: Number(summary.pendingExternalWriteCount ?? currentStatus?.latestRun?.pendingExternalWriteCount ?? 0),
+    privateValuesPrinted: false,
+    rawPrivateBodyRead: false,
+    readable: true,
+  };
+  const queueCount = Number(summary.queuedCount ?? currentStatus?.queueCount ?? 0);
+  const merged = {
+    ...(currentStatus || {}),
+    queueCount,
+    latestRun,
+    privateValuesPrinted: false,
+    rawPrivateBodyRead: false,
+    responsePolicy: currentStatus?.responsePolicy || "metadata-only",
+  };
+  if (!merged.stage || !merged.stageLabel || !Array.isArray(merged.stageSteps)) {
+    const record = merged.latestDispatch || null;
+    merged.stage = commandPacketStageKey(record, latestRun, queueCount);
+    merged.stageLabel = commandPacketStageLabelForKey(merged.stage);
+    merged.stageSteps = commandPacketStageSteps(record, queueCount);
+  }
+  return merged;
+}
+
+function commandPacketStageKey(record, latestRun = {}, queueCount = 0) {
+  if (record?.taskStatus === "worker_done") return "review_ready";
+  if (record?.workerResultSet || record?.workerStatus) return "worker_result";
+  if (record?.discordThreadSet) return "worker_thread";
+  if (record?.githubIssueSet) return "ledger_ready";
+  if (queueCount > 0) return "queued";
+  if (latestRun.message === "queue_empty" || queueCount === 0) return "idle";
+  return "unknown";
+}
+
+function commandPacketStageLabelForKey(stage) {
+  const labels = {
+    idle: "Idle",
+    queued: "Queued",
+    ledger_ready: "Ledger ready",
+    worker_thread: "Worker thread",
+    worker_result: "Worker result",
+    review_ready: "Review ready",
+    unknown: "Unknown",
+  };
+  return labels[stage] || "Unknown";
 }
 
 function disconnectCompanion() {

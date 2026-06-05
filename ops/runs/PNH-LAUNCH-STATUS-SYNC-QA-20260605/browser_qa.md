@@ -10,6 +10,11 @@ This follow-up run also validates that the command packet status surface shows
 the current stage as a user-visible rail: `Inbox -> Ledger -> Thread -> Worker
 -> Review`.
 
+The latest follow-up run validates that a browser-triggered `Run Dry-Run`
+summary is merged immediately into the command packet status card, including
+the `Last run` path and queue count, before any stale wrapper status can hide
+the browser run evidence.
+
 This QA uses synthetic fixture state only. It does not contact the real companion API, GitHub, Discord, or OpenClaw.
 
 ## Scenario
@@ -22,9 +27,12 @@ This QA uses synthetic fixture state only. It does not contact the real companio
 6. Run `Refresh Status`.
 7. Assert the command packet status card shows the `Review ready` stage and all
    five stage rail labels.
-8. Confirm mapping.
-9. Confirm task status.
-10. Assert browser-local Launch, Projects, and Tasks records reflect
+8. Run `Run Dry-Run`.
+9. Assert the browser dry-run summary is visible in the command packet status
+   card as the current `Last run` and `Queue` metadata.
+10. Confirm mapping.
+11. Confirm task status.
+12. Assert browser-local Launch, Projects, and Tasks records reflect
     `worker_done` and `evidenceCompleteness=100`.
 
 ## Result
@@ -46,6 +54,9 @@ Evidence:
   visible stage rail because `Review ready` and `Worker` appear in multiple
   places. The test now scopes assertions to `.operator-action-banner` and
   `.command-packet-stage-rail`.
+- The latest follow-up prevents a stale wrapper status from masking browser-run
+  evidence by asserting `PNH-COMMAND-PACKET-BROWSER-DRYRUN-QA` appears in the
+  command packet status card immediately after `Run Dry-Run`.
 
 ## Residual Risk
 

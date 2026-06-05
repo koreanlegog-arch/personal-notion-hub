@@ -120,10 +120,13 @@ test.describe("Launch dispatch status sync", () => {
           ok: true,
           mode,
           summary: {
+            runId: "PNH-COMMAND-PACKET-BROWSER-DRYRUN-QA",
+            runDir: "ops/runs/PNH-COMMAND-PACKET-BROWSER-DRYRUN-QA",
             mode,
-            queuedCount: 0,
+            queuedCount: 1,
             externalWritesPerformed: false,
             workerRunPerformed: false,
+            pendingExternalWriteCount: 0,
             privateValuesPrinted: false,
             rawPrivateBodyRead: false,
           },
@@ -157,6 +160,8 @@ test.describe("Launch dispatch status sync", () => {
     await expect(packetStatusCard.getByText("metadata-only · private body hidden")).toBeVisible();
     await page.getByRole("button", { name: "Run Dry-Run" }).click();
     await expect(packetStatusCard.getByText("Last browser run: dry-run · external writes no · worker run no")).toBeVisible();
+    await expect(packetStatusCard.getByText("PNH-COMMAND-PACKET-BROWSER-DRYRUN-QA")).toBeVisible();
+    await expect(packetStatusCard.locator(".command-packet-status-row", { hasText: "Queue:" }).getByText("1", { exact: true })).toBeVisible();
     const launchCard = page.locator(".item-card").filter({ hasText: "Synthetic Launch Status Sync" });
     await expect(launchCard.getByText("Stage: Review ready")).toBeVisible();
     await expect(launchCard.getByText("Dispatch mapping: ledger_and_discord_linked")).toBeVisible();
