@@ -1,5 +1,31 @@
 # Release Notes
 
+## 2026-06-05 - Launch Status Sync Browser QA
+
+### Summary
+
+Added Playwright browser QA for confirming redacted dispatch evidence into the
+Launch view, browser-local Projects board, and browser-local Tasks board.
+
+### Included
+
+- `tests/launch-status-sync.spec.cjs`
+- `scripts/run_playwright_launch_status_sync_qa.sh`
+- `ops/runs/PNH-LAUNCH-STATUS-SYNC-QA-20260605/browser_qa.md`
+- static smoke contracts for the Launch status sync runner
+
+### Boundaries
+
+- Uses synthetic fixture state only
+- Does not contact real companion API, GitHub, Discord, or OpenClaw
+- Screenshot artifacts are generated from synthetic data and remain untracked
+
+### Verification
+
+Recorded in:
+
+- `ops/runs/PNH-LAUNCH-STATUS-SYNC-QA-20260605/`
+
 ## 2026-06-04 - Phone Ingress MVP
 
 ### Summary

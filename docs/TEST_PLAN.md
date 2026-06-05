@@ -408,6 +408,20 @@ Playwright redacted UI QA expected when Chromium is available:
 - use environment variable mode only for non-interactive local runs where shell history and process evidence are controlled
 - use `scripts/private_inbox_status.py` without `--include-decrypted` for evidence
 
+Run Launch status sync browser QA when Chromium is available:
+
+```bash
+bash scripts/run_playwright_launch_status_sync_qa.sh
+```
+
+Expected:
+
+- synthetic Launch packet can refresh metadata-only dispatch state
+- `Confirm Mapping` stores GitHub/Discord IDs in browser-local Launch metadata
+- `Confirm Task Status` stores worker/evidence metadata in browser-local Launch metadata
+- Projects and Tasks receive a `dispatch-progress` task with `worker_done` status context
+- no raw private command body, token, or secret value is required
+
 ## Local Encrypted Vault Lifecycle Checks
 
 Run:

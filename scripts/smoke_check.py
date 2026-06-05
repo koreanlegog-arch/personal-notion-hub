@@ -88,6 +88,8 @@ REQUIRED = [
     "scripts/start_tailnet_session.sh",
     "scripts/stop_tailnet_session.sh",
     "tests/redacted-ui.spec.cjs",
+    "tests/launch-status-sync.spec.cjs",
+    "scripts/run_playwright_launch_status_sync_qa.sh",
     "scripts/encrypted_vault_backup_restore_smoke_check.py",
     "scripts/encrypted_vault_delete_smoke_check.py",
     "scripts/encrypted_vault_rotation_smoke_check.py",
@@ -563,6 +565,8 @@ def assert_redaction_contracts() -> None:
     css = (ROOT / "assets/css/styles.css").read_text(encoding="utf-8")
     playwright = (ROOT / "tests/redacted-ui.spec.cjs").read_text(encoding="utf-8")
     runner = (ROOT / "scripts/run_playwright_redacted_ui_qa.sh").read_text(encoding="utf-8")
+    launch_sync = (ROOT / "tests/launch-status-sync.spec.cjs").read_text(encoding="utf-8")
+    launch_sync_runner = (ROOT / "scripts/run_playwright_launch_status_sync_qa.sh").read_text(encoding="utf-8")
     expected = [
         "body.screenshot-redaction [data-sensitive=\"true\"]",
         "color: transparent",
@@ -588,6 +592,23 @@ def assert_redaction_contracts() -> None:
     ]:
         if token not in runner:
             raise SystemExit(f"missing_playwright_runner_contract={token}")
+    for token in [
+        "Confirm Task Status",
+        "ledger_and_discord_linked",
+        "worker_done",
+        "evidenceCompleteness",
+        "dispatch-progress",
+        "Private command body",
+    ]:
+        if token not in launch_sync:
+            raise SystemExit(f"missing_launch_status_sync_contract={token}")
+    for token in [
+        "npx --no-install playwright",
+        "playwright_launch_status_sync_qa_pass=true",
+        "playwright_chromium_binary_unavailable",
+    ]:
+        if token not in launch_sync_runner:
+            raise SystemExit(f"missing_launch_status_sync_runner_contract={token}")
 
 
 def assert_workflow_permissions() -> None:
