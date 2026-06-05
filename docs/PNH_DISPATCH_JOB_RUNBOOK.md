@@ -53,6 +53,27 @@ python3 scripts/pnh_dispatch_status_refresh.py --github-read
 
 Default mode writes a redacted dry-run output only. Add `--apply` to update the ignored local dispatch state with GitHub issue state, labels, and checked timestamp. This script performs no GitHub, Discord, or OpenClaw writes.
 
+Plan external reconciliation without performing writes:
+
+```bash
+python3 scripts/pnh_external_reconciliation_plan.py
+```
+
+This creates a redacted plan for stale external metadata such as replacing
+`dispatch:not-dispatched` with `dispatch:worker-done`. It does not update
+GitHub, Discord, or OpenClaw. Any planned external write requires a separate
+operator approval gate.
+
+Probe whether Discord/OpenClaw thread read-refresh can be implemented:
+
+```bash
+python3 scripts/pnh_discord_thread_readiness_probe.py
+```
+
+Default mode checks local OpenClaw CLI capability only. Live Discord reads are
+blocked behind `--openclaw-read --approve-discord-read` because reading channel
+content can expose private thread messages even without writing.
+
 Record a local worker-result rehearsal without external calls:
 
 ```bash
@@ -162,5 +183,9 @@ The live-dispatch approval gate exists because apply mode can create GitHub Issu
 
 ## Remaining Work
 
-- Add Discord/OpenClaw thread status read-refresh if the gateway exposes a stable read API for thread metadata.
-- Convert confirmed Launch task status into project/task board progress.
+- Implement approval-gated Discord/OpenClaw thread read-refresh using the
+  detected `openclaw message read --json` capability.
+- Apply GitHub Issue dispatch label reconciliation only after an external write
+  approval gate.
+- Promote browser-local Projects/Tasks progress to a durable local task store
+  if multi-device status authority becomes necessary.

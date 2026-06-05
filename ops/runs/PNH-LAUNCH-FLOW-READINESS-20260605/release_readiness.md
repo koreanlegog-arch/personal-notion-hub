@@ -114,7 +114,8 @@ None for owner-operated MVP use.
 ## Known Non-Blocking Risks
 
 - GitHub Issue `#2` still has label `dispatch:not-dispatched`; updating labels is an external write gate.
-- Discord/OpenClaw thread status refresh is not implemented because a stable read API was not confirmed.
+- Discord/OpenClaw thread read capability has a CLI candidate, but status refresh apply is not implemented yet.
+- GitHub Issue dispatch label reconciliation is planned only; applying it is an external write gate.
 - One older rehearsal record remains incomplete at 33% evidence completeness and is correctly marked as follow-up.
 - Browser-local boards are not an authoritative multi-device database.
 - Public GitHub Pages deployment remains static; private companion/vault features require local companion runtime.

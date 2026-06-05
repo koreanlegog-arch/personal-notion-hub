@@ -20,6 +20,35 @@ Ready for owner-operated MVP use.
 Not ready for unattended production automation, real phone data adapters, or
 distribution to other users.
 
+## 2026-06-05 - External Reconciliation Planning
+
+### Summary
+
+Added dry-run planning for external metadata reconciliation and Discord/OpenClaw
+thread read-refresh capability probing.
+
+### Included
+
+- `scripts/pnh_external_reconciliation_plan.py`
+- `scripts/pnh_external_reconciliation_plan_smoke_check.py`
+- `scripts/pnh_discord_thread_readiness_probe.py`
+- `scripts/pnh_discord_thread_readiness_probe_smoke_check.py`
+- `ops/runs/PNH-EXTERNAL-RECONCILIATION-PLAN-20260605/`
+- static smoke contracts for both scripts
+
+### Boundaries
+
+- Does not update GitHub labels, state, or comments
+- Does not post Discord/OpenClaw messages
+- Does not read Discord thread content by default
+- Stops at an explicit approval gate before external writes or live Discord reads
+
+### Verification
+
+Recorded in:
+
+- `ops/runs/PNH-EXTERNAL-RECONCILIATION-PLAN-20260605/`
+
 ## 2026-06-05 - Launch Status Sync Browser QA
 
 ### Summary

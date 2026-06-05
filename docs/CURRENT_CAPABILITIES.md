@@ -81,6 +81,8 @@ python3 scripts/pnh_dispatch_state_status.py
 python3 scripts/pnh_dispatch_evidence_summary.py
 python3 scripts/pnh_supervisor_review_summary.py
 python3 scripts/pnh_dispatch_status_refresh.py --github-read
+python3 scripts/pnh_external_reconciliation_plan.py
+python3 scripts/pnh_discord_thread_readiness_probe.py
 ```
 
 Use `--apply` only when the script's apply mode is intentionally needed and the relevant approval gate has been satisfied.
@@ -121,6 +123,7 @@ These actions create external writes, change security posture, or expand data ri
 - production auth model
 - packaged desktop/mobile app
 - Discord/OpenClaw thread read-refresh, unless a stable read API is confirmed
+- GitHub/Discord/OpenClaw external metadata reconciliation apply
 - GitHub Projects board mutation
 
 ## Practical Current Usage

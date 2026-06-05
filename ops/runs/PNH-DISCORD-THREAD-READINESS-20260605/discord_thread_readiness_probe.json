@@ -1,0 +1,44 @@
+{
+  "capability": {
+    "includeThreadSupported": true,
+    "jsonSupported": true,
+    "openclawInstalled": true,
+    "readCommandAvailable": true,
+    "searchCommandAvailable": true,
+    "threadListCommandAvailable": true,
+    "threadListJsonSupported": true
+  },
+  "commands": {
+    "message_read": {
+      "available": true,
+      "returnCode": 0,
+      "supportsDryRun": true,
+      "supportsJson": true
+    },
+    "message_search": {
+      "available": true,
+      "returnCode": 0,
+      "supportsDryRun": true,
+      "supportsJson": true
+    },
+    "thread_list": {
+      "available": true,
+      "returnCode": 0,
+      "supportsDryRun": true,
+      "supportsJson": true
+    }
+  },
+  "discordThreadReadinessProbe": true,
+  "externalWritesPerformed": false,
+  "generatedAt": "2026-06-05T04:12:58+00:00",
+  "liveRead": {
+    "approvalReason": "Discord/OpenClaw read can expose private channel content even without writing.",
+    "performed": false,
+    "requested": false,
+    "requiresApproval": true
+  },
+  "mode": "capability-only",
+  "privateValuesPrinted": false,
+  "recommendedNextStep": "implement_approval_gated_discord_thread_read_refresh",
+  "tokenValuePrinted": false
+}
