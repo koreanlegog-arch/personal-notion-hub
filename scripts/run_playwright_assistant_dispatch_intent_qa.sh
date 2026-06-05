@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PORT="${PNH_QA_PORT:-4175}"
 BASE_URL="http://127.0.0.1:${PORT}"
-RUN_DIR="${ROOT}/ops/runs/PNH-ASSISTANT-DISPATCH-INTENT-QA-20260605"
+RUN_DIR="${PNH_QA_RUN_DIR:-${ROOT}/ops/runs/PNH-ASSISTANT-DISPATCH-INTENT-QA-20260605}"
 ARTIFACT_DIR="${RUN_DIR}/artifacts"
 
 mkdir -p "${ARTIFACT_DIR}"

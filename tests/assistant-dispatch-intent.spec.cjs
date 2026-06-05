@@ -3,6 +3,16 @@ const { test, expect } = require("playwright/test");
 const baseURL = process.env.PNH_QA_BASE_URL || "http://127.0.0.1:4175";
 const artifactDir = process.env.PNH_QA_ARTIFACT_DIR || "ops/runs/PNH-ASSISTANT-DISPATCH-INTENT-QA-20260605/artifacts";
 
+async function setDispatchIntent(page, value) {
+  const control = page.locator('select[name="dispatchIntent"]').first();
+  await control.selectOption(value);
+  await control.evaluate((select, nextValue) => {
+    select.value = nextValue;
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+  }, value);
+  await expect(control).toHaveValue(value);
+}
+
 test.describe("Assistant dispatch intent", () => {
   test("Assistant input can be stored as a command packet without alias correction", async ({ page }) => {
     await page.goto(baseURL);
@@ -17,6 +27,13 @@ test.describe("Assistant dispatch intent", () => {
           request.onblocked = resolve;
         })
     );
+    await page.reload();
+    await page.waitForFunction(() => window.PNHCompanionBridge);
+    await page.waitForFunction(() => window.PNHAssistantStorage);
+    await page.evaluate(async () => {
+      await window.PNHAssistantStorage.init();
+      await window.PNHAssistantStorage.clearCaptures();
+    });
     await page.reload();
     await page.waitForFunction(() => window.PNHCompanionBridge);
     await page.evaluate(() => {
@@ -38,7 +55,7 @@ test.describe("Assistant dispatch intent", () => {
     await page.getByRole("button", { name: "Assistant" }).click();
     await expect(page.getByRole("heading", { name: "Assistant control page" })).toBeVisible();
 
-    await page.locator('select[name="dispatchIntent"]').selectOption("daily_command");
+    await setDispatchIntent(page, "daily_command");
     await page.locator('input[name="title"]').fill("Synthetic assistant command");
     await page.locator('textarea[name="body"]').fill("Fixture-only assistant command body.");
     await page.getByRole("button", { name: "Add to assistant" }).click();
@@ -54,13 +71,15 @@ test.describe("Assistant dispatch intent", () => {
     expect(calls[0].packet.commandType).toBe("daily_command");
     expect(calls[0].packet.payloadType).toBe("pnh_mobile_command_packet");
     expect(calls[0].packet.dispatchState).toBe("not_dispatched");
+    await expect(page.getByText("Daily command sent to workspace private inbox.")).toBeVisible();
 
-    await page.locator('select[name="dispatchIntent"]').selectOption("assistant_capture");
+    await setDispatchIntent(page, "assistant_capture");
     await page.locator('input[name="title"]').fill("Synthetic assistant note");
     await page.locator('textarea[name="body"]').fill("Fixture-only assistant note body.");
     await page.getByRole("button", { name: "Add to assistant" }).click();
 
     const noteCard = page.locator(".item-card").filter({ hasText: "Synthetic assistant note" }).first();
+    await expect(noteCard).toBeVisible();
     await expect(noteCard.locator(".badge").filter({ hasText: /^Assistant note$/ })).toBeVisible();
     await noteCard.getByRole("button", { name: "Send to Workspace" }).click();
 
