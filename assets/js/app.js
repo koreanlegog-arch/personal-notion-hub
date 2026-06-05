@@ -37,6 +37,7 @@ let companionState = {
   paired: false,
   screenshotRedaction: false,
   dispatchState: null,
+  commandPacketStatus: null,
   statusText: "Not checked",
   lastResult: "",
 };
@@ -624,15 +625,18 @@ function launchDispatchStatusPanel() {
   const section = make("section", "section-panel companion-panel");
   const header = make("div", "section-header");
   header.append(make("h3", "", "Dispatch status"));
-  header.append(badge(companionState.dispatchState ? "synced" : "local"));
+  header.append(badge(companionState.dispatchState || companionState.commandPacketStatus ? "synced" : "local"));
   section.append(header);
 
   const status = companionState.dispatchState;
+  const packetStatus = companionState.commandPacketStatus;
   const rows = [
     ["Records", status?.totalRecords ?? 0],
     ["GitHub linked", status?.githubLinked ?? 0],
     ["Discord linked", status?.discordLinked ?? 0],
     ["Worker results", status?.workerResults ?? 0],
+    ["Queue", packetStatus?.queueCount ?? 0],
+    ["Ready review", packetStatus?.readyForSupervisorReview ?? 0],
   ];
   const statList = make("div", "dispatch-status-list");
   rows.forEach(([label, value]) => {
@@ -669,13 +673,46 @@ function launchDispatchStatusPanel() {
     section.append(make("p", "fine-print", "No dispatch state records are available yet."));
   }
 
+  section.append(commandPacketStatusCard(packetStatus));
+
   const refresh = button("Refresh Status", refreshDispatchState, "small-button");
+  const refreshPacket = button("Refresh Packet Status", refreshCommandPacketStatus, "small-button");
   refresh.disabled = !companionState.paired;
+  refreshPacket.disabled = !companionState.paired;
   const actions = make("div", "item-actions");
-  actions.append(refresh);
+  actions.append(refresh, refreshPacket);
   section.append(actions);
   section.append(make("p", "fine-print", "Reads redacted local dispatch metadata only. URLs and private bodies are not shown."));
   return section;
+}
+
+function commandPacketStatusCard(status) {
+  const card = make("article", "dispatch-record command-packet-status");
+  card.append(make("strong", "", "Single command packet"));
+  if (!status) {
+    card.append(make("p", "fine-print", "Pair companion and refresh to read wrapper status."));
+    return card;
+  }
+  const latestRun = status.latestRun || {};
+  const latestDispatch = status.latestDispatch || {};
+  const facts = [
+    ["Queue", status.queueCount ?? 0],
+    ["Last run", latestRun.runDir || "-"],
+    ["Issue", status.lastIssue ? `#${status.lastIssue}` : latestDispatch.githubIssueNumber ? `#${latestDispatch.githubIssueNumber}` : "-"],
+    ["Worker", status.lastWorkerStatus || latestRun.workerStatus || "-"],
+    ["Next", status.nextAction || "-"],
+  ];
+  facts.forEach(([label, value]) => {
+    const row = make("p", "fine-print command-packet-status-row");
+    row.append(make("span", "", `${label}: `));
+    row.append(make("strong", "", String(value)));
+    card.append(row);
+  });
+  if (latestRun.mode) {
+    card.append(make("p", "fine-print", `Wrapper mode: ${latestRun.mode} · external writes ${latestRun.externalWritesPerformed ? "yes" : "no"} · worker run ${latestRun.workerRunPerformed ? "yes" : "no"}`));
+  }
+  card.append(make("p", "fine-print", "metadata-only · private body hidden"));
+  return card;
 }
 
 function dispatchRecordForLaunch(launch) {
@@ -931,6 +968,7 @@ async function refreshDispatchState(options = {}) {
     companionState = {
       ...companionState,
       dispatchState: null,
+      commandPacketStatus: null,
       lastResult: options.silent ? companionState.lastResult : "Pair companion before checking dispatch state.",
     };
     render();
@@ -939,9 +977,14 @@ async function refreshDispatchState(options = {}) {
   }
   try {
     const status = await bridge.dispatchState();
+    let packetStatus = companionState.commandPacketStatus;
+    if (bridge.commandPacketStatus) {
+      packetStatus = await bridge.commandPacketStatus();
+    }
     companionState = {
       ...companionState,
       dispatchState: status,
+      commandPacketStatus: packetStatus,
       lastResult: options.silent ? companionState.lastResult : "Dispatch state refreshed.",
     };
     render();
@@ -950,10 +993,43 @@ async function refreshDispatchState(options = {}) {
     companionState = {
       ...companionState,
       dispatchState: null,
+      commandPacketStatus: null,
       lastResult: error?.message || "Dispatch state check failed.",
     };
     render();
     if (!options.silent) toast("Dispatch state unavailable");
+  }
+}
+
+async function refreshCommandPacketStatus(options = {}) {
+  const bridge = window.PNHCompanionBridge;
+  if (!bridge?.commandPacketStatus || !bridge.isPaired()) {
+    companionState = {
+      ...companionState,
+      commandPacketStatus: null,
+      lastResult: options.silent ? companionState.lastResult : "Pair companion before checking command packet status.",
+    };
+    render();
+    if (!options.silent) toast("Command packet status unavailable", "companion pairing 후 다시 확인하세요.");
+    return;
+  }
+  try {
+    const status = await bridge.commandPacketStatus();
+    companionState = {
+      ...companionState,
+      commandPacketStatus: status,
+      lastResult: options.silent ? companionState.lastResult : "Command packet status refreshed.",
+    };
+    render();
+    if (!options.silent) toast("Command packet status refreshed");
+  } catch (error) {
+    companionState = {
+      ...companionState,
+      commandPacketStatus: null,
+      lastResult: error?.message || "Command packet status check failed.",
+    };
+    render();
+    if (!options.silent) toast("Command packet status unavailable");
   }
 }
 
@@ -963,6 +1039,7 @@ function disconnectCompanion() {
     ...companionState,
     paired: false,
     dispatchState: null,
+    commandPacketStatus: null,
     lastResult: "Disconnected. No browser session token is retained.",
   };
   render();

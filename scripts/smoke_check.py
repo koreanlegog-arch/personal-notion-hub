@@ -41,6 +41,7 @@ REQUIRED = [
     "companion/passphrase_provider.py",
     "companion/private_store.py",
     "companion/secret_backends.py",
+    "companion/command_packet_status.py",
     "companion/server.py",
     "scripts/private_inbox_init.py",
     "scripts/simulate_mobile_capture.py",
@@ -102,6 +103,7 @@ REQUIRED = [
     "scripts/pnh_unattended_dispatch_pilot_smoke_check.py",
     "scripts/pnh_single_command_packet.py",
     "scripts/pnh_single_command_packet_smoke_check.py",
+    "scripts/pnh_command_packet_status_smoke_check.py",
     "scripts/pnh_supervisor_review_summary.py",
     "scripts/pnh_supervisor_review_summary_smoke_check.py",
     "scripts/start_tailnet_session.sh",
@@ -269,6 +271,11 @@ def assert_github_ledger_bridge_contracts() -> None:
     single_packet_runbook = (ROOT / "docs" / "PNH_SINGLE_COMMAND_PACKET_RUNBOOK.md").read_text(encoding="utf-8")
     single_packet = (ROOT / "scripts" / "pnh_single_command_packet.py").read_text(encoding="utf-8")
     single_packet_smoke = (ROOT / "scripts" / "pnh_single_command_packet_smoke_check.py").read_text(encoding="utf-8")
+    command_packet_status = (ROOT / "companion" / "command_packet_status.py").read_text(encoding="utf-8")
+    command_packet_status_smoke = (ROOT / "scripts" / "pnh_command_packet_status_smoke_check.py").read_text(
+        encoding="utf-8"
+    )
+    companion_server = (ROOT / "companion" / "server.py").read_text(encoding="utf-8")
     supervisor_review = (ROOT / "scripts" / "pnh_supervisor_review_summary.py").read_text(encoding="utf-8")
     supervisor_review_smoke = (ROOT / "scripts" / "pnh_supervisor_review_summary_smoke_check.py").read_text(encoding="utf-8")
     expected = [
@@ -346,6 +353,10 @@ def assert_github_ledger_bridge_contracts() -> None:
         "metadata-safe worker prompt",
         "single_command_packet_summary.json",
         "--detect-existing-github",
+        "pnh_command_packet_status_smoke_check_pass=true",
+        "build_command_packet_status",
+        "metadata-only",
+        "/api/private/command-packet-status",
         "pnh_supervisor_review_summary_smoke_check_pass=true",
         "pnhSupervisorReviewSummary",
         "Supervisor Checks",
@@ -391,6 +402,9 @@ def assert_github_ledger_bridge_contracts() -> None:
             single_packet_runbook,
             single_packet,
             single_packet_smoke,
+            command_packet_status,
+            command_packet_status_smoke,
+            companion_server,
             supervisor_review,
             supervisor_review_smoke,
         ]
@@ -482,7 +496,9 @@ def assert_expected_app_contracts() -> None:
         "PNHCompanionBridge",
         "launchCompanionPanel",
         "launchDispatchStatusPanel",
+        "commandPacketStatusCard",
         "refreshDispatchState",
+        "refreshCommandPacketStatus",
         "dispatchRecordForLaunch",
         "dispatchRecordLabel",
         "confirmDispatchMappingForLaunch",
@@ -502,6 +518,8 @@ def assert_expected_app_contracts() -> None:
         "githubIssueNumber",
         "discordThreadId",
         "workerResults",
+        "commandPacketStatus",
+        "Single command packet",
         "workerResultSet",
         "workerStatus",
         "taskStatus",
@@ -551,6 +569,7 @@ def assert_companion_bridge_contracts() -> None:
         "sendAssistantCapture",
         "sendLaunchPacket",
         "dispatchState",
+        "commandPacketStatus",
     ]
     for token in expected:
         if token not in bridge:
@@ -565,6 +584,7 @@ def assert_companion_bridge_contracts() -> None:
     for token in [
         "--enable-phone-ingress",
         "/api/private/dispatch-state",
+        "/api/private/command-packet-status",
         "phone_ingress_enabled",
         "phone ingress requires --enable-browser-bridge",
         "phone ingress allowed origin must use loopback or private LAN host",

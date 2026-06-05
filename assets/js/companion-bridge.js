@@ -155,8 +155,29 @@
     };
   }
 
+  async function commandPacketStatus() {
+    const result = await controlledFetch("/api/private/command-packet-status", {
+      authenticated: true,
+    });
+    if (!result.ok) {
+      throw new Error(result.data?.error || "Command packet status check failed");
+    }
+    return result.data?.commandPacketStatus || {
+      queueCount: 0,
+      latestRun: {},
+      latestDispatch: {},
+      lastIssue: "",
+      lastWorkerStatus: "",
+      nextAction: "run_single_command_packet_wrapper",
+      privateValuesPrinted: false,
+      rawPrivateBodyRead: false,
+      responsePolicy: "metadata-only",
+    };
+  }
+
   window.PNHCompanionBridge = Object.freeze({
     baseUrl: defaultBaseUrl(),
+    commandPacketStatus,
     disconnect,
     dispatchState,
     health,

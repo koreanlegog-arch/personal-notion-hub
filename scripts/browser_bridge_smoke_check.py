@@ -302,6 +302,17 @@ def main() -> int:
             assert_no_forbidden_values(dispatch_state)
             assert_no_secret_values(dispatch_state, file_token, browser_session)
 
+            status, packet_status, _headers = request_json(
+                f"{base_url}/api/private/command-packet-status",
+                token=browser_session,
+                origin=ALLOWED_ORIGIN,
+            )
+            assert_true(status == 200, "session_command_packet_status_failed=true")
+            assert_true(packet_status.get("commandPacketStatus", {}).get("privateValuesPrinted") is False, "packet_status_private_values_printed=true")
+            assert_true(packet_status.get("commandPacketStatus", {}).get("rawPrivateBodyRead") is False, "packet_status_raw_private_body_read=true")
+            assert_no_forbidden_values(packet_status)
+            assert_no_secret_values(packet_status, file_token, browser_session)
+
             status, file_bearer_summary, _headers = request_json(f"{base_url}/api/private/summary", token=file_token)
             assert_true(status == 200 and file_bearer_summary.get("summary", {}).get("totalCaptures") == 3, "file_bearer_auth_failed=true")
 

@@ -9,6 +9,7 @@ Endpoints:
 - GET /api/private/mobile-captures
 - GET /api/private/summary
 - GET /api/private/dispatch-state
+- GET /api/private/command-packet-status
 """
 
 from __future__ import annotations
@@ -28,6 +29,7 @@ from typing import Any
 from urllib.parse import parse_qs, urlsplit
 
 try:
+    from .command_packet_status import build_command_packet_status
     from .dispatch_summary import summarize_dispatch_record
     from .encrypted_vault import EncryptedVault, EncryptedVaultError, cryptography_available, init_encrypted_vault
     from .passphrase_provider import PassphraseProviderError, resolve_passphrase
@@ -43,6 +45,7 @@ try:
     )
     from .preview import SCHEMA, preview_import, zero_counts
 except ImportError:  # pragma: no cover - supports direct script execution.
+    from command_packet_status import build_command_packet_status  # type: ignore
     from dispatch_summary import summarize_dispatch_record  # type: ignore
     from encrypted_vault import EncryptedVault, EncryptedVaultError, cryptography_available, init_encrypted_vault  # type: ignore
     from passphrase_provider import PassphraseProviderError, resolve_passphrase  # type: ignore
@@ -189,6 +192,7 @@ class CompanionHandler(BaseHTTPRequestHandler):
                 "writeEndpoint": "/api/private/mobile-captures",
                 "summaryEndpoint": "/api/private/summary",
                 "dispatchStateEndpoint": "/api/private/dispatch-state",
+                "commandPacketStatusEndpoint": "/api/private/command-packet-status",
                 "responsePolicy": "metadata-only",
                 "storageMode": self.server.private_storage_mode,
                 "encryptedVaultEnabled": self.server.private_vault is not None,
@@ -224,6 +228,16 @@ class CompanionHandler(BaseHTTPRequestHandler):
                 self._send_json(HTTPStatus.INTERNAL_SERVER_ERROR, {"error": "dispatch_state_read_failed"})
                 return
             self._send_json(HTTPStatus.OK, {"ok": True, "dispatchState": _summarize_dispatch_state(state)})
+            return
+        if path == "/api/private/command-packet-status":
+            if not self._require_private_auth():
+                return
+            try:
+                state = _load_dispatch_state(DEFAULT_DISPATCH_STATE_PATH)
+            except (OSError, ValueError):
+                self._send_json(HTTPStatus.INTERNAL_SERVER_ERROR, {"error": "command_packet_status_read_failed"})
+                return
+            self._send_json(HTTPStatus.OK, {"ok": True, "commandPacketStatus": build_command_packet_status(state)})
             return
         if path == "/api/private/mobile-captures":
             if not self._require_private_auth():
@@ -269,6 +283,7 @@ class CompanionHandler(BaseHTTPRequestHandler):
             "/api/private/mobile-captures",
             "/api/private/summary",
             "/api/private/dispatch-state",
+            "/api/private/command-packet-status",
         }:
             self._send_json(HTTPStatus.NOT_FOUND, {"error": "not_found"})
             return

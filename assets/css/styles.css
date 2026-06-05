@@ -540,6 +540,27 @@ h1 {
   overflow-wrap: anywhere;
 }
 
+.command-packet-status {
+  border-style: dashed;
+}
+
+.command-packet-status-row {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 8px;
+}
+
+.command-packet-status-row span {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.command-packet-status-row strong {
+  display: inline;
+  margin-bottom: 0;
+  font-size: inherit;
+}
+
 .companion-form {
   display: grid;
   gap: 8px;

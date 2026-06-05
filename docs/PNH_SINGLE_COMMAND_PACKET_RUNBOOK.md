@@ -270,6 +270,7 @@ python3 scripts/pnh_dispatch_status_refresh_smoke_check.py
 python3 scripts/pnh_discord_thread_status_refresh_smoke_check.py
 python3 scripts/pnh_dispatch_evidence_summary_smoke_check.py
 python3 scripts/pnh_supervisor_review_summary_smoke_check.py
+python3 scripts/pnh_command_packet_status_smoke_check.py
 git diff --check
 ```
 

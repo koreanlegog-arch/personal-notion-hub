@@ -47,9 +47,10 @@ The current verified Launch flow can:
 8. apply delegated or approved GitHub dispatch label reconciliation
 9. refresh Discord/OpenClaw thread metadata without storing message content
 10. show dispatch state in the Launch UI
-11. confirm mapping and task status into browser-local Launch, Projects, and Tasks
-12. generate supervisor review summary
-13. run bounded unattended dispatch pilot batches with queue limits and rollback snapshot
+11. show single command packet wrapper status in the Launch UI
+12. confirm mapping and task status into browser-local Launch, Projects, and Tasks
+13. generate supervisor review summary
+14. run bounded unattended dispatch pilot batches with queue limits and rollback snapshot
 
 Current verified live record:
 
@@ -111,6 +112,7 @@ python3 scripts/pnh_discord_thread_status_refresh.py
 python3 scripts/pnh_unattended_dispatch_queue_plan.py
 python3 scripts/pnh_unattended_dispatch_readiness.py
 python3 scripts/pnh_single_command_packet.py
+python3 scripts/pnh_command_packet_status_smoke_check.py
 ```
 
 For the full single packet flow from private inbox to worker-done evidence, see:

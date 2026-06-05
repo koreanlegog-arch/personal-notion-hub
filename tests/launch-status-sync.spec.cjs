@@ -80,8 +80,30 @@ test.describe("Launch dispatch status sync", () => {
           },
         ],
       };
+      const commandPacketStatus = {
+        queueCount: 0,
+        latestRun: {
+          runDir: "ops/runs/PNH-SINGLE-COMMAND-PACKET-WRAPPER-DRYRUN-20260605",
+          runId: "PNH-SINGLE-COMMAND-PACKET-WRAPPER-DRYRUN-20260605",
+          mode: "dry-run",
+          externalWritesPerformed: false,
+          workerRunPerformed: false,
+        },
+        latestDispatch: dispatchState.records[0],
+        lastIssue: 2,
+        lastWorkerStatus: "done",
+        nextAction: "summarize_worker_result_for_supervisor_review",
+        readyForSupervisorReview: 1,
+        workerDone: 1,
+        pendingWorkerSession: 0,
+        totalRecords: 1,
+        privateValuesPrinted: false,
+        rawPrivateBodyRead: false,
+        responsePolicy: "metadata-only",
+      };
       window.PNHCompanionBridge = Object.freeze({
         ...window.PNHCompanionBridge,
+        commandPacketStatus: async () => commandPacketStatus,
         health: async () => ({ ok: true, mode: "qa-fixture", writesEnabled: false }),
         isPaired: () => true,
         dispatchState: async () => dispatchState,
@@ -92,6 +114,13 @@ test.describe("Launch dispatch status sync", () => {
     await page.getByRole("button", { name: "Check" }).click();
     await expect(page.getByText("Companion reachable at")).toBeVisible();
     await page.getByRole("button", { name: "Refresh Status" }).click();
+    const packetStatusCard = page.locator(".command-packet-status");
+    await expect(packetStatusCard.getByText("Single command packet")).toBeVisible();
+    await expect(packetStatusCard.getByText("Issue:")).toBeVisible();
+    await expect(packetStatusCard.getByText("#2", { exact: true })).toBeVisible();
+    await expect(packetStatusCard.getByText("Worker:")).toBeVisible();
+    await expect(packetStatusCard.getByText("done", { exact: true })).toBeVisible();
+    await expect(packetStatusCard.getByText("metadata-only · private body hidden")).toBeVisible();
     const launchCard = page.locator(".item-card").filter({ hasText: "Synthetic Launch Status Sync" });
     await expect(launchCard.getByText("Dispatch mapping: ledger_and_discord_linked")).toBeVisible();
     await expect(launchCard.getByText("Task worker_done")).toBeVisible();
