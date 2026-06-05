@@ -135,6 +135,31 @@ encrypted `project_brief` capture.
 - Private command body was not exported.
 - Next gate is worker-session execution for Issue `#3`.
 
+## 2026-06-05 - Unattended Worker Session Capture
+
+### Summary
+
+Captured a metadata-only OpenClaw QA worker session for the unattended dispatch
+pilot record linked to GitHub Issue `#3`.
+
+### Included
+
+- `ops/runs/PNH-UNATTENDED-WORKER-SESSION-CAPTURE-20260605/`
+- refreshed dispatch status, Discord thread metadata, evidence summary, and
+  supervisor review summary
+
+### Results
+
+- worker session: `pnh:capture-2a0fcdefc3f169ec30c6497f:qa`
+- worker status: `done`
+- evidence completeness for Issue `#3`: `100`
+
+### Boundaries
+
+- No Discord reply was delivered.
+- No worker output body was stored in tracked evidence.
+- Next gate is GitHub Issue `#3` dispatch label reconciliation.
+
 ## 2026-06-05 - Launch Status Sync Browser QA
 
 ### Summary

@@ -6,28 +6,28 @@ This summary is generated from redacted dispatch evidence. It must not include p
 
 - total records: 3
 - included records: 3
-- worker done records: 2
-- complete review ready: 1
-- needs follow-up: 2
+- worker done records: 3
+- complete review ready: 2
+- needs follow-up: 1
 - blocked or failed: 0
-- average evidence completeness: 67%
+- average evidence completeness: 78%
 - private values printed: false
 
 ## Records
 
 ### capture-2a0fcdefc3f169ec30c6497f
 
-- task status: dispatched_to_worker_thread
-- evidence completeness: 67%
-- missing evidence: worker_session
-- next action: capture_worker_session_result
+- task status: worker_done
+- evidence completeness: 100%
+- missing evidence: none
+- next action: summarize_worker_result_for_supervisor_review
 - GitHub issue: #3
 - GitHub issue state: open
-- GitHub status checked at: 2026-06-05T04:44:20+00:00
+- GitHub status checked at: 2026-06-05T04:50:28+00:00
 - Discord thread id: 1512315698351706183
-- worker session id: -
-- worker status: -
-- updated at: 2026-06-05T04:44:27+00:00
+- worker session id: pnh:capture-2a0fcdefc3f169ec30c6497f:qa
+- worker status: done
+- updated at: 2026-06-05T04:50:35+00:00
 
 ### capture-5345e37040604a2fca64f317
 
@@ -37,11 +37,11 @@ This summary is generated from redacted dispatch evidence. It must not include p
 - next action: summarize_worker_result_for_supervisor_review
 - GitHub issue: #2
 - GitHub issue state: open
-- GitHub status checked at: 2026-06-05T04:44:20+00:00
+- GitHub status checked at: 2026-06-05T04:50:28+00:00
 - Discord thread id: 1512295718054793419
 - worker session id: pnh:capture-5345e37040604a2fca64f317:qa
 - worker status: done
-- updated at: 2026-06-05T04:44:27+00:00
+- updated at: 2026-06-05T04:50:35+00:00
 
 ### pnh-live-openclaw-capture-20260605
 

@@ -1,0 +1,20 @@
+PNH worker-session capture for an unattended dispatch pilot project_brief command packet.
+
+Scope:
+- Do not modify files.
+- Do not run commands.
+- Do not contact external services.
+- Do not request or include private command body content.
+- Review only the metadata in this prompt.
+
+Metadata:
+- Packet ID: capture-2a0fcdefc3f169ec30c6497f
+- GitHub Issue: https://github.com/koreanlegog-arch/personal-notion-hub/issues/3
+- Discord Thread ID: 1512315698351706183
+- Current dispatch status: dispatched_to_worker_thread
+- Missing evidence before this run: worker_session
+- Dispatch mode: approved unattended pilot batch
+- Private command body status: remains local encrypted vault; not provided to worker
+
+Task:
+Return a concise QA worker status stating whether the unattended dispatch pilot record is ready for supervisor review as a metadata-only worker-session capture. Mention remaining non-sensitive next action and any risk from the fact that the private command body was intentionally not exposed.

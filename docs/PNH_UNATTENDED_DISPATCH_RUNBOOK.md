@@ -128,8 +128,9 @@ First approved pilot batch:
 - capture: `capture-2a0fcdefc3f169ec30c6497f`
 - GitHub Issue: `#3`
 - Discord thread: `1512315698351706183`
-- status: `dispatched_to_worker_thread`
-- next gate: OpenClaw worker/model execution
+- worker session: `pnh:capture-2a0fcdefc3f169ec30c6497f:qa`
+- status: `worker_done`
+- next gate: GitHub dispatch label reconciliation
 
 ## Not Yet Implemented
 

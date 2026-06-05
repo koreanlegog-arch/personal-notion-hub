@@ -63,8 +63,9 @@ Current unattended pilot record:
 
 - GitHub Issue: `#3`
 - Discord thread id: `1512315698351706183`
-- task status: `dispatched_to_worker_thread`
-- next gate: worker-session capture
+- worker session: `pnh:capture-2a0fcdefc3f169ec30c6497f:qa`
+- task status: `worker_done`
+- next gate: GitHub dispatch label reconciliation
 
 ## Commands You Can Use
 
