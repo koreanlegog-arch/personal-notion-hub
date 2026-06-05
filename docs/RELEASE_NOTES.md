@@ -1,5 +1,29 @@
 # Release Notes
 
+## 2026-06-05 - Assistant Dispatch Intent
+
+### Summary
+
+Added dispatch intent selection to Assistant manual input so owner-entered
+assistant items can be sent directly as command packets instead of requiring a
+post-capture alias correction.
+
+### Included
+
+- Assistant manual input dispatch intent selector
+- command-packet payload generation for Assistant inputs
+- preservation of existing `assistant_capture` note path
+- Playwright QA for command intent and note intent routing
+
+### Verification
+
+- `node --check assets/js/app.js`
+- `node --check assets/js/assistant-import.js`
+- `node --check tests/assistant-dispatch-intent.spec.cjs`
+- `python3 scripts/smoke_check.py`
+- `python3 scripts/browser_bridge_smoke_check.py`
+- `bash scripts/run_playwright_assistant_dispatch_intent_qa.sh`
+
 ## 2026-06-05 - Owner Live Capture Dispatch
 
 ### Summary

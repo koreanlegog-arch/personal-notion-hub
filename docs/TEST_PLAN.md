@@ -9,6 +9,9 @@
 - Assistant 화면이 sidebar에서 열린다.
 - Assistant input routes에 Slack, Email, SMS, KakaoTalk, Call, Voice memo, My memo, YouTube, Bible verse가 표시된다.
 - Assistant manual input을 추가하면 inbox에 표시된다.
+- Assistant manual input은 dispatch intent를 선택할 수 있다.
+- Assistant dispatch intent가 command type이면 workspace 전송 payload가 `pnh_mobile_command_packet`으로 생성된다.
+- Assistant dispatch intent가 `assistant_capture`이면 기존 assistant note 전송 경로가 유지된다.
 - Assistant manual input은 paired local companion으로 workspace private inbox에 전송할 수 있다.
 - Assistant demo fixture를 불러오면 demo capture와 suggestion이 표시된다.
 - Assistant suggestion에서 `Create Task`를 누르면 기존 Tasks에 항목이 생성된다.

@@ -12,6 +12,7 @@ This document summarizes what the current `Personal_Notion_Hub` can do now, what
 - Quick Capture
 - Launch packet creation
 - Assistant input capture
+- Assistant dispatch intent selection for direct command-packet ingress
 - localStorage persistence
 - JSON export/import
 - light/dark theme
@@ -57,8 +58,19 @@ The current verified Launch flow can:
 17. skip already-dispatched capture IDs before selecting an automatic dispatch candidate
 18. seed a synthetic encrypted command capture for end-to-end dispatch rehearsal
 19. verify owner live capture readiness before the owner enters real private content
+20. send Assistant input as a selected command type without metadata alias correction
 
-Current verified live record:
+Latest owner live command-packet dispatch:
+
+- GitHub Issue: `#6`
+- Discord thread id: `1512364450869547130`
+- worker session: `pnh:assistant-capture-capture-mq0mgu4q-uvzyzm0s:qa`
+- command type: `task_request`
+- task status: `worker_done`
+- evidence completeness: `100%`
+- raw private body read: `false`
+
+Current verified Launch record:
 
 - GitHub Issue: `#2`
 - Discord thread id: `1512295718054793419`

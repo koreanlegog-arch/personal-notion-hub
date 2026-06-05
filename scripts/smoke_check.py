@@ -579,7 +579,14 @@ def assert_expected_app_contracts() -> None:
         "sendLatestAssistantToCompanion",
         "sendAssistantCaptureToCompanion",
         "companionPayloadForAssistantCapture",
-        "payloadType: \"pnh_assistant_capture\"",
+        "ASSISTANT_DISPATCH_INTENTS",
+        "assistantDispatchIntentLabel",
+        "normalizeAssistantDispatchIntent",
+        "isCommandDispatchIntent",
+        "dispatchIntent",
+        "\"pnh_assistant_capture\"",
+        "payloadType: commandIntent ? \"pnh_mobile_command_packet\"",
+        "sendMobileCommandPacket || bridge.sendAssistantCapture",
         "toggleScreenshotRedaction",
         "data-sensitive",
         "normalizeHttpUrl",
@@ -589,6 +596,14 @@ def assert_expected_app_contracts() -> None:
     for token in expected:
         if token not in js:
             raise SystemExit(f"missing_app_contract={token}")
+    assistant_import = (ROOT / "assets/js/assistant-import.js").read_text(encoding="utf-8")
+    for token in ["dispatchIntents", "normalizeDispatchIntent", "dispatchIntent: normalizeDispatchIntent"]:
+        if token not in assistant_import:
+            raise SystemExit(f"missing_assistant_import_contract={token}")
+    assistant_intent_spec = (ROOT / "tests/assistant-dispatch-intent.spec.cjs").read_text(encoding="utf-8")
+    for token in ["daily_command", "pnh_mobile_command_packet", "pnh_assistant_capture", "__assistantWorkspaceCalls"]:
+        if token not in assistant_intent_spec:
+            raise SystemExit(f"missing_assistant_dispatch_intent_qa_contract={token}")
     if "innerHTML" in js:
         raise SystemExit("innerHTML_found=true")
 

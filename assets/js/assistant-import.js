@@ -3,6 +3,7 @@
 
   const sourceTypes = Object.freeze(["slack", "email", "sms", "kakao", "call", "voice_memo", "my_memo", "youtube", "bible"]);
   const captureTypes = Object.freeze(["task", "note", "project", "link", "routine", "work_record", "calendar_event"]);
+  const dispatchIntents = Object.freeze(["assistant_capture", "project_brief", "task_request", "daily_command", "urgent_approval"]);
   const piiPatterns = [
     /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i,
     /\b(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/,
@@ -29,6 +30,7 @@
       type,
       source,
       sourceType: source,
+      dispatchIntent: normalizeDispatchIntent(raw.dispatchIntent || raw.commandType || raw.kind),
       title: compactLine(title),
       body: normalizeBody(raw.body || raw.text || raw.notes || ""),
       url: type === "link" ? normalizeUrl(raw.url || title) : "",
@@ -162,6 +164,11 @@
     return ["inbox", "processed", "archived"].includes(status) ? status : "inbox";
   }
 
+  function normalizeDispatchIntent(value) {
+    const intent = compactLine(value).toLowerCase();
+    return dispatchIntents.includes(intent) ? intent : "assistant_capture";
+  }
+
   function normalizeDate(value) {
     const raw = compactLine(value);
     if (!raw) return "";
@@ -191,6 +198,7 @@
   }
 
   window.PNHAssistantImport = Object.freeze({
+    dispatchIntents,
     sourceTypes,
     normalizeManualCapture,
     parseFixtureJson,

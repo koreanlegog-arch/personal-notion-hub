@@ -18,6 +18,7 @@ const ASSISTANT_SOURCES = [
 ];
 
 const COMMAND_TYPES = ["project_brief", "task_request", "daily_command", "urgent_approval"];
+const ASSISTANT_DISPATCH_INTENTS = ["assistant_capture", ...COMMAND_TYPES];
 
 let storageState = {
   available: true,
@@ -542,6 +543,15 @@ function commandTypeLabel(commandType) {
     urgent_approval: "Urgent approval",
   };
   return labels[commandType] || commandType || "Project brief";
+}
+
+function assistantDispatchIntentLabel(intent) {
+  if (!intent || intent === "assistant_capture") return "Assistant note";
+  return commandTypeLabel(intent);
+}
+
+function isCommandDispatchIntent(intent) {
+  return COMMAND_TYPES.includes(intent);
 }
 
 function launchDirectionPanel() {
@@ -1658,11 +1668,21 @@ function assistantCapturePanel() {
   body.name = "body";
   body.placeholder = "Slack, 이메일, 문자, 카톡, 통화 메모, 음성메모 전사, 유튜브 메모, 성경 말씀을 직접 붙여넣으세요.";
 
+  const dispatchIntent = document.createElement("select");
+  dispatchIntent.name = "dispatchIntent";
+  ASSISTANT_DISPATCH_INTENTS.forEach((value) => {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = assistantDispatchIntentLabel(value);
+    dispatchIntent.append(option);
+  });
+  dispatchIntent.value = "task_request";
+
   const actions = make("div", "form-actions");
   const submit = make("button", "primary-button", "Add to assistant");
   submit.type = "submit";
   actions.append(submit, button("Load demo fixture", loadAssistantFixture, "ghost-button"));
-  form.append(source, title, body, actions);
+  form.append(source, title, body, dispatchIntent, actions);
   form.addEventListener("submit", handleAssistantCapture);
   section.append(form);
 
@@ -1756,6 +1776,7 @@ async function handleAssistantCapture(event) {
   try {
     capture = normalizer({
       source: data.source,
+      dispatchIntent: data.dispatchIntent,
       title: data.title,
       body: data.body,
       receivedAt: nowISO(),
@@ -1776,6 +1797,7 @@ function fallbackNormalizeCapture(input) {
   return {
     id: uid("capture"),
     source: input.source || "my_memo",
+    dispatchIntent: normalizeAssistantDispatchIntent(input.dispatchIntent),
     title: String(input.title || "").trim() || sourceLabel(input.source || "my_memo"),
     body: String(input.body || "").trim(),
     receivedAt: input.receivedAt || nowISO(),
@@ -1785,6 +1807,11 @@ function fallbackNormalizeCapture(input) {
     createdAt: nowISO(),
     updatedAt: nowISO(),
   };
+}
+
+function normalizeAssistantDispatchIntent(value) {
+  const intent = String(value || "assistant_capture").trim();
+  return ASSISTANT_DISPATCH_INTENTS.includes(intent) ? intent : "assistant_capture";
 }
 
 async function saveAssistantCapture(capture) {
@@ -1914,7 +1941,7 @@ function assistantBriefCard(item) {
 
 function assistantCaptureCard(capture) {
   const card = itemShell(capture.title || sourceLabel(captureSource(capture)));
-  card.append(metaRow([sourceLabel(captureSource(capture)), captureStatus(capture), capture.priority, ...(capture.tags || [])], capture.priority));
+  card.append(metaRow([sourceLabel(captureSource(capture)), assistantDispatchIntentLabel(capture.dispatchIntent), captureStatus(capture), capture.priority, ...(capture.tags || [])], capture.priority));
   if (capture.body) card.append(sensitive(make("p", "", capture.body.slice(0, 220))));
   const actions = make("div", "item-actions");
   actions.append(button("Send to Workspace", () => sendAssistantCaptureToCompanion(capture), "small-button"));
@@ -1934,17 +1961,23 @@ function latestAssistantCapture() {
 function companionPayloadForAssistantCapture(capture) {
   const title = String(capture.title || sourceLabel(captureSource(capture))).trim();
   const body = String(capture.body || title).trim();
+  const dispatchIntent = normalizeAssistantDispatchIntent(capture.dispatchIntent);
+  const commandIntent = isCommandDispatchIntent(dispatchIntent);
   return {
     id: `assistant-capture-${capture.id}`,
     source: "mobile_web",
-    kind: "assistant_capture",
-    title: `Assistant input: ${title}`,
+    kind: commandIntent ? dispatchIntent : "assistant_capture",
+    title: commandIntent ? `${commandTypeLabel(dispatchIntent)}: ${title}` : `Assistant input: ${title}`,
     body,
     sensitivity: capture.sensitivity || "internal",
     createdAt: capture.receivedAt || capture.createdAt || nowISO(),
-    payloadType: "pnh_assistant_capture",
+    payloadType: commandIntent ? "pnh_mobile_command_packet" : "pnh_assistant_capture",
+    commandType: commandIntent ? dispatchIntent : undefined,
+    commandStatus: commandIntent ? "queued" : undefined,
+    dispatchState: commandIntent ? "not_dispatched" : undefined,
     assistantSource: captureSource(capture),
     assistantStatus: captureStatus(capture),
+    assistantDispatchIntent: dispatchIntent,
     tags: capture.tags || [],
   };
 }
@@ -1965,12 +1998,18 @@ async function sendAssistantCaptureToCompanion(capture) {
     return;
   }
   try {
-    const result = await bridge.sendAssistantCapture(companionPayloadForAssistantCapture(capture));
+    const payload = companionPayloadForAssistantCapture(capture);
+    const sendCommand = isCommandDispatchIntent(payload.commandType)
+      ? bridge.sendMobileCommandPacket || bridge.sendAssistantCapture
+      : bridge.sendAssistantCapture;
+    const result = await sendCommand(payload);
     companionState = {
       ...companionState,
       online: true,
       paired: true,
-      lastResult: result.writesPerformed ? "Assistant input sent to workspace private inbox." : "Companion responded without a private write.",
+      lastResult: result.writesPerformed
+        ? `${assistantDispatchIntentLabel(payload.commandType || payload.kind)} sent to workspace private inbox.`
+        : "Companion responded without a private write.",
     };
     await updateAssistantCapture(capture.id, { workspaceSentAt: nowISO(), workspaceCaptureId: result.captureId }, "Assistant input sent to workspace");
   } catch (error) {

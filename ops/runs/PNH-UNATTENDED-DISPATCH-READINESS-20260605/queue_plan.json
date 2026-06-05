@@ -1,10 +1,10 @@
 {
   "capturesInspected": 10,
   "commandAliasesLoaded": 1,
-  "cooldownActive": true,
+  "cooldownActive": false,
   "eligibleCount": 0,
   "externalWritesPerformed": false,
-  "generatedAt": "2026-06-05T07:59:08+00:00",
+  "generatedAt": "2026-06-05T08:08:15+00:00",
   "lockPlan": {
     "lockFile": "companion/private/pnh_unattended_dispatch.lock",
     "singleWriter": true,
