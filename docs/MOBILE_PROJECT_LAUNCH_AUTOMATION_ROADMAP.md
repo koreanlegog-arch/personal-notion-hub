@@ -188,6 +188,7 @@ Implemented inside the approved local/private boundary:
 - OpenClaw worker-session metadata can be captured without delivering Discord replies
 - dispatch state can synthesize supervisor-facing `taskStatus`, `evidenceCompleteness`, `missingEvidence`, and `nextAction`
 - synthesized task/evidence metadata can be confirmed into browser-local Launch records
+- confirmed Launch task/evidence status can update Projects and Tasks board progress
 
 Still pending:
 
@@ -196,6 +197,7 @@ Still pending:
 - no token in repo remains enforced
 - dedupe and repeated ledger update strategy
 - metadata-only extraction of stored PNH command packets into dispatch jobs
+- automatic dispatch job from PNH local command packet
 
 Reference:
 
@@ -219,8 +221,7 @@ Implemented:
 
 Still pending:
 
-- automatic dispatch job from PNH local command packet
-- project/task board progress update from confirmed Launch task status
+- multi-worker task status aggregation beyond the first captured worker result
 - gateway auth/sandbox hardening follow-up
 
 Dispatch job status:

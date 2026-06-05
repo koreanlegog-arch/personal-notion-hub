@@ -735,8 +735,113 @@ function confirmTaskStatusForLaunch(id) {
   launch.workerStatus = record.workerStatus || "";
   launch.workerSessionId = record.workerSessionId || "";
   launch.taskStatusConfirmedAt = nowISO();
+  syncLaunchProgressToBoards(launch, record);
   launch.updatedAt = nowISO();
-  persist("Task status confirmed", "worker 결과와 evidence summary metadata를 browser-local launch record에 저장했습니다.");
+  persist("Task status confirmed", "worker/evidence metadata를 Launch, Projects, Tasks 보드에 반영했습니다.");
+}
+
+function syncLaunchProgressToBoards(launch, record) {
+  const project = ensureLaunchProgressProject(launch, record);
+  const task = ensureLaunchProgressTask(launch, project, record);
+  project.status = projectStatusForDispatchRecord(record);
+  project.priority = launch.priority || project.priority || "medium";
+  project.nextAction = record.nextAction || project.nextAction || "Review dispatch evidence";
+  project.updatedAt = nowISO();
+  task.status = taskStatusForDispatchRecord(record);
+  task.priority = taskPriorityForDispatchRecord(launch, record);
+  task.dueDate = task.status === "today" ? todayISO() : task.dueDate || "";
+  task.notes = buildDispatchProgressNotes(launch, record);
+  task.updatedAt = nowISO();
+  launch.createdProjectId = project.id;
+  launch.progressTaskId = task.id;
+  launch.progressSyncedAt = nowISO();
+}
+
+function ensureLaunchProgressProject(launch, record) {
+  let project = state.projects.find((item) => item.id === launch.createdProjectId);
+  if (!project) {
+    const projectId = launch.createdProjectId || uid("project");
+    project = {
+      id: projectId,
+      title: launch.title,
+      status: projectStatusForDispatchRecord(record),
+      priority: launch.priority || "medium",
+      summary: launch.objective || "Launch-driven project created from dispatch status.",
+      nextAction: record.nextAction || "Review dispatch evidence",
+      tags: ["launch", "dispatch"],
+      createdAt: nowISO(),
+      updatedAt: nowISO(),
+    };
+    state.projects.unshift(project);
+    launch.createdProjectId = projectId;
+  }
+  project.tags = uniqueStrings([...(project.tags || []), "launch", "dispatch"]);
+  return project;
+}
+
+function ensureLaunchProgressTask(launch, project, record) {
+  let task = state.tasks.find((item) => item.id === launch.progressTaskId);
+  if (!task) {
+    task = state.tasks.find(
+      (item) => item.launchId === launch.id && Array.isArray(item.tags) && item.tags.includes("dispatch-progress")
+    );
+  }
+  if (!task) {
+    task = {
+      id: uid("task"),
+      title: `${launch.title}: Dispatch evidence follow-up`,
+      status: taskStatusForDispatchRecord(record),
+      priority: taskPriorityForDispatchRecord(launch, record),
+      dueDate: "",
+      projectId: project.id,
+      launchId: launch.id,
+      notes: "",
+      tags: ["launch", "dispatch", "dispatch-progress"],
+      createdAt: nowISO(),
+      updatedAt: nowISO(),
+    };
+    state.tasks.unshift(task);
+  }
+  task.projectId = project.id;
+  task.launchId = launch.id;
+  task.tags = uniqueStrings([...(task.tags || []), "launch", "dispatch", "dispatch-progress"]);
+  return task;
+}
+
+function projectStatusForDispatchRecord(record) {
+  if (["worker_failed", "worker_blocked"].includes(record.taskStatus)) return "blocked";
+  if (record.taskStatus === "worker_done") return "review";
+  return "active";
+}
+
+function taskStatusForDispatchRecord(record) {
+  if (["worker_failed", "worker_blocked", "worker_done"].includes(record.taskStatus)) return "today";
+  if (record.taskStatus === "dispatched_to_worker_thread") return "today";
+  return "upcoming";
+}
+
+function taskPriorityForDispatchRecord(launch, record) {
+  if (["worker_failed", "worker_blocked"].includes(record.taskStatus)) return "high";
+  return launch.priority || "medium";
+}
+
+function buildDispatchProgressNotes(launch, record) {
+  return [
+    `Launch ID: ${launch.id}`,
+    `Task status: ${record.taskStatus || "unknown"}`,
+    `Evidence completeness: ${record.evidenceCompleteness ?? 0}%`,
+    `Missing evidence: ${Array.isArray(record.missingEvidence) && record.missingEvidence.length ? record.missingEvidence.join(", ") : "none"}`,
+    `Next action: ${record.nextAction || "Review dispatch evidence"}`,
+    record.workerSessionId ? `Worker session: ${record.workerSessionId}` : "",
+    record.githubIssueNumber ? `GitHub issue: #${record.githubIssueNumber}` : "",
+    record.discordThreadId ? `Discord thread: ${record.discordThreadId}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+function uniqueStrings(values) {
+  return [...new Set(values.filter(Boolean).map(String))];
 }
 
 function companionStatusLabel() {
@@ -1033,6 +1138,9 @@ function launchPacketCard(launch) {
   }
   if (launch.workspaceSentAt) {
     card.append(make("p", "fine-print", `Workspace private inbox: ${launch.commandStatus || "stored"} at ${launch.workspaceSentAt}`));
+  }
+  if (launch.progressSyncedAt) {
+    card.append(make("p", "fine-print", `Board progress synced at ${launch.progressSyncedAt}`));
   }
   const dispatchRecord = dispatchRecordForLaunch(launch);
   if (dispatchRecord) {

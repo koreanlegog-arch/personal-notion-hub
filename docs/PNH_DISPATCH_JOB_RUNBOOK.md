@@ -75,7 +75,7 @@ python3 scripts/pnh_dispatch_evidence_summary.py
 
 The summary derives `taskStatus`, `evidenceCompleteness`, `missingEvidence`, and `nextAction` without reading or printing private command bodies.
 
-After refreshing dispatch state in the Launch UI, use `Confirm Task Status` to persist the synthesized task/evidence metadata into the browser-local Launch record. This stores status fields and evidence references only, not private command bodies.
+After refreshing dispatch state in the Launch UI, use `Confirm Task Status` to persist the synthesized task/evidence metadata into the browser-local Launch record and update the Projects/Tasks board. This stores status fields and evidence references only, not private command bodies.
 
 ## Dry Run
 
