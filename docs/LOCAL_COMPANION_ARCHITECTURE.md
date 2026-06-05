@@ -25,10 +25,11 @@ The current GitHub Pages/static web app remains useful as a public-safe demo she
 - Demo/fixture data only should be committed.
 - Local companion supports fixture-only preview mode.
 - Local companion also supports authenticated private inbox mode for workspace-local SQLite capture.
-- Local companion now supports explicit loopback browser bridge mode for synthetic Launch UI pairing.
-- Local companion now supports explicit encrypted vault mode for sensitive local captures when `cryptography` and local passphrase input are available.
+- Local companion now supports explicit loopback and owner-only tailnet browser bridge modes with one-time pairing.
+- Local companion now supports explicit encrypted vault mode for sensitive local captures with the approved local passphrase provider.
+- Owner-only phone ingress through Tailscale fallback has been rehearsed with a real phone capture.
 
-This is acceptable for a demo, low-risk local notes, proving the private data ingress path, and supervisor-approved sensitive local testing in encrypted vault mode. It is not yet a full long-term private-data system because real-data adapters, recovery UX, distribution packaging, and adapter-specific policies are still missing.
+This is acceptable for a demo, low-risk local notes, proving the private data ingress path, and owner-approved sensitive local testing in encrypted vault mode. It is not yet a full long-term private-data system because real-data adapters, distribution packaging, adapter-specific policies, and always-on operation are still missing.
 
 ## Public Shell Vs Private Data Plane
 
@@ -97,7 +98,7 @@ The local companion should own:
 - local import adapters
 - local search/indexing
 - local rule-based assistant processing
-- optional local transcription only after separate approval
+- optional local transcription only after a material gate approval
 - audit-safe logs
 
 ### Encrypted Vault
@@ -456,31 +457,40 @@ Before sharing beyond the owner, require:
 
 ## Approval Gates
 
-The current local companion script and private inbox MVP were created under supervisor request on 2026-06-04.
+Current active approval policy lives in `docs/APPROVAL_GATE_POLICY.md`.
 
-Separate approval is still required before:
+Closed for owner-only MVP use:
 
-- installing encryption/database dependencies
+- local companion private inbox
+- exact-origin browser bridge
+- encrypted vault capture rows
+- backup/delete/restore for encrypted capture rows
+- plaintext-to-encrypted migration apply gate
+- Windows DPAPI file passphrase provider
+- redacted browser QA
+- owner-only Tailscale remote ingress rehearsal
+
+Material approval is still required before:
+
 - changing vault encryption scheme
-- opening any non-loopback or long-running localhost service
+- opening a public, long-running, or unattended remote service
 - adding phone/contact/calendar/recording import adapters
-- adding transcription
+- adding raw audio storage or transcription
 - adding cloud sync or OAuth
 - packaging for other users
 - accepting any plaintext private-data storage risk
 - changing GitHub Pages from demo shell to private-data surface
 - enabling clipboard copy for sensitive summaries without warning/redaction policy
-- enabling screenshot/browser QA with real data
+- creating screenshots, browser QA artifacts, logs, or reports with real sensitive values
 
 ## Recommended Next Step
 
-Upgrade the encrypted vault MVP into an operational private-data system. The next implementation should prove:
+Upgrade mobile input from generic capture to typed command packets. The next implementation should prove:
 
-- plaintext-to-encrypted migration apply
-- OS keychain storage/retrieval
-- passphrase recovery
-- redacted review UI for sensitive records
-- adapter-by-adapter approval gates for phone, calendar, contacts, recordings, and transcripts
+- project brief / task request / daily command packet types
+- encrypted vault write path for typed commands
+- local UI status for queued, stored, dispatched, and reviewed commands
+- no automatic external dispatch until the GitHub/Discord/OpenClaw material gates are approved
 
 ## Fixture-Only Prototype Status
 

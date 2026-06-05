@@ -82,7 +82,7 @@ Allowed:
 - clipboard copy of Discord/GitHub drafts
 - JSON export controlled by the user
 
-Forbidden before separate approval:
+Forbidden before material gate approval:
 
 - automatic Discord message send
 - automatic GitHub issue creation
@@ -90,7 +90,7 @@ Forbidden before separate approval:
 - external API call
 - token storage
 - private client data in public launch packet
-- browser-to-companion `fetch` integration outside the approved local bridge mode
+- browser-to-companion `fetch` integration outside the approved exact-origin local/tailnet bridge mode
 
 If launch briefs include sensitive business, client, or private information, they must be treated like private data and kept out of public repo artifacts, screenshots, logs, and QA evidence.
 
@@ -113,7 +113,7 @@ Private inbox mode allowed:
 - synthetic or supervisor-approved private capture testing
 - metadata-only API responses
 - redacted status output
-- browser bridge only when explicitly enabled with exact `http://127.0.0.1:<port>` origin
+- browser bridge only when explicitly enabled with an approved exact origin
 - phone ingress only when explicitly enabled with exact private LAN origin
 - short-lived one-time pairing code issued in local terminal only
 - short-lived browser session token held in JS memory only
@@ -138,9 +138,9 @@ Forbidden in all modes:
 - real contacts, phone numbers, emails, call logs, schedules, recordings, transcripts, client data, tokens, credentials, or private notes in plaintext mode, public artifacts, logs, screenshots, evidence, or tracked files
 - request body logging
 - external API calls
-- browser UI `fetch` integration outside the approved bridge module
+- browser UI `fetch` integration outside the approved bridge module and exact-origin local/tailnet policy
 - wildcard CORS
-- non-loopback bind address
+- unapproved non-loopback bind address
 - phone ingress without `--enable-phone-ingress`
 - wildcard, public IP, `localhost`, or `0.0.0.0` browser origins for phone ingress
 - committed private inbox files
@@ -160,8 +160,9 @@ Current private inbox protections:
 - responses do not echo submitted title/body
 - browser bridge is disabled by default and requires `--enable-browser-bridge`
 - browser bridge startup requires `--enable-private-inbox`
-- `--allowed-origin` accepts only exact `http://127.0.0.1:<port>` origins
+- `--allowed-origin` accepts only exact loopback, private LAN, or tailnet origins according to the enabled ingress mode
 - phone ingress startup requires `--enable-private-inbox`, `--enable-browser-bridge`, `--enable-phone-ingress`, and an exact private LAN `--allowed-origin`
+- tailnet ingress startup requires `--enable-private-inbox`, `--enable-browser-bridge`, `--enable-tailnet-ingress`, and an exact tailnet `--allowed-origin`
 - phone ingress serves static UI from the companion so phone UI and API share an origin
 - CSP restricts browser connection to `connect-src 'self' http://127.0.0.1:8765`
 - Launch UI provides a screenshot redaction toggle for sensitive launch text and pairing input

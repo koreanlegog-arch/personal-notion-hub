@@ -111,7 +111,8 @@ If `phone_ingress_reachability_check.py` reports
 on a public IP. Windows `vEthernet (WSL)` addresses are internal to the host and
 are not phone-reachable LAN URLs.
 Use a trusted private LAN, Windows portproxy to a private Windows LAN address,
-USB/ADB reverse, or a separately approved private tunnel strategy.
+USB/ADB reverse, or the approved owner-only Tailscale fallback described in
+`docs/TAILSCALE_REMOTE_ACCESS_RUNBOOK.md`.
 
 Manual:
 

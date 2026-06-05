@@ -58,7 +58,7 @@ PNH mobile web UI
 
 Near-term PNH remains static/local-only. It generates packets and copy/export drafts.
 
-Automation should be introduced through explicit gates:
+Automation should be introduced through material gates:
 
 1. local packet generation
 2. local project/task creation
@@ -119,25 +119,26 @@ Current MVP supports:
 - duplicate-safe local start behavior
 - local-only storage
 
-Current MVP does not:
+Current public/static MVP does not:
 
 - send data to Discord
 - create GitHub issues
 - call OpenClaw
-- write encrypted vault data
-- handle real private data
+- directly store private data in the public browser shell
+
+Private companion mode now supports encrypted vault capture and owner-only tailnet ingress. That private data plane is separate from public/static mode.
 
 ## 6. Security And Privacy Constraints
 
-Until separately approved:
+Current material gates:
 
-- no real private data in launch packets
+- no real private data in public/static launch packets
 - no client secrets or tokens
 - no automatic external dispatch
-- no browser `fetch` to companion outside the approved loopback bridge
+- no browser `fetch` to companion outside the approved exact-origin local/tailnet bridge
 - no cloud sync
 - no phone/contact/call/recording access
-- no screenshots containing sensitive project contents
+- no screenshots, logs, or evidence containing sensitive project contents
 
 If project launch briefs become sensitive, PNH must move from public/static shell mode to a private local companion or authenticated private backend.
 
@@ -154,7 +155,7 @@ Status: implemented.
 
 ### Stage 2: Local Companion Readiness UI
 
-Status: partially implemented for loopback-only synthetic Launch bridge.
+Status: implemented for owner-only local/tailnet bridge and encrypted capture.
 
 Implemented:
 
@@ -163,16 +164,14 @@ Implemented:
 - send latest Launch packet to local private inbox
 - no data transfer before explicit user action
 - screenshot redaction toggle
-
-Still needed:
-
 - browser automation QA
 - encrypted vault
 - real mobile/LAN pairing decision
+- Tailscale owner-only phone ingress rehearsal
 
 ### Stage 3: Approved GitHub Ledger Bridge
 
-Add after approval:
+Next material gate:
 
 - create issue from launch packet
 - update issue status

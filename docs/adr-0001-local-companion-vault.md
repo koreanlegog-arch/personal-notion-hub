@@ -27,8 +27,9 @@ The companion path is implemented in stages:
 1. fixture-only preview mode
 2. authenticated plaintext private inbox for source-to-workspace persistence
 3. explicit encrypted vault mode for sensitive local capture testing
+4. owner-only local/tailnet browser bridge for manual phone capture
 
-Real private data adapters remain out of scope until separate approval.
+Real private data adapters remain out of scope until material gate approval.
 
 ## Consequences
 
@@ -43,12 +44,12 @@ Negative:
 
 - implementation becomes more complex
 - a local runtime or packaged app may be required
-- key management is currently manual through a local no-echo prompt or passphrase environment variable
+- key management currently uses the approved local `windows-dpapi-file` provider for the Windows + WSL owner environment
 - localhost or IPC security must be designed
 - dependency review is required before changing encryption/database packages
 - public Pages and private companion modes must be kept visibly separate
 - plaintext JSON export must be restricted to demo/browser mode
-- backup/delete/restore, encrypted export/import, and plaintext migration are not yet implemented
+- real data adapters, always-on operation, and distribution packaging are not yet implemented
 
 ## Alternatives Considered
 

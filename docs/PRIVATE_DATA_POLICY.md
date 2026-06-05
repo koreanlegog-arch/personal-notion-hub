@@ -153,7 +153,7 @@ Limitations:
 - pairing code is manually copied from local terminal and must not be recorded
 - browser session is memory-only and requires re-pairing after reload
 
-The plaintext MVP is acceptable for proving source-to-workspace persistence and compatibility. For sensitive local testing, use encrypted vault mode with prompt-first passphrase handling or the approved `windows-dpapi-file` provider. Before routine use with high-sensitivity real data, complete recovery drills, live redacted browser QA, and adapter-specific privacy gates.
+The plaintext MVP is acceptable only for proving source-to-workspace persistence and compatibility. For sensitive local testing, use encrypted vault mode with the approved `windows-dpapi-file` provider. Recovery, redacted browser QA, and owner-only Tailscale ingress have been rehearsed for capture rows. Before routine use with high-sensitivity adapter data such as calls, recordings, transcripts, contacts, or calendars, complete adapter-specific privacy gates.
 
 The current OS keychain backend is `windows-dpapi-file` for the Windows + WSL environment. It is not a cryptographic recovery mechanism and does not replace backup discipline.
 
