@@ -29,6 +29,7 @@ MAX_CAPTURE_BYTES = 128 * 1024
 ALLOWED_SOURCES = {
     "mobile",
     "mobile_web",
+    "mobile_web",
     "phone_note",
     "project_brief",
     "calendar",

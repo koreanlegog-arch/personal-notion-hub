@@ -131,6 +131,10 @@
     return sendCapture(packet, "Launch packet");
   }
 
+  async function sendMobileCommandPacket(packet) {
+    return sendCapture(packet, "Mobile command packet");
+  }
+
   async function sendAssistantCapture(packet) {
     return sendCapture(packet, "Assistant capture");
   }
@@ -144,5 +148,6 @@
     sendAssistantCapture,
     sendCapture,
     sendLaunchPacket,
+    sendMobileCommandPacket,
   });
 })();

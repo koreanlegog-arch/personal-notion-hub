@@ -29,6 +29,8 @@ FORBIDDEN_VALUES = (
     "synthetic-browser-bridge-title",
     "synthetic-assistant-bridge-body",
     "synthetic-assistant-bridge-title",
+    "synthetic-command-packet-body",
+    "synthetic-command-packet-title",
 )
 
 
@@ -257,23 +259,45 @@ def main() -> int:
             assert_no_forbidden_values(assistant_stored)
             assert_no_secret_values(assistant_stored, file_token, browser_session)
 
+            command_payload = {
+                "source": "mobile_web",
+                "kind": "task_request",
+                "title": FORBIDDEN_VALUES[5],
+                "body": FORBIDDEN_VALUES[4],
+                "sensitivity": "internal",
+                "payloadType": "pnh_mobile_command_packet",
+                "commandType": "task_request",
+                "commandStatus": "queued",
+                "dispatchState": "not_dispatched",
+            }
+            status, command_stored, _headers = request_json(
+                f"{base_url}/api/private/mobile-captures",
+                "POST",
+                command_payload,
+                token=browser_session,
+                origin=ALLOWED_ORIGIN,
+            )
+            assert_true(status == 201 and command_stored.get("writesPerformed") is True, "command_packet_write_failed=true")
+            assert_no_forbidden_values(command_stored)
+            assert_no_secret_values(command_stored, file_token, browser_session)
+
             status, summary, _headers = request_json(
                 f"{base_url}/api/private/summary",
                 token=browser_session,
                 origin=ALLOWED_ORIGIN,
             )
             assert_true(status == 200, "session_summary_failed=true")
-            assert_true(summary.get("summary", {}).get("totalCaptures") == 2, "session_summary_count_failed=true")
+            assert_true(summary.get("summary", {}).get("totalCaptures") == 3, "session_summary_count_failed=true")
             assert_true("dbPath" not in summary.get("summary", {}), "summary_path_leaked=true")
             assert_no_forbidden_values(summary)
             assert_no_secret_values(summary, file_token, browser_session)
 
             status, file_bearer_summary, _headers = request_json(f"{base_url}/api/private/summary", token=file_token)
-            assert_true(status == 200 and file_bearer_summary.get("summary", {}).get("totalCaptures") == 2, "file_bearer_auth_failed=true")
+            assert_true(status == 200 and file_bearer_summary.get("summary", {}).get("totalCaptures") == 3, "file_bearer_auth_failed=true")
 
             local_summary = store_summary(db_path, allow_external=True)
             recent = list_captures(db_path, include_body=False, allow_external=True)
-            assert_true(local_summary["totalCaptures"] == 2, "sqlite_session_write_missing=true")
+            assert_true(local_summary["totalCaptures"] == 3, "sqlite_session_write_missing=true")
             assert_true(recent and "body" not in recent[0], "redacted_list_contract_failed=true")
 
             print("browser_bridge_smoke_check_pass=true")

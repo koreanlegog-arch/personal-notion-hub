@@ -17,6 +17,8 @@ const ASSISTANT_SOURCES = [
   "bible",
 ];
 
+const COMMAND_TYPES = ["project_brief", "task_request", "daily_command", "urgent_approval"];
+
 let storageState = {
   available: true,
   lastError: "",
@@ -132,6 +134,7 @@ const seedState = {
     {
       id: "launch-demo-control-plane",
       title: "모바일 프로젝트 개요로 팀 착수 packet 만들기",
+      commandType: "project_brief",
       objective: "모바일에서 짧은 프로젝트 개요를 작성하면 집의 작업 팀이 바로 읽을 수 있는 착수 패킷으로 변환한다.",
       desiredOutcome: "프로젝트, 초기 task, QA/security gate, Discord/GitHub 전달 초안이 한 번에 생성된다.",
       constraints: "외부 API 연동 없음. 실제 민감 데이터 없음. 수동 copy/export만 허용.",
@@ -224,7 +227,7 @@ function normalizeState(candidate) {
     notes: Array.isArray(candidate.notes) ? candidate.notes : base.notes,
     routines: Array.isArray(candidate.routines) ? candidate.routines : base.routines,
     links: Array.isArray(candidate.links) ? candidate.links : base.links,
-    launches: Array.isArray(candidate.launches) ? candidate.launches : [],
+    launches: Array.isArray(candidate.launches) ? candidate.launches.map(normalizeLaunch) : [],
     system: candidate.system || {},
   };
 }
@@ -464,6 +467,7 @@ function launchIntakePanel() {
   const form = make("form", "launch-form");
   form.append(
     launchField("title", "Project title", "text", ""),
+    launchField("commandType", "Command type", "select", "project_brief", COMMAND_TYPES),
     launchField("objective", "Objective", "textarea", ""),
     launchField("desiredOutcome", "Desired outcome", "textarea", ""),
     launchField("constraints", "Constraints / risks", "textarea", ""),
@@ -514,6 +518,23 @@ function launchField(name, labelText, type, value, options = []) {
   }
   wrap.append(label, control);
   return wrap;
+}
+
+function normalizeLaunch(launch) {
+  return {
+    commandType: "project_brief",
+    ...launch,
+  };
+}
+
+function commandTypeLabel(commandType) {
+  const labels = {
+    project_brief: "Project brief",
+    task_request: "Task request",
+    daily_command: "Daily command",
+    urgent_approval: "Urgent approval",
+  };
+  return labels[commandType] || commandType || "Project brief";
 }
 
 function launchDirectionPanel() {
@@ -710,12 +731,15 @@ function companionPayloadForLaunch(launch) {
   return {
     id: `launch-packet-${launch.id}`,
     source: "mobile_web",
-    kind: "project_brief",
-    title: `Launch packet: ${launch.title}`,
+    kind: launch.commandType || "project_brief",
+    title: `${commandTypeLabel(launch.commandType)}: ${launch.title}`,
     body: buildLaunchPacket(launch),
     sensitivity: launch.sensitivity === "private-sensitive" ? "highly_sensitive" : "internal",
     createdAt: nowISO(),
-    payloadType: "pnh_launch_packet",
+    payloadType: "pnh_mobile_command_packet",
+    commandType: launch.commandType || "project_brief",
+    commandStatus: "queued",
+    dispatchState: "not_dispatched",
   };
 }
 
@@ -731,7 +755,8 @@ async function sendLatestLaunchToCompanion() {
     return;
   }
   try {
-    const result = await bridge.sendLaunchPacket(companionPayloadForLaunch(launch));
+    const sendCommand = bridge.sendMobileCommandPacket || bridge.sendLaunchPacket;
+    const result = await sendCommand(companionPayloadForLaunch(launch));
     companionState = {
       ...companionState,
       online: true,
@@ -763,6 +788,7 @@ function handleLaunchSubmit(event) {
   const launch = {
     id: uid("launch"),
     title,
+    commandType: data.commandType || "project_brief",
     objective,
     desiredOutcome: String(data.desiredOutcome || "").trim(),
     constraints: String(data.constraints || "").trim(),
@@ -798,6 +824,8 @@ function loadLaunchDemo() {
   if (priority) priority.value = "high";
   if (sensitivity) sensitivity.value = "internal";
   if (target) target.value = "discord_draft";
+  const commandType = document.querySelector("#launch-field-commandType");
+  if (commandType) commandType.value = "project_brief";
   toast("Demo brief loaded");
 }
 
@@ -805,7 +833,7 @@ function launchPacketCard(launch) {
   const card = itemShell(launch.title);
   const title = card.querySelector(".item-title");
   if (title) sensitive(title);
-  card.append(metaRow([launch.status, launch.priority, launch.sensitivity, launch.deliveryTarget, launch.deadline], launch.priority));
+  card.append(metaRow([commandTypeLabel(launch.commandType), launch.status, launch.priority, launch.sensitivity, launch.deliveryTarget, launch.deadline], launch.priority));
   card.append(sensitive(make("p", "", launch.objective)));
   if (launch.desiredOutcome) card.append(sensitive(make("p", "", `Outcome: ${launch.desiredOutcome}`)));
   if (launch.constraints) card.append(sensitive(make("p", "", `Constraints: ${launch.constraints}`)));
@@ -835,6 +863,7 @@ function buildLaunchPacket(launch) {
     ``,
     `ID: ${launch.id}`,
     `Title: ${launch.title}`,
+    `Command Type: ${commandTypeLabel(launch.commandType)} (${launch.commandType || "project_brief"})`,
     `Priority: ${launch.priority}`,
     `Sensitivity: ${launch.sensitivity}`,
     `Target: ${launch.deliveryTarget}`,
@@ -867,6 +896,7 @@ function buildDiscordDispatchDraft(launch) {
   return [
     `/task create`,
     `title: ${launch.title}`,
+    `command_type: ${launch.commandType || "project_brief"}`,
     `priority: ${launch.priority}`,
     `sensitivity: ${launch.sensitivity}`,
     `objective: ${launch.objective}`,
@@ -882,6 +912,8 @@ function buildDiscordDispatchDraft(launch) {
 function buildGithubIssueDraft(launch) {
   return [
     `# ${launch.title}`,
+    ``,
+    `Command type: ${commandTypeLabel(launch.commandType)}`,
     ``,
     `## Objective`,
     launch.objective,
@@ -904,13 +936,20 @@ function buildGithubIssueDraft(launch) {
 }
 
 function launchAcceptanceCriteria(launch) {
-  return [
+  const criteria = [
     "Scope and out-of-scope are explicit before implementation.",
     "Implementation produces a reviewable diff or documented no-code outcome.",
     "Validation commands or manual checks are recorded.",
     "Security/privacy risks are checked before delivery.",
     launch.desiredOutcome ? `Delivered outcome matches: ${launch.desiredOutcome}` : "Expected outcome is clarified before work starts.",
   ];
+  if (launch.commandType === "urgent_approval") {
+    criteria.unshift("Approval decision, deadline, and risk of delay are explicit before action.");
+  }
+  if (launch.commandType === "daily_command") {
+    criteria.unshift("Daily command is converted into a bounded task list or status update.");
+  }
+  return criteria;
 }
 
 function launchLanes(launch) {
@@ -928,6 +967,9 @@ function launchApprovalGates(launch) {
   }
   if (launch.deliveryTarget !== "local_packet") {
     gates.push("explicit approval before external dispatch or live automation");
+  }
+  if (launch.commandType === "urgent_approval") {
+    gates.push("human supervisor decision required before irreversible action");
   }
   return gates;
 }

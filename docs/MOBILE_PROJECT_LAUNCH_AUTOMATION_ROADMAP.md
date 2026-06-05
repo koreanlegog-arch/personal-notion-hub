@@ -171,6 +171,14 @@ Implemented:
 
 ### Stage 3: Approved GitHub Ledger Bridge
 
+Status: command packet typing started; external ledger bridge remains the next material gate.
+
+Implemented inside the approved local/private boundary:
+
+- command type field for mobile Launch intake
+- `pnh_mobile_command_packet` payload for companion writes
+- queued/not-dispatched metadata for future routing
+
 Next material gate:
 
 - create issue from launch packet
