@@ -83,6 +83,8 @@ REQUIRED = [
     "scripts/pnh_external_reconciliation_plan_smoke_check.py",
     "scripts/pnh_github_label_reconciliation_apply.py",
     "scripts/pnh_github_label_reconciliation_apply_smoke_check.py",
+    "scripts/pnh_github_worker_done_closure.py",
+    "scripts/pnh_github_worker_done_closure_smoke_check.py",
     "scripts/pnh_discord_thread_readiness_probe.py",
     "scripts/pnh_discord_thread_readiness_probe_smoke_check.py",
     "scripts/pnh_discord_thread_status_refresh.py",
@@ -241,6 +243,10 @@ def assert_github_ledger_bridge_contracts() -> None:
     github_label_apply_smoke = (ROOT / "scripts/pnh_github_label_reconciliation_apply_smoke_check.py").read_text(
         encoding="utf-8"
     )
+    github_worker_done_closure = (ROOT / "scripts/pnh_github_worker_done_closure.py").read_text(encoding="utf-8")
+    github_worker_done_closure_smoke = (
+        ROOT / "scripts/pnh_github_worker_done_closure_smoke_check.py"
+    ).read_text(encoding="utf-8")
     discord_thread_probe = (ROOT / "scripts/pnh_discord_thread_readiness_probe.py").read_text(encoding="utf-8")
     discord_thread_probe_smoke = (ROOT / "scripts/pnh_discord_thread_readiness_probe_smoke_check.py").read_text(
         encoding="utf-8"
@@ -315,6 +321,10 @@ def assert_github_ledger_bridge_contracts() -> None:
         "pnh_github_label_reconciliation_apply_smoke_check_pass=true",
         "githubLabelReconciliation",
         "gh auth",
+        "pnh_github_worker_done_closure_smoke_check_pass=true",
+        "githubWorkerDoneClosure",
+        "close_worker_done_issue",
+        "rawPrivateBodyRead",
         "pnh_discord_thread_readiness_probe_smoke_check_pass=true",
         "discordThreadReadinessProbe",
         "--approve-discord-read",
@@ -393,6 +403,8 @@ def assert_github_ledger_bridge_contracts() -> None:
             reconciliation_plan_smoke,
             github_label_apply,
             github_label_apply_smoke,
+            github_worker_done_closure,
+            github_worker_done_closure_smoke,
             discord_thread_probe,
             discord_thread_probe_smoke,
             discord_thread_status,

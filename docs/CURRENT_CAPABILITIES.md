@@ -59,10 +59,12 @@ The current verified Launch flow can:
 18. seed a synthetic encrypted command capture for end-to-end dispatch rehearsal
 19. verify owner live capture readiness before the owner enters real private content
 20. send Assistant input as a selected command type without metadata alias correction
+21. close GitHub Issues for worker_done dispatch records after redacted evidence reaches 100%
 
 Latest owner live command-packet dispatch:
 
 - GitHub Issue: `#6`
+- GitHub Issue state: `closed`
 - Discord thread id: `1512364450869547130`
 - worker session: `pnh:assistant-capture-capture-mq0mgu4q-uvzyzm0s:qa`
 - command type: `task_request`
@@ -73,6 +75,7 @@ Latest owner live command-packet dispatch:
 Current verified Launch record:
 
 - GitHub Issue: `#2`
+- GitHub Issue state: `closed`
 - Discord thread id: `1512295718054793419`
 - worker session: `pnh:capture-5345e37040604a2fca64f317:qa`
 - GitHub dispatch label: `dispatch:worker-done`
@@ -81,6 +84,7 @@ Current verified Launch record:
 Latest completed unattended pilot record:
 
 - GitHub Issue: `#4`
+- GitHub Issue state: `closed`
 - Discord thread id: `1512323845514596373`
 - worker session: `pnh:capture-3b8522ff102b0469c683b027:qa`
 - GitHub dispatch label: `dispatch:worker-done`
@@ -91,6 +95,7 @@ Latest completed unattended pilot record:
 Latest synthetic single command packet rehearsal:
 
 - GitHub Issue: `#5`
+- GitHub Issue state: `closed`
 - Discord thread id: `1512357660807270561`
 - worker session: `pnh:capture-40fc5ea5d769acebdb130781:qa`
 - GitHub dispatch label: `dispatch:worker-done`
@@ -111,6 +116,7 @@ Latest owner live capture readiness:
 Previous completed unattended pilot record:
 
 - GitHub Issue: `#3`
+- GitHub Issue state: `closed`
 - Discord thread id: `1512315698351706183`
 - worker session: `pnh:capture-2a0fcdefc3f169ec30c6497f:qa`
 - GitHub dispatch label: `dispatch:worker-done`
@@ -147,6 +153,7 @@ python3 scripts/pnh_dispatch_evidence_summary.py
 python3 scripts/pnh_supervisor_review_summary.py
 python3 scripts/pnh_dispatch_status_refresh.py --github-read
 python3 scripts/pnh_external_reconciliation_plan.py
+python3 scripts/pnh_github_worker_done_closure.py
 python3 scripts/pnh_discord_thread_readiness_probe.py
 python3 scripts/pnh_github_label_reconciliation_apply.py
 python3 scripts/pnh_discord_thread_status_refresh.py

@@ -3,10 +3,15 @@
   "approvalRequiredBeforeExternalWrite": false,
   "externalReconciliationPlan": true,
   "externalWritesPerformed": false,
-  "generatedAt": "2026-06-05T07:49:02+00:00",
+  "generatedAt": "2026-06-05T14:49:52+00:00",
   "mode": "dry-run",
   "plannedExternalWrites": [],
   "plannedLocalFollowUps": [
+    {
+      "operation": "keep_local_dispatch_state_as_source_of_mapping",
+      "packetId": "assistant-capture-capture-mq0mgu4q-uvzyzm0s",
+      "reason": "ledger and thread ids are already linked locally"
+    },
     {
       "operation": "keep_local_dispatch_state_as_source_of_mapping",
       "packetId": "capture-2a0fcdefc3f169ec30c6497f",
@@ -41,6 +46,31 @@
   "privateValuesPrinted": false,
   "records": [
     {
+      "discordThreadId": "1512364450869547130",
+      "discordThreadSet": true,
+      "externalWritePlan": [],
+      "githubIssueLabels": [
+        "pnh",
+        "mobile-command",
+        "priority:normal",
+        "dispatch:worker-done",
+        "command:task_request"
+      ],
+      "githubIssueNumber": "6",
+      "githubIssueSet": true,
+      "githubIssueState": "closed",
+      "githubLabelsKnown": true,
+      "localFollowUpPlan": [
+        {
+          "operation": "keep_local_dispatch_state_as_source_of_mapping",
+          "packetId": "assistant-capture-capture-mq0mgu4q-uvzyzm0s",
+          "reason": "ledger and thread ids are already linked locally"
+        }
+      ],
+      "packetId": "assistant-capture-capture-mq0mgu4q-uvzyzm0s",
+      "workerStatus": "done"
+    },
+    {
       "discordThreadId": "1512315698351706183",
       "discordThreadSet": true,
       "externalWritePlan": [],
@@ -53,7 +83,7 @@
       ],
       "githubIssueNumber": "3",
       "githubIssueSet": true,
-      "githubIssueState": "open",
+      "githubIssueState": "closed",
       "githubLabelsKnown": true,
       "localFollowUpPlan": [
         {
@@ -78,7 +108,7 @@
       ],
       "githubIssueNumber": "4",
       "githubIssueSet": true,
-      "githubIssueState": "open",
+      "githubIssueState": "closed",
       "githubLabelsKnown": true,
       "localFollowUpPlan": [
         {
@@ -103,7 +133,7 @@
       ],
       "githubIssueNumber": "5",
       "githubIssueSet": true,
-      "githubIssueState": "open",
+      "githubIssueState": "closed",
       "githubLabelsKnown": true,
       "localFollowUpPlan": [
         {
@@ -128,7 +158,7 @@
       ],
       "githubIssueNumber": "2",
       "githubIssueSet": true,
-      "githubIssueState": "open",
+      "githubIssueState": "closed",
       "githubLabelsKnown": true,
       "localFollowUpPlan": [
         {
@@ -165,6 +195,6 @@
       "workerStatus": "done"
     }
   ],
-  "recordsInspected": 5,
+  "recordsInspected": 6,
   "tokenValuePrinted": false
 }

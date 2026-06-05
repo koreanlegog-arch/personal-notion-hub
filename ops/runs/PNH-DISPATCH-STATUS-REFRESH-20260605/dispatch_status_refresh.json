@@ -9,7 +9,7 @@
     {
       "discordThreadSet": true,
       "error": "",
-      "githubIssueClosedAt": "",
+      "githubIssueClosedAt": "2026-06-05T14:47:01Z",
       "githubIssueLabels": [
         "pnh",
         "mobile-command",
@@ -19,8 +19,8 @@
       ],
       "githubIssueNumber": "6",
       "githubIssueSet": true,
-      "githubIssueState": "open",
-      "githubIssueUpdatedAt": "2026-06-05T07:57:47Z",
+      "githubIssueState": "closed",
+      "githubIssueUpdatedAt": "2026-06-05T14:47:01Z",
       "githubStatusRefreshed": true,
       "needsFollowUp": false,
       "packetId": "assistant-capture-capture-mq0mgu4q-uvzyzm0s",
@@ -29,7 +29,7 @@
     {
       "discordThreadSet": true,
       "error": "",
-      "githubIssueClosedAt": "",
+      "githubIssueClosedAt": "2026-06-05T14:47:03Z",
       "githubIssueLabels": [
         "pnh",
         "mobile-command",
@@ -39,8 +39,8 @@
       ],
       "githubIssueNumber": "3",
       "githubIssueSet": true,
-      "githubIssueState": "open",
-      "githubIssueUpdatedAt": "2026-06-05T04:54:26Z",
+      "githubIssueState": "closed",
+      "githubIssueUpdatedAt": "2026-06-05T14:47:03Z",
       "githubStatusRefreshed": true,
       "needsFollowUp": false,
       "packetId": "capture-2a0fcdefc3f169ec30c6497f",
@@ -49,7 +49,7 @@
     {
       "discordThreadSet": true,
       "error": "",
-      "githubIssueClosedAt": "",
+      "githubIssueClosedAt": "2026-06-05T14:47:06Z",
       "githubIssueLabels": [
         "pnh",
         "mobile-command",
@@ -59,8 +59,8 @@
       ],
       "githubIssueNumber": "4",
       "githubIssueSet": true,
-      "githubIssueState": "open",
-      "githubIssueUpdatedAt": "2026-06-05T05:28:45Z",
+      "githubIssueState": "closed",
+      "githubIssueUpdatedAt": "2026-06-05T14:47:06Z",
       "githubStatusRefreshed": true,
       "needsFollowUp": false,
       "packetId": "capture-3b8522ff102b0469c683b027",
@@ -69,7 +69,7 @@
     {
       "discordThreadSet": true,
       "error": "",
-      "githubIssueClosedAt": "",
+      "githubIssueClosedAt": "2026-06-05T14:47:09Z",
       "githubIssueLabels": [
         "pnh",
         "mobile-command",
@@ -79,8 +79,8 @@
       ],
       "githubIssueNumber": "5",
       "githubIssueSet": true,
-      "githubIssueState": "open",
-      "githubIssueUpdatedAt": "2026-06-05T07:31:45Z",
+      "githubIssueState": "closed",
+      "githubIssueUpdatedAt": "2026-06-05T14:47:09Z",
       "githubStatusRefreshed": true,
       "needsFollowUp": false,
       "packetId": "capture-40fc5ea5d769acebdb130781",
@@ -89,7 +89,7 @@
     {
       "discordThreadSet": true,
       "error": "",
-      "githubIssueClosedAt": "",
+      "githubIssueClosedAt": "2026-06-05T14:47:16Z",
       "githubIssueLabels": [
         "pnh",
         "mobile-command",
@@ -99,8 +99,8 @@
       ],
       "githubIssueNumber": "2",
       "githubIssueSet": true,
-      "githubIssueState": "open",
-      "githubIssueUpdatedAt": "2026-06-05T04:23:15Z",
+      "githubIssueState": "closed",
+      "githubIssueUpdatedAt": "2026-06-05T14:47:16Z",
       "githubStatusRefreshed": true,
       "needsFollowUp": false,
       "packetId": "capture-5345e37040604a2fca64f317",

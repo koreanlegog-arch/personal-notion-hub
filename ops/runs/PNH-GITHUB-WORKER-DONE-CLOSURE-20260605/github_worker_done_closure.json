@@ -1,0 +1,97 @@
+{
+  "actions": [
+    {
+      "discordThreadId": "1512364450869547130",
+      "evidenceCompleteness": 100,
+      "githubIssueNumber": "6",
+      "operation": "close_worker_done_issue",
+      "packetId": "assistant-capture-capture-mq0mgu4q-uvzyzm0s",
+      "taskStatus": "worker_done",
+      "workerSessionId": "pnh:assistant-capture-capture-mq0mgu4q-uvzyzm0s:qa"
+    },
+    {
+      "discordThreadId": "1512315698351706183",
+      "evidenceCompleteness": 100,
+      "githubIssueNumber": "3",
+      "operation": "close_worker_done_issue",
+      "packetId": "capture-2a0fcdefc3f169ec30c6497f",
+      "taskStatus": "worker_done",
+      "workerSessionId": "pnh:capture-2a0fcdefc3f169ec30c6497f:qa"
+    },
+    {
+      "discordThreadId": "1512323845514596373",
+      "evidenceCompleteness": 100,
+      "githubIssueNumber": "4",
+      "operation": "close_worker_done_issue",
+      "packetId": "capture-3b8522ff102b0469c683b027",
+      "taskStatus": "worker_done",
+      "workerSessionId": "pnh:capture-3b8522ff102b0469c683b027:qa"
+    },
+    {
+      "discordThreadId": "1512357660807270561",
+      "evidenceCompleteness": 100,
+      "githubIssueNumber": "5",
+      "operation": "close_worker_done_issue",
+      "packetId": "capture-40fc5ea5d769acebdb130781",
+      "taskStatus": "worker_done",
+      "workerSessionId": "pnh:capture-40fc5ea5d769acebdb130781:qa"
+    },
+    {
+      "discordThreadId": "1512295718054793419",
+      "evidenceCompleteness": 100,
+      "githubIssueNumber": "2",
+      "operation": "close_worker_done_issue",
+      "packetId": "capture-5345e37040604a2fca64f317",
+      "taskStatus": "worker_done",
+      "workerSessionId": "pnh:capture-5345e37040604a2fca64f317:qa"
+    }
+  ],
+  "applied": [
+    {
+      "afterState": "CLOSED",
+      "beforeState": "OPEN",
+      "commentBodyPrivate": false,
+      "contentPrinted": false,
+      "githubIssueNumber": "6"
+    },
+    {
+      "afterState": "CLOSED",
+      "beforeState": "OPEN",
+      "commentBodyPrivate": false,
+      "contentPrinted": false,
+      "githubIssueNumber": "3"
+    },
+    {
+      "afterState": "CLOSED",
+      "beforeState": "OPEN",
+      "commentBodyPrivate": false,
+      "contentPrinted": false,
+      "githubIssueNumber": "4"
+    },
+    {
+      "afterState": "CLOSED",
+      "beforeState": "OPEN",
+      "commentBodyPrivate": false,
+      "contentPrinted": false,
+      "githubIssueNumber": "5"
+    },
+    {
+      "afterState": "CLOSED",
+      "beforeState": "OPEN",
+      "commentBodyPrivate": false,
+      "contentPrinted": false,
+      "githubIssueNumber": "2"
+    }
+  ],
+  "appliedActionCount": 5,
+  "approvalSource": "project AGENTS.md bounded GitHub Issue update delegation",
+  "externalWritesPerformed": true,
+  "generatedAt": "2026-06-05T14:46:59+00:00",
+  "githubWorkerDoneClosure": true,
+  "mode": "apply",
+  "plannedActionCount": 5,
+  "privateValuesPrinted": false,
+  "rawPrivateBodyRead": false,
+  "repo": "koreanlegog-arch/personal-notion-hub",
+  "tokenValuePrinted": false
+}

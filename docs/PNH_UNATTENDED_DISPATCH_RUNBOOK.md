@@ -142,6 +142,20 @@ python3 scripts/pnh_supervisor_review_summary.py
 The final GitHub refresh preserves issue state and label fields if a prior
 Discord refresh used an older state snapshot.
 
+When `worker_done` records have 100% redacted evidence completeness, close the
+linked GitHub Issues with the metadata-only closure script:
+
+```bash
+python3 scripts/pnh_github_worker_done_closure.py
+python3 scripts/pnh_github_worker_done_closure.py --apply --approve-external-write
+python3 scripts/pnh_dispatch_status_refresh.py --github-read --apply
+python3 scripts/pnh_dispatch_evidence_summary.py
+```
+
+This closure path is limited to records that already have GitHub issue,
+Discord thread, worker session, `worker_done`, and complete evidence metadata.
+It does not read private command bodies.
+
 ## Activation Gate
 
 Live unattended pilot activation is delegated for bounded PNH test and
@@ -162,6 +176,7 @@ Owner live assistant-capture dispatch:
 - capture: `assistant-capture-capture-mq0mgu4q-uvzyzm0s`
 - command alias: `task_request`
 - GitHub Issue: `#6`
+- GitHub Issue state: `closed`
 - Discord thread: `1512364450869547130`
 - worker session: `pnh:assistant-capture-capture-mq0mgu4q-uvzyzm0s:qa`
 - status: `worker_done`
@@ -172,6 +187,7 @@ Synthetic single command packet rehearsal:
 
 - capture: `capture-40fc5ea5d769acebdb130781`
 - GitHub Issue: `#5`
+- GitHub Issue state: `closed`
 - Discord thread: `1512357660807270561`
 - worker session: `pnh:capture-40fc5ea5d769acebdb130781:qa`
 - status: `worker_done`
@@ -182,6 +198,7 @@ Second pilot batch:
 
 - capture: `capture-3b8522ff102b0469c683b027`
 - GitHub Issue: `#4`
+- GitHub Issue state: `closed`
 - Discord thread: `1512323845514596373`
 - worker session: `pnh:capture-3b8522ff102b0469c683b027:qa`
 - status: `worker_done`
@@ -193,6 +210,7 @@ First approved pilot batch:
 
 - capture: `capture-2a0fcdefc3f169ec30c6497f`
 - GitHub Issue: `#3`
+- GitHub Issue state: `closed`
 - Discord thread: `1512315698351706183`
 - worker session: `pnh:capture-2a0fcdefc3f169ec30c6497f:qa`
 - status: `worker_done`
