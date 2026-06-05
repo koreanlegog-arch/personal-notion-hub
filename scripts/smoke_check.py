@@ -71,6 +71,8 @@ REQUIRED = [
     "scripts/pnh_dispatch_job_smoke_check.py",
     "scripts/pnh_dispatch_candidate_export.py",
     "scripts/pnh_dispatch_candidate_export_smoke_check.py",
+    "scripts/pnh_dispatch_state_status.py",
+    "scripts/pnh_dispatch_state_status_smoke_check.py",
     "scripts/start_tailnet_session.sh",
     "scripts/stop_tailnet_session.sh",
     "tests/redacted-ui.spec.cjs",
@@ -189,6 +191,8 @@ def assert_github_ledger_bridge_contracts() -> None:
     dispatch_smoke = (ROOT / "scripts/pnh_dispatch_job_smoke_check.py").read_text(encoding="utf-8")
     candidate_export = (ROOT / "scripts/pnh_dispatch_candidate_export.py").read_text(encoding="utf-8")
     candidate_smoke = (ROOT / "scripts/pnh_dispatch_candidate_export_smoke_check.py").read_text(encoding="utf-8")
+    state_status = (ROOT / "scripts/pnh_dispatch_state_status.py").read_text(encoding="utf-8")
+    state_smoke = (ROOT / "scripts/pnh_dispatch_state_status_smoke_check.py").read_text(encoding="utf-8")
     expected = [
         "Dry-run is allowed",
         "APPROVE_PNH_GITHUB_ISSUE_LEDGER_APPLY",
@@ -203,8 +207,23 @@ def assert_github_ledger_bridge_contracts() -> None:
         "--allow-plaintext",
         "--allow-external-db",
         "Private command body remains in the local vault",
+        "pnh_dispatch_state_status_smoke_check_pass=true",
+        "--include-urls",
     ]
-    combined = "\n".join([design, dispatch_runbook, bridge, smoke, dispatch_job, dispatch_smoke, candidate_export, candidate_smoke])
+    combined = "\n".join(
+        [
+            design,
+            dispatch_runbook,
+            bridge,
+            smoke,
+            dispatch_job,
+            dispatch_smoke,
+            candidate_export,
+            candidate_smoke,
+            state_status,
+            state_smoke,
+        ]
+    )
     for token in expected:
         if token not in combined:
             raise SystemExit(f"missing_github_ledger_bridge_contract={token}")

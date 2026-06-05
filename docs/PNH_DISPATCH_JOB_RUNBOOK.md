@@ -34,6 +34,14 @@ companion/private/pnh_dispatch_state.json
 
 This path is ignored by Git. It stores external IDs and timestamps, not secret values.
 
+Inspect state without opening the private file directly:
+
+```bash
+python3 scripts/pnh_dispatch_state_status.py
+```
+
+URLs are hidden by default. Use `--include-urls` only for local operator inspection.
+
 ## Dry Run
 
 Export a metadata-only candidate from the local private inbox:
