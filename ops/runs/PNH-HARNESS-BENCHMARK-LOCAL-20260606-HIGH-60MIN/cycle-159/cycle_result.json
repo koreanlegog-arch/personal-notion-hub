@@ -1,0 +1,118 @@
+{
+  "comparison": {
+    "harnessSlowerRatio": 82.442,
+    "harnessStatus": "pass",
+    "qualityProxy": "harness_has_deeper_validation",
+    "supervisorStatus": "pass",
+    "wallClockDeltaSeconds": 9.203
+  },
+  "cycle": 159,
+  "endedAt": "2026-06-05T16:36:15+00:00",
+  "harnessRun": {
+    "arm": "harness-run",
+    "commandCount": 8,
+    "commands": [
+      {
+        "command": "node --check assets/js/app.js",
+        "elapsedSeconds": 0.021,
+        "returnCode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      {
+        "command": "node --check assets/js/assistant-import.js",
+        "elapsedSeconds": 0.019,
+        "returnCode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      {
+        "command": "node --check tests/assistant-dispatch-intent.spec.cjs",
+        "elapsedSeconds": 0.019,
+        "returnCode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      {
+        "command": "/usr/bin/python3 scripts/smoke_check.py",
+        "elapsedSeconds": 0.037,
+        "returnCode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      {
+        "command": "/usr/bin/python3 scripts/browser_bridge_smoke_check.py",
+        "elapsedSeconds": 0.807,
+        "returnCode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      {
+        "command": "/usr/bin/python3 scripts/pnh_unattended_dispatch_queue_plan.py",
+        "elapsedSeconds": 0.037,
+        "returnCode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      {
+        "command": "bash scripts/run_playwright_assistant_dispatch_intent_qa.sh",
+        "elapsedSeconds": 4.235,
+        "returnCode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      {
+        "command": "bash scripts/run_playwright_redacted_ui_qa.sh",
+        "elapsedSeconds": 4.141,
+        "returnCode": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    ],
+    "elapsedSeconds": 9.316,
+    "failureCount": 0,
+    "privateValuesPrinted": false,
+    "status": "pass",
+    "tokenValuePrinted": false
+  },
+  "startedAt": "2026-06-05T16:36:07+00:00",
+  "supervisorOnly": {
+    "arm": "supervisor-only",
+    "commandCount": 4,
+    "commands": [
+      {
+        "command": "node --check assets/js/app.js",
+        "elapsedSeconds": 0.021,
+        "returnCode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      {
+        "command": "node --check assets/js/assistant-import.js",
+        "elapsedSeconds": 0.019,
+        "returnCode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      {
+        "command": "/usr/bin/python3 scripts/smoke_check.py",
+        "elapsedSeconds": 0.035,
+        "returnCode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      {
+        "command": "/usr/bin/python3 scripts/pnh_unattended_dispatch_queue_plan.py",
+        "elapsedSeconds": 0.037,
+        "returnCode": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    ],
+    "elapsedSeconds": 0.113,
+    "failureCount": 0,
+    "privateValuesPrinted": false,
+    "status": "pass",
+    "tokenValuePrinted": false
+  }
+}

@@ -1,4 +1,296 @@
 {
+  "benchmark-runner-smoke": {
+    "minimumSamplesForActiveGate": 3,
+    "modes": {
+      "normal-harness": {
+        "hardFailConditions": [
+          "status != completed",
+          "cross_mode_contamination == true",
+          "stop_condition_triggered == true",
+          "secret or private body value printed",
+          "missing evidence_refs"
+        ],
+        "maxDefectCount": null,
+        "maxElapsedMinutes": null,
+        "maxElapsedRegressionPercent": 35,
+        "maxReworkCount": null,
+        "minOperationalEfficiencyScore": null,
+        "minTotalQualityScore": null,
+        "sampleCount": 0,
+        "status": "provisional"
+      },
+      "strict-harness": {
+        "hardFailConditions": [
+          "status != completed",
+          "cross_mode_contamination == true",
+          "stop_condition_triggered == true",
+          "secret or private body value printed",
+          "missing evidence_refs"
+        ],
+        "maxDefectCount": null,
+        "maxElapsedMinutes": null,
+        "maxElapsedRegressionPercent": 35,
+        "maxReworkCount": null,
+        "minOperationalEfficiencyScore": null,
+        "minTotalQualityScore": null,
+        "sampleCount": 0,
+        "status": "provisional"
+      },
+      "supervisor-central": {
+        "hardFailConditions": [
+          "status != completed",
+          "cross_mode_contamination == true",
+          "stop_condition_triggered == true",
+          "secret or private body value printed",
+          "missing evidence_refs"
+        ],
+        "maxDefectCount": null,
+        "maxElapsedMinutes": null,
+        "maxElapsedRegressionPercent": 35,
+        "maxReworkCount": null,
+        "minOperationalEfficiencyScore": null,
+        "minTotalQualityScore": null,
+        "sampleCount": 0,
+        "status": "provisional"
+      },
+      "supervisor-only": {
+        "hardFailConditions": [
+          "status != completed",
+          "cross_mode_contamination == true",
+          "stop_condition_triggered == true",
+          "secret or private body value printed",
+          "missing evidence_refs"
+        ],
+        "maxDefectCount": 1,
+        "maxElapsedMinutes": 0.1863,
+        "maxElapsedRegressionPercent": 35,
+        "maxReworkCount": 1,
+        "minOperationalEfficiencyScore": 40.38,
+        "minTotalQualityScore": 19,
+        "sampleCount": 1,
+        "status": "provisional"
+      }
+    }
+  },
+  "bug-triage": {
+    "minimumSamplesForActiveGate": 3,
+    "modes": {
+      "normal-harness": {
+        "hardFailConditions": [
+          "status != completed",
+          "cross_mode_contamination == true",
+          "stop_condition_triggered == true",
+          "secret or private body value printed",
+          "missing evidence_refs"
+        ],
+        "maxDefectCount": 1,
+        "maxElapsedMinutes": 0.0972,
+        "maxElapsedRegressionPercent": 35,
+        "maxReworkCount": 1,
+        "minOperationalEfficiencyScore": 69.45,
+        "minTotalQualityScore": 24,
+        "sampleCount": 10,
+        "status": "active"
+      },
+      "strict-harness": {
+        "hardFailConditions": [
+          "status != completed",
+          "cross_mode_contamination == true",
+          "stop_condition_triggered == true",
+          "secret or private body value printed",
+          "missing evidence_refs"
+        ],
+        "maxDefectCount": 1,
+        "maxElapsedMinutes": 0.0983,
+        "maxElapsedRegressionPercent": 35,
+        "maxReworkCount": 1,
+        "minOperationalEfficiencyScore": 68.72,
+        "minTotalQualityScore": 27,
+        "sampleCount": 10,
+        "status": "active"
+      },
+      "supervisor-central": {
+        "hardFailConditions": [
+          "status != completed",
+          "cross_mode_contamination == true",
+          "stop_condition_triggered == true",
+          "secret or private body value printed",
+          "missing evidence_refs"
+        ],
+        "maxDefectCount": 1,
+        "maxElapsedMinutes": 0.198,
+        "maxElapsedRegressionPercent": 35,
+        "maxReworkCount": 1,
+        "minOperationalEfficiencyScore": 55.25,
+        "minTotalQualityScore": 23,
+        "sampleCount": 10,
+        "status": "active"
+      },
+      "supervisor-only": {
+        "hardFailConditions": [
+          "status != completed",
+          "cross_mode_contamination == true",
+          "stop_condition_triggered == true",
+          "secret or private body value printed",
+          "missing evidence_refs"
+        ],
+        "maxDefectCount": 1,
+        "maxElapsedMinutes": 0.3542,
+        "maxElapsedRegressionPercent": 35,
+        "maxReworkCount": 1,
+        "minOperationalEfficiencyScore": 40.38,
+        "minTotalQualityScore": 19,
+        "sampleCount": 10,
+        "status": "active"
+      }
+    }
+  },
+  "documentation-delivery": {
+    "minimumSamplesForActiveGate": 3,
+    "modes": {
+      "normal-harness": {
+        "hardFailConditions": [
+          "status != completed",
+          "cross_mode_contamination == true",
+          "stop_condition_triggered == true",
+          "secret or private body value printed",
+          "missing evidence_refs"
+        ],
+        "maxDefectCount": 1,
+        "maxElapsedMinutes": 0.1483,
+        "maxElapsedRegressionPercent": 35,
+        "maxReworkCount": 1,
+        "minOperationalEfficiencyScore": 69.45,
+        "minTotalQualityScore": 24,
+        "sampleCount": 10,
+        "status": "active"
+      },
+      "strict-harness": {
+        "hardFailConditions": [
+          "status != completed",
+          "cross_mode_contamination == true",
+          "stop_condition_triggered == true",
+          "secret or private body value printed",
+          "missing evidence_refs"
+        ],
+        "maxDefectCount": 1,
+        "maxElapsedMinutes": 0.0914,
+        "maxElapsedRegressionPercent": 35,
+        "maxReworkCount": 1,
+        "minOperationalEfficiencyScore": 68.72,
+        "minTotalQualityScore": 27,
+        "sampleCount": 10,
+        "status": "active"
+      },
+      "supervisor-central": {
+        "hardFailConditions": [
+          "status != completed",
+          "cross_mode_contamination == true",
+          "stop_condition_triggered == true",
+          "secret or private body value printed",
+          "missing evidence_refs"
+        ],
+        "maxDefectCount": 1,
+        "maxElapsedMinutes": 0.3049,
+        "maxElapsedRegressionPercent": 35,
+        "maxReworkCount": 1,
+        "minOperationalEfficiencyScore": 55.25,
+        "minTotalQualityScore": 23,
+        "sampleCount": 10,
+        "status": "active"
+      },
+      "supervisor-only": {
+        "hardFailConditions": [
+          "status != completed",
+          "cross_mode_contamination == true",
+          "stop_condition_triggered == true",
+          "secret or private body value printed",
+          "missing evidence_refs"
+        ],
+        "maxDefectCount": 1,
+        "maxElapsedMinutes": 0.2349,
+        "maxElapsedRegressionPercent": 35,
+        "maxReworkCount": 1,
+        "minOperationalEfficiencyScore": 40.38,
+        "minTotalQualityScore": 19,
+        "sampleCount": 10,
+        "status": "active"
+      }
+    }
+  },
+  "external-dispatch-dry-run": {
+    "minimumSamplesForActiveGate": 3,
+    "modes": {
+      "normal-harness": {
+        "hardFailConditions": [
+          "status != completed",
+          "cross_mode_contamination == true",
+          "stop_condition_triggered == true",
+          "secret or private body value printed",
+          "missing evidence_refs"
+        ],
+        "maxDefectCount": 1,
+        "maxElapsedMinutes": 0.094,
+        "maxElapsedRegressionPercent": 35,
+        "maxReworkCount": 1,
+        "minOperationalEfficiencyScore": 69.45,
+        "minTotalQualityScore": 24,
+        "sampleCount": 10,
+        "status": "active"
+      },
+      "strict-harness": {
+        "hardFailConditions": [
+          "status != completed",
+          "cross_mode_contamination == true",
+          "stop_condition_triggered == true",
+          "secret or private body value printed",
+          "missing evidence_refs"
+        ],
+        "maxDefectCount": 1,
+        "maxElapsedMinutes": 0.096,
+        "maxElapsedRegressionPercent": 35,
+        "maxReworkCount": 1,
+        "minOperationalEfficiencyScore": 68.72,
+        "minTotalQualityScore": 27,
+        "sampleCount": 10,
+        "status": "active"
+      },
+      "supervisor-central": {
+        "hardFailConditions": [
+          "status != completed",
+          "cross_mode_contamination == true",
+          "stop_condition_triggered == true",
+          "secret or private body value printed",
+          "missing evidence_refs"
+        ],
+        "maxDefectCount": 1,
+        "maxElapsedMinutes": 0.1932,
+        "maxElapsedRegressionPercent": 35,
+        "maxReworkCount": 1,
+        "minOperationalEfficiencyScore": 55.25,
+        "minTotalQualityScore": 23,
+        "sampleCount": 10,
+        "status": "active"
+      },
+      "supervisor-only": {
+        "hardFailConditions": [
+          "status != completed",
+          "cross_mode_contamination == true",
+          "stop_condition_triggered == true",
+          "secret or private body value printed",
+          "missing evidence_refs"
+        ],
+        "maxDefectCount": 1,
+        "maxElapsedMinutes": 0.3209,
+        "maxElapsedRegressionPercent": 35,
+        "maxReworkCount": 1,
+        "minOperationalEfficiencyScore": 40.38,
+        "minTotalQualityScore": 19,
+        "sampleCount": 10,
+        "status": "active"
+      }
+    }
+  },
   "pnh-local-validation": {
     "minimumSamplesForActiveGate": 3,
     "modes": {
@@ -11,12 +303,12 @@
           "missing evidence_refs"
         ],
         "maxDefectCount": 1,
-        "maxElapsedMinutes": 0.0883,
+        "maxElapsedMinutes": 0.16,
         "maxElapsedRegressionPercent": 35,
         "maxReworkCount": 1,
         "minOperationalEfficiencyScore": 69.45,
         "minTotalQualityScore": 24,
-        "sampleCount": 3,
+        "sampleCount": 13,
         "status": "active"
       },
       "strict-harness": {
@@ -28,12 +320,12 @@
           "missing evidence_refs"
         ],
         "maxDefectCount": 1,
-        "maxElapsedMinutes": 0.0882,
+        "maxElapsedMinutes": 0.0998,
         "maxElapsedRegressionPercent": 35,
         "maxReworkCount": 1,
         "minOperationalEfficiencyScore": 68.72,
         "minTotalQualityScore": 27,
-        "sampleCount": 3,
+        "sampleCount": 13,
         "status": "active"
       },
       "supervisor-central": {
@@ -45,12 +337,12 @@
           "missing evidence_refs"
         ],
         "maxDefectCount": 1,
-        "maxElapsedMinutes": 0.2379,
+        "maxElapsedMinutes": 0.2694,
         "maxElapsedRegressionPercent": 35,
         "maxReworkCount": 1,
         "minOperationalEfficiencyScore": 55.25,
         "minTotalQualityScore": 23,
-        "sampleCount": 3,
+        "sampleCount": 13,
         "status": "active"
       },
       "supervisor-only": {
@@ -62,13 +354,232 @@
           "missing evidence_refs"
         ],
         "maxDefectCount": 1,
-        "maxElapsedMinutes": 0.1839,
+        "maxElapsedMinutes": 0.2228,
         "maxElapsedRegressionPercent": 35,
         "maxReworkCount": 1,
         "minOperationalEfficiencyScore": 40.38,
         "minTotalQualityScore": 19,
-        "sampleCount": 3,
+        "sampleCount": 13,
         "status": "active"
+      }
+    }
+  },
+  "release-readiness": {
+    "minimumSamplesForActiveGate": 3,
+    "modes": {
+      "normal-harness": {
+        "hardFailConditions": [
+          "status != completed",
+          "cross_mode_contamination == true",
+          "stop_condition_triggered == true",
+          "secret or private body value printed",
+          "missing evidence_refs"
+        ],
+        "maxDefectCount": 1,
+        "maxElapsedMinutes": 0.1489,
+        "maxElapsedRegressionPercent": 35,
+        "maxReworkCount": 1,
+        "minOperationalEfficiencyScore": 69.45,
+        "minTotalQualityScore": 24,
+        "sampleCount": 10,
+        "status": "active"
+      },
+      "strict-harness": {
+        "hardFailConditions": [
+          "status != completed",
+          "cross_mode_contamination == true",
+          "stop_condition_triggered == true",
+          "secret or private body value printed",
+          "missing evidence_refs"
+        ],
+        "maxDefectCount": 1,
+        "maxElapsedMinutes": 0.1401,
+        "maxElapsedRegressionPercent": 35,
+        "maxReworkCount": 1,
+        "minOperationalEfficiencyScore": 68.72,
+        "minTotalQualityScore": 27,
+        "sampleCount": 10,
+        "status": "active"
+      },
+      "supervisor-central": {
+        "hardFailConditions": [
+          "status != completed",
+          "cross_mode_contamination == true",
+          "stop_condition_triggered == true",
+          "secret or private body value printed",
+          "missing evidence_refs"
+        ],
+        "maxDefectCount": 1,
+        "maxElapsedMinutes": 0.2051,
+        "maxElapsedRegressionPercent": 35,
+        "maxReworkCount": 1,
+        "minOperationalEfficiencyScore": 55.25,
+        "minTotalQualityScore": 23,
+        "sampleCount": 10,
+        "status": "active"
+      },
+      "supervisor-only": {
+        "hardFailConditions": [
+          "status != completed",
+          "cross_mode_contamination == true",
+          "stop_condition_triggered == true",
+          "secret or private body value printed",
+          "missing evidence_refs"
+        ],
+        "maxDefectCount": null,
+        "maxElapsedMinutes": null,
+        "maxElapsedRegressionPercent": 35,
+        "maxReworkCount": null,
+        "minOperationalEfficiencyScore": null,
+        "minTotalQualityScore": null,
+        "sampleCount": 0,
+        "status": "provisional"
+      }
+    }
+  },
+  "security-sensitive-local-storage": {
+    "minimumSamplesForActiveGate": 3,
+    "modes": {
+      "normal-harness": {
+        "hardFailConditions": [
+          "status != completed",
+          "cross_mode_contamination == true",
+          "stop_condition_triggered == true",
+          "secret or private body value printed",
+          "missing evidence_refs"
+        ],
+        "maxDefectCount": 1,
+        "maxElapsedMinutes": 0.0922,
+        "maxElapsedRegressionPercent": 35,
+        "maxReworkCount": 1,
+        "minOperationalEfficiencyScore": 69.45,
+        "minTotalQualityScore": 24,
+        "sampleCount": 10,
+        "status": "active"
+      },
+      "strict-harness": {
+        "hardFailConditions": [
+          "status != completed",
+          "cross_mode_contamination == true",
+          "stop_condition_triggered == true",
+          "secret or private body value printed",
+          "missing evidence_refs"
+        ],
+        "maxDefectCount": 1,
+        "maxElapsedMinutes": 0.213,
+        "maxElapsedRegressionPercent": 35,
+        "maxReworkCount": 1,
+        "minOperationalEfficiencyScore": 68.72,
+        "minTotalQualityScore": 27,
+        "sampleCount": 10,
+        "status": "active"
+      },
+      "supervisor-central": {
+        "hardFailConditions": [
+          "status != completed",
+          "cross_mode_contamination == true",
+          "stop_condition_triggered == true",
+          "secret or private body value printed",
+          "missing evidence_refs"
+        ],
+        "maxDefectCount": 1,
+        "maxElapsedMinutes": 0.1913,
+        "maxElapsedRegressionPercent": 35,
+        "maxReworkCount": 1,
+        "minOperationalEfficiencyScore": 55.25,
+        "minTotalQualityScore": 23,
+        "sampleCount": 10,
+        "status": "active"
+      },
+      "supervisor-only": {
+        "hardFailConditions": [
+          "status != completed",
+          "cross_mode_contamination == true",
+          "stop_condition_triggered == true",
+          "secret or private body value printed",
+          "missing evidence_refs"
+        ],
+        "maxDefectCount": null,
+        "maxElapsedMinutes": null,
+        "maxElapsedRegressionPercent": 35,
+        "maxReworkCount": null,
+        "minOperationalEfficiencyScore": null,
+        "minTotalQualityScore": null,
+        "sampleCount": 0,
+        "status": "provisional"
+      }
+    }
+  },
+  "unattended-dispatch": {
+    "minimumSamplesForActiveGate": 3,
+    "modes": {
+      "normal-harness": {
+        "hardFailConditions": [
+          "status != completed",
+          "cross_mode_contamination == true",
+          "stop_condition_triggered == true",
+          "secret or private body value printed",
+          "missing evidence_refs"
+        ],
+        "maxDefectCount": 1,
+        "maxElapsedMinutes": 0.1471,
+        "maxElapsedRegressionPercent": 35,
+        "maxReworkCount": 1,
+        "minOperationalEfficiencyScore": 69.45,
+        "minTotalQualityScore": 24,
+        "sampleCount": 10,
+        "status": "active"
+      },
+      "strict-harness": {
+        "hardFailConditions": [
+          "status != completed",
+          "cross_mode_contamination == true",
+          "stop_condition_triggered == true",
+          "secret or private body value printed",
+          "missing evidence_refs"
+        ],
+        "maxDefectCount": 1,
+        "maxElapsedMinutes": 0.1014,
+        "maxElapsedRegressionPercent": 35,
+        "maxReworkCount": 1,
+        "minOperationalEfficiencyScore": 68.72,
+        "minTotalQualityScore": 27,
+        "sampleCount": 10,
+        "status": "active"
+      },
+      "supervisor-central": {
+        "hardFailConditions": [
+          "status != completed",
+          "cross_mode_contamination == true",
+          "stop_condition_triggered == true",
+          "secret or private body value printed",
+          "missing evidence_refs"
+        ],
+        "maxDefectCount": null,
+        "maxElapsedMinutes": null,
+        "maxElapsedRegressionPercent": 35,
+        "maxReworkCount": null,
+        "minOperationalEfficiencyScore": null,
+        "minTotalQualityScore": null,
+        "sampleCount": 0,
+        "status": "provisional"
+      },
+      "supervisor-only": {
+        "hardFailConditions": [
+          "status != completed",
+          "cross_mode_contamination == true",
+          "stop_condition_triggered == true",
+          "secret or private body value printed",
+          "missing evidence_refs"
+        ],
+        "maxDefectCount": null,
+        "maxElapsedMinutes": null,
+        "maxElapsedRegressionPercent": 35,
+        "maxReworkCount": null,
+        "minOperationalEfficiencyScore": null,
+        "minTotalQualityScore": null,
+        "sampleCount": 0,
+        "status": "provisional"
       }
     }
   }

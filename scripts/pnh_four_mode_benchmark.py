@@ -49,6 +49,11 @@ def main() -> int:
     parser.add_argument("--difficulty-band", default="M", choices=["S", "M", "L"])
     parser.add_argument("--task-family", default="pnh-local-validation")
     parser.add_argument("--surface", default="local-cli-browser-qa")
+    parser.add_argument(
+        "--modes",
+        default=",".join(VALID_MODES),
+        help="Comma-separated operation modes to run. Default: all four modes.",
+    )
     parser.add_argument("--retain-passing-command-logs", action="store_true")
     args = parser.parse_args()
 
@@ -64,6 +69,7 @@ def main() -> int:
 def run_benchmark(args: argparse.Namespace) -> dict[str, Any]:
     if args.sets < 1:
         raise FourModeBenchmarkError("sets must be at least 1")
+    modes = parse_modes(args.modes)
     run_id = f"{args.benchmark_prefix}-SETS{args.sets}"
     run_dir = ROOT / "ops" / "runs" / run_id
     run_dir.mkdir(parents=True, exist_ok=False)
@@ -74,7 +80,7 @@ def run_benchmark(args: argparse.Namespace) -> dict[str, Any]:
         set_dir = run_dir / benchmark_id
         set_dir.mkdir(parents=True, exist_ok=True)
         mode_results = []
-        for mode in VALID_MODES:
+        for mode in modes:
             mode_result = run_mode(args, benchmark_id, mode, set_dir / mode)
             mode_results.append(mode_result)
             append_operation_record(args, benchmark_id, mode_result)
@@ -92,10 +98,11 @@ def run_benchmark(args: argparse.Namespace) -> dict[str, Any]:
         "startedAt": started_at,
         "endedAt": utc_now(),
         "setCount": len(set_results),
-        "modeCount": len(set_results) * len(VALID_MODES),
+        "modes": modes,
+        "modeCount": len(set_results) * len(modes),
         "operationLog": safe_path(OPERATION_LOG),
         "sets": set_results,
-        "aggregate": aggregate(set_results),
+        "aggregate": aggregate(set_results, modes),
         "externalWritesPerformed": False,
         "privateValuesPrinted": False,
         "tokenValuePrinted": False,
@@ -113,6 +120,16 @@ def run_benchmark(args: argparse.Namespace) -> dict[str, Any]:
     )
     (run_dir / "operation_mode_summary.json").write_text(summarize_result.stdout, encoding="utf-8")
     return summary
+
+
+def parse_modes(value: str) -> list[str]:
+    modes = [item.strip() for item in value.split(",") if item.strip()]
+    if not modes:
+        raise FourModeBenchmarkError("modes must include at least one mode")
+    invalid = [mode for mode in modes if mode not in VALID_MODES]
+    if invalid:
+        raise FourModeBenchmarkError(f"invalid mode(s): {', '.join(invalid)}")
+    return modes
 
 
 def run_mode(args: argparse.Namespace, benchmark_id: str, mode: str, mode_dir: Path) -> dict[str, Any]:
@@ -503,8 +520,8 @@ def compare_modes(results: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def aggregate(sets: list[dict[str, Any]]) -> dict[str, Any]:
-    by_mode: dict[str, list[float]] = {mode: [] for mode in VALID_MODES}
+def aggregate(sets: list[dict[str, Any]], modes: list[str]) -> dict[str, Any]:
+    by_mode: dict[str, list[float]] = {mode: [] for mode in modes}
     for item in sets:
         for mode_result in item["modes"]:
             by_mode[mode_result["mode"]].append(float(mode_result["elapsedSeconds"]))

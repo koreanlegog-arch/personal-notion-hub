@@ -1,0 +1,23 @@
+{
+  "endedAt": "2026-06-05T16:03:52+00:00",
+  "expectedRunDir": "ops/runs/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-SETS10",
+  "externalWritesPerformed": false,
+  "modelId": "incident-debug-four-mode",
+  "modes": [
+    "supervisor-only",
+    "supervisor-central",
+    "normal-harness",
+    "strict-harness"
+  ],
+  "privateValuesPrinted": false,
+  "rawPrivateBodyRead": false,
+  "reasoningEffort": "high",
+  "returnCode": 0,
+  "sets": 10,
+  "startedAt": "2026-06-05T15:59:20+00:00",
+  "status": "pass",
+  "stderr": "",
+  "stdout": "{\"aggregate\": {\"normal-harness\": {\"count\": 10, \"maxSeconds\": 4.965, \"meanSeconds\": 4.403, \"minSeconds\": 4.271}, \"strict-harness\": {\"count\": 10, \"maxSeconds\": 4.572, \"meanSeconds\": 4.381, \"minSeconds\": 4.259}, \"supervisor-central\": {\"count\": 10, \"maxSeconds\": 8.963, \"meanSeconds\": 8.801, \"minSeconds\": 8.687}, \"supervisor-only\": {\"count\": 10, \"maxSeconds\": 19.321, \"meanSeconds\": 10.431, \"minSeconds\": 8.85}}, \"externalWritesPerformed\": false, \"modeCount\": 40, \"pnhFourModeBenchmark\": true, \"privateValuesPrinted\": false, \"runId\": \"PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-SETS10\", \"setCount\": 10, \"tokenValuePrinted\": false}\n",
+  "taskFamily": "bug-triage",
+  "tokenValuePrinted": false
+}

@@ -1,0 +1,23 @@
+{
+  "endedAt": "2026-06-05T15:47:34+00:00",
+  "expectedRunDir": "ops/runs/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-SETS10",
+  "externalWritesPerformed": false,
+  "modelId": "local-validation-four-mode",
+  "modes": [
+    "supervisor-only",
+    "supervisor-central",
+    "normal-harness",
+    "strict-harness"
+  ],
+  "privateValuesPrinted": false,
+  "rawPrivateBodyRead": false,
+  "reasoningEffort": "medium",
+  "returnCode": 0,
+  "sets": 10,
+  "startedAt": "2026-06-05T15:43:11+00:00",
+  "status": "pass",
+  "stderr": "",
+  "stdout": "{\"aggregate\": {\"normal-harness\": {\"count\": 10, \"maxSeconds\": 8.729, \"meanSeconds\": 4.803, \"minSeconds\": 3.867}, \"strict-harness\": {\"count\": 10, \"maxSeconds\": 5.443, \"meanSeconds\": 4.168, \"minSeconds\": 3.89}, \"supervisor-central\": {\"count\": 10, \"maxSeconds\": 14.693, \"meanSeconds\": 8.936, \"minSeconds\": 7.935}, \"supervisor-only\": {\"count\": 10, \"maxSeconds\": 12.149, \"meanSeconds\": 9.164, \"minSeconds\": 8.176}}, \"externalWritesPerformed\": false, \"modeCount\": 40, \"pnhFourModeBenchmark\": true, \"privateValuesPrinted\": false, \"runId\": \"PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-SETS10\", \"setCount\": 10, \"tokenValuePrinted\": false}\n",
+  "taskFamily": "pnh-local-validation",
+  "tokenValuePrinted": false
+}

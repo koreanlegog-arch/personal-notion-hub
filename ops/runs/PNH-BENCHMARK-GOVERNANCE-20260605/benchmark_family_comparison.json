@@ -152,16 +152,308 @@
       "whenToUse": "Only when the user explicitly starts a longer benchmark window."
     }
   ],
-  "completedUsableRecordCount": 12,
-  "generatedAt": "2026-06-05T13:18:25+00:00",
+  "completedUsableRecordCount": 253,
+  "generatedAt": "2026-06-05T16:43:45+00:00",
   "minSamplesPerMode": 3,
   "notes": [
     "Thresholds are per task family and mode; do not compare unrelated task families directly.",
     "Provisional thresholds are useful for warning, not hard gating.",
     "Wall-clock data is local environment dependent and should be compared against the same machine/session class."
   ],
-  "recordCount": 12,
+  "recordCount": 253,
   "regressionThresholds": {
+    "benchmark-runner-smoke": {
+      "minimumSamplesForActiveGate": 3,
+      "modes": {
+        "normal-harness": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": null,
+          "maxElapsedMinutes": null,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": null,
+          "minOperationalEfficiencyScore": null,
+          "minTotalQualityScore": null,
+          "sampleCount": 0,
+          "status": "provisional"
+        },
+        "strict-harness": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": null,
+          "maxElapsedMinutes": null,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": null,
+          "minOperationalEfficiencyScore": null,
+          "minTotalQualityScore": null,
+          "sampleCount": 0,
+          "status": "provisional"
+        },
+        "supervisor-central": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": null,
+          "maxElapsedMinutes": null,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": null,
+          "minOperationalEfficiencyScore": null,
+          "minTotalQualityScore": null,
+          "sampleCount": 0,
+          "status": "provisional"
+        },
+        "supervisor-only": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": 1,
+          "maxElapsedMinutes": 0.1863,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": 1,
+          "minOperationalEfficiencyScore": 40.38,
+          "minTotalQualityScore": 19,
+          "sampleCount": 1,
+          "status": "provisional"
+        }
+      }
+    },
+    "bug-triage": {
+      "minimumSamplesForActiveGate": 3,
+      "modes": {
+        "normal-harness": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": 1,
+          "maxElapsedMinutes": 0.0972,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": 1,
+          "minOperationalEfficiencyScore": 69.45,
+          "minTotalQualityScore": 24,
+          "sampleCount": 10,
+          "status": "active"
+        },
+        "strict-harness": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": 1,
+          "maxElapsedMinutes": 0.0983,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": 1,
+          "minOperationalEfficiencyScore": 68.72,
+          "minTotalQualityScore": 27,
+          "sampleCount": 10,
+          "status": "active"
+        },
+        "supervisor-central": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": 1,
+          "maxElapsedMinutes": 0.198,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": 1,
+          "minOperationalEfficiencyScore": 55.25,
+          "minTotalQualityScore": 23,
+          "sampleCount": 10,
+          "status": "active"
+        },
+        "supervisor-only": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": 1,
+          "maxElapsedMinutes": 0.3542,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": 1,
+          "minOperationalEfficiencyScore": 40.38,
+          "minTotalQualityScore": 19,
+          "sampleCount": 10,
+          "status": "active"
+        }
+      }
+    },
+    "documentation-delivery": {
+      "minimumSamplesForActiveGate": 3,
+      "modes": {
+        "normal-harness": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": 1,
+          "maxElapsedMinutes": 0.1483,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": 1,
+          "minOperationalEfficiencyScore": 69.45,
+          "minTotalQualityScore": 24,
+          "sampleCount": 10,
+          "status": "active"
+        },
+        "strict-harness": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": 1,
+          "maxElapsedMinutes": 0.0914,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": 1,
+          "minOperationalEfficiencyScore": 68.72,
+          "minTotalQualityScore": 27,
+          "sampleCount": 10,
+          "status": "active"
+        },
+        "supervisor-central": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": 1,
+          "maxElapsedMinutes": 0.3049,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": 1,
+          "minOperationalEfficiencyScore": 55.25,
+          "minTotalQualityScore": 23,
+          "sampleCount": 10,
+          "status": "active"
+        },
+        "supervisor-only": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": 1,
+          "maxElapsedMinutes": 0.2349,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": 1,
+          "minOperationalEfficiencyScore": 40.38,
+          "minTotalQualityScore": 19,
+          "sampleCount": 10,
+          "status": "active"
+        }
+      }
+    },
+    "external-dispatch-dry-run": {
+      "minimumSamplesForActiveGate": 3,
+      "modes": {
+        "normal-harness": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": 1,
+          "maxElapsedMinutes": 0.094,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": 1,
+          "minOperationalEfficiencyScore": 69.45,
+          "minTotalQualityScore": 24,
+          "sampleCount": 10,
+          "status": "active"
+        },
+        "strict-harness": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": 1,
+          "maxElapsedMinutes": 0.096,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": 1,
+          "minOperationalEfficiencyScore": 68.72,
+          "minTotalQualityScore": 27,
+          "sampleCount": 10,
+          "status": "active"
+        },
+        "supervisor-central": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": 1,
+          "maxElapsedMinutes": 0.1932,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": 1,
+          "minOperationalEfficiencyScore": 55.25,
+          "minTotalQualityScore": 23,
+          "sampleCount": 10,
+          "status": "active"
+        },
+        "supervisor-only": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": 1,
+          "maxElapsedMinutes": 0.3209,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": 1,
+          "minOperationalEfficiencyScore": 40.38,
+          "minTotalQualityScore": 19,
+          "sampleCount": 10,
+          "status": "active"
+        }
+      }
+    },
     "pnh-local-validation": {
       "minimumSamplesForActiveGate": 3,
       "modes": {
@@ -174,12 +466,12 @@
             "missing evidence_refs"
           ],
           "maxDefectCount": 1,
-          "maxElapsedMinutes": 0.0883,
+          "maxElapsedMinutes": 0.16,
           "maxElapsedRegressionPercent": 35,
           "maxReworkCount": 1,
           "minOperationalEfficiencyScore": 69.45,
           "minTotalQualityScore": 24,
-          "sampleCount": 3,
+          "sampleCount": 13,
           "status": "active"
         },
         "strict-harness": {
@@ -191,12 +483,12 @@
             "missing evidence_refs"
           ],
           "maxDefectCount": 1,
-          "maxElapsedMinutes": 0.0882,
+          "maxElapsedMinutes": 0.0998,
           "maxElapsedRegressionPercent": 35,
           "maxReworkCount": 1,
           "minOperationalEfficiencyScore": 68.72,
           "minTotalQualityScore": 27,
-          "sampleCount": 3,
+          "sampleCount": 13,
           "status": "active"
         },
         "supervisor-central": {
@@ -208,12 +500,12 @@
             "missing evidence_refs"
           ],
           "maxDefectCount": 1,
-          "maxElapsedMinutes": 0.2379,
+          "maxElapsedMinutes": 0.2694,
           "maxElapsedRegressionPercent": 35,
           "maxReworkCount": 1,
           "minOperationalEfficiencyScore": 55.25,
           "minTotalQualityScore": 23,
-          "sampleCount": 3,
+          "sampleCount": 13,
           "status": "active"
         },
         "supervisor-only": {
@@ -225,13 +517,232 @@
             "missing evidence_refs"
           ],
           "maxDefectCount": 1,
-          "maxElapsedMinutes": 0.1839,
+          "maxElapsedMinutes": 0.2228,
           "maxElapsedRegressionPercent": 35,
           "maxReworkCount": 1,
           "minOperationalEfficiencyScore": 40.38,
           "minTotalQualityScore": 19,
-          "sampleCount": 3,
+          "sampleCount": 13,
           "status": "active"
+        }
+      }
+    },
+    "release-readiness": {
+      "minimumSamplesForActiveGate": 3,
+      "modes": {
+        "normal-harness": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": 1,
+          "maxElapsedMinutes": 0.1489,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": 1,
+          "minOperationalEfficiencyScore": 69.45,
+          "minTotalQualityScore": 24,
+          "sampleCount": 10,
+          "status": "active"
+        },
+        "strict-harness": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": 1,
+          "maxElapsedMinutes": 0.1401,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": 1,
+          "minOperationalEfficiencyScore": 68.72,
+          "minTotalQualityScore": 27,
+          "sampleCount": 10,
+          "status": "active"
+        },
+        "supervisor-central": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": 1,
+          "maxElapsedMinutes": 0.2051,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": 1,
+          "minOperationalEfficiencyScore": 55.25,
+          "minTotalQualityScore": 23,
+          "sampleCount": 10,
+          "status": "active"
+        },
+        "supervisor-only": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": null,
+          "maxElapsedMinutes": null,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": null,
+          "minOperationalEfficiencyScore": null,
+          "minTotalQualityScore": null,
+          "sampleCount": 0,
+          "status": "provisional"
+        }
+      }
+    },
+    "security-sensitive-local-storage": {
+      "minimumSamplesForActiveGate": 3,
+      "modes": {
+        "normal-harness": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": 1,
+          "maxElapsedMinutes": 0.0922,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": 1,
+          "minOperationalEfficiencyScore": 69.45,
+          "minTotalQualityScore": 24,
+          "sampleCount": 10,
+          "status": "active"
+        },
+        "strict-harness": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": 1,
+          "maxElapsedMinutes": 0.213,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": 1,
+          "minOperationalEfficiencyScore": 68.72,
+          "minTotalQualityScore": 27,
+          "sampleCount": 10,
+          "status": "active"
+        },
+        "supervisor-central": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": 1,
+          "maxElapsedMinutes": 0.1913,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": 1,
+          "minOperationalEfficiencyScore": 55.25,
+          "minTotalQualityScore": 23,
+          "sampleCount": 10,
+          "status": "active"
+        },
+        "supervisor-only": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": null,
+          "maxElapsedMinutes": null,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": null,
+          "minOperationalEfficiencyScore": null,
+          "minTotalQualityScore": null,
+          "sampleCount": 0,
+          "status": "provisional"
+        }
+      }
+    },
+    "unattended-dispatch": {
+      "minimumSamplesForActiveGate": 3,
+      "modes": {
+        "normal-harness": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": 1,
+          "maxElapsedMinutes": 0.1471,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": 1,
+          "minOperationalEfficiencyScore": 69.45,
+          "minTotalQualityScore": 24,
+          "sampleCount": 10,
+          "status": "active"
+        },
+        "strict-harness": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": 1,
+          "maxElapsedMinutes": 0.1014,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": 1,
+          "minOperationalEfficiencyScore": 68.72,
+          "minTotalQualityScore": 27,
+          "sampleCount": 10,
+          "status": "active"
+        },
+        "supervisor-central": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": null,
+          "maxElapsedMinutes": null,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": null,
+          "minOperationalEfficiencyScore": null,
+          "minTotalQualityScore": null,
+          "sampleCount": 0,
+          "status": "provisional"
+        },
+        "supervisor-only": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": null,
+          "maxElapsedMinutes": null,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": null,
+          "minOperationalEfficiencyScore": null,
+          "minTotalQualityScore": null,
+          "sampleCount": 0,
+          "status": "provisional"
         }
       }
     }
@@ -239,7 +750,245 @@
   "schemaVersion": 1,
   "sourceLog": "ops/runs/harness_operation_mode_measurements.jsonl",
   "taskFamilies": {
-    "pnh-local-validation": {
+    "benchmark-runner-smoke": {
+      "bestOperationalEfficiencyMode": "supervisor-only",
+      "bestQualityAdjustedMode": "supervisor-only",
+      "fastestMode": "supervisor-only",
+      "lowestSupervisorLoadMode": "supervisor-only",
+      "modeStats": {
+        "normal-harness": {
+          "benchmarkIds": [],
+          "difficultyDistribution": {},
+          "maxElapsedMinutes": null,
+          "meanElapsedMinutes": null,
+          "medianDefectCount": null,
+          "medianElapsedMinutes": null,
+          "medianOperationalEfficiencyScore": null,
+          "medianQualityAdjustedEfficiency": null,
+          "medianReworkCount": null,
+          "medianSupervisorDirectImplementationRatio": null,
+          "medianTotalQualityScore": null,
+          "reasoningEffortDistribution": {},
+          "sampleCount": 0
+        },
+        "strict-harness": {
+          "benchmarkIds": [],
+          "difficultyDistribution": {},
+          "maxElapsedMinutes": null,
+          "meanElapsedMinutes": null,
+          "medianDefectCount": null,
+          "medianElapsedMinutes": null,
+          "medianOperationalEfficiencyScore": null,
+          "medianQualityAdjustedEfficiency": null,
+          "medianReworkCount": null,
+          "medianSupervisorDirectImplementationRatio": null,
+          "medianTotalQualityScore": null,
+          "reasoningEffortDistribution": {},
+          "sampleCount": 0
+        },
+        "supervisor-central": {
+          "benchmarkIds": [],
+          "difficultyDistribution": {},
+          "maxElapsedMinutes": null,
+          "meanElapsedMinutes": null,
+          "medianDefectCount": null,
+          "medianElapsedMinutes": null,
+          "medianOperationalEfficiencyScore": null,
+          "medianQualityAdjustedEfficiency": null,
+          "medianReworkCount": null,
+          "medianSupervisorDirectImplementationRatio": null,
+          "medianTotalQualityScore": null,
+          "reasoningEffortDistribution": {},
+          "sampleCount": 0
+        },
+        "supervisor-only": {
+          "benchmarkIds": [
+            "PNH-4MODE-BENCHMARK-SMOKE-20260606-001"
+          ],
+          "difficultyDistribution": {
+            "M": 1
+          },
+          "maxElapsedMinutes": 0.138,
+          "meanElapsedMinutes": 0.138,
+          "medianDefectCount": 0.0,
+          "medianElapsedMinutes": 0.138,
+          "medianOperationalEfficiencyScore": 47.5,
+          "medianQualityAdjustedEfficiency": 152.1739,
+          "medianReworkCount": 0.0,
+          "medianSupervisorDirectImplementationRatio": 1.0,
+          "medianTotalQualityScore": 21.0,
+          "reasoningEffortDistribution": {
+            "high": 1
+          },
+          "sampleCount": 1
+        }
+      },
+      "sampleCompleteness": {
+        "normal-harness": {
+          "meetsMinimum": false,
+          "sampleCount": 0
+        },
+        "strict-harness": {
+          "meetsMinimum": false,
+          "sampleCount": 0
+        },
+        "supervisor-central": {
+          "meetsMinimum": false,
+          "sampleCount": 0
+        },
+        "supervisor-only": {
+          "meetsMinimum": false,
+          "sampleCount": 1
+        }
+      }
+    },
+    "bug-triage": {
+      "bestOperationalEfficiencyMode": "normal-harness",
+      "bestQualityAdjustedMode": "strict-harness",
+      "fastestMode": "normal-harness",
+      "lowestSupervisorLoadMode": "strict-harness",
+      "modeStats": {
+        "normal-harness": {
+          "benchmarkIds": [
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-001",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-002",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-003",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-004",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-005",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-006",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-007",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-008",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-009",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-010"
+          ],
+          "difficultyDistribution": {
+            "M": 10
+          },
+          "maxElapsedMinutes": 0.0827,
+          "meanElapsedMinutes": 0.0734,
+          "medianDefectCount": 0.0,
+          "medianElapsedMinutes": 0.072,
+          "medianOperationalEfficiencyScore": 81.7,
+          "medianQualityAdjustedEfficiency": 361.3622,
+          "medianReworkCount": 0.0,
+          "medianSupervisorDirectImplementationRatio": 0.35,
+          "medianTotalQualityScore": 26.0,
+          "reasoningEffortDistribution": {
+            "high": 10
+          },
+          "sampleCount": 10
+        },
+        "strict-harness": {
+          "benchmarkIds": [
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-001",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-002",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-003",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-004",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-005",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-006",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-007",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-008",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-009",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-010"
+          ],
+          "difficultyDistribution": {
+            "M": 10
+          },
+          "maxElapsedMinutes": 0.0762,
+          "meanElapsedMinutes": 0.073,
+          "medianDefectCount": 0.0,
+          "medianElapsedMinutes": 0.0728,
+          "medianOperationalEfficiencyScore": 80.85,
+          "medianQualityAdjustedEfficiency": 398.0799,
+          "medianReworkCount": 0.0,
+          "medianSupervisorDirectImplementationRatio": 0.15,
+          "medianTotalQualityScore": 29.0,
+          "reasoningEffortDistribution": {
+            "high": 10
+          },
+          "sampleCount": 10
+        },
+        "supervisor-central": {
+          "benchmarkIds": [
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-001",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-002",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-003",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-004",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-005",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-006",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-007",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-008",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-009",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-010"
+          ],
+          "difficultyDistribution": {
+            "M": 10
+          },
+          "maxElapsedMinutes": 0.1494,
+          "meanElapsedMinutes": 0.1467,
+          "medianDefectCount": 0.0,
+          "medianElapsedMinutes": 0.1467,
+          "medianOperationalEfficiencyScore": 65.0,
+          "medianQualityAdjustedEfficiency": 170.3578,
+          "medianReworkCount": 0.0,
+          "medianSupervisorDirectImplementationRatio": 0.65,
+          "medianTotalQualityScore": 25.0,
+          "reasoningEffortDistribution": {
+            "high": 10
+          },
+          "sampleCount": 10
+        },
+        "supervisor-only": {
+          "benchmarkIds": [
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-001",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-002",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-003",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-004",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-005",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-006",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-007",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-008",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-009",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-incident-debug-four-mode-010"
+          ],
+          "difficultyDistribution": {
+            "M": 10
+          },
+          "maxElapsedMinutes": 0.322,
+          "meanElapsedMinutes": 0.1739,
+          "medianDefectCount": 0.0,
+          "medianElapsedMinutes": 0.1514,
+          "medianOperationalEfficiencyScore": 47.5,
+          "medianQualityAdjustedEfficiency": 138.7093,
+          "medianReworkCount": 0.0,
+          "medianSupervisorDirectImplementationRatio": 1.0,
+          "medianTotalQualityScore": 21.0,
+          "reasoningEffortDistribution": {
+            "high": 10
+          },
+          "sampleCount": 10
+        }
+      },
+      "sampleCompleteness": {
+        "normal-harness": {
+          "meetsMinimum": true,
+          "sampleCount": 10
+        },
+        "strict-harness": {
+          "meetsMinimum": true,
+          "sampleCount": 10
+        },
+        "supervisor-central": {
+          "meetsMinimum": true,
+          "sampleCount": 10
+        },
+        "supervisor-only": {
+          "meetsMinimum": true,
+          "sampleCount": 10
+        }
+      }
+    },
+    "documentation-delivery": {
       "bestOperationalEfficiencyMode": "normal-harness",
       "bestQualityAdjustedMode": "strict-harness",
       "fastestMode": "strict-harness",
@@ -247,113 +996,823 @@
       "modeStats": {
         "normal-harness": {
           "benchmarkIds": [
-            "PNH-4MODE-BENCHMARK-20260605-001",
-            "PNH-4MODE-BENCHMARK-20260605-002",
-            "PNH-4MODE-BENCHMARK-20260605-003"
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-001",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-002",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-003",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-004",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-005",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-006",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-007",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-008",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-009",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-010"
           ],
           "difficultyDistribution": {
-            "M": 3
+            "M": 10
           },
-          "maxElapsedMinutes": 0.0656,
-          "meanElapsedMinutes": 0.0651,
+          "maxElapsedMinutes": 0.1348,
+          "meanElapsedMinutes": 0.0745,
           "medianDefectCount": 0.0,
-          "medianElapsedMinutes": 0.0654,
+          "medianElapsedMinutes": 0.0678,
           "medianOperationalEfficiencyScore": 81.7,
-          "medianQualityAdjustedEfficiency": 397.5535,
+          "medianQualityAdjustedEfficiency": 383.2034,
           "medianReworkCount": 0.0,
           "medianSupervisorDirectImplementationRatio": 0.35,
           "medianTotalQualityScore": 26.0,
           "reasoningEffortDistribution": {
-            "medium": 3
+            "medium": 10
           },
-          "sampleCount": 3
+          "sampleCount": 10
         },
         "strict-harness": {
           "benchmarkIds": [
-            "PNH-4MODE-BENCHMARK-20260605-001",
-            "PNH-4MODE-BENCHMARK-20260605-002",
-            "PNH-4MODE-BENCHMARK-20260605-003"
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-001",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-002",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-003",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-004",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-005",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-006",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-007",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-008",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-009",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-010"
           ],
           "difficultyDistribution": {
-            "M": 3
+            "M": 10
           },
-          "maxElapsedMinutes": 0.0667,
-          "meanElapsedMinutes": 0.0655,
+          "maxElapsedMinutes": 0.0732,
+          "meanElapsedMinutes": 0.0685,
           "medianDefectCount": 0.0,
-          "medianElapsedMinutes": 0.0653,
+          "medianElapsedMinutes": 0.0677,
           "medianOperationalEfficiencyScore": 80.85,
-          "medianQualityAdjustedEfficiency": 444.1041,
+          "medianQualityAdjustedEfficiency": 428.6829,
           "medianReworkCount": 0.0,
           "medianSupervisorDirectImplementationRatio": 0.15,
           "medianTotalQualityScore": 29.0,
           "reasoningEffortDistribution": {
-            "medium": 3
+            "medium": 10
           },
-          "sampleCount": 3
+          "sampleCount": 10
         },
         "supervisor-central": {
           "benchmarkIds": [
-            "PNH-4MODE-BENCHMARK-20260605-001",
-            "PNH-4MODE-BENCHMARK-20260605-002",
-            "PNH-4MODE-BENCHMARK-20260605-003"
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-001",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-002",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-003",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-004",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-005",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-006",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-007",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-008",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-009",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-010"
           ],
           "difficultyDistribution": {
-            "M": 3
+            "M": 10
           },
-          "maxElapsedMinutes": 0.2163,
-          "meanElapsedMinutes": 0.1598,
+          "maxElapsedMinutes": 0.2772,
+          "meanElapsedMinutes": 0.1515,
           "medianDefectCount": 0.0,
-          "medianElapsedMinutes": 0.1317,
+          "medianElapsedMinutes": 0.1379,
           "medianOperationalEfficiencyScore": 65.0,
-          "medianQualityAdjustedEfficiency": 189.8254,
+          "medianQualityAdjustedEfficiency": 181.3566,
           "medianReworkCount": 0.0,
           "medianSupervisorDirectImplementationRatio": 0.65,
           "medianTotalQualityScore": 25.0,
           "reasoningEffortDistribution": {
-            "medium": 3
+            "medium": 10
           },
-          "sampleCount": 3
+          "sampleCount": 10
         },
         "supervisor-only": {
           "benchmarkIds": [
-            "PNH-4MODE-BENCHMARK-20260605-001",
-            "PNH-4MODE-BENCHMARK-20260605-002",
-            "PNH-4MODE-BENCHMARK-20260605-003"
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-001",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-002",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-003",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-004",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-005",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-006",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-007",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-008",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-009",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-010"
           ],
           "difficultyDistribution": {
-            "M": 3
+            "M": 10
           },
-          "maxElapsedMinutes": 0.1373,
-          "meanElapsedMinutes": 0.1366,
+          "maxElapsedMinutes": 0.2135,
+          "meanElapsedMinutes": 0.1523,
           "medianDefectCount": 0.0,
-          "medianElapsedMinutes": 0.1362,
+          "medianElapsedMinutes": 0.1409,
           "medianOperationalEfficiencyScore": 47.5,
-          "medianQualityAdjustedEfficiency": 154.185,
+          "medianQualityAdjustedEfficiency": 149.0419,
           "medianReworkCount": 0.0,
           "medianSupervisorDirectImplementationRatio": 1.0,
           "medianTotalQualityScore": 21.0,
           "reasoningEffortDistribution": {
-            "medium": 3
+            "medium": 10
           },
-          "sampleCount": 3
+          "sampleCount": 10
         }
       },
       "sampleCompleteness": {
         "normal-harness": {
           "meetsMinimum": true,
-          "sampleCount": 3
+          "sampleCount": 10
         },
         "strict-harness": {
           "meetsMinimum": true,
-          "sampleCount": 3
+          "sampleCount": 10
         },
         "supervisor-central": {
           "meetsMinimum": true,
-          "sampleCount": 3
+          "sampleCount": 10
         },
         "supervisor-only": {
           "meetsMinimum": true,
-          "sampleCount": 3
+          "sampleCount": 10
+        }
+      }
+    },
+    "external-dispatch-dry-run": {
+      "bestOperationalEfficiencyMode": "normal-harness",
+      "bestQualityAdjustedMode": "strict-harness",
+      "fastestMode": "normal-harness",
+      "lowestSupervisorLoadMode": "strict-harness",
+      "modeStats": {
+        "normal-harness": {
+          "benchmarkIds": [
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-001",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-002",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-003",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-004",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-005",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-006",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-007",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-008",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-009",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-010"
+          ],
+          "difficultyDistribution": {
+            "M": 10
+          },
+          "maxElapsedMinutes": 0.0722,
+          "meanElapsedMinutes": 0.0699,
+          "medianDefectCount": 0.0,
+          "medianElapsedMinutes": 0.0696,
+          "medianOperationalEfficiencyScore": 81.7,
+          "medianQualityAdjustedEfficiency": 373.2952,
+          "medianReworkCount": 0.0,
+          "medianSupervisorDirectImplementationRatio": 0.35,
+          "medianTotalQualityScore": 26.0,
+          "reasoningEffortDistribution": {
+            "medium": 10
+          },
+          "sampleCount": 10
+        },
+        "strict-harness": {
+          "benchmarkIds": [
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-001",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-002",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-003",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-004",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-005",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-006",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-007",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-008",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-009",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-010"
+          ],
+          "difficultyDistribution": {
+            "M": 10
+          },
+          "maxElapsedMinutes": 0.0725,
+          "meanElapsedMinutes": 0.0711,
+          "medianDefectCount": 0.0,
+          "medianElapsedMinutes": 0.0711,
+          "medianOperationalEfficiencyScore": 80.85,
+          "medianQualityAdjustedEfficiency": 407.5914,
+          "medianReworkCount": 0.0,
+          "medianSupervisorDirectImplementationRatio": 0.15,
+          "medianTotalQualityScore": 29.0,
+          "reasoningEffortDistribution": {
+            "medium": 10
+          },
+          "sampleCount": 10
+        },
+        "supervisor-central": {
+          "benchmarkIds": [
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-001",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-002",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-003",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-004",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-005",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-006",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-007",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-008",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-009",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-010"
+          ],
+          "difficultyDistribution": {
+            "M": 10
+          },
+          "maxElapsedMinutes": 0.1603,
+          "meanElapsedMinutes": 0.1451,
+          "medianDefectCount": 0.0,
+          "medianElapsedMinutes": 0.1431,
+          "medianOperationalEfficiencyScore": 65.0,
+          "medianQualityAdjustedEfficiency": 174.643,
+          "medianReworkCount": 0.0,
+          "medianSupervisorDirectImplementationRatio": 0.65,
+          "medianTotalQualityScore": 25.0,
+          "reasoningEffortDistribution": {
+            "medium": 10
+          },
+          "sampleCount": 10
+        },
+        "supervisor-only": {
+          "benchmarkIds": [
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-001",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-002",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-003",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-004",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-005",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-006",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-007",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-008",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-009",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-010"
+          ],
+          "difficultyDistribution": {
+            "M": 10
+          },
+          "maxElapsedMinutes": 0.2917,
+          "meanElapsedMinutes": 0.1784,
+          "medianDefectCount": 0.0,
+          "medianElapsedMinutes": 0.1581,
+          "medianOperationalEfficiencyScore": 47.5,
+          "medianQualityAdjustedEfficiency": 133.2401,
+          "medianReworkCount": 0.0,
+          "medianSupervisorDirectImplementationRatio": 1.0,
+          "medianTotalQualityScore": 21.0,
+          "reasoningEffortDistribution": {
+            "medium": 10
+          },
+          "sampleCount": 10
+        }
+      },
+      "sampleCompleteness": {
+        "normal-harness": {
+          "meetsMinimum": true,
+          "sampleCount": 10
+        },
+        "strict-harness": {
+          "meetsMinimum": true,
+          "sampleCount": 10
+        },
+        "supervisor-central": {
+          "meetsMinimum": true,
+          "sampleCount": 10
+        },
+        "supervisor-only": {
+          "meetsMinimum": true,
+          "sampleCount": 10
+        }
+      }
+    },
+    "pnh-local-validation": {
+      "bestOperationalEfficiencyMode": "normal-harness",
+      "bestQualityAdjustedMode": "strict-harness",
+      "fastestMode": "normal-harness",
+      "lowestSupervisorLoadMode": "strict-harness",
+      "modeStats": {
+        "normal-harness": {
+          "benchmarkIds": [
+            "PNH-4MODE-BENCHMARK-20260605-001",
+            "PNH-4MODE-BENCHMARK-20260605-002",
+            "PNH-4MODE-BENCHMARK-20260605-003",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-001",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-002",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-003",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-004",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-005",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-006",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-007",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-008",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-009",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-010"
+          ],
+          "difficultyDistribution": {
+            "M": 13
+          },
+          "maxElapsedMinutes": 0.1455,
+          "meanElapsedMinutes": 0.0766,
+          "medianDefectCount": 0.0,
+          "medianElapsedMinutes": 0.0658,
+          "medianOperationalEfficiencyScore": 81.7,
+          "medianQualityAdjustedEfficiency": 395.1368,
+          "medianReworkCount": 0.0,
+          "medianSupervisorDirectImplementationRatio": 0.35,
+          "medianTotalQualityScore": 26.0,
+          "reasoningEffortDistribution": {
+            "medium": 13
+          },
+          "sampleCount": 13
+        },
+        "strict-harness": {
+          "benchmarkIds": [
+            "PNH-4MODE-BENCHMARK-20260605-001",
+            "PNH-4MODE-BENCHMARK-20260605-002",
+            "PNH-4MODE-BENCHMARK-20260605-003",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-001",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-002",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-003",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-004",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-005",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-006",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-007",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-008",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-009",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-010"
+          ],
+          "difficultyDistribution": {
+            "M": 13
+          },
+          "maxElapsedMinutes": 0.0907,
+          "meanElapsedMinutes": 0.0685,
+          "medianDefectCount": 0.0,
+          "medianElapsedMinutes": 0.0668,
+          "medianOperationalEfficiencyScore": 80.85,
+          "medianQualityAdjustedEfficiency": 434.1317,
+          "medianReworkCount": 0.0,
+          "medianSupervisorDirectImplementationRatio": 0.15,
+          "medianTotalQualityScore": 29.0,
+          "reasoningEffortDistribution": {
+            "medium": 13
+          },
+          "sampleCount": 13
+        },
+        "supervisor-central": {
+          "benchmarkIds": [
+            "PNH-4MODE-BENCHMARK-20260605-001",
+            "PNH-4MODE-BENCHMARK-20260605-002",
+            "PNH-4MODE-BENCHMARK-20260605-003",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-001",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-002",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-003",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-004",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-005",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-006",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-007",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-008",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-009",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-010"
+          ],
+          "difficultyDistribution": {
+            "M": 13
+          },
+          "maxElapsedMinutes": 0.2449,
+          "meanElapsedMinutes": 0.1514,
+          "medianDefectCount": 0.0,
+          "medianElapsedMinutes": 0.1348,
+          "medianOperationalEfficiencyScore": 65.0,
+          "medianQualityAdjustedEfficiency": 185.4599,
+          "medianReworkCount": 0.0,
+          "medianSupervisorDirectImplementationRatio": 0.65,
+          "medianTotalQualityScore": 25.0,
+          "reasoningEffortDistribution": {
+            "medium": 13
+          },
+          "sampleCount": 13
+        },
+        "supervisor-only": {
+          "benchmarkIds": [
+            "PNH-4MODE-BENCHMARK-20260605-001",
+            "PNH-4MODE-BENCHMARK-20260605-002",
+            "PNH-4MODE-BENCHMARK-20260605-003",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-001",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-002",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-003",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-004",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-005",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-006",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-007",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-008",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-009",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-010"
+          ],
+          "difficultyDistribution": {
+            "M": 13
+          },
+          "maxElapsedMinutes": 0.2025,
+          "meanElapsedMinutes": 0.149,
+          "medianDefectCount": 0.0,
+          "medianElapsedMinutes": 0.1376,
+          "medianOperationalEfficiencyScore": 47.5,
+          "medianQualityAdjustedEfficiency": 152.6163,
+          "medianReworkCount": 0.0,
+          "medianSupervisorDirectImplementationRatio": 1.0,
+          "medianTotalQualityScore": 21.0,
+          "reasoningEffortDistribution": {
+            "medium": 13
+          },
+          "sampleCount": 13
+        }
+      },
+      "sampleCompleteness": {
+        "normal-harness": {
+          "meetsMinimum": true,
+          "sampleCount": 13
+        },
+        "strict-harness": {
+          "meetsMinimum": true,
+          "sampleCount": 13
+        },
+        "supervisor-central": {
+          "meetsMinimum": true,
+          "sampleCount": 13
+        },
+        "supervisor-only": {
+          "meetsMinimum": true,
+          "sampleCount": 13
+        }
+      }
+    },
+    "release-readiness": {
+      "bestOperationalEfficiencyMode": "normal-harness",
+      "bestQualityAdjustedMode": "strict-harness",
+      "fastestMode": "normal-harness",
+      "lowestSupervisorLoadMode": "strict-harness",
+      "modeStats": {
+        "normal-harness": {
+          "benchmarkIds": [
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-001",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-002",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-003",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-004",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-005",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-006",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-007",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-008",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-009",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-010"
+          ],
+          "difficultyDistribution": {
+            "M": 10
+          },
+          "maxElapsedMinutes": 0.1354,
+          "meanElapsedMinutes": 0.0804,
+          "medianDefectCount": 0.0,
+          "medianElapsedMinutes": 0.0733,
+          "medianOperationalEfficiencyScore": 81.7,
+          "medianQualityAdjustedEfficiency": 354.949,
+          "medianReworkCount": 0.0,
+          "medianSupervisorDirectImplementationRatio": 0.35,
+          "medianTotalQualityScore": 26.0,
+          "reasoningEffortDistribution": {
+            "high": 10
+          },
+          "sampleCount": 10
+        },
+        "strict-harness": {
+          "benchmarkIds": [
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-001",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-002",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-003",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-004",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-005",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-006",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-007",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-008",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-009",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-010"
+          ],
+          "difficultyDistribution": {
+            "M": 10
+          },
+          "maxElapsedMinutes": 0.1274,
+          "meanElapsedMinutes": 0.081,
+          "medianDefectCount": 0.0,
+          "medianElapsedMinutes": 0.0748,
+          "medianOperationalEfficiencyScore": 80.85,
+          "medianQualityAdjustedEfficiency": 387.7005,
+          "medianReworkCount": 0.0,
+          "medianSupervisorDirectImplementationRatio": 0.15,
+          "medianTotalQualityScore": 29.0,
+          "reasoningEffortDistribution": {
+            "high": 10
+          },
+          "sampleCount": 10
+        },
+        "supervisor-central": {
+          "benchmarkIds": [
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-001",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-002",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-003",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-004",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-005",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-006",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-007",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-008",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-009",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-010"
+          ],
+          "difficultyDistribution": {
+            "M": 10
+          },
+          "maxElapsedMinutes": 0.1829,
+          "meanElapsedMinutes": 0.1559,
+          "medianDefectCount": 0.0,
+          "medianElapsedMinutes": 0.1519,
+          "medianOperationalEfficiencyScore": 65.0,
+          "medianQualityAdjustedEfficiency": 164.5877,
+          "medianReworkCount": 0.0,
+          "medianSupervisorDirectImplementationRatio": 0.65,
+          "medianTotalQualityScore": 25.0,
+          "reasoningEffortDistribution": {
+            "high": 10
+          },
+          "sampleCount": 10
+        },
+        "supervisor-only": {
+          "benchmarkIds": [],
+          "difficultyDistribution": {},
+          "maxElapsedMinutes": null,
+          "meanElapsedMinutes": null,
+          "medianDefectCount": null,
+          "medianElapsedMinutes": null,
+          "medianOperationalEfficiencyScore": null,
+          "medianQualityAdjustedEfficiency": null,
+          "medianReworkCount": null,
+          "medianSupervisorDirectImplementationRatio": null,
+          "medianTotalQualityScore": null,
+          "reasoningEffortDistribution": {},
+          "sampleCount": 0
+        }
+      },
+      "sampleCompleteness": {
+        "normal-harness": {
+          "meetsMinimum": true,
+          "sampleCount": 10
+        },
+        "strict-harness": {
+          "meetsMinimum": true,
+          "sampleCount": 10
+        },
+        "supervisor-central": {
+          "meetsMinimum": true,
+          "sampleCount": 10
+        },
+        "supervisor-only": {
+          "meetsMinimum": false,
+          "sampleCount": 0
+        }
+      }
+    },
+    "security-sensitive-local-storage": {
+      "bestOperationalEfficiencyMode": "normal-harness",
+      "bestQualityAdjustedMode": "strict-harness",
+      "fastestMode": "normal-harness",
+      "lowestSupervisorLoadMode": "strict-harness",
+      "modeStats": {
+        "normal-harness": {
+          "benchmarkIds": [
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-001",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-002",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-003",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-004",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-005",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-006",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-007",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-008",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-009",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-010"
+          ],
+          "difficultyDistribution": {
+            "M": 10
+          },
+          "maxElapsedMinutes": 0.07,
+          "meanElapsedMinutes": 0.0685,
+          "medianDefectCount": 0.0,
+          "medianElapsedMinutes": 0.0683,
+          "medianOperationalEfficiencyScore": 81.7,
+          "medianQualityAdjustedEfficiency": 380.6768,
+          "medianReworkCount": 0.0,
+          "medianSupervisorDirectImplementationRatio": 0.35,
+          "medianTotalQualityScore": 26.0,
+          "reasoningEffortDistribution": {
+            "high": 10
+          },
+          "sampleCount": 10
+        },
+        "strict-harness": {
+          "benchmarkIds": [
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-001",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-002",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-003",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-004",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-005",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-006",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-007",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-008",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-009",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-010"
+          ],
+          "difficultyDistribution": {
+            "M": 10
+          },
+          "maxElapsedMinutes": 0.1936,
+          "meanElapsedMinutes": 0.082,
+          "medianDefectCount": 0.0,
+          "medianElapsedMinutes": 0.0697,
+          "medianOperationalEfficiencyScore": 80.85,
+          "medianQualityAdjustedEfficiency": 416.0766,
+          "medianReworkCount": 0.0,
+          "medianSupervisorDirectImplementationRatio": 0.15,
+          "medianTotalQualityScore": 29.0,
+          "reasoningEffortDistribution": {
+            "high": 10
+          },
+          "sampleCount": 10
+        },
+        "supervisor-central": {
+          "benchmarkIds": [
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-001",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-002",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-003",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-004",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-005",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-006",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-007",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-008",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-009",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-010"
+          ],
+          "difficultyDistribution": {
+            "M": 10
+          },
+          "maxElapsedMinutes": 0.1649,
+          "meanElapsedMinutes": 0.1477,
+          "medianDefectCount": 0.0,
+          "medianElapsedMinutes": 0.1417,
+          "medianOperationalEfficiencyScore": 65.0,
+          "medianQualityAdjustedEfficiency": 176.4292,
+          "medianReworkCount": 0.0,
+          "medianSupervisorDirectImplementationRatio": 0.65,
+          "medianTotalQualityScore": 25.0,
+          "reasoningEffortDistribution": {
+            "high": 10
+          },
+          "sampleCount": 10
+        },
+        "supervisor-only": {
+          "benchmarkIds": [],
+          "difficultyDistribution": {},
+          "maxElapsedMinutes": null,
+          "meanElapsedMinutes": null,
+          "medianDefectCount": null,
+          "medianElapsedMinutes": null,
+          "medianOperationalEfficiencyScore": null,
+          "medianQualityAdjustedEfficiency": null,
+          "medianReworkCount": null,
+          "medianSupervisorDirectImplementationRatio": null,
+          "medianTotalQualityScore": null,
+          "reasoningEffortDistribution": {},
+          "sampleCount": 0
+        }
+      },
+      "sampleCompleteness": {
+        "normal-harness": {
+          "meetsMinimum": true,
+          "sampleCount": 10
+        },
+        "strict-harness": {
+          "meetsMinimum": true,
+          "sampleCount": 10
+        },
+        "supervisor-central": {
+          "meetsMinimum": true,
+          "sampleCount": 10
+        },
+        "supervisor-only": {
+          "meetsMinimum": false,
+          "sampleCount": 0
+        }
+      }
+    },
+    "unattended-dispatch": {
+      "bestOperationalEfficiencyMode": "normal-harness",
+      "bestQualityAdjustedMode": "strict-harness",
+      "fastestMode": "normal-harness",
+      "lowestSupervisorLoadMode": "strict-harness",
+      "modeStats": {
+        "normal-harness": {
+          "benchmarkIds": [
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-long-run-unattended-benchmark-001",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-long-run-unattended-benchmark-002",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-long-run-unattended-benchmark-003",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-long-run-unattended-benchmark-004",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-long-run-unattended-benchmark-005",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-long-run-unattended-benchmark-006",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-long-run-unattended-benchmark-007",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-long-run-unattended-benchmark-008",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-long-run-unattended-benchmark-009",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-long-run-unattended-benchmark-010"
+          ],
+          "difficultyDistribution": {
+            "M": 10
+          },
+          "maxElapsedMinutes": 0.1337,
+          "meanElapsedMinutes": 0.0805,
+          "medianDefectCount": 0.0,
+          "medianElapsedMinutes": 0.0751,
+          "medianOperationalEfficiencyScore": 81.7,
+          "medianQualityAdjustedEfficiency": 346.4359,
+          "medianReworkCount": 0.0,
+          "medianSupervisorDirectImplementationRatio": 0.35,
+          "medianTotalQualityScore": 26.0,
+          "reasoningEffortDistribution": {
+            "medium": 10
+          },
+          "sampleCount": 10
+        },
+        "strict-harness": {
+          "benchmarkIds": [
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-long-run-unattended-benchmark-001",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-long-run-unattended-benchmark-002",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-long-run-unattended-benchmark-003",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-long-run-unattended-benchmark-004",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-long-run-unattended-benchmark-005",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-long-run-unattended-benchmark-006",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-long-run-unattended-benchmark-007",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-long-run-unattended-benchmark-008",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-long-run-unattended-benchmark-009",
+            "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-long-run-unattended-benchmark-010"
+          ],
+          "difficultyDistribution": {
+            "M": 10
+          },
+          "maxElapsedMinutes": 0.0788,
+          "meanElapsedMinutes": 0.0755,
+          "medianDefectCount": 0.0,
+          "medianElapsedMinutes": 0.0751,
+          "medianOperationalEfficiencyScore": 80.85,
+          "medianQualityAdjustedEfficiency": 386.4106,
+          "medianReworkCount": 0.0,
+          "medianSupervisorDirectImplementationRatio": 0.15,
+          "medianTotalQualityScore": 29.0,
+          "reasoningEffortDistribution": {
+            "medium": 10
+          },
+          "sampleCount": 10
+        },
+        "supervisor-central": {
+          "benchmarkIds": [],
+          "difficultyDistribution": {},
+          "maxElapsedMinutes": null,
+          "meanElapsedMinutes": null,
+          "medianDefectCount": null,
+          "medianElapsedMinutes": null,
+          "medianOperationalEfficiencyScore": null,
+          "medianQualityAdjustedEfficiency": null,
+          "medianReworkCount": null,
+          "medianSupervisorDirectImplementationRatio": null,
+          "medianTotalQualityScore": null,
+          "reasoningEffortDistribution": {},
+          "sampleCount": 0
+        },
+        "supervisor-only": {
+          "benchmarkIds": [],
+          "difficultyDistribution": {},
+          "maxElapsedMinutes": null,
+          "meanElapsedMinutes": null,
+          "medianDefectCount": null,
+          "medianElapsedMinutes": null,
+          "medianOperationalEfficiencyScore": null,
+          "medianQualityAdjustedEfficiency": null,
+          "medianReworkCount": null,
+          "medianSupervisorDirectImplementationRatio": null,
+          "medianTotalQualityScore": null,
+          "reasoningEffortDistribution": {},
+          "sampleCount": 0
+        }
+      },
+      "sampleCompleteness": {
+        "normal-harness": {
+          "meetsMinimum": true,
+          "sampleCount": 10
+        },
+        "strict-harness": {
+          "meetsMinimum": true,
+          "sampleCount": 10
+        },
+        "supervisor-central": {
+          "meetsMinimum": false,
+          "sampleCount": 0
+        },
+        "supervisor-only": {
+          "meetsMinimum": false,
+          "sampleCount": 0
         }
       }
     }

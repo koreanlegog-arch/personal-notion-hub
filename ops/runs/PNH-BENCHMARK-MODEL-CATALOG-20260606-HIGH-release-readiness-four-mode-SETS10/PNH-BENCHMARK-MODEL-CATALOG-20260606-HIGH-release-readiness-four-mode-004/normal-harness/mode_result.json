@@ -1,0 +1,136 @@
+{
+  "benchmarkId": "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-004",
+  "commandCount": 8,
+  "elapsedMinutes": 0.0767,
+  "elapsedSeconds": 4.604,
+  "evidenceRef": "ops/runs/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-SETS10/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-004/normal-harness",
+  "failureCount": 0,
+  "laneCount": 5,
+  "lanes": [
+    {
+      "commands": [
+        {
+          "command": "bash -lc PNH_QA_PORT=4304 PNH_QA_RUN_DIR=/home/koreanlego/projects/Personal_Notion_Hub/ops/runs/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-SETS10/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-004/normal-harness/assistant-qa-artifacts bash scripts/run_playwright_assistant_dispatch_intent_qa.sh",
+          "elapsedSeconds": 4.541,
+          "returnCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      ],
+      "elapsedSeconds": 4.541,
+      "failureCount": 0,
+      "lane": "assistant-qa-lane",
+      "status": "pass"
+    },
+    {
+      "commands": [
+        {
+          "command": "/usr/bin/python3 scripts/browser_bridge_smoke_check.py",
+          "elapsedSeconds": 1.023,
+          "returnCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      ],
+      "elapsedSeconds": 1.023,
+      "failureCount": 0,
+      "lane": "bridge-lane",
+      "status": "pass"
+    },
+    {
+      "commands": [
+        {
+          "command": "bash -lc PNH_QA_PORT=4404 PNH_QA_RUN_DIR=/home/koreanlego/projects/Personal_Notion_Hub/ops/runs/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-SETS10/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-004/normal-harness/redacted-qa-artifacts bash scripts/run_playwright_redacted_ui_qa.sh",
+          "elapsedSeconds": 4.601,
+          "returnCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      ],
+      "elapsedSeconds": 4.601,
+      "failureCount": 0,
+      "lane": "redacted-qa-lane",
+      "status": "pass"
+    },
+    {
+      "commands": [
+        {
+          "command": "/usr/bin/python3 scripts/smoke_check.py",
+          "elapsedSeconds": 0.044,
+          "returnCode": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        {
+          "command": "/usr/bin/python3 scripts/pnh_unattended_dispatch_queue_plan.py",
+          "elapsedSeconds": 0.048,
+          "returnCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      ],
+      "elapsedSeconds": 0.092,
+      "failureCount": 0,
+      "lane": "static-lane",
+      "status": "pass"
+    },
+    {
+      "commands": [
+        {
+          "command": "node --check assets/js/app.js",
+          "elapsedSeconds": 0.031,
+          "returnCode": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        {
+          "command": "node --check assets/js/assistant-import.js",
+          "elapsedSeconds": 0.026,
+          "returnCode": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        {
+          "command": "node --check tests/assistant-dispatch-intent.spec.cjs",
+          "elapsedSeconds": 0.022,
+          "returnCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      ],
+      "elapsedSeconds": 0.078,
+      "failureCount": 0,
+      "lane": "syntax-lane",
+      "status": "pass"
+    }
+  ],
+  "metrics": {
+    "architectureScore": 4,
+    "completionScore": 5,
+    "coordinationEfficiency": 0.75,
+    "criticalPathReduction": 0.75,
+    "defectCount": 0,
+    "duplicateWorkCount": 0,
+    "elapsedMinutes": 0.0767,
+    "evidenceQuality": 0.82,
+    "evidenceReportScore": 4,
+    "harnessEfficiencyScore": 0.78,
+    "implementationScore": 4,
+    "initialEstimatedMinutes": 0.1,
+    "outcomeQuality": 0.95,
+    "reasoningEffortJudgment": "appropriate",
+    "replanCount": 0,
+    "reworkCount": 0,
+    "securityRiskHandlingScore": 4,
+    "specialistFit": 0.85,
+    "subagentCount": 5,
+    "supervisorDirectImplementationRatio": 0.35,
+    "supervisorLoadReduction": 0.65,
+    "unnecessaryLaneCount": 0,
+    "verificationDepthScore": 3,
+    "verificationScore": 5,
+    "writeSetConflictCount": 0
+  },
+  "mode": "normal-harness",
+  "status": "pass"
+}

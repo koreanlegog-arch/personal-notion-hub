@@ -1,0 +1,158 @@
+{
+  "benchmarkId": "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-008",
+  "commandCount": 10,
+  "elapsedMinutes": 0.0708,
+  "elapsedSeconds": 4.249,
+  "evidenceRef": "ops/runs/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-SETS10/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-008/strict-harness",
+  "failureCount": 0,
+  "laneCount": 5,
+  "lanes": [
+    {
+      "commands": [
+        {
+          "command": "bash -lc PNH_QA_PORT=4308 PNH_QA_RUN_DIR=/home/koreanlego/projects/Personal_Notion_Hub/ops/runs/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-SETS10/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-008/strict-harness/assistant-qa-artifacts bash scripts/run_playwright_assistant_dispatch_intent_qa.sh",
+          "elapsedSeconds": 4.213,
+          "returnCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      ],
+      "elapsedSeconds": 4.213,
+      "failureCount": 0,
+      "lane": "assistant-browser-qa-specialist",
+      "status": "pass"
+    },
+    {
+      "commands": [
+        {
+          "command": "bash -lc PNH_QA_PORT=4408 PNH_QA_RUN_DIR=/home/koreanlego/projects/Personal_Notion_Hub/ops/runs/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-SETS10/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-008/strict-harness/redacted-qa-artifacts bash scripts/run_playwright_redacted_ui_qa.sh",
+          "elapsedSeconds": 4.132,
+          "returnCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      ],
+      "elapsedSeconds": 4.132,
+      "failureCount": 0,
+      "lane": "redacted-browser-qa-specialist",
+      "status": "pass"
+    },
+    {
+      "commands": [
+        {
+          "command": "/usr/bin/python3 scripts/browser_bridge_smoke_check.py",
+          "elapsedSeconds": 1.117,
+          "returnCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      ],
+      "elapsedSeconds": 1.117,
+      "failureCount": 0,
+      "lane": "security-bridge-specialist",
+      "status": "pass"
+    },
+    {
+      "commands": [
+        {
+          "command": "/usr/bin/python3 scripts/smoke_check.py",
+          "elapsedSeconds": 0.047,
+          "returnCode": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        {
+          "command": "/usr/bin/python3 scripts/pnh_unattended_dispatch_queue_plan.py",
+          "elapsedSeconds": 0.044,
+          "returnCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      ],
+      "elapsedSeconds": 0.09,
+      "failureCount": 0,
+      "lane": "static-contract-specialist",
+      "status": "pass"
+    },
+    {
+      "commands": [
+        {
+          "command": "node --check assets/js/app.js",
+          "elapsedSeconds": 0.029,
+          "returnCode": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        {
+          "command": "node --check assets/js/assistant-import.js",
+          "elapsedSeconds": 0.023,
+          "returnCode": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        {
+          "command": "node --check tests/assistant-dispatch-intent.spec.cjs",
+          "elapsedSeconds": 0.023,
+          "returnCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      ],
+      "elapsedSeconds": 0.074,
+      "failureCount": 0,
+      "lane": "syntax-specialist",
+      "status": "pass"
+    },
+    {
+      "commands": [
+        {
+          "command": "git diff --check",
+          "elapsedSeconds": 0.006,
+          "returnCode": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        {
+          "command": "bash -lc rg -n \"OPENCLAW_GATEWAY_TOKEN|DISCORD_BOT_TOKEN|GITHUB_TOKEN=|Bearer [A-Za-z0-9_-]+|gho_[A-Za-z0-9_]+|sk-[A-Za-z0-9]|BEGIN .*PRIVATE KEY\" scripts tests docs /home/koreanlego/projects/Personal_Notion_Hub/ops/runs/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-SETS10/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-008/strict-harness --glob '!ops/runs/**/artifacts/**' || true",
+          "elapsedSeconds": 0.028,
+          "returnCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      ],
+      "elapsedSeconds": 0.034,
+      "failureCount": 0,
+      "lane": "strict-integration-review",
+      "status": "pass"
+    }
+  ],
+  "metrics": {
+    "architectureScore": 5,
+    "completionScore": 5,
+    "coordinationEfficiency": 0.6,
+    "criticalPathReduction": 0.62,
+    "defectCount": 0,
+    "duplicateWorkCount": 0,
+    "elapsedMinutes": 0.0708,
+    "evidenceQuality": 0.92,
+    "evidenceReportScore": 5,
+    "harnessEfficiencyScore": 0.72,
+    "implementationScore": 4,
+    "initialEstimatedMinutes": 0.13,
+    "outcomeQuality": 0.95,
+    "reasoningEffortJudgment": "appropriate",
+    "replanCount": 0,
+    "reworkCount": 0,
+    "securityRiskHandlingScore": 5,
+    "specialistFit": 0.9,
+    "subagentCount": 6,
+    "supervisorDirectImplementationRatio": 0.15,
+    "supervisorLoadReduction": 0.85,
+    "unnecessaryLaneCount": 0,
+    "verificationDepthScore": 3,
+    "verificationScore": 5,
+    "writeSetConflictCount": 0
+  },
+  "mode": "strict-harness",
+  "status": "pass"
+}

@@ -1,0 +1,526 @@
+{
+  "benchmarkId": "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-003",
+  "comparison": {
+    "elapsedSecondsByMode": {
+      "normal-harness": 4.169,
+      "strict-harness": 4.237,
+      "supervisor-central": 8.539,
+      "supervisor-only": 17.5
+    },
+    "fastestMode": "normal-harness",
+    "highestQualityMode": "strict-harness",
+    "slowestMode": "supervisor-only"
+  },
+  "modes": [
+    {
+      "benchmarkId": "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-003",
+      "commandCount": 8,
+      "elapsedMinutes": 0.2917,
+      "elapsedSeconds": 17.5,
+      "evidenceRef": "ops/runs/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-SETS10/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-003/supervisor-only",
+      "failureCount": 0,
+      "laneCount": 1,
+      "lanes": [
+        {
+          "commands": [
+            {
+              "command": "node --check assets/js/app.js",
+              "elapsedSeconds": 0.022,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "command": "node --check assets/js/assistant-import.js",
+              "elapsedSeconds": 0.019,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "command": "node --check tests/assistant-dispatch-intent.spec.cjs",
+              "elapsedSeconds": 0.019,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "command": "/usr/bin/python3 scripts/smoke_check.py",
+              "elapsedSeconds": 0.036,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "command": "/usr/bin/python3 scripts/pnh_unattended_dispatch_queue_plan.py",
+              "elapsedSeconds": 0.037,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "command": "/usr/bin/python3 scripts/browser_bridge_smoke_check.py",
+              "elapsedSeconds": 2.166,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "command": "bash -lc PNH_QA_PORT=4303 PNH_QA_RUN_DIR=/home/koreanlego/projects/Personal_Notion_Hub/ops/runs/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-SETS10/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-003/supervisor-only/assistant-qa-artifacts bash scripts/run_playwright_assistant_dispatch_intent_qa.sh",
+              "elapsedSeconds": 11.391,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "command": "bash -lc PNH_QA_PORT=4403 PNH_QA_RUN_DIR=/home/koreanlego/projects/Personal_Notion_Hub/ops/runs/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-SETS10/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-003/supervisor-only/redacted-qa-artifacts bash scripts/run_playwright_redacted_ui_qa.sh",
+              "elapsedSeconds": 3.808,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            }
+          ],
+          "elapsedSeconds": 17.499,
+          "failureCount": 0,
+          "lane": "supervisor-sequential",
+          "status": "pass"
+        }
+      ],
+      "metrics": {
+        "architectureScore": 3,
+        "completionScore": 5,
+        "coordinationEfficiency": 0.95,
+        "criticalPathReduction": 0.0,
+        "defectCount": 0,
+        "duplicateWorkCount": 0,
+        "elapsedMinutes": 0.2917,
+        "evidenceQuality": 0.55,
+        "evidenceReportScore": 3,
+        "harnessEfficiencyScore": "unknown",
+        "implementationScore": 4,
+        "initialEstimatedMinutes": 0.18,
+        "outcomeQuality": 0.95,
+        "reasoningEffortJudgment": "appropriate",
+        "replanCount": 0,
+        "reworkCount": 0,
+        "securityRiskHandlingScore": 3,
+        "specialistFit": 0.2,
+        "subagentCount": 0,
+        "supervisorDirectImplementationRatio": 1.0,
+        "supervisorLoadReduction": 0.0,
+        "unnecessaryLaneCount": 0,
+        "verificationDepthScore": 2,
+        "verificationScore": 3,
+        "writeSetConflictCount": 0
+      },
+      "mode": "supervisor-only",
+      "status": "pass"
+    },
+    {
+      "benchmarkId": "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-003",
+      "commandCount": 8,
+      "elapsedMinutes": 0.1423,
+      "elapsedSeconds": 8.539,
+      "evidenceRef": "ops/runs/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-SETS10/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-003/supervisor-central",
+      "failureCount": 0,
+      "laneCount": 2,
+      "lanes": [
+        {
+          "commands": [
+            {
+              "command": "/usr/bin/python3 scripts/browser_bridge_smoke_check.py",
+              "elapsedSeconds": 0.812,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "command": "bash -lc PNH_QA_PORT=4303 PNH_QA_RUN_DIR=/home/koreanlego/projects/Personal_Notion_Hub/ops/runs/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-SETS10/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-003/supervisor-central/assistant-qa-artifacts bash scripts/run_playwright_assistant_dispatch_intent_qa.sh",
+              "elapsedSeconds": 3.895,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "command": "bash -lc PNH_QA_PORT=4403 PNH_QA_RUN_DIR=/home/koreanlego/projects/Personal_Notion_Hub/ops/runs/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-SETS10/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-003/supervisor-central/redacted-qa-artifacts bash scripts/run_playwright_redacted_ui_qa.sh",
+              "elapsedSeconds": 3.831,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            }
+          ],
+          "elapsedSeconds": 8.538,
+          "failureCount": 0,
+          "lane": "delegated-browser-lane",
+          "status": "pass"
+        },
+        {
+          "commands": [
+            {
+              "command": "node --check assets/js/app.js",
+              "elapsedSeconds": 0.022,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "command": "node --check assets/js/assistant-import.js",
+              "elapsedSeconds": 0.021,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "command": "node --check tests/assistant-dispatch-intent.spec.cjs",
+              "elapsedSeconds": 0.022,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "command": "/usr/bin/python3 scripts/smoke_check.py",
+              "elapsedSeconds": 0.036,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "command": "/usr/bin/python3 scripts/pnh_unattended_dispatch_queue_plan.py",
+              "elapsedSeconds": 0.043,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            }
+          ],
+          "elapsedSeconds": 0.144,
+          "failureCount": 0,
+          "lane": "supervisor-core",
+          "status": "pass"
+        }
+      ],
+      "metrics": {
+        "architectureScore": 4,
+        "completionScore": 5,
+        "coordinationEfficiency": 0.85,
+        "criticalPathReduction": 0.35,
+        "defectCount": 0,
+        "duplicateWorkCount": 0,
+        "elapsedMinutes": 0.1423,
+        "evidenceQuality": 0.7,
+        "evidenceReportScore": 4,
+        "harnessEfficiencyScore": 0.55,
+        "implementationScore": 4,
+        "initialEstimatedMinutes": 0.14,
+        "outcomeQuality": 0.95,
+        "reasoningEffortJudgment": "appropriate",
+        "replanCount": 0,
+        "reworkCount": 0,
+        "securityRiskHandlingScore": 4,
+        "specialistFit": 0.55,
+        "subagentCount": 2,
+        "supervisorDirectImplementationRatio": 0.65,
+        "supervisorLoadReduction": 0.35,
+        "unnecessaryLaneCount": 0,
+        "verificationDepthScore": 2,
+        "verificationScore": 4,
+        "writeSetConflictCount": 0
+      },
+      "mode": "supervisor-central",
+      "status": "pass"
+    },
+    {
+      "benchmarkId": "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-003",
+      "commandCount": 8,
+      "elapsedMinutes": 0.0695,
+      "elapsedSeconds": 4.169,
+      "evidenceRef": "ops/runs/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-SETS10/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-003/normal-harness",
+      "failureCount": 0,
+      "laneCount": 5,
+      "lanes": [
+        {
+          "commands": [
+            {
+              "command": "bash -lc PNH_QA_PORT=4303 PNH_QA_RUN_DIR=/home/koreanlego/projects/Personal_Notion_Hub/ops/runs/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-SETS10/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-003/normal-harness/assistant-qa-artifacts bash scripts/run_playwright_assistant_dispatch_intent_qa.sh",
+              "elapsedSeconds": 4.119,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            }
+          ],
+          "elapsedSeconds": 4.119,
+          "failureCount": 0,
+          "lane": "assistant-qa-lane",
+          "status": "pass"
+        },
+        {
+          "commands": [
+            {
+              "command": "/usr/bin/python3 scripts/browser_bridge_smoke_check.py",
+              "elapsedSeconds": 1.118,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            }
+          ],
+          "elapsedSeconds": 1.118,
+          "failureCount": 0,
+          "lane": "bridge-lane",
+          "status": "pass"
+        },
+        {
+          "commands": [
+            {
+              "command": "bash -lc PNH_QA_PORT=4403 PNH_QA_RUN_DIR=/home/koreanlego/projects/Personal_Notion_Hub/ops/runs/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-SETS10/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-003/normal-harness/redacted-qa-artifacts bash scripts/run_playwright_redacted_ui_qa.sh",
+              "elapsedSeconds": 4.166,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            }
+          ],
+          "elapsedSeconds": 4.166,
+          "failureCount": 0,
+          "lane": "redacted-qa-lane",
+          "status": "pass"
+        },
+        {
+          "commands": [
+            {
+              "command": "/usr/bin/python3 scripts/smoke_check.py",
+              "elapsedSeconds": 0.044,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "command": "/usr/bin/python3 scripts/pnh_unattended_dispatch_queue_plan.py",
+              "elapsedSeconds": 0.042,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            }
+          ],
+          "elapsedSeconds": 0.086,
+          "failureCount": 0,
+          "lane": "static-lane",
+          "status": "pass"
+        },
+        {
+          "commands": [
+            {
+              "command": "node --check assets/js/app.js",
+              "elapsedSeconds": 0.023,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "command": "node --check assets/js/assistant-import.js",
+              "elapsedSeconds": 0.026,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "command": "node --check tests/assistant-dispatch-intent.spec.cjs",
+              "elapsedSeconds": 0.025,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            }
+          ],
+          "elapsedSeconds": 0.074,
+          "failureCount": 0,
+          "lane": "syntax-lane",
+          "status": "pass"
+        }
+      ],
+      "metrics": {
+        "architectureScore": 4,
+        "completionScore": 5,
+        "coordinationEfficiency": 0.75,
+        "criticalPathReduction": 0.75,
+        "defectCount": 0,
+        "duplicateWorkCount": 0,
+        "elapsedMinutes": 0.0695,
+        "evidenceQuality": 0.82,
+        "evidenceReportScore": 4,
+        "harnessEfficiencyScore": 0.78,
+        "implementationScore": 4,
+        "initialEstimatedMinutes": 0.1,
+        "outcomeQuality": 0.95,
+        "reasoningEffortJudgment": "appropriate",
+        "replanCount": 0,
+        "reworkCount": 0,
+        "securityRiskHandlingScore": 4,
+        "specialistFit": 0.85,
+        "subagentCount": 5,
+        "supervisorDirectImplementationRatio": 0.35,
+        "supervisorLoadReduction": 0.65,
+        "unnecessaryLaneCount": 0,
+        "verificationDepthScore": 3,
+        "verificationScore": 5,
+        "writeSetConflictCount": 0
+      },
+      "mode": "normal-harness",
+      "status": "pass"
+    },
+    {
+      "benchmarkId": "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-003",
+      "commandCount": 10,
+      "elapsedMinutes": 0.0706,
+      "elapsedSeconds": 4.237,
+      "evidenceRef": "ops/runs/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-SETS10/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-003/strict-harness",
+      "failureCount": 0,
+      "laneCount": 5,
+      "lanes": [
+        {
+          "commands": [
+            {
+              "command": "bash -lc PNH_QA_PORT=4303 PNH_QA_RUN_DIR=/home/koreanlego/projects/Personal_Notion_Hub/ops/runs/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-SETS10/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-003/strict-harness/assistant-qa-artifacts bash scripts/run_playwright_assistant_dispatch_intent_qa.sh",
+              "elapsedSeconds": 4.14,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            }
+          ],
+          "elapsedSeconds": 4.14,
+          "failureCount": 0,
+          "lane": "assistant-browser-qa-specialist",
+          "status": "pass"
+        },
+        {
+          "commands": [
+            {
+              "command": "bash -lc PNH_QA_PORT=4403 PNH_QA_RUN_DIR=/home/koreanlego/projects/Personal_Notion_Hub/ops/runs/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-SETS10/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-003/strict-harness/redacted-qa-artifacts bash scripts/run_playwright_redacted_ui_qa.sh",
+              "elapsedSeconds": 4.198,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            }
+          ],
+          "elapsedSeconds": 4.198,
+          "failureCount": 0,
+          "lane": "redacted-browser-qa-specialist",
+          "status": "pass"
+        },
+        {
+          "commands": [
+            {
+              "command": "/usr/bin/python3 scripts/browser_bridge_smoke_check.py",
+              "elapsedSeconds": 0.854,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            }
+          ],
+          "elapsedSeconds": 0.854,
+          "failureCount": 0,
+          "lane": "security-bridge-specialist",
+          "status": "pass"
+        },
+        {
+          "commands": [
+            {
+              "command": "/usr/bin/python3 scripts/smoke_check.py",
+              "elapsedSeconds": 0.039,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "command": "/usr/bin/python3 scripts/pnh_unattended_dispatch_queue_plan.py",
+              "elapsedSeconds": 0.055,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            }
+          ],
+          "elapsedSeconds": 0.094,
+          "failureCount": 0,
+          "lane": "static-contract-specialist",
+          "status": "pass"
+        },
+        {
+          "commands": [
+            {
+              "command": "node --check assets/js/app.js",
+              "elapsedSeconds": 0.028,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "command": "node --check assets/js/assistant-import.js",
+              "elapsedSeconds": 0.023,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "command": "node --check tests/assistant-dispatch-intent.spec.cjs",
+              "elapsedSeconds": 0.022,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            }
+          ],
+          "elapsedSeconds": 0.073,
+          "failureCount": 0,
+          "lane": "syntax-specialist",
+          "status": "pass"
+        },
+        {
+          "commands": [
+            {
+              "command": "git diff --check",
+              "elapsedSeconds": 0.006,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "command": "bash -lc rg -n \"OPENCLAW_GATEWAY_TOKEN|DISCORD_BOT_TOKEN|GITHUB_TOKEN=|Bearer [A-Za-z0-9_-]+|gho_[A-Za-z0-9_]+|sk-[A-Za-z0-9]|BEGIN .*PRIVATE KEY\" scripts tests docs /home/koreanlego/projects/Personal_Notion_Hub/ops/runs/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-SETS10/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-003/strict-harness --glob '!ops/runs/**/artifacts/**' || true",
+              "elapsedSeconds": 0.029,
+              "returnCode": 0,
+              "stderr": "",
+              "stdout": ""
+            }
+          ],
+          "elapsedSeconds": 0.035,
+          "failureCount": 0,
+          "lane": "strict-integration-review",
+          "status": "pass"
+        }
+      ],
+      "metrics": {
+        "architectureScore": 5,
+        "completionScore": 5,
+        "coordinationEfficiency": 0.6,
+        "criticalPathReduction": 0.62,
+        "defectCount": 0,
+        "duplicateWorkCount": 0,
+        "elapsedMinutes": 0.0706,
+        "evidenceQuality": 0.92,
+        "evidenceReportScore": 5,
+        "harnessEfficiencyScore": 0.72,
+        "implementationScore": 4,
+        "initialEstimatedMinutes": 0.13,
+        "outcomeQuality": 0.95,
+        "reasoningEffortJudgment": "appropriate",
+        "replanCount": 0,
+        "reworkCount": 0,
+        "securityRiskHandlingScore": 5,
+        "specialistFit": 0.9,
+        "subagentCount": 6,
+        "supervisorDirectImplementationRatio": 0.15,
+        "supervisorLoadReduction": 0.85,
+        "unnecessaryLaneCount": 0,
+        "verificationDepthScore": 3,
+        "verificationScore": 5,
+        "writeSetConflictCount": 0
+      },
+      "mode": "strict-harness",
+      "status": "pass"
+    }
+  ]
+}

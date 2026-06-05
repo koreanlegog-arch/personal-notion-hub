@@ -1,0 +1,23 @@
+{
+  "endedAt": "2026-06-05T15:59:20+00:00",
+  "expectedRunDir": "ops/runs/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-SETS10",
+  "externalWritesPerformed": false,
+  "modelId": "external-dispatch-dry-run-four-mode",
+  "modes": [
+    "supervisor-only",
+    "supervisor-central",
+    "normal-harness",
+    "strict-harness"
+  ],
+  "privateValuesPrinted": false,
+  "rawPrivateBodyRead": false,
+  "reasoningEffort": "medium",
+  "returnCode": 0,
+  "sets": 10,
+  "startedAt": "2026-06-05T15:54:49+00:00",
+  "status": "pass",
+  "stderr": "",
+  "stdout": "{\"aggregate\": {\"normal-harness\": {\"count\": 10, \"maxSeconds\": 4.333, \"meanSeconds\": 4.196, \"minSeconds\": 4.103}, \"strict-harness\": {\"count\": 10, \"maxSeconds\": 4.353, \"meanSeconds\": 4.267, \"minSeconds\": 4.109}, \"supervisor-central\": {\"count\": 10, \"maxSeconds\": 9.615, \"meanSeconds\": 8.706, \"minSeconds\": 8.527}, \"supervisor-only\": {\"count\": 10, \"maxSeconds\": 17.5, \"meanSeconds\": 10.707, \"minSeconds\": 8.757}}, \"externalWritesPerformed\": false, \"modeCount\": 40, \"pnhFourModeBenchmark\": true, \"privateValuesPrinted\": false, \"runId\": \"PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-external-dispatch-dry-run-four-mode-SETS10\", \"setCount\": 10, \"tokenValuePrinted\": false}\n",
+  "taskFamily": "external-dispatch-dry-run",
+  "tokenValuePrinted": false
+}

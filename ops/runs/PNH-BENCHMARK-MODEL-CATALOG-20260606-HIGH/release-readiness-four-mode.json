@@ -1,0 +1,22 @@
+{
+  "endedAt": "2026-06-05T16:06:56+00:00",
+  "expectedRunDir": "ops/runs/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-SETS10",
+  "externalWritesPerformed": false,
+  "modelId": "release-readiness-four-mode",
+  "modes": [
+    "supervisor-central",
+    "normal-harness",
+    "strict-harness"
+  ],
+  "privateValuesPrinted": false,
+  "rawPrivateBodyRead": false,
+  "reasoningEffort": "high",
+  "returnCode": 0,
+  "sets": 10,
+  "startedAt": "2026-06-05T16:03:52+00:00",
+  "status": "pass",
+  "stderr": "",
+  "stdout": "{\"aggregate\": {\"normal-harness\": {\"count\": 10, \"maxSeconds\": 8.125, \"meanSeconds\": 4.822, \"minSeconds\": 4.274}, \"strict-harness\": {\"count\": 10, \"maxSeconds\": 7.646, \"meanSeconds\": 4.863, \"minSeconds\": 4.381}, \"supervisor-central\": {\"count\": 10, \"maxSeconds\": 10.974, \"meanSeconds\": 9.353, \"minSeconds\": 8.922}}, \"externalWritesPerformed\": false, \"modeCount\": 30, \"pnhFourModeBenchmark\": true, \"privateValuesPrinted\": false, \"runId\": \"PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode-SETS10\", \"setCount\": 10, \"tokenValuePrinted\": false}\n",
+  "taskFamily": "release-readiness",
+  "tokenValuePrinted": false
+}

@@ -1,0 +1,104 @@
+{
+  "benchmarkId": "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-001",
+  "commandCount": 8,
+  "elapsedMinutes": 0.2025,
+  "elapsedSeconds": 12.149,
+  "evidenceRef": "ops/runs/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-SETS10/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-001/supervisor-only",
+  "failureCount": 0,
+  "laneCount": 1,
+  "lanes": [
+    {
+      "commands": [
+        {
+          "command": "node --check assets/js/app.js",
+          "elapsedSeconds": 0.021,
+          "returnCode": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        {
+          "command": "node --check assets/js/assistant-import.js",
+          "elapsedSeconds": 0.021,
+          "returnCode": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        {
+          "command": "node --check tests/assistant-dispatch-intent.spec.cjs",
+          "elapsedSeconds": 0.02,
+          "returnCode": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        {
+          "command": "/usr/bin/python3 scripts/smoke_check.py",
+          "elapsedSeconds": 0.036,
+          "returnCode": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        {
+          "command": "/usr/bin/python3 scripts/pnh_unattended_dispatch_queue_plan.py",
+          "elapsedSeconds": 0.039,
+          "returnCode": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        {
+          "command": "/usr/bin/python3 scripts/browser_bridge_smoke_check.py",
+          "elapsedSeconds": 2.008,
+          "returnCode": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        {
+          "command": "bash -lc PNH_QA_PORT=4301 PNH_QA_RUN_DIR=/home/koreanlego/projects/Personal_Notion_Hub/ops/runs/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-SETS10/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-001/supervisor-only/assistant-qa-artifacts bash scripts/run_playwright_assistant_dispatch_intent_qa.sh",
+          "elapsedSeconds": 3.583,
+          "returnCode": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        {
+          "command": "bash -lc PNH_QA_PORT=4401 PNH_QA_RUN_DIR=/home/koreanlego/projects/Personal_Notion_Hub/ops/runs/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-SETS10/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-local-validation-four-mode-001/supervisor-only/redacted-qa-artifacts bash scripts/run_playwright_redacted_ui_qa.sh",
+          "elapsedSeconds": 6.42,
+          "returnCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      ],
+      "elapsedSeconds": 12.148,
+      "failureCount": 0,
+      "lane": "supervisor-sequential",
+      "status": "pass"
+    }
+  ],
+  "metrics": {
+    "architectureScore": 3,
+    "completionScore": 5,
+    "coordinationEfficiency": 0.95,
+    "criticalPathReduction": 0.0,
+    "defectCount": 0,
+    "duplicateWorkCount": 0,
+    "elapsedMinutes": 0.2025,
+    "evidenceQuality": 0.55,
+    "evidenceReportScore": 3,
+    "harnessEfficiencyScore": "unknown",
+    "implementationScore": 4,
+    "initialEstimatedMinutes": 0.18,
+    "outcomeQuality": 0.95,
+    "reasoningEffortJudgment": "appropriate",
+    "replanCount": 0,
+    "reworkCount": 0,
+    "securityRiskHandlingScore": 3,
+    "specialistFit": 0.2,
+    "subagentCount": 0,
+    "supervisorDirectImplementationRatio": 1.0,
+    "supervisorLoadReduction": 0.0,
+    "unnecessaryLaneCount": 0,
+    "verificationDepthScore": 2,
+    "verificationScore": 3,
+    "writeSetConflictCount": 0
+  },
+  "mode": "supervisor-only",
+  "status": "pass"
+}

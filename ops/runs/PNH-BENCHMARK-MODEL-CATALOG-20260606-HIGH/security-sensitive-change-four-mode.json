@@ -1,0 +1,22 @@
+{
+  "endedAt": "2026-06-05T15:54:49+00:00",
+  "expectedRunDir": "ops/runs/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-SETS10",
+  "externalWritesPerformed": false,
+  "modelId": "security-sensitive-change-four-mode",
+  "modes": [
+    "supervisor-central",
+    "normal-harness",
+    "strict-harness"
+  ],
+  "privateValuesPrinted": false,
+  "rawPrivateBodyRead": false,
+  "reasoningEffort": "high",
+  "returnCode": 0,
+  "sets": 10,
+  "startedAt": "2026-06-05T15:51:55+00:00",
+  "status": "pass",
+  "stderr": "",
+  "stdout": "{\"aggregate\": {\"normal-harness\": {\"count\": 10, \"maxSeconds\": 4.202, \"meanSeconds\": 4.108, \"minSeconds\": 4.031}, \"strict-harness\": {\"count\": 10, \"maxSeconds\": 11.614, \"meanSeconds\": 4.923, \"minSeconds\": 4.13}, \"supervisor-central\": {\"count\": 10, \"maxSeconds\": 9.895, \"meanSeconds\": 8.864, \"minSeconds\": 8.38}}, \"externalWritesPerformed\": false, \"modeCount\": 30, \"pnhFourModeBenchmark\": true, \"privateValuesPrinted\": false, \"runId\": \"PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode-SETS10\", \"setCount\": 10, \"tokenValuePrinted\": false}\n",
+  "taskFamily": "security-sensitive-local-storage",
+  "tokenValuePrinted": false
+}

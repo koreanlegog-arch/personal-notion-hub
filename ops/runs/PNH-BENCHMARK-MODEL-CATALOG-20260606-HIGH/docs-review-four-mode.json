@@ -1,0 +1,23 @@
+{
+  "endedAt": "2026-06-05T15:51:55+00:00",
+  "expectedRunDir": "ops/runs/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-SETS10",
+  "externalWritesPerformed": false,
+  "modelId": "docs-review-four-mode",
+  "modes": [
+    "supervisor-only",
+    "supervisor-central",
+    "normal-harness",
+    "strict-harness"
+  ],
+  "privateValuesPrinted": false,
+  "rawPrivateBodyRead": false,
+  "reasoningEffort": "medium",
+  "returnCode": 0,
+  "sets": 10,
+  "startedAt": "2026-06-05T15:47:34+00:00",
+  "status": "pass",
+  "stderr": "",
+  "stdout": "{\"aggregate\": {\"normal-harness\": {\"count\": 10, \"maxSeconds\": 8.09, \"meanSeconds\": 4.47, \"minSeconds\": 3.99}, \"strict-harness\": {\"count\": 10, \"maxSeconds\": 4.39, \"meanSeconds\": 4.113, \"minSeconds\": 3.958}, \"supervisor-central\": {\"count\": 10, \"maxSeconds\": 16.63, \"meanSeconds\": 9.086, \"minSeconds\": 8.074}, \"supervisor-only\": {\"count\": 10, \"maxSeconds\": 12.812, \"meanSeconds\": 9.137, \"minSeconds\": 8.254}}, \"externalWritesPerformed\": false, \"modeCount\": 40, \"pnhFourModeBenchmark\": true, \"privateValuesPrinted\": false, \"runId\": \"PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-docs-review-four-mode-SETS10\", \"setCount\": 10, \"tokenValuePrinted\": false}\n",
+  "taskFamily": "documentation-delivery",
+  "tokenValuePrinted": false
+}

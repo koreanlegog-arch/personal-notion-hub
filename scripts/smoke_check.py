@@ -111,6 +111,7 @@ REQUIRED = [
     "scripts/pnh_single_command_packet_browser_run_smoke_check.py",
     "scripts/pnh_supervisor_review_summary.py",
     "scripts/pnh_supervisor_review_summary_smoke_check.py",
+    "scripts/pnh_benchmark_model_catalog_runner.py",
     "scripts/start_tailnet_session.sh",
     "scripts/stop_tailnet_session.sh",
     "tests/redacted-ui.spec.cjs",

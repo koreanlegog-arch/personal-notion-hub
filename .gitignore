@@ -23,6 +23,7 @@ companion/logs/
 
 # Browser QA generated artifacts can contain screenshots or traces.
 ops/runs/*/artifacts/
+ops/runs/**/artifacts/
 test-results/
 
 # Secrets are not used by this project.

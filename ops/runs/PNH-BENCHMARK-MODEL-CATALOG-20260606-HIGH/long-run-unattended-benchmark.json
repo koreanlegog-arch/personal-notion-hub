@@ -1,0 +1,21 @@
+{
+  "endedAt": "2026-06-05T16:08:29+00:00",
+  "expectedRunDir": "ops/runs/PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-long-run-unattended-benchmark-SETS10",
+  "externalWritesPerformed": false,
+  "modelId": "long-run-unattended-benchmark",
+  "modes": [
+    "normal-harness",
+    "strict-harness"
+  ],
+  "privateValuesPrinted": false,
+  "rawPrivateBodyRead": false,
+  "reasoningEffort": "medium",
+  "returnCode": 0,
+  "sets": 10,
+  "startedAt": "2026-06-05T16:06:56+00:00",
+  "status": "pass",
+  "stderr": "",
+  "stdout": "{\"aggregate\": {\"normal-harness\": {\"count\": 10, \"maxSeconds\": 8.02, \"meanSeconds\": 4.83, \"minSeconds\": 4.386}, \"strict-harness\": {\"count\": 10, \"maxSeconds\": 4.727, \"meanSeconds\": 4.531, \"minSeconds\": 4.422}}, \"externalWritesPerformed\": false, \"modeCount\": 20, \"pnhFourModeBenchmark\": true, \"privateValuesPrinted\": false, \"runId\": \"PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-long-run-unattended-benchmark-SETS10\", \"setCount\": 10, \"tokenValuePrinted\": false}\n",
+  "taskFamily": "unattended-dispatch",
+  "tokenValuePrinted": false
+}
