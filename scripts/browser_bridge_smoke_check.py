@@ -292,6 +292,16 @@ def main() -> int:
             assert_no_forbidden_values(summary)
             assert_no_secret_values(summary, file_token, browser_session)
 
+            status, dispatch_state, _headers = request_json(
+                f"{base_url}/api/private/dispatch-state",
+                token=browser_session,
+                origin=ALLOWED_ORIGIN,
+            )
+            assert_true(status == 200, "session_dispatch_state_failed=true")
+            assert_true(dispatch_state.get("dispatchState", {}).get("privateValuesPrinted") is False, "dispatch_state_private_values_printed=true")
+            assert_no_forbidden_values(dispatch_state)
+            assert_no_secret_values(dispatch_state, file_token, browser_session)
+
             status, file_bearer_summary, _headers = request_json(f"{base_url}/api/private/summary", token=file_token)
             assert_true(status == 200 and file_bearer_summary.get("summary", {}).get("totalCaptures") == 3, "file_bearer_auth_failed=true")
 

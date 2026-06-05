@@ -139,9 +139,26 @@
     return sendCapture(packet, "Assistant capture");
   }
 
+  async function dispatchState() {
+    const result = await controlledFetch("/api/private/dispatch-state", {
+      authenticated: true,
+    });
+    if (!result.ok) {
+      throw new Error(result.data?.error || "Dispatch state check failed");
+    }
+    return result.data?.dispatchState || {
+      totalRecords: 0,
+      githubLinked: 0,
+      discordLinked: 0,
+      records: [],
+      privateValuesPrinted: false,
+    };
+  }
+
   window.PNHCompanionBridge = Object.freeze({
     baseUrl: defaultBaseUrl(),
     disconnect,
+    dispatchState,
     health,
     isPaired,
     pair,

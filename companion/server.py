@@ -8,6 +8,7 @@ Endpoints:
 - POST /api/private/mobile-captures
 - GET /api/private/mobile-captures
 - GET /api/private/summary
+- GET /api/private/dispatch-state
 """
 
 from __future__ import annotations
@@ -63,6 +64,7 @@ PHONE_BIND_HOSTS = {"0.0.0.0"}
 BROWSER_SESSION_TTL_SECONDS = 10 * 60
 BROWSER_PAIRING_TTL_SECONDS = 5 * 60
 ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_DISPATCH_STATE_PATH = ROOT / "companion" / "private" / "pnh_dispatch_state.json"
 STATIC_ALLOWED_PREFIXES = ("assets/", "data/")
 STATIC_ALLOWED_FILES = {"index.html", "favicon.ico"}
 
@@ -184,6 +186,7 @@ class CompanionHandler(BaseHTTPRequestHandler):
                 "auth": "bearer-token" if self.server.private_enabled else "disabled",
                 "writeEndpoint": "/api/private/mobile-captures",
                 "summaryEndpoint": "/api/private/summary",
+                "dispatchStateEndpoint": "/api/private/dispatch-state",
                 "responsePolicy": "metadata-only",
                 "storageMode": self.server.private_storage_mode,
                 "encryptedVaultEnabled": self.server.private_vault is not None,
@@ -209,6 +212,16 @@ class CompanionHandler(BaseHTTPRequestHandler):
             )
             summary.pop("dbPath", None)
             self._send_json(HTTPStatus.OK, {"ok": True, "summary": summary})
+            return
+        if path == "/api/private/dispatch-state":
+            if not self._require_private_auth():
+                return
+            try:
+                state = _load_dispatch_state(DEFAULT_DISPATCH_STATE_PATH)
+            except (OSError, ValueError):
+                self._send_json(HTTPStatus.INTERNAL_SERVER_ERROR, {"error": "dispatch_state_read_failed"})
+                return
+            self._send_json(HTTPStatus.OK, {"ok": True, "dispatchState": _summarize_dispatch_state(state)})
             return
         if path == "/api/private/mobile-captures":
             if not self._require_private_auth():
@@ -253,6 +266,7 @@ class CompanionHandler(BaseHTTPRequestHandler):
             "/api/private/pair",
             "/api/private/mobile-captures",
             "/api/private/summary",
+            "/api/private/dispatch-state",
         }:
             self._send_json(HTTPStatus.NOT_FOUND, {"error": "not_found"})
             return
@@ -464,6 +478,39 @@ def _error_result(path: str, code: str) -> dict[str, Any]:
         "counts": zero_counts(),
         "errors": [{"path": path, "code": code}],
         "warnings": [],
+    }
+
+
+def _load_dispatch_state(path: Path) -> dict[str, Any]:
+    if not path.exists():
+        return {}
+    value = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(value, dict):
+        raise ValueError("dispatch state must be an object")
+    return value
+
+
+def _summarize_dispatch_state(state: dict[str, Any], limit: int = 20) -> dict[str, Any]:
+    records = []
+    for packet_id, value in sorted(state.items(), key=lambda item: str(item[1].get("updatedAt", "")), reverse=True):
+        if not isinstance(value, dict):
+            continue
+        records.append(
+            {
+                "packetId": str(packet_id),
+                "githubIssueNumber": value.get("githubIssueNumber", ""),
+                "githubIssueSet": bool(value.get("githubIssueUrl")),
+                "discordThreadId": value.get("discordThreadId", ""),
+                "discordThreadSet": bool(value.get("discordThreadId")),
+                "updatedAt": value.get("updatedAt", ""),
+            }
+        )
+    return {
+        "totalRecords": len(records),
+        "githubLinked": sum(1 for item in records if item["githubIssueSet"]),
+        "discordLinked": sum(1 for item in records if item["discordThreadSet"]),
+        "privateValuesPrinted": False,
+        "records": records[:limit],
     }
 
 

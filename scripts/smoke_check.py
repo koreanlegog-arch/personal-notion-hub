@@ -310,6 +310,8 @@ def assert_expected_app_contracts() -> None:
         "PNHAssistantRules",
         "PNHCompanionBridge",
         "launchCompanionPanel",
+        "launchDispatchStatusPanel",
+        "refreshDispatchState",
         "sendLatestLaunchToCompanion",
         "assistantWorkspacePanel",
         "sendLatestAssistantToCompanion",
@@ -353,6 +355,7 @@ def assert_companion_bridge_contracts() -> None:
         "sendCapture",
         "sendAssistantCapture",
         "sendLaunchPacket",
+        "dispatchState",
     ]
     for token in expected:
         if token not in bridge:
@@ -366,6 +369,7 @@ def assert_companion_bridge_contracts() -> None:
     server = (ROOT / "companion/server.py").read_text(encoding="utf-8")
     for token in [
         "--enable-phone-ingress",
+        "/api/private/dispatch-state",
         "phone_ingress_enabled",
         "phone ingress requires --enable-browser-bridge",
         "phone ingress allowed origin must use loopback or private LAN host",

@@ -36,6 +36,7 @@ let companionState = {
   online: false,
   paired: false,
   screenshotRedaction: false,
+  dispatchState: null,
   statusText: "Not checked",
   lastResult: "",
 };
@@ -446,7 +447,7 @@ function renderLaunch() {
   );
 
   const topGrid = make("section", "content-grid launch-grid");
-  topGrid.append(launchIntakePanel(), launchCompanionPanel(), launchDirectionPanel());
+  topGrid.append(launchIntakePanel(), launchCompanionPanel(), launchDispatchStatusPanel(), launchDirectionPanel());
   appView.append(topGrid);
 
   const launchList = state.launches
@@ -619,6 +620,57 @@ function launchCompanionPanel() {
   return section;
 }
 
+function launchDispatchStatusPanel() {
+  const section = make("section", "section-panel companion-panel");
+  const header = make("div", "section-header");
+  header.append(make("h3", "", "Dispatch status"));
+  header.append(badge(companionState.dispatchState ? "synced" : "local"));
+  section.append(header);
+
+  const status = companionState.dispatchState;
+  const rows = [
+    ["Records", status?.totalRecords ?? 0],
+    ["GitHub linked", status?.githubLinked ?? 0],
+    ["Discord linked", status?.discordLinked ?? 0],
+  ];
+  const statList = make("div", "dispatch-status-list");
+  rows.forEach(([label, value]) => {
+    const item = make("div", "dispatch-status-item");
+    item.append(make("span", "", label));
+    item.append(make("strong", "", String(value)));
+    statList.append(item);
+  });
+  section.append(statList);
+
+  const records = Array.isArray(status?.records) ? status.records.slice(0, 3) : [];
+  if (records.length) {
+    const list = make("div", "dispatch-record-list");
+    records.forEach((record) => {
+      const item = make("article", "dispatch-record");
+      item.append(make("strong", "", record.packetId || "packet"));
+      item.append(
+        make(
+          "p",
+          "fine-print",
+          `GitHub #${record.githubIssueNumber || "-"} · Discord ${record.discordThreadId || "-"}`
+        )
+      );
+      list.append(item);
+    });
+    section.append(list);
+  } else {
+    section.append(make("p", "fine-print", "No dispatch state records are available yet."));
+  }
+
+  const refresh = button("Refresh Status", refreshDispatchState, "small-button");
+  refresh.disabled = !companionState.paired;
+  const actions = make("div", "item-actions");
+  actions.append(refresh);
+  section.append(actions);
+  section.append(make("p", "fine-print", "Reads redacted local dispatch metadata only. URLs and private bodies are not shown."));
+  return section;
+}
+
 function companionStatusLabel() {
   if (companionState.paired) return "paired";
   if (companionState.online) return "online";
@@ -683,7 +735,7 @@ async function pairCompanion(event) {
       statusText: `Companion paired at ${bridge.baseUrl}.`,
       lastResult: "Ready to send the latest launch packet.",
     };
-    render();
+    await refreshDispatchState({ silent: true });
     toast("Companion paired");
   } catch (error) {
     if (input) input.value = "";
@@ -700,11 +752,44 @@ async function pairCompanion(event) {
   }
 }
 
+async function refreshDispatchState(options = {}) {
+  const bridge = window.PNHCompanionBridge;
+  if (!bridge?.dispatchState || !bridge.isPaired()) {
+    companionState = {
+      ...companionState,
+      dispatchState: null,
+      lastResult: options.silent ? companionState.lastResult : "Pair companion before checking dispatch state.",
+    };
+    render();
+    if (!options.silent) toast("Dispatch status unavailable", "companion pairing 후 다시 확인하세요.");
+    return;
+  }
+  try {
+    const status = await bridge.dispatchState();
+    companionState = {
+      ...companionState,
+      dispatchState: status,
+      lastResult: options.silent ? companionState.lastResult : "Dispatch state refreshed.",
+    };
+    render();
+    if (!options.silent) toast("Dispatch state refreshed");
+  } catch (error) {
+    companionState = {
+      ...companionState,
+      dispatchState: null,
+      lastResult: error?.message || "Dispatch state check failed.",
+    };
+    render();
+    if (!options.silent) toast("Dispatch state unavailable");
+  }
+}
+
 function disconnectCompanion() {
   window.PNHCompanionBridge?.disconnect?.();
   companionState = {
     ...companionState,
     paired: false,
+    dispatchState: null,
     lastResult: "Disconnected. No browser session token is retained.",
   };
   render();
