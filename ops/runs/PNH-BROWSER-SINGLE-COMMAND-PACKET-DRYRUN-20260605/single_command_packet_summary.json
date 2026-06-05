@@ -1,0 +1,61 @@
+{
+  "commandsRun": [
+    {
+      "command": [
+        "python3",
+        "scripts/pnh_unattended_dispatch_queue_plan.py",
+        "--out",
+        "ops/runs/PNH-BROWSER-SINGLE-COMMAND-PACKET-DRYRUN-20260605/queue_plan.json",
+        "--state-file",
+        "companion/private/pnh_dispatch_state.json",
+        "--history-json",
+        "companion/private/pnh_unattended_dispatch_history.json",
+        "--max-jobs-per-run",
+        "1",
+        "--max-external-writes-per-hour",
+        "3",
+        "--cooldown-minutes",
+        "10"
+      ],
+      "returnCode": 0,
+      "stderrBytes": 0,
+      "stdoutBytes": 336,
+      "step": "queue_plan"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/pnh_unattended_dispatch_readiness.py",
+        "--queue-plan",
+        "ops/runs/PNH-BROWSER-SINGLE-COMMAND-PACKET-DRYRUN-20260605/queue_plan.json",
+        "--out",
+        "ops/runs/PNH-BROWSER-SINGLE-COMMAND-PACKET-DRYRUN-20260605/readiness.json"
+      ],
+      "returnCode": 0,
+      "stderrBytes": 0,
+      "stdoutBytes": 295,
+      "step": "readiness"
+    }
+  ],
+  "discordReplyDelivered": false,
+  "externalWritesPerformed": false,
+  "generatedAt": "2026-06-05T06:14:35+00:00",
+  "message": "queue_empty",
+  "mode": "dry-run",
+  "paths": {
+    "labels": "ops/runs/PNH-BROWSER-SINGLE-COMMAND-PACKET-DRYRUN-20260605/label_reconciliation",
+    "pilot": "ops/runs/PNH-BROWSER-SINGLE-COMMAND-PACKET-DRYRUN-20260605/dispatch_pilot",
+    "queue": "ops/runs/PNH-BROWSER-SINGLE-COMMAND-PACKET-DRYRUN-20260605",
+    "root": "ops/runs/PNH-BROWSER-SINGLE-COMMAND-PACKET-DRYRUN-20260605",
+    "worker": "ops/runs/PNH-BROWSER-SINGLE-COMMAND-PACKET-DRYRUN-20260605/worker_capture"
+  },
+  "pnhSingleCommandPacket": true,
+  "privateValuesPrinted": false,
+  "queuedCount": 0,
+  "rawPrivateBodyRead": false,
+  "runDir": "ops/runs/PNH-BROWSER-SINGLE-COMMAND-PACKET-DRYRUN-20260605",
+  "runId": "PNH-BROWSER-SINGLE-COMMAND-PACKET-DRYRUN-20260605",
+  "selectedCaptureId": "",
+  "tokenValuePrinted": false,
+  "workerRunPerformed": false
+}

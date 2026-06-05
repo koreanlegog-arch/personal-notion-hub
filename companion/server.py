@@ -10,6 +10,7 @@ Endpoints:
 - GET /api/private/summary
 - GET /api/private/dispatch-state
 - GET /api/private/command-packet-status
+- POST /api/private/single-command-packet/run
 """
 
 from __future__ import annotations
@@ -44,6 +45,7 @@ try:
         store_summary,
     )
     from .preview import SCHEMA, preview_import, zero_counts
+    from .single_command_packet_runner import SingleCommandPacketRunError, run_single_command_packet_from_browser
 except ImportError:  # pragma: no cover - supports direct script execution.
     from command_packet_status import build_command_packet_status  # type: ignore
     from dispatch_summary import summarize_dispatch_record  # type: ignore
@@ -60,6 +62,7 @@ except ImportError:  # pragma: no cover - supports direct script execution.
         store_summary,
     )
     from preview import SCHEMA, preview_import, zero_counts
+    from single_command_packet_runner import SingleCommandPacketRunError, run_single_command_packet_from_browser  # type: ignore
 
 
 MAX_BODY_BYTES = 64 * 1024
@@ -193,6 +196,7 @@ class CompanionHandler(BaseHTTPRequestHandler):
                 "summaryEndpoint": "/api/private/summary",
                 "dispatchStateEndpoint": "/api/private/dispatch-state",
                 "commandPacketStatusEndpoint": "/api/private/command-packet-status",
+                "singleCommandPacketRunEndpoint": "/api/private/single-command-packet/run",
                 "responsePolicy": "metadata-only",
                 "storageMode": self.server.private_storage_mode,
                 "encryptedVaultEnabled": self.server.private_vault is not None,
@@ -275,6 +279,9 @@ class CompanionHandler(BaseHTTPRequestHandler):
         if path == "/api/private/mobile-captures":
             self._handle_private_capture()
             return
+        if path == "/api/private/single-command-packet/run":
+            self._handle_single_command_packet_run()
+            return
         self._send_json(HTTPStatus.NOT_FOUND, {"error": "not_found"})
 
     def do_OPTIONS(self) -> None:
@@ -284,6 +291,7 @@ class CompanionHandler(BaseHTTPRequestHandler):
             "/api/private/summary",
             "/api/private/dispatch-state",
             "/api/private/command-packet-status",
+            "/api/private/single-command-packet/run",
         }:
             self._send_json(HTTPStatus.NOT_FOUND, {"error": "not_found"})
             return
@@ -374,6 +382,52 @@ class CompanionHandler(BaseHTTPRequestHandler):
             return
 
         self._send_json(HTTPStatus.CREATED, {"ok": True, "writesPerformed": True, "capture": capture})
+
+    def _handle_single_command_packet_run(self) -> None:
+        if not self._require_private_auth():
+            return
+
+        payload, error = self._read_json_payload(MAX_BODY_BYTES)
+        if error:
+            status, _path, code = error
+            self._send_json(status, {"error": code})
+            return
+        if not isinstance(payload, dict):
+            self._send_json(HTTPStatus.BAD_REQUEST, {"error": "single_command_packet_payload_must_be_object"})
+            return
+
+        mode = str(payload.get("mode") or "dry-run")
+        confirm_apply = str(payload.get("confirmApply") or "")
+        try:
+            result = run_single_command_packet_from_browser(mode=mode, confirm_apply=confirm_apply)
+        except SingleCommandPacketRunError as exc:
+            self._send_json(
+                HTTPStatus(exc.status_code),
+                {
+                    "ok": False,
+                    "error": exc.code,
+                    "externalWritesPerformed": False,
+                    "workerRunPerformed": False,
+                    "privateValuesPrinted": False,
+                    "rawPrivateBodyRead": False,
+                },
+            )
+            return
+        except (OSError, TimeoutError):
+            self._send_json(
+                HTTPStatus.INTERNAL_SERVER_ERROR,
+                {
+                    "ok": False,
+                    "error": "single_command_packet_run_unavailable",
+                    "externalWritesPerformed": False,
+                    "workerRunPerformed": False,
+                    "privateValuesPrinted": False,
+                    "rawPrivateBodyRead": False,
+                },
+            )
+            return
+
+        self._send_json(HTTPStatus.OK, {"ok": bool(result.get("ok")), "singleCommandPacketRun": result})
 
     def _read_json_payload(
         self,

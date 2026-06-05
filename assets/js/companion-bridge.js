@@ -175,6 +175,29 @@
     };
   }
 
+  async function runSingleCommandPacket(mode = "dry-run", confirmApply = "") {
+    const normalizedMode = String(mode || "dry-run");
+    const result = await controlledFetch("/api/private/single-command-packet/run", {
+      method: "POST",
+      authenticated: true,
+      body: {
+        mode: normalizedMode,
+        confirmApply: String(confirmApply || ""),
+      },
+    });
+    if (!result.ok || !result.data?.ok) {
+      throw new Error(result.data?.error || "Single command packet run failed");
+    }
+    return result.data?.singleCommandPacketRun || {
+      ok: false,
+      mode: normalizedMode,
+      externalWritesPerformed: false,
+      workerRunPerformed: false,
+      privateValuesPrinted: false,
+      rawPrivateBodyRead: false,
+    };
+  }
+
   window.PNHCompanionBridge = Object.freeze({
     baseUrl: defaultBaseUrl(),
     commandPacketStatus,
@@ -183,6 +206,7 @@
     health,
     isPaired,
     pair,
+    runSingleCommandPacket,
     sendAssistantCapture,
     sendCapture,
     sendLaunchPacket,

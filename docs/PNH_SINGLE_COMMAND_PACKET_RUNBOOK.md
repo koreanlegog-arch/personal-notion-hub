@@ -92,6 +92,18 @@ Dry-run wrapper command:
 python3 scripts/pnh_single_command_packet.py
 ```
 
+Browser-triggered dry-run is available from the Launch UI after pairing with
+the local companion. Browser-triggered apply remains locked unless the
+companion runtime is intentionally started with:
+
+```bash
+PNH_BROWSER_SINGLE_PACKET_APPLY_ENABLED=1
+```
+
+and the request includes the apply confirmation phrase. This keeps mobile/UI
+dry-run convenient while preventing accidental GitHub, Discord, or worker
+side effects from a browser click.
+
 The detailed manual sequence below remains the reference procedure used by the
 wrapper and is useful for troubleshooting.
 

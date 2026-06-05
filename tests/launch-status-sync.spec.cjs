@@ -107,6 +107,22 @@ test.describe("Launch dispatch status sync", () => {
         health: async () => ({ ok: true, mode: "qa-fixture", writesEnabled: false }),
         isPaired: () => true,
         dispatchState: async () => dispatchState,
+        runSingleCommandPacket: async (mode) => ({
+          ok: true,
+          mode,
+          summary: {
+            mode,
+            queuedCount: 0,
+            externalWritesPerformed: false,
+            workerRunPerformed: false,
+            privateValuesPrinted: false,
+            rawPrivateBodyRead: false,
+          },
+          externalWritesPerformed: false,
+          workerRunPerformed: false,
+          privateValuesPrinted: false,
+          rawPrivateBodyRead: false,
+        }),
       });
     }, { packetId });
 
@@ -121,6 +137,8 @@ test.describe("Launch dispatch status sync", () => {
     await expect(packetStatusCard.getByText("Worker:")).toBeVisible();
     await expect(packetStatusCard.getByText("done", { exact: true })).toBeVisible();
     await expect(packetStatusCard.getByText("metadata-only · private body hidden")).toBeVisible();
+    await page.getByRole("button", { name: "Run Dry-Run" }).click();
+    await expect(packetStatusCard.getByText("Last browser run: dry-run · external writes no · worker run no")).toBeVisible();
     const launchCard = page.locator(".item-card").filter({ hasText: "Synthetic Launch Status Sync" });
     await expect(launchCard.getByText("Dispatch mapping: ledger_and_discord_linked")).toBeVisible();
     await expect(launchCard.getByText("Task worker_done")).toBeVisible();

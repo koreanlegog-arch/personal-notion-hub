@@ -1,0 +1,118 @@
+{
+  "capturesInspected": 8,
+  "cooldownActive": false,
+  "eligibleCount": 0,
+  "externalWritesPerformed": false,
+  "generatedAt": "2026-06-05T06:14:35+00:00",
+  "lockPlan": {
+    "lockFile": "companion/private/pnh_unattended_dispatch.lock",
+    "singleWriter": true,
+    "staleAfterMinutes": 20,
+    "stateWritesMustBeSequential": true
+  },
+  "mode": "dry-run",
+  "pnhUnattendedDispatchQueuePlan": true,
+  "policy": {
+    "cooldownMinutes": 10,
+    "maxExternalWritesPerHour": 3,
+    "maxJobsPerRun": 1
+  },
+  "privateValuesPrinted": false,
+  "queueActivationGateReason": "unattended dispatch can create GitHub Issues, Discord/OpenClaw threads, GitHub comments, and worker/model calls without an operator present.",
+  "queueActivationGateRequired": true,
+  "queued": [],
+  "queuedCount": 0,
+  "recentExternalWriteCount1h": 1,
+  "remainingExternalWriteCapacity1h": 2,
+  "rollbackPlan": {
+    "beforeApply": [
+      "snapshot companion/private/pnh_dispatch_state.json",
+      "write run-local candidate and dispatch plan before external apply",
+      "record GitHub issue labels before mutation",
+      "record Discord thread id only after creation succeeds"
+    ],
+    "rollbackActions": [
+      "restore local dispatch state snapshot if local state is inconsistent",
+      "manually close or relabel GitHub issue created by failed run",
+      "post no additional Discord messages until supervisor review",
+      "rerun reconciliation plan before retry"
+    ]
+  },
+  "rollbackRequiredBeforeApply": true,
+  "skipped": [
+    {
+      "captureId": "assistant-capture-capture-mq05i9fq-i6hmfobg",
+      "commandType": "assistant_capture",
+      "eligible": false,
+      "encrypted": true,
+      "sensitivity": "internal",
+      "skipReason": "not_dispatch_command_kind",
+      "storageMode": "encrypted-vault"
+    },
+    {
+      "captureId": "capture-01c01c8c7c4e399f8398a4de",
+      "commandType": "assistant_capture",
+      "eligible": false,
+      "encrypted": true,
+      "sensitivity": "internal",
+      "skipReason": "not_dispatch_command_kind",
+      "storageMode": "encrypted-vault"
+    },
+    {
+      "captureId": "capture-c5d75231afbde0c596c87cca",
+      "commandType": "assistant_capture",
+      "eligible": false,
+      "encrypted": true,
+      "sensitivity": "private",
+      "skipReason": "not_dispatch_command_kind",
+      "storageMode": "encrypted-vault"
+    },
+    {
+      "captureId": "assistant-capture-capture-mpzk114g-q6a3ufkg",
+      "commandType": "assistant_capture",
+      "eligible": false,
+      "encrypted": true,
+      "sensitivity": "internal",
+      "skipReason": "not_dispatch_command_kind",
+      "storageMode": "encrypted-vault"
+    },
+    {
+      "captureId": "assistant-capture-capture-mpzjuey4-og9jk9vl",
+      "commandType": "assistant_capture",
+      "eligible": false,
+      "encrypted": true,
+      "sensitivity": "internal",
+      "skipReason": "not_dispatch_command_kind",
+      "storageMode": "encrypted-vault"
+    },
+    {
+      "captureId": "capture-5345e37040604a2fca64f317",
+      "commandType": "project_brief",
+      "eligible": false,
+      "encrypted": true,
+      "sensitivity": "private",
+      "skipReason": "already_in_dispatch_state",
+      "storageMode": "encrypted-vault"
+    },
+    {
+      "captureId": "capture-2a0fcdefc3f169ec30c6497f",
+      "commandType": "project_brief",
+      "eligible": false,
+      "encrypted": true,
+      "sensitivity": "private",
+      "skipReason": "already_in_dispatch_state",
+      "storageMode": "encrypted-vault"
+    },
+    {
+      "captureId": "capture-3b8522ff102b0469c683b027",
+      "commandType": "project_brief",
+      "eligible": false,
+      "encrypted": true,
+      "sensitivity": "private",
+      "skipReason": "already_in_dispatch_state",
+      "storageMode": "encrypted-vault"
+    }
+  ],
+  "skippedCount": 8,
+  "tokenValuePrinted": false
+}

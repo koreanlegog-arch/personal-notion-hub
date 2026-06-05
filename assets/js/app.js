@@ -38,6 +38,7 @@ let companionState = {
   screenshotRedaction: false,
   dispatchState: null,
   commandPacketStatus: null,
+  singleCommandPacketRun: null,
   statusText: "Not checked",
   lastResult: "",
 };
@@ -677,10 +678,14 @@ function launchDispatchStatusPanel() {
 
   const refresh = button("Refresh Status", refreshDispatchState, "small-button");
   const refreshPacket = button("Refresh Packet Status", refreshCommandPacketStatus, "small-button");
+  const runDry = button("Run Dry-Run", runSingleCommandPacketDryRun, "small-button");
+  const applyLocked = button("Apply Locked", () => toast("Apply locked", "Browser apply requires companion runtime enablement."), "small-button");
   refresh.disabled = !companionState.paired;
   refreshPacket.disabled = !companionState.paired;
+  runDry.disabled = !companionState.paired;
+  applyLocked.disabled = true;
   const actions = make("div", "item-actions");
-  actions.append(refresh, refreshPacket);
+  actions.append(refresh, refreshPacket, runDry, applyLocked);
   section.append(actions);
   section.append(make("p", "fine-print", "Reads redacted local dispatch metadata only. URLs and private bodies are not shown."));
   return section;
@@ -710,6 +715,10 @@ function commandPacketStatusCard(status) {
   });
   if (latestRun.mode) {
     card.append(make("p", "fine-print", `Wrapper mode: ${latestRun.mode} · external writes ${latestRun.externalWritesPerformed ? "yes" : "no"} · worker run ${latestRun.workerRunPerformed ? "yes" : "no"}`));
+  }
+  if (companionState.singleCommandPacketRun) {
+    const run = companionState.singleCommandPacketRun;
+    card.append(make("p", "fine-print", `Last browser run: ${run.mode || "-"} · external writes ${run.externalWritesPerformed ? "yes" : "no"} · worker run ${run.workerRunPerformed ? "yes" : "no"}`));
   }
   card.append(make("p", "fine-print", "metadata-only · private body hidden"));
   return card;
@@ -969,6 +978,7 @@ async function refreshDispatchState(options = {}) {
       ...companionState,
       dispatchState: null,
       commandPacketStatus: null,
+      singleCommandPacketRun: null,
       lastResult: options.silent ? companionState.lastResult : "Pair companion before checking dispatch state.",
     };
     render();
@@ -994,6 +1004,7 @@ async function refreshDispatchState(options = {}) {
       ...companionState,
       dispatchState: null,
       commandPacketStatus: null,
+      singleCommandPacketRun: null,
       lastResult: error?.message || "Dispatch state check failed.",
     };
     render();
@@ -1033,6 +1044,50 @@ async function refreshCommandPacketStatus(options = {}) {
   }
 }
 
+async function runSingleCommandPacketDryRun() {
+  const bridge = window.PNHCompanionBridge;
+  if (!bridge?.runSingleCommandPacket || !bridge.isPaired()) {
+    companionState = {
+      ...companionState,
+      singleCommandPacketRun: null,
+      lastResult: "Pair companion before running single command packet dry-run.",
+    };
+    render();
+    toast("Dry-run unavailable", "companion pairing 후 다시 실행하세요.");
+    return;
+  }
+  try {
+    companionState = {
+      ...companionState,
+      lastResult: "Single command packet dry-run is running...",
+    };
+    render();
+    const run = await bridge.runSingleCommandPacket("dry-run");
+    companionState = {
+      ...companionState,
+      singleCommandPacketRun: run,
+      lastResult: run.ok === false ? "Single command packet dry-run failed." : "Single command packet dry-run completed.",
+    };
+    await refreshDispatchState({ silent: true });
+    toast("Dry-run completed", "wrapper summary와 dispatch metadata를 갱신했습니다.");
+  } catch (error) {
+    companionState = {
+      ...companionState,
+      singleCommandPacketRun: {
+        ok: false,
+        mode: "dry-run",
+        externalWritesPerformed: false,
+        workerRunPerformed: false,
+        privateValuesPrinted: false,
+        rawPrivateBodyRead: false,
+      },
+      lastResult: error?.message || "Single command packet dry-run failed.",
+    };
+    render();
+    toast("Dry-run failed");
+  }
+}
+
 function disconnectCompanion() {
   window.PNHCompanionBridge?.disconnect?.();
   companionState = {
@@ -1040,6 +1095,7 @@ function disconnectCompanion() {
     paired: false,
     dispatchState: null,
     commandPacketStatus: null,
+    singleCommandPacketRun: null,
     lastResult: "Disconnected. No browser session token is retained.",
   };
   render();

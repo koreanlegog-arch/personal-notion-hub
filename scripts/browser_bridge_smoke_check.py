@@ -313,6 +313,19 @@ def main() -> int:
             assert_no_forbidden_values(packet_status)
             assert_no_secret_values(packet_status, file_token, browser_session)
 
+            status, apply_gate, _headers = request_json(
+                f"{base_url}/api/private/single-command-packet/run",
+                "POST",
+                {"mode": "apply"},
+                token=browser_session,
+                origin=ALLOWED_ORIGIN,
+            )
+            assert_true(status == 403, "browser_single_packet_apply_gate_missing=true")
+            assert_true(apply_gate.get("externalWritesPerformed") is False, "blocked_apply_external_write=true")
+            assert_true(apply_gate.get("workerRunPerformed") is False, "blocked_apply_worker_run=true")
+            assert_no_forbidden_values(apply_gate)
+            assert_no_secret_values(apply_gate, file_token, browser_session)
+
             status, file_bearer_summary, _headers = request_json(f"{base_url}/api/private/summary", token=file_token)
             assert_true(status == 200 and file_bearer_summary.get("summary", {}).get("totalCaptures") == 3, "file_bearer_auth_failed=true")
 
@@ -325,6 +338,7 @@ def main() -> int:
             print("token_value_printed=false")
             print("session_value_printed=false")
             print("private_response_values_printed=false")
+            print("browser_single_packet_apply_gate_enforced=true")
             return 0
         finally:
             server.shutdown()
