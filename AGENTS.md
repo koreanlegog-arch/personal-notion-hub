@@ -68,7 +68,11 @@ will happen after approval.
 
 - Use phase-level progress, not micro-approval.
 - If the next step is reversible and within the active PNH phase, continue.
-- Treat "next efficient work" suggestions as backlog guidance, not approval gates.
+- Do not append "next efficient work" suggestions to routine final reports.
+  Report approval-required items, blockers, residual risks, and completed
+  verification instead.
+- If no material gate, blocker, or explicit supervisor status request exists,
+  do not stop only to propose the next task. Continue the current scoped phase.
 - If the supervisor replies with `진행해`, `쭉 진행해`, or equivalent continuation language,
   execute the next scoped PNH task autonomously until a material gate is actually reached.
 - Do not ask whether to run smoke checks, browser QA, dry-runs, scoped commits, or pushes
@@ -85,6 +89,10 @@ will happen after approval.
   - a material approval gate is reached
   - progress is blocked by missing external state or supervisor-only action
   - the supervisor explicitly asks for status, summary, or review
+- If a final-style report stops work, it must clearly identify either:
+  - approval-required item(s)
+  - an actual blocker
+  - phase completion with no current scoped task remaining
 - If reporting because of a material gate or blocker, state the exact reason work must
   stop and the next action that will happen after supervisor input.
 - Prefer dry-run, metadata-safe evidence, and redacted artifacts for external workflow
