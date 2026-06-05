@@ -1,11 +1,30 @@
 {
-  "averageEvidenceCompleteness": 33,
+  "averageEvidenceCompleteness": 50,
   "blockedOrFailed": 0,
   "dispatchEvidenceSummary": true,
-  "includedRecords": 1,
+  "includedRecords": 2,
   "privateValuesPrinted": false,
   "readyForSupervisorReview": 1,
   "records": [
+    {
+      "discordThreadId": "1512295718054793419",
+      "discordThreadSet": true,
+      "evidenceCompleteness": 67,
+      "githubIssueNumber": 2,
+      "githubIssueSet": true,
+      "missingEvidence": [
+        "worker_session"
+      ],
+      "nextAction": "capture_worker_session_result",
+      "packetId": "capture-5345e37040604a2fca64f317",
+      "taskStatus": "dispatched_to_worker_thread",
+      "updatedAt": "2026-06-05T03:23:35+00:00",
+      "workerEvidenceRefSet": false,
+      "workerResultRecordedAt": "",
+      "workerResultSet": false,
+      "workerSessionId": "",
+      "workerStatus": ""
+    },
     {
       "discordThreadId": "",
       "discordThreadSet": false,
@@ -27,5 +46,5 @@
       "workerStatus": "done"
     }
   ],
-  "totalRecords": 1
+  "totalRecords": 2
 }

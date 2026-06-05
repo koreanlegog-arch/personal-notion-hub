@@ -53,7 +53,7 @@ def main() -> int:
         packet = load_packet(Path(args.input_json))
         packet_id = packet_identifier(packet)
         state_path = Path(args.state_file)
-        state = load_state(state_path) if args.apply else {}
+        state = load_state(state_path)
         existing = state.get(packet_id, {})
         issue = build_issue_payload(
             packet,

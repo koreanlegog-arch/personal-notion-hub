@@ -69,6 +69,43 @@ def main() -> int:
         assert_true(plan["tokenValuePrinted"] is False, "token_value_printed=true")
         assert_true(plan["planned"]["discordThreadName"] == "PNH-capture-dispatch-smoke-001-dispatch", "thread_name_contract_failed=true")
 
+        state.write_text(
+            json.dumps(
+                {
+                    "capture-dispatch-smoke-001": {
+                        "githubIssueUrl": "https://github.com/example/private-ledger/issues/1",
+                        "discordThreadId": "1234567890",
+                    }
+                },
+                ensure_ascii=False,
+            ),
+            encoding="utf-8",
+        )
+        idempotent_dry_run = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts" / "pnh_dispatch_job.py"),
+                "--input-json",
+                str(packet),
+                "--repo",
+                "example/private-ledger",
+                "--discord-target",
+                "channel:123",
+                "--state-file",
+                str(state),
+                "--out",
+                str(out),
+            ],
+            capture_output=True,
+            text=True,
+            timeout=10,
+            check=False,
+        )
+        assert_true(idempotent_dry_run.returncode == 0, f"idempotent_dry_run_failed={idempotent_dry_run.stderr.strip()}")
+        idempotent_plan = json.loads(out.read_text(encoding="utf-8"))
+        assert_true(idempotent_plan["idempotency"]["existingGitHubIssue"] is True, "dry_run_did_not_read_existing_issue=true")
+        assert_true(idempotent_plan["idempotency"]["existingDiscordThread"] is True, "dry_run_did_not_read_existing_thread=true")
+
         blocked_apply = subprocess.run(
             [
                 sys.executable,
