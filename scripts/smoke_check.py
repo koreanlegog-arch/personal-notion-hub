@@ -32,6 +32,7 @@ REQUIRED = [
     "docs/PHONE_INGRESS_SECURITY.md",
     "docs/GITHUB_LEDGER_BRIDGE_DESIGN.md",
     "docs/PNH_DISPATCH_JOB_RUNBOOK.md",
+    "docs/PNH_SINGLE_COMMAND_PACKET_RUNBOOK.md",
     "ops/templates/PRIVATE_DATA_ADAPTER_BRIEF_TEMPLATE.md",
     "ops/templates/PRIVATE_DATA_ADAPTER_SECURITY_GATE_TEMPLATE.md",
     "ops/checklists/PRIVATE_DATA_ADAPTER_QA_CHECKLIST.md",
@@ -99,6 +100,8 @@ REQUIRED = [
     "scripts/pnh_unattended_dispatch_readiness_smoke_check.py",
     "scripts/pnh_unattended_dispatch_pilot.py",
     "scripts/pnh_unattended_dispatch_pilot_smoke_check.py",
+    "scripts/pnh_single_command_packet.py",
+    "scripts/pnh_single_command_packet_smoke_check.py",
     "scripts/pnh_supervisor_review_summary.py",
     "scripts/pnh_supervisor_review_summary_smoke_check.py",
     "scripts/start_tailnet_session.sh",
@@ -263,6 +266,9 @@ def assert_github_ledger_bridge_contracts() -> None:
     unattended_pilot_smoke = (ROOT / "scripts" / "pnh_unattended_dispatch_pilot_smoke_check.py").read_text(
         encoding="utf-8"
     )
+    single_packet_runbook = (ROOT / "docs" / "PNH_SINGLE_COMMAND_PACKET_RUNBOOK.md").read_text(encoding="utf-8")
+    single_packet = (ROOT / "scripts" / "pnh_single_command_packet.py").read_text(encoding="utf-8")
+    single_packet_smoke = (ROOT / "scripts" / "pnh_single_command_packet_smoke_check.py").read_text(encoding="utf-8")
     supervisor_review = (ROOT / "scripts" / "pnh_supervisor_review_summary.py").read_text(encoding="utf-8")
     supervisor_review_smoke = (ROOT / "scripts" / "pnh_supervisor_review_summary_smoke_check.py").read_text(encoding="utf-8")
     expected = [
@@ -334,6 +340,11 @@ def assert_github_ledger_bridge_contracts() -> None:
         "pnhUnattendedDispatchPilot",
         "--approve-unattended-pilot",
         "pnh_unattended_dispatch.lock",
+        "pnh_single_command_packet_smoke_check_pass=true",
+        "pnhSingleCommandPacket",
+        "pnh_single_command_packet.lock",
+        "metadata-safe worker prompt",
+        "single_command_packet_summary.json",
         "--detect-existing-github",
         "pnh_supervisor_review_summary_smoke_check_pass=true",
         "pnhSupervisorReviewSummary",
@@ -377,6 +388,9 @@ def assert_github_ledger_bridge_contracts() -> None:
             unattended_readiness_smoke,
             unattended_pilot,
             unattended_pilot_smoke,
+            single_packet_runbook,
+            single_packet,
+            single_packet_smoke,
             supervisor_review,
             supervisor_review_smoke,
         ]

@@ -110,6 +110,7 @@ python3 scripts/pnh_github_label_reconciliation_apply.py
 python3 scripts/pnh_discord_thread_status_refresh.py
 python3 scripts/pnh_unattended_dispatch_queue_plan.py
 python3 scripts/pnh_unattended_dispatch_readiness.py
+python3 scripts/pnh_single_command_packet.py
 ```
 
 For the full single packet flow from private inbox to worker-done evidence, see:

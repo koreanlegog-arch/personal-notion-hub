@@ -80,6 +80,21 @@ Tracked evidence must remain metadata-only.
 
 ## Safe Sequential Command Packet
 
+Preferred wrapper command:
+
+```bash
+python3 scripts/pnh_single_command_packet.py --apply
+```
+
+Dry-run wrapper command:
+
+```bash
+python3 scripts/pnh_single_command_packet.py
+```
+
+The detailed manual sequence below remains the reference procedure used by the
+wrapper and is useful for troubleshooting.
+
 Set paths for a single run:
 
 ```bash
@@ -292,13 +307,46 @@ If worker capture fails:
 - inspect metadata only: return code, stdout byte count, stderr byte count
 - rerun worker capture with the same metadata-safe prompt if the failure is transient
 
-## Current Known Limitation
+## Wrapper Script
 
-This runbook is still a manual command packet, not a single wrapper script.
-The next implementation step is a guarded script that performs these steps with:
+The guarded wrapper is:
+
+```bash
+python3 scripts/pnh_single_command_packet.py
+```
+
+Default mode is dry-run. Apply mode performs the bounded delegated workflow:
+
+```bash
+python3 scripts/pnh_single_command_packet.py --apply
+```
+
+Useful options:
+
+```bash
+python3 scripts/pnh_single_command_packet.py \
+  --run-id PNH-COMMAND-PACKET-MY-RUN \
+  --agent qa \
+  --thinking low \
+  --timeout 300
+```
+
+The wrapper enforces:
 
 - unique run directory creation
-- single-writer dispatch-state lock
-- sequential refresh enforcement
-- metadata-safe prompt generation
-- final evidence summary and Git checkpoint
+- single-packet apply lock
+- queue planning before apply
+- bounded pilot apply
+- sequential GitHub/Discord/GitHub refresh
+- metadata-safe worker prompt generation
+- OpenClaw worker capture without Discord reply delivery
+- GitHub label reconciliation dry-run before apply
+- final evidence summary and supervisor review summary
+
+## Current Known Limitation
+
+The wrapper still runs a single queue item per invocation. It is not a daemon,
+scheduler, or background unattended service.
+
+Future work can add a higher-level batch runner if repeated unattended
+processing is needed.

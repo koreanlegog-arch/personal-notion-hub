@@ -12,6 +12,8 @@ from queue selection through worker-done evidence and supervisor summary.
 - `docs/PNH_SINGLE_COMMAND_PACKET_RUNBOOK.md`
 - `docs/CURRENT_CAPABILITIES.md`
 - `docs/PNH_DISPATCH_JOB_RUNBOOK.md`
+- `scripts/pnh_single_command_packet.py`
+- `scripts/pnh_single_command_packet_smoke_check.py`
 
 ## Evidence Basis
 
@@ -34,7 +36,24 @@ The runbook is based on verified packet runs:
 - GitHub label reconciliation dry-run before apply
 - final pending external write check
 
-## Verification Planned
+## Verification
 
-Runbook verification uses Markdown existence, smoke checks, secret pattern scan,
-and `git diff --check`.
+- `python3 scripts/pnh_single_command_packet_smoke_check.py`
+- `python3 -m py_compile scripts/pnh_single_command_packet.py scripts/pnh_single_command_packet_smoke_check.py`
+- full smoke check after registering the wrapper in `scripts/smoke_check.py`
+
+## Wrapper Dry-Run
+
+Command:
+
+```bash
+python3 scripts/pnh_single_command_packet.py --run-id PNH-SINGLE-COMMAND-PACKET-WRAPPER-DRYRUN-20260605
+```
+
+Result:
+
+- run dir: `ops/runs/PNH-SINGLE-COMMAND-PACKET-WRAPPER-DRYRUN-20260605`
+- queued count: `0`
+- external writes performed: `false`
+- worker run performed: `false`
+- raw private body read: `false`
