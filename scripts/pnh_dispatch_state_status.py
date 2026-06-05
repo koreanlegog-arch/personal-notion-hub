@@ -15,6 +15,10 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from companion.dispatch_summary import summarize_dispatch_record  # noqa: E402
+
 DEFAULT_STATE = ROOT / "companion" / "private" / "pnh_dispatch_state.json"
 
 
@@ -58,19 +62,7 @@ def summarize_state(state: dict[str, Any], state_path: Path, *, limit: int, incl
     for packet_id, value in sorted(state.items(), key=lambda item: str(item[1].get("updatedAt", "")), reverse=True):
         if not isinstance(value, dict):
             continue
-        record = {
-            "packetId": str(packet_id),
-            "githubIssueNumber": value.get("githubIssueNumber", ""),
-            "githubIssueSet": bool(value.get("githubIssueUrl")),
-            "discordThreadId": value.get("discordThreadId", ""),
-            "discordThreadSet": bool(value.get("discordThreadId")),
-            "workerSessionId": value.get("workerSessionId", ""),
-            "workerStatus": value.get("workerStatus", ""),
-            "workerResultSet": bool(value.get("workerSessionId")),
-            "workerEvidenceRefSet": bool(value.get("workerEvidenceRef")),
-            "workerResultRecordedAt": value.get("workerResultRecordedAt", ""),
-            "updatedAt": value.get("updatedAt", ""),
-        }
+        record = summarize_dispatch_record(str(packet_id), value)
         if include_urls:
             record["githubIssueUrl"] = value.get("githubIssueUrl", "")
         records.append(record)

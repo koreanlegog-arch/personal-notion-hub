@@ -186,6 +186,8 @@ Implemented inside the approved local/private boundary:
 - operator-confirmed GitHub/Discord external ID metadata can be persisted into browser-local Launch records
 - local worker-result metadata can be recorded into dispatch state through a dry-run-first script
 - OpenClaw worker-session metadata can be captured without delivering Discord replies
+- dispatch state can synthesize supervisor-facing `taskStatus`, `evidenceCompleteness`, `missingEvidence`, and `nextAction`
+- synthesized task/evidence metadata can be confirmed into browser-local Launch records
 
 Still pending:
 
@@ -218,7 +220,7 @@ Implemented:
 Still pending:
 
 - automatic dispatch job from PNH local command packet
-- task status synthesis from captured OpenClaw worker-session metadata
+- project/task board progress update from confirmed Launch task status
 - gateway auth/sandbox hardening follow-up
 
 Dispatch job status:

@@ -659,6 +659,9 @@ function launchDispatchStatusPanel() {
       if (record.workerResultSet) {
         item.append(make("p", "fine-print", `Worker ${record.workerStatus || "recorded"} · ${record.workerSessionId || "-"}`));
       }
+      if (record.taskStatus) {
+        item.append(make("p", "fine-print", `Task ${record.taskStatus} · Evidence ${record.evidenceCompleteness ?? 0}%`));
+      }
       list.append(item);
     });
     section.append(list);
@@ -715,6 +718,25 @@ function confirmDispatchMappingForLaunch(id) {
   launch.discordThreadSet = Boolean(record.discordThreadSet);
   launch.updatedAt = nowISO();
   persist("Dispatch mapping confirmed", "GitHub/Discord 외부 ID metadata만 browser-local launch record에 저장했습니다.");
+}
+
+function confirmTaskStatusForLaunch(id) {
+  const launch = state.launches.find((item) => item.id === id);
+  if (!launch) return;
+  const record = dispatchRecordForLaunch(launch);
+  if (!record?.taskStatus) {
+    toast("No task status", "worker metadata가 포함된 dispatch state를 먼저 refresh하세요.");
+    return;
+  }
+  launch.taskStatus = record.taskStatus;
+  launch.evidenceCompleteness = Number(record.evidenceCompleteness || 0);
+  launch.missingEvidence = Array.isArray(record.missingEvidence) ? record.missingEvidence.slice(0, 8) : [];
+  launch.nextAction = record.nextAction || "";
+  launch.workerStatus = record.workerStatus || "";
+  launch.workerSessionId = record.workerSessionId || "";
+  launch.taskStatusConfirmedAt = nowISO();
+  launch.updatedAt = nowISO();
+  persist("Task status confirmed", "worker 결과와 evidence summary metadata를 browser-local launch record에 저장했습니다.");
 }
 
 function companionStatusLabel() {
@@ -1020,17 +1042,29 @@ function launchPacketCard(launch) {
       dispatchRecord.githubIssueNumber ? `GitHub #${dispatchRecord.githubIssueNumber}` : "",
       dispatchRecord.discordThreadId ? `Discord ${dispatchRecord.discordThreadId}` : "",
       dispatchRecord.workerResultSet ? `Worker ${dispatchRecord.workerStatus || "recorded"}` : "",
+      dispatchRecord.taskStatus ? `Task ${dispatchRecord.taskStatus}` : "",
+      dispatchRecord.evidenceCompleteness !== undefined ? `Evidence ${dispatchRecord.evidenceCompleteness}%` : "",
       dispatchRecord.updatedAt ? `updated ${dispatchRecord.updatedAt}` : "",
     ]
       .filter(Boolean)
       .join(" · ");
     card.append(make("p", "fine-print", statusLine));
+    if (dispatchRecord.nextAction) {
+      card.append(make("p", "fine-print", `Next action: ${dispatchRecord.nextAction}`));
+    }
     if (launch.dispatchState !== mappedDispatchState || !launch.dispatchConfirmedAt) {
       const confirmActions = make("div", "item-actions");
       confirmActions.append(button("Confirm Mapping", () => confirmDispatchMappingForLaunch(launch.id), "small-button"));
       card.append(confirmActions);
     } else {
       card.append(make("p", "fine-print", `Dispatch mapping confirmed at ${launch.dispatchConfirmedAt}`));
+    }
+    if (dispatchRecord.taskStatus && (launch.taskStatus !== dispatchRecord.taskStatus || !launch.taskStatusConfirmedAt)) {
+      const statusActions = make("div", "item-actions");
+      statusActions.append(button("Confirm Task Status", () => confirmTaskStatusForLaunch(launch.id), "small-button"));
+      card.append(statusActions);
+    } else if (launch.taskStatusConfirmedAt) {
+      card.append(make("p", "fine-print", `Task status confirmed at ${launch.taskStatusConfirmedAt}`));
     }
   }
   return card;

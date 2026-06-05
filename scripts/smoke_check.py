@@ -79,6 +79,8 @@ REQUIRED = [
     "scripts/pnh_worker_result_record_smoke_check.py",
     "scripts/pnh_openclaw_worker_capture.py",
     "scripts/pnh_openclaw_worker_capture_smoke_check.py",
+    "scripts/pnh_dispatch_evidence_summary.py",
+    "scripts/pnh_dispatch_evidence_summary_smoke_check.py",
     "scripts/start_tailnet_session.sh",
     "scripts/stop_tailnet_session.sh",
     "tests/redacted-ui.spec.cjs",
@@ -205,6 +207,8 @@ def assert_github_ledger_bridge_contracts() -> None:
     worker_result_smoke = (ROOT / "scripts/pnh_worker_result_record_smoke_check.py").read_text(encoding="utf-8")
     openclaw_capture = (ROOT / "scripts/pnh_openclaw_worker_capture.py").read_text(encoding="utf-8")
     openclaw_capture_smoke = (ROOT / "scripts/pnh_openclaw_worker_capture_smoke_check.py").read_text(encoding="utf-8")
+    evidence_summary = (ROOT / "scripts/pnh_dispatch_evidence_summary.py").read_text(encoding="utf-8")
+    evidence_summary_smoke = (ROOT / "scripts/pnh_dispatch_evidence_summary_smoke_check.py").read_text(encoding="utf-8")
     expected = [
         "Dry-run is allowed",
         "APPROVE_PNH_GITHUB_ISSUE_LEDGER_APPLY",
@@ -230,6 +234,12 @@ def assert_github_ledger_bridge_contracts() -> None:
         "--approve-openclaw-agent-run",
         "replyDelivered",
         "externalAgentRunPerformed",
+        "pnh_dispatch_evidence_summary_smoke_check_pass=true",
+        "dispatchEvidenceSummary",
+        "readyForSupervisorReview",
+        "evidenceCompleteness",
+        "missingEvidence",
+        "nextAction",
     ]
     combined = "\n".join(
         [
@@ -249,6 +259,8 @@ def assert_github_ledger_bridge_contracts() -> None:
             worker_result_smoke,
             openclaw_capture,
             openclaw_capture_smoke,
+            evidence_summary,
+            evidence_summary_smoke,
         ]
     )
     for token in expected:
@@ -342,13 +354,18 @@ def assert_expected_app_contracts() -> None:
         "dispatchRecordForLaunch",
         "dispatchRecordLabel",
         "confirmDispatchMappingForLaunch",
+        "confirmTaskStatusForLaunch",
         "ledger_and_discord_linked",
         "dispatchConfirmedAt",
+        "taskStatusConfirmedAt",
         "githubIssueNumber",
         "discordThreadId",
         "workerResults",
         "workerResultSet",
         "workerStatus",
+        "taskStatus",
+        "evidenceCompleteness",
+        "nextAction",
         "sendLatestLaunchToCompanion",
         "assistantWorkspacePanel",
         "sendLatestAssistantToCompanion",

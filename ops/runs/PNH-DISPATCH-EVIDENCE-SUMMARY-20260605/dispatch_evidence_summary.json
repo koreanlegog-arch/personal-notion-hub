@@ -1,0 +1,31 @@
+{
+  "averageEvidenceCompleteness": 33,
+  "blockedOrFailed": 0,
+  "dispatchEvidenceSummary": true,
+  "includedRecords": 1,
+  "privateValuesPrinted": false,
+  "readyForSupervisorReview": 1,
+  "records": [
+    {
+      "discordThreadId": "",
+      "discordThreadSet": false,
+      "evidenceCompleteness": 33,
+      "githubIssueNumber": "",
+      "githubIssueSet": false,
+      "missingEvidence": [
+        "github_issue",
+        "discord_thread"
+      ],
+      "nextAction": "link_ledger_and_thread_before_delivery",
+      "packetId": "pnh-live-openclaw-capture-20260605",
+      "taskStatus": "worker_done",
+      "updatedAt": "2026-06-05T02:42:49+00:00",
+      "workerEvidenceRefSet": true,
+      "workerResultRecordedAt": "2026-06-05T02:42:49+00:00",
+      "workerResultSet": true,
+      "workerSessionId": "pnh-live-openclaw-capture-20260605-qa",
+      "workerStatus": "done"
+    }
+  ],
+  "totalRecords": 1
+}

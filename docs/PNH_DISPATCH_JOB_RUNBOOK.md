@@ -67,6 +67,16 @@ python3 scripts/pnh_openclaw_worker_capture.py \
 
 Apply mode requires both `--apply` and `--approve-openclaw-agent-run` because it can invoke the configured model provider through OpenClaw. The script stores only session/status/evidence metadata in local dispatch state.
 
+Export a supervisor-facing evidence summary from local dispatch state:
+
+```bash
+python3 scripts/pnh_dispatch_evidence_summary.py
+```
+
+The summary derives `taskStatus`, `evidenceCompleteness`, `missingEvidence`, and `nextAction` without reading or printing private command bodies.
+
+After refreshing dispatch state in the Launch UI, use `Confirm Task Status` to persist the synthesized task/evidence metadata into the browser-local Launch record. This stores status fields and evidence references only, not private command bodies.
+
 ## Dry Run
 
 Run the full local rehearsal:
@@ -116,4 +126,4 @@ Apply mode requires:
 
 - Add status refresh for already-linked GitHub Issues and Discord/OpenClaw threads.
 - Add duplicate detection against existing GitHub Issues if local state is missing.
-- Convert captured OpenClaw worker-session metadata into higher-level task status and evidence summaries.
+- Convert confirmed Launch task status into project/task board progress.

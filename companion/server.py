@@ -28,6 +28,7 @@ from typing import Any
 from urllib.parse import parse_qs, urlsplit
 
 try:
+    from .dispatch_summary import summarize_dispatch_record
     from .encrypted_vault import EncryptedVault, EncryptedVaultError, cryptography_available, init_encrypted_vault
     from .passphrase_provider import PassphraseProviderError, resolve_passphrase
     from .private_store import (
@@ -42,6 +43,7 @@ try:
     )
     from .preview import SCHEMA, preview_import, zero_counts
 except ImportError:  # pragma: no cover - supports direct script execution.
+    from dispatch_summary import summarize_dispatch_record  # type: ignore
     from encrypted_vault import EncryptedVault, EncryptedVaultError, cryptography_available, init_encrypted_vault  # type: ignore
     from passphrase_provider import PassphraseProviderError, resolve_passphrase  # type: ignore
     from private_store import (  # type: ignore
@@ -495,21 +497,7 @@ def _summarize_dispatch_state(state: dict[str, Any], limit: int = 20) -> dict[st
     for packet_id, value in sorted(state.items(), key=lambda item: str(item[1].get("updatedAt", "")), reverse=True):
         if not isinstance(value, dict):
             continue
-        records.append(
-            {
-                "packetId": str(packet_id),
-                "githubIssueNumber": value.get("githubIssueNumber", ""),
-                "githubIssueSet": bool(value.get("githubIssueUrl")),
-                "discordThreadId": value.get("discordThreadId", ""),
-                "discordThreadSet": bool(value.get("discordThreadId")),
-                "workerSessionId": value.get("workerSessionId", ""),
-                "workerStatus": value.get("workerStatus", ""),
-                "workerResultSet": bool(value.get("workerSessionId")),
-                "workerEvidenceRefSet": bool(value.get("workerEvidenceRef")),
-                "workerResultRecordedAt": value.get("workerResultRecordedAt", ""),
-                "updatedAt": value.get("updatedAt", ""),
-            }
-        )
+        records.append(summarize_dispatch_record(str(packet_id), value))
     return {
         "totalRecords": len(records),
         "githubLinked": sum(1 for item in records if item["githubIssueSet"]),
