@@ -1,0 +1,20 @@
+{
+  "approvalRequiredForApply": true,
+  "externalWritesPerformed": false,
+  "generatedAt": "2026-06-05T05:08:25+00:00",
+  "mode": "dry-run",
+  "outputs": {
+    "runDir": "ops/runs/PNH-UNATTENDED-DISPATCH-DRYRUN-20260605/pilot"
+  },
+  "pilotLimits": {
+    "cooldownMinutes": 10,
+    "maxExternalWritesPerHour": 3,
+    "maxJobsPerRun": 1
+  },
+  "pnhUnattendedDispatchPilot": true,
+  "privateValuesPrinted": false,
+  "selectedCaptureId": "capture-3b8522ff102b0469c683b027",
+  "selectedCommandType": "project_brief",
+  "tokenValuePrinted": false,
+  "wouldApply": true
+}
