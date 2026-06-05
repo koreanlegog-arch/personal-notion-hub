@@ -153,12 +153,14 @@ pilot record linked to GitHub Issue `#3`.
 - worker session: `pnh:capture-2a0fcdefc3f169ec30c6497f:qa`
 - worker status: `done`
 - evidence completeness for Issue `#3`: `100`
+- GitHub dispatch label reconciled to `dispatch:worker-done`
+- external reconciliation plan has no pending writes
 
 ### Boundaries
 
 - No Discord reply was delivered.
 - No worker output body was stored in tracked evidence.
-- Next gate is GitHub Issue `#3` dispatch label reconciliation.
+- No additional unattended queue item was dispatched.
 
 ## 2026-06-05 - Launch Status Sync Browser QA
 

@@ -130,7 +130,8 @@ First approved pilot batch:
 - Discord thread: `1512315698351706183`
 - worker session: `pnh:capture-2a0fcdefc3f169ec30c6497f:qa`
 - status: `worker_done`
-- next gate: GitHub dispatch label reconciliation
+- GitHub dispatch label: `dispatch:worker-done`
+- external reconciliation: no pending writes
 
 ## Not Yet Implemented
 

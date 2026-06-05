@@ -15,12 +15,12 @@
         "mobile-command",
         "command:project_brief",
         "priority:normal",
-        "dispatch:not-dispatched"
+        "dispatch:worker-done"
       ],
       "githubIssueNumber": "3",
       "githubIssueSet": true,
       "githubIssueState": "open",
-      "githubIssueUpdatedAt": "2026-06-05T04:42:59Z",
+      "githubIssueUpdatedAt": "2026-06-05T04:54:26Z",
       "githubStatusRefreshed": true,
       "needsFollowUp": false,
       "packetId": "capture-2a0fcdefc3f169ec30c6497f",

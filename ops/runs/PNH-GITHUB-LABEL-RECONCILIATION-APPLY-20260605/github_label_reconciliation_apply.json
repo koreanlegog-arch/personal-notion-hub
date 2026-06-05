@@ -4,7 +4,7 @@
       "addLabels": [
         "dispatch:worker-done"
       ],
-      "githubIssueNumber": "2",
+      "githubIssueNumber": "3",
       "operation": "replace_dispatch_status_labels",
       "removeLabels": [
         "dispatch:not-dispatched"
@@ -31,10 +31,8 @@
         "dispatch:not-dispatched"
       ],
       "contentPrinted": false,
-      "createdLabels": [
-        "dispatch:worker-done"
-      ],
-      "githubIssueNumber": "2",
+      "createdLabels": [],
+      "githubIssueNumber": "3",
       "removeLabels": [
         "dispatch:not-dispatched"
       ]
@@ -42,7 +40,7 @@
   ],
   "appliedActionCount": 1,
   "externalWritesPerformed": true,
-  "generatedAt": "2026-06-05T04:23:13+00:00",
+  "generatedAt": "2026-06-05T04:54:24+00:00",
   "githubLabelReconciliation": true,
   "mode": "apply",
   "plannedActionCount": 1,
