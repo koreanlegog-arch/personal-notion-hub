@@ -1,0 +1,361 @@
+{
+  "benchmarkModels": [
+    {
+      "defaultModes": [
+        "supervisor-only",
+        "supervisor-central",
+        "normal-harness",
+        "strict-harness"
+      ],
+      "id": "local-validation-four-mode",
+      "primaryMetrics": [
+        "elapsed_minutes",
+        "operational_efficiency_score",
+        "quality_adjusted_efficiency"
+      ],
+      "purpose": "Measure local syntax, smoke, bridge, queue, and browser QA workload across four operation modes.",
+      "recommendedReasoning": "medium",
+      "taskFamilies": [
+        "pnh-local-validation",
+        "web-ui-local-validation"
+      ],
+      "whenToUse": "Before changing harness defaults or after QA automation changes."
+    },
+    {
+      "defaultModes": [
+        "supervisor-only",
+        "supervisor-central",
+        "normal-harness",
+        "strict-harness"
+      ],
+      "id": "docs-review-four-mode",
+      "primaryMetrics": [
+        "elapsed_minutes",
+        "total_quality_score",
+        "rework_count"
+      ],
+      "purpose": "Compare documentation/template work where planning, writing, review, and evidence collection can split naturally.",
+      "recommendedReasoning": "medium",
+      "taskFamilies": [
+        "documentation-delivery",
+        "template-maintenance",
+        "runbook-maintenance"
+      ],
+      "whenToUse": "When tuning harness behavior for docs-heavy operations."
+    },
+    {
+      "defaultModes": [
+        "supervisor-central",
+        "normal-harness",
+        "strict-harness"
+      ],
+      "id": "security-sensitive-change-four-mode",
+      "primaryMetrics": [
+        "defect_count",
+        "security_risk_handling_score",
+        "quality_adjusted_efficiency"
+      ],
+      "purpose": "Measure security-preflight, implementation, review, and validation separation for sensitive local storage/auth work.",
+      "recommendedReasoning": "high",
+      "taskFamilies": [
+        "security-sensitive-local-storage",
+        "auth-boundary-change",
+        "secret-handling-workflow"
+      ],
+      "whenToUse": "Before accepting sensitive-data MVP changes or modifying auth/encryption behavior."
+    },
+    {
+      "defaultModes": [
+        "supervisor-only",
+        "supervisor-central",
+        "normal-harness",
+        "strict-harness"
+      ],
+      "id": "external-dispatch-dry-run-four-mode",
+      "primaryMetrics": [
+        "elapsed_minutes",
+        "cross_mode_contamination",
+        "evidence_quality"
+      ],
+      "purpose": "Compare ledger, Discord/OpenClaw, and queue dispatch dry-runs without live side effects.",
+      "recommendedReasoning": "medium",
+      "taskFamilies": [
+        "external-dispatch-dry-run",
+        "ledger-sync-dry-run",
+        "chatops-dispatch-dry-run"
+      ],
+      "whenToUse": "Before enabling live dispatch, GitHub issue mutation, or Discord thread updates."
+    },
+    {
+      "defaultModes": [
+        "supervisor-only",
+        "supervisor-central",
+        "normal-harness",
+        "strict-harness"
+      ],
+      "id": "incident-debug-four-mode",
+      "primaryMetrics": [
+        "elapsed_minutes",
+        "rework_count",
+        "defect_count",
+        "verification_depth_score"
+      ],
+      "purpose": "Compare diagnosis speed and fix quality for failing tests, port conflicts, race conditions, and integration defects.",
+      "recommendedReasoning": "high",
+      "taskFamilies": [
+        "bug-triage",
+        "browser-qa-failure",
+        "integration-debug"
+      ],
+      "whenToUse": "When failures recur or harness routing may reduce debugging time."
+    },
+    {
+      "defaultModes": [
+        "supervisor-central",
+        "normal-harness",
+        "strict-harness"
+      ],
+      "id": "release-readiness-four-mode",
+      "primaryMetrics": [
+        "total_quality_score",
+        "evidence_report_score",
+        "supervisor_direct_implementation_ratio"
+      ],
+      "purpose": "Compare release packet, QA checklist, security gate, evidence summary, and handoff review distribution.",
+      "recommendedReasoning": "high",
+      "taskFamilies": [
+        "release-readiness",
+        "client-handoff",
+        "delivery-gate"
+      ],
+      "whenToUse": "Before external handoff, deployment readiness decisions, or pilot release."
+    },
+    {
+      "defaultModes": [
+        "normal-harness",
+        "strict-harness"
+      ],
+      "id": "long-run-unattended-benchmark",
+      "primaryMetrics": [
+        "defect_count",
+        "rework_count",
+        "stop_condition_triggered",
+        "elapsed_minutes"
+      ],
+      "purpose": "Measure sustained queue processing, rollback behavior, rate-limit behavior, and failure recovery over longer unattended runs.",
+      "recommendedReasoning": "medium",
+      "taskFamilies": [
+        "unattended-dispatch",
+        "queue-processing",
+        "rollback-recovery"
+      ],
+      "whenToUse": "Only when the user explicitly starts a longer benchmark window."
+    }
+  ],
+  "completedUsableRecordCount": 12,
+  "generatedAt": "2026-06-05T13:18:25+00:00",
+  "minSamplesPerMode": 3,
+  "notes": [
+    "Thresholds are per task family and mode; do not compare unrelated task families directly.",
+    "Provisional thresholds are useful for warning, not hard gating.",
+    "Wall-clock data is local environment dependent and should be compared against the same machine/session class."
+  ],
+  "recordCount": 12,
+  "regressionThresholds": {
+    "pnh-local-validation": {
+      "minimumSamplesForActiveGate": 3,
+      "modes": {
+        "normal-harness": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": 1,
+          "maxElapsedMinutes": 0.0883,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": 1,
+          "minOperationalEfficiencyScore": 69.45,
+          "minTotalQualityScore": 24,
+          "sampleCount": 3,
+          "status": "active"
+        },
+        "strict-harness": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": 1,
+          "maxElapsedMinutes": 0.0882,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": 1,
+          "minOperationalEfficiencyScore": 68.72,
+          "minTotalQualityScore": 27,
+          "sampleCount": 3,
+          "status": "active"
+        },
+        "supervisor-central": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": 1,
+          "maxElapsedMinutes": 0.2379,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": 1,
+          "minOperationalEfficiencyScore": 55.25,
+          "minTotalQualityScore": 23,
+          "sampleCount": 3,
+          "status": "active"
+        },
+        "supervisor-only": {
+          "hardFailConditions": [
+            "status != completed",
+            "cross_mode_contamination == true",
+            "stop_condition_triggered == true",
+            "secret or private body value printed",
+            "missing evidence_refs"
+          ],
+          "maxDefectCount": 1,
+          "maxElapsedMinutes": 0.1839,
+          "maxElapsedRegressionPercent": 35,
+          "maxReworkCount": 1,
+          "minOperationalEfficiencyScore": 40.38,
+          "minTotalQualityScore": 19,
+          "sampleCount": 3,
+          "status": "active"
+        }
+      }
+    }
+  },
+  "schemaVersion": 1,
+  "sourceLog": "ops/runs/harness_operation_mode_measurements.jsonl",
+  "taskFamilies": {
+    "pnh-local-validation": {
+      "bestOperationalEfficiencyMode": "normal-harness",
+      "bestQualityAdjustedMode": "strict-harness",
+      "fastestMode": "strict-harness",
+      "lowestSupervisorLoadMode": "strict-harness",
+      "modeStats": {
+        "normal-harness": {
+          "benchmarkIds": [
+            "PNH-4MODE-BENCHMARK-20260605-001",
+            "PNH-4MODE-BENCHMARK-20260605-002",
+            "PNH-4MODE-BENCHMARK-20260605-003"
+          ],
+          "difficultyDistribution": {
+            "M": 3
+          },
+          "maxElapsedMinutes": 0.0656,
+          "meanElapsedMinutes": 0.0651,
+          "medianDefectCount": 0.0,
+          "medianElapsedMinutes": 0.0654,
+          "medianOperationalEfficiencyScore": 81.7,
+          "medianQualityAdjustedEfficiency": 397.5535,
+          "medianReworkCount": 0.0,
+          "medianSupervisorDirectImplementationRatio": 0.35,
+          "medianTotalQualityScore": 26.0,
+          "reasoningEffortDistribution": {
+            "medium": 3
+          },
+          "sampleCount": 3
+        },
+        "strict-harness": {
+          "benchmarkIds": [
+            "PNH-4MODE-BENCHMARK-20260605-001",
+            "PNH-4MODE-BENCHMARK-20260605-002",
+            "PNH-4MODE-BENCHMARK-20260605-003"
+          ],
+          "difficultyDistribution": {
+            "M": 3
+          },
+          "maxElapsedMinutes": 0.0667,
+          "meanElapsedMinutes": 0.0655,
+          "medianDefectCount": 0.0,
+          "medianElapsedMinutes": 0.0653,
+          "medianOperationalEfficiencyScore": 80.85,
+          "medianQualityAdjustedEfficiency": 444.1041,
+          "medianReworkCount": 0.0,
+          "medianSupervisorDirectImplementationRatio": 0.15,
+          "medianTotalQualityScore": 29.0,
+          "reasoningEffortDistribution": {
+            "medium": 3
+          },
+          "sampleCount": 3
+        },
+        "supervisor-central": {
+          "benchmarkIds": [
+            "PNH-4MODE-BENCHMARK-20260605-001",
+            "PNH-4MODE-BENCHMARK-20260605-002",
+            "PNH-4MODE-BENCHMARK-20260605-003"
+          ],
+          "difficultyDistribution": {
+            "M": 3
+          },
+          "maxElapsedMinutes": 0.2163,
+          "meanElapsedMinutes": 0.1598,
+          "medianDefectCount": 0.0,
+          "medianElapsedMinutes": 0.1317,
+          "medianOperationalEfficiencyScore": 65.0,
+          "medianQualityAdjustedEfficiency": 189.8254,
+          "medianReworkCount": 0.0,
+          "medianSupervisorDirectImplementationRatio": 0.65,
+          "medianTotalQualityScore": 25.0,
+          "reasoningEffortDistribution": {
+            "medium": 3
+          },
+          "sampleCount": 3
+        },
+        "supervisor-only": {
+          "benchmarkIds": [
+            "PNH-4MODE-BENCHMARK-20260605-001",
+            "PNH-4MODE-BENCHMARK-20260605-002",
+            "PNH-4MODE-BENCHMARK-20260605-003"
+          ],
+          "difficultyDistribution": {
+            "M": 3
+          },
+          "maxElapsedMinutes": 0.1373,
+          "meanElapsedMinutes": 0.1366,
+          "medianDefectCount": 0.0,
+          "medianElapsedMinutes": 0.1362,
+          "medianOperationalEfficiencyScore": 47.5,
+          "medianQualityAdjustedEfficiency": 154.185,
+          "medianReworkCount": 0.0,
+          "medianSupervisorDirectImplementationRatio": 1.0,
+          "medianTotalQualityScore": 21.0,
+          "reasoningEffortDistribution": {
+            "medium": 3
+          },
+          "sampleCount": 3
+        }
+      },
+      "sampleCompleteness": {
+        "normal-harness": {
+          "meetsMinimum": true,
+          "sampleCount": 3
+        },
+        "strict-harness": {
+          "meetsMinimum": true,
+          "sampleCount": 3
+        },
+        "supervisor-central": {
+          "meetsMinimum": true,
+          "sampleCount": 3
+        },
+        "supervisor-only": {
+          "meetsMinimum": true,
+          "sampleCount": 3
+        }
+      }
+    }
+  }
+}
