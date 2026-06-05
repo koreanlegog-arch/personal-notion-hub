@@ -75,6 +75,8 @@ REQUIRED = [
     "scripts/pnh_dispatch_state_status_smoke_check.py",
     "scripts/pnh_dispatch_rehearsal.py",
     "scripts/pnh_dispatch_rehearsal_smoke_check.py",
+    "scripts/pnh_worker_result_record.py",
+    "scripts/pnh_worker_result_record_smoke_check.py",
     "scripts/start_tailnet_session.sh",
     "scripts/stop_tailnet_session.sh",
     "tests/redacted-ui.spec.cjs",
@@ -197,6 +199,8 @@ def assert_github_ledger_bridge_contracts() -> None:
     state_smoke = (ROOT / "scripts/pnh_dispatch_state_status_smoke_check.py").read_text(encoding="utf-8")
     rehearsal = (ROOT / "scripts/pnh_dispatch_rehearsal.py").read_text(encoding="utf-8")
     rehearsal_smoke = (ROOT / "scripts/pnh_dispatch_rehearsal_smoke_check.py").read_text(encoding="utf-8")
+    worker_result = (ROOT / "scripts/pnh_worker_result_record.py").read_text(encoding="utf-8")
+    worker_result_smoke = (ROOT / "scripts/pnh_worker_result_record_smoke_check.py").read_text(encoding="utf-8")
     expected = [
         "Dry-run is allowed",
         "APPROVE_PNH_GITHUB_ISSUE_LEDGER_APPLY",
@@ -215,6 +219,9 @@ def assert_github_ledger_bridge_contracts() -> None:
         "--include-urls",
         "pnh_dispatch_rehearsal_smoke_check_pass=true",
         "pnhDispatchRehearsal",
+        "pnh_worker_result_record_smoke_check_pass=true",
+        "workerResultSet",
+        "workerSessionId",
     ]
     combined = "\n".join(
         [
@@ -230,6 +237,8 @@ def assert_github_ledger_bridge_contracts() -> None:
             state_smoke,
             rehearsal,
             rehearsal_smoke,
+            worker_result,
+            worker_result_smoke,
         ]
     )
     for token in expected:
@@ -320,6 +329,16 @@ def assert_expected_app_contracts() -> None:
         "launchCompanionPanel",
         "launchDispatchStatusPanel",
         "refreshDispatchState",
+        "dispatchRecordForLaunch",
+        "dispatchRecordLabel",
+        "confirmDispatchMappingForLaunch",
+        "ledger_and_discord_linked",
+        "dispatchConfirmedAt",
+        "githubIssueNumber",
+        "discordThreadId",
+        "workerResults",
+        "workerResultSet",
+        "workerStatus",
         "sendLatestLaunchToCompanion",
         "assistantWorkspacePanel",
         "sendLatestAssistantToCompanion",

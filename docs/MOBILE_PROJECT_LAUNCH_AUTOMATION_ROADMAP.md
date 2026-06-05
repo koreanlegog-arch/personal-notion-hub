@@ -182,11 +182,14 @@ Implemented inside the approved local/private boundary:
 - apply-mode approval flags for future live issue creation
 - approved live GitHub issue creation without raw private body
 - GitHub issue comment linked to Discord/OpenClaw dispatch rehearsal
+- redacted local dispatch mapping can be read by the PNH UI and matched back to Launch packets
+- operator-confirmed GitHub/Discord external ID metadata can be persisted into browser-local Launch records
+- local worker-result metadata can be recorded into dispatch state through a dry-run-first script
 
 Still pending:
 
 - update issue status
-- map issue to PNH launch packet
+- issue/thread status refresh after the first confirmed mapping
 - no token in repo remains enforced
 - dedupe and repeated ledger update strategy
 - metadata-only extraction of stored PNH command packets into dispatch jobs
@@ -207,12 +210,14 @@ Implemented:
 - worker lifecycle rehearsal messages
 - `#audit-log` mapping message
 - GitHub issue comment linking ledger and Discord thread
+- PNH Launch cards can display redacted local mapping when `companion/private/pnh_dispatch_state.json` contains matching external IDs
+- PNH Launch cards can confirm that mapping into browser-local metadata without storing private bodies or secret values
+- PNH Launch cards can display worker-result metadata once it is recorded in local dispatch state
 
 Still pending:
 
 - automatic dispatch job from PNH local command packet
-- durable mapping stored back into PNH local state
-- real OpenClaw worker-session execution and result capture
+- real OpenClaw worker-session execution and automatic result capture
 - gateway auth/sandbox hardening follow-up
 
 Dispatch job status:

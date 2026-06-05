@@ -502,6 +502,11 @@ def _summarize_dispatch_state(state: dict[str, Any], limit: int = 20) -> dict[st
                 "githubIssueSet": bool(value.get("githubIssueUrl")),
                 "discordThreadId": value.get("discordThreadId", ""),
                 "discordThreadSet": bool(value.get("discordThreadId")),
+                "workerSessionId": value.get("workerSessionId", ""),
+                "workerStatus": value.get("workerStatus", ""),
+                "workerResultSet": bool(value.get("workerSessionId")),
+                "workerEvidenceRefSet": bool(value.get("workerEvidenceRef")),
+                "workerResultRecordedAt": value.get("workerResultRecordedAt", ""),
                 "updatedAt": value.get("updatedAt", ""),
             }
         )
@@ -509,6 +514,7 @@ def _summarize_dispatch_state(state: dict[str, Any], limit: int = 20) -> dict[st
         "totalRecords": len(records),
         "githubLinked": sum(1 for item in records if item["githubIssueSet"]),
         "discordLinked": sum(1 for item in records if item["discordThreadSet"]),
+        "workerResults": sum(1 for item in records if item["workerResultSet"]),
         "privateValuesPrinted": False,
         "records": records[:limit],
     }

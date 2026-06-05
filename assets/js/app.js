@@ -632,6 +632,7 @@ function launchDispatchStatusPanel() {
     ["Records", status?.totalRecords ?? 0],
     ["GitHub linked", status?.githubLinked ?? 0],
     ["Discord linked", status?.discordLinked ?? 0],
+    ["Worker results", status?.workerResults ?? 0],
   ];
   const statList = make("div", "dispatch-status-list");
   rows.forEach(([label, value]) => {
@@ -655,6 +656,9 @@ function launchDispatchStatusPanel() {
           `GitHub #${record.githubIssueNumber || "-"} · Discord ${record.discordThreadId || "-"}`
         )
       );
+      if (record.workerResultSet) {
+        item.append(make("p", "fine-print", `Worker ${record.workerStatus || "recorded"} · ${record.workerSessionId || "-"}`));
+      }
       list.append(item);
     });
     section.append(list);
@@ -669,6 +673,48 @@ function launchDispatchStatusPanel() {
   section.append(actions);
   section.append(make("p", "fine-print", "Reads redacted local dispatch metadata only. URLs and private bodies are not shown."));
   return section;
+}
+
+function dispatchRecordForLaunch(launch) {
+  const records = Array.isArray(companionState.dispatchState?.records) ? companionState.dispatchState.records : [];
+  const ids = new Set(
+    [
+      launch.workspaceCaptureId,
+      launch.companionCaptureId,
+      `launch-packet-${launch.id}`,
+      launch.id,
+    ]
+      .filter(Boolean)
+      .map(String)
+  );
+  return records.find((record) => ids.has(String(record.packetId || ""))) || null;
+}
+
+function dispatchRecordLabel(record) {
+  if (!record) return "not_dispatched";
+  if (record.githubIssueSet && record.discordThreadSet) return "ledger_and_discord_linked";
+  if (record.githubIssueSet) return "github_ledger_linked";
+  if (record.discordThreadSet) return "discord_thread_linked";
+  return "dispatch_state_recorded";
+}
+
+function confirmDispatchMappingForLaunch(id) {
+  const launch = state.launches.find((item) => item.id === id);
+  if (!launch) return;
+  const record = dispatchRecordForLaunch(launch);
+  if (!record) {
+    toast("No dispatch mapping", "companion dispatch state를 먼저 refresh하세요.");
+    return;
+  }
+  launch.dispatchState = dispatchRecordLabel(record);
+  launch.dispatchConfirmedAt = nowISO();
+  launch.dispatchRecordUpdatedAt = record.updatedAt || "";
+  launch.githubIssueNumber = record.githubIssueNumber ? String(record.githubIssueNumber) : "";
+  launch.githubIssueSet = Boolean(record.githubIssueSet);
+  launch.discordThreadId = record.discordThreadId ? String(record.discordThreadId) : "";
+  launch.discordThreadSet = Boolean(record.discordThreadSet);
+  launch.updatedAt = nowISO();
+  persist("Dispatch mapping confirmed", "GitHub/Discord 외부 ID metadata만 browser-local launch record에 저장했습니다.");
 }
 
 function companionStatusLabel() {
@@ -965,6 +1011,27 @@ function launchPacketCard(launch) {
   }
   if (launch.workspaceSentAt) {
     card.append(make("p", "fine-print", `Workspace private inbox: ${launch.commandStatus || "stored"} at ${launch.workspaceSentAt}`));
+  }
+  const dispatchRecord = dispatchRecordForLaunch(launch);
+  if (dispatchRecord) {
+    const mappedDispatchState = dispatchRecordLabel(dispatchRecord);
+    const statusLine = [
+      `Dispatch mapping: ${mappedDispatchState}`,
+      dispatchRecord.githubIssueNumber ? `GitHub #${dispatchRecord.githubIssueNumber}` : "",
+      dispatchRecord.discordThreadId ? `Discord ${dispatchRecord.discordThreadId}` : "",
+      dispatchRecord.workerResultSet ? `Worker ${dispatchRecord.workerStatus || "recorded"}` : "",
+      dispatchRecord.updatedAt ? `updated ${dispatchRecord.updatedAt}` : "",
+    ]
+      .filter(Boolean)
+      .join(" · ");
+    card.append(make("p", "fine-print", statusLine));
+    if (launch.dispatchState !== mappedDispatchState || !launch.dispatchConfirmedAt) {
+      const confirmActions = make("div", "item-actions");
+      confirmActions.append(button("Confirm Mapping", () => confirmDispatchMappingForLaunch(launch.id), "small-button"));
+      card.append(confirmActions);
+    } else {
+      card.append(make("p", "fine-print", `Dispatch mapping confirmed at ${launch.dispatchConfirmedAt}`));
+    }
   }
   return card;
 }

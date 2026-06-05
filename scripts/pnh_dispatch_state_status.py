@@ -64,6 +64,11 @@ def summarize_state(state: dict[str, Any], state_path: Path, *, limit: int, incl
             "githubIssueSet": bool(value.get("githubIssueUrl")),
             "discordThreadId": value.get("discordThreadId", ""),
             "discordThreadSet": bool(value.get("discordThreadId")),
+            "workerSessionId": value.get("workerSessionId", ""),
+            "workerStatus": value.get("workerStatus", ""),
+            "workerResultSet": bool(value.get("workerSessionId")),
+            "workerEvidenceRefSet": bool(value.get("workerEvidenceRef")),
+            "workerResultRecordedAt": value.get("workerResultRecordedAt", ""),
             "updatedAt": value.get("updatedAt", ""),
         }
         if include_urls:
@@ -75,6 +80,7 @@ def summarize_state(state: dict[str, Any], state_path: Path, *, limit: int, incl
         "totalRecords": len(records),
         "githubLinked": sum(1 for item in records if item["githubIssueSet"]),
         "discordLinked": sum(1 for item in records if item["discordThreadSet"]),
+        "workerResults": sum(1 for item in records if item["workerResultSet"]),
         "privateValuesPrinted": False,
         "records": records[:bounded_limit],
     }

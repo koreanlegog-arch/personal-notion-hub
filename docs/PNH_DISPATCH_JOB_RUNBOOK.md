@@ -21,6 +21,9 @@ PNH command packet JSON
 -> optional GitHub Issue creation
 -> optional Discord thread creation through OpenClaw
 -> local private dispatch state records external IDs
+-> PNH Launch UI can read redacted mapping through the paired companion bridge
+-> operator can confirm external ID metadata into browser-local Launch records
+-> optional local worker-result metadata can be recorded for status display
 -> repeated runs skip existing issue/thread records
 ```
 
@@ -41,6 +44,17 @@ python3 scripts/pnh_dispatch_state_status.py
 ```
 
 URLs are hidden by default. Use `--include-urls` only for local operator inspection.
+
+Record a local worker-result rehearsal without external calls:
+
+```bash
+python3 scripts/pnh_worker_result_record.py \
+  --packet-id <capture_or_packet_id> \
+  --worker-session-id <worker_session_or_rehearsal_id> \
+  --status done
+```
+
+Add `--apply` only when the dry-run output is correct. The script records metadata only and does not store private command bodies.
 
 ## Dry Run
 
@@ -89,6 +103,6 @@ Apply mode requires:
 
 ## Remaining Work
 
-- Store `githubIssueUrl` and `discordThreadId` back into PNH browser state or companion metadata.
+- Add status refresh for already-linked GitHub Issues and Discord/OpenClaw threads.
 - Add duplicate detection against existing GitHub Issues if local state is missing.
-- Capture real OpenClaw worker-session result IDs after actual worker execution is enabled.
+- Capture real OpenClaw worker-session result IDs automatically after actual worker execution is enabled.
