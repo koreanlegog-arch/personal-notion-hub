@@ -88,6 +88,8 @@ python3 scripts/pnh_external_reconciliation_plan.py
 python3 scripts/pnh_discord_thread_readiness_probe.py
 python3 scripts/pnh_github_label_reconciliation_apply.py
 python3 scripts/pnh_discord_thread_status_refresh.py
+python3 scripts/pnh_unattended_dispatch_queue_plan.py
+python3 scripts/pnh_unattended_dispatch_readiness.py
 ```
 
 Use `--apply` only when the script's apply mode is intentionally needed and the relevant approval gate has been satisfied.
@@ -122,6 +124,7 @@ These actions create external writes, change security posture, or expand data ri
 ## Not Ready Yet
 
 - unattended mobile-to-worker automation
+- unattended dispatch pilot activation
 - real contact/call/recording/calendar ingestion
 - multi-user distribution
 - cloud sync of private data

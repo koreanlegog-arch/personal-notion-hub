@@ -184,6 +184,17 @@ ops/runs/PNH-AUTO-DISPATCH-FROM-INBOX-20260605/auto_dispatch_summary.json
 
 Default mode is dry-run and must not create GitHub Issues, Discord threads/messages, GitHub comments, or OpenClaw messages.
 
+Plan an unattended dispatch pilot queue without enabling it:
+
+```bash
+python3 scripts/pnh_unattended_dispatch_queue_plan.py
+python3 scripts/pnh_unattended_dispatch_readiness.py
+```
+
+This checks queue eligibility, rate limits, rollback requirements, and pilot
+readiness. It performs no external writes. Live unattended pilot activation
+requires `APPROVE_PNH_UNATTENDED_DISPATCH_PILOT`.
+
 ## Apply Requirements
 
 Apply mode requires:

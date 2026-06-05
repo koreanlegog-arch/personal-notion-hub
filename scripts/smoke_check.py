@@ -93,6 +93,10 @@ REQUIRED = [
     "scripts/pnh_dispatch_evidence_summary_smoke_check.py",
     "scripts/pnh_auto_dispatch_from_inbox.py",
     "scripts/pnh_auto_dispatch_from_inbox_smoke_check.py",
+    "scripts/pnh_unattended_dispatch_queue_plan.py",
+    "scripts/pnh_unattended_dispatch_queue_plan_smoke_check.py",
+    "scripts/pnh_unattended_dispatch_readiness.py",
+    "scripts/pnh_unattended_dispatch_readiness_smoke_check.py",
     "scripts/pnh_supervisor_review_summary.py",
     "scripts/pnh_supervisor_review_summary_smoke_check.py",
     "scripts/start_tailnet_session.sh",
@@ -245,6 +249,14 @@ def assert_github_ledger_bridge_contracts() -> None:
     evidence_summary_smoke = (ROOT / "scripts/pnh_dispatch_evidence_summary_smoke_check.py").read_text(encoding="utf-8")
     auto_dispatch = (ROOT / "scripts" / "pnh_auto_dispatch_from_inbox.py").read_text(encoding="utf-8")
     auto_dispatch_smoke = (ROOT / "scripts" / "pnh_auto_dispatch_from_inbox_smoke_check.py").read_text(encoding="utf-8")
+    unattended_queue = (ROOT / "scripts" / "pnh_unattended_dispatch_queue_plan.py").read_text(encoding="utf-8")
+    unattended_queue_smoke = (ROOT / "scripts" / "pnh_unattended_dispatch_queue_plan_smoke_check.py").read_text(
+        encoding="utf-8"
+    )
+    unattended_readiness = (ROOT / "scripts" / "pnh_unattended_dispatch_readiness.py").read_text(encoding="utf-8")
+    unattended_readiness_smoke = (
+        ROOT / "scripts" / "pnh_unattended_dispatch_readiness_smoke_check.py"
+    ).read_text(encoding="utf-8")
     supervisor_review = (ROOT / "scripts" / "pnh_supervisor_review_summary.py").read_text(encoding="utf-8")
     supervisor_review_smoke = (ROOT / "scripts" / "pnh_supervisor_review_summary_smoke_check.py").read_text(encoding="utf-8")
     expected = [
@@ -304,6 +316,14 @@ def assert_github_ledger_bridge_contracts() -> None:
         "pnhAutoDispatchFromInbox",
         "--approve-live-dispatch",
         "liveApplyGate",
+        "pnh_unattended_dispatch_queue_plan_smoke_check_pass=true",
+        "pnhUnattendedDispatchQueuePlan",
+        "queueActivationGateRequired",
+        "maxExternalWritesPerHour",
+        "rollbackRequiredBeforeApply",
+        "pnh_unattended_dispatch_readiness_smoke_check_pass=true",
+        "pnhUnattendedDispatchReadiness",
+        "APPROVE_PNH_UNATTENDED_DISPATCH_PILOT",
         "--detect-existing-github",
         "pnh_supervisor_review_summary_smoke_check_pass=true",
         "pnhSupervisorReviewSummary",
@@ -341,6 +361,10 @@ def assert_github_ledger_bridge_contracts() -> None:
             evidence_summary_smoke,
             auto_dispatch,
             auto_dispatch_smoke,
+            unattended_queue,
+            unattended_queue_smoke,
+            unattended_readiness,
+            unattended_readiness_smoke,
             supervisor_review,
             supervisor_review_smoke,
         ]

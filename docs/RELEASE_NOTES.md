@@ -78,6 +78,35 @@ and implemented metadata-only Discord/OpenClaw thread status refresh.
 - No worker/model run was started.
 - No private command body or message body was stored in evidence.
 
+## 2026-06-05 - Unattended Dispatch Readiness
+
+### Summary
+
+Added dry-run queue planning and readiness assessment for an approval-gated PNH
+unattended dispatch pilot.
+
+### Included
+
+- `scripts/pnh_unattended_dispatch_queue_plan.py`
+- `scripts/pnh_unattended_dispatch_queue_plan_smoke_check.py`
+- `scripts/pnh_unattended_dispatch_readiness.py`
+- `scripts/pnh_unattended_dispatch_readiness_smoke_check.py`
+- `docs/PNH_UNATTENDED_DISPATCH_RUNBOOK.md`
+- `ops/runs/PNH-UNATTENDED-DISPATCH-READINESS-20260605/`
+
+### Results
+
+- readiness verdict: `ready_for_approval_gated_pilot`
+- current queue dry-run has one pilot candidate
+- external writes performed: false
+
+### Boundaries
+
+- Unattended dispatch is not enabled.
+- No daemon or scheduler was installed.
+- No GitHub/Discord/OpenClaw records were created by the readiness tooling.
+- Activation requires `APPROVE_PNH_UNATTENDED_DISPATCH_PILOT`.
+
 ## 2026-06-05 - Launch Status Sync Browser QA
 
 ### Summary
