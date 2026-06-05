@@ -15,8 +15,8 @@ screenshots, GitHub/Discord metadata, and local runtime configuration as sensiti
 ## Approval Gate Override
 
 The human supervisor has delegated routine PNH development, verification, Git checkpoint,
-and GitHub upload operations to Codex when they are needed to progress or test this
-project.
+GitHub upload, and bounded test/implementation dispatch operations to Codex when they
+are needed to progress or test this project.
 
 Do not ask for approval for:
 
@@ -26,6 +26,12 @@ Do not ask for approval for:
 - Git/GitHub upload checks needed to verify repository sync or delivery evidence
 - test-only approval simulations that do not mutate external systems or expose secrets
 - local dry-runs and read-only status refreshes
+- bounded GitHub Issue, Discord/OpenClaw thread/message, and local dispatch-state
+  create/update operations when they are for PNH test, rehearsal, implementation, or
+  evidence collection
+- unattended dispatch pilot apply runs when they use the existing PNH queue, rate-limit,
+  rollback, redaction, and evidence scripts and only dispatch metadata-safe command
+  packets
 
 Proceed through these items autonomously, then report what was done and verified.
 
@@ -43,9 +49,9 @@ Approval is required for:
   external services
 - modifying real OpenClaw, Discord, Telegram, GitHub, Tailscale, OS keychain, firewall,
   portproxy, or service configuration beyond an already approved runbook step
-- dispatching a new unattended external worker batch that writes to GitHub, Discord, or
-  OpenClaw unless that exact class of write has already been delegated for the current
-  phase
+- dispatching external worker batches that exceed the existing PNH test/implementation
+  queue limits, bypass rollback/evidence controls, expose private bodies, or target
+  systems outside the approved PNH GitHub/Discord/OpenClaw workflow
 - broad rewrites or architecture direction changes
 
 When a material gate is opened, state why the gate is material and what specific action
