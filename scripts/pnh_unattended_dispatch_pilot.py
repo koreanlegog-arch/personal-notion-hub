@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -27,6 +28,11 @@ DEFAULT_HISTORY = ROOT / "companion" / "private" / "pnh_unattended_dispatch_hist
 DEFAULT_LOCK = ROOT / "companion" / "private" / "pnh_unattended_dispatch.lock"
 DEFAULT_REPO = "koreanlegog-arch/personal-notion-hub"
 DEFAULT_DISCORD_TARGET = "channel:1511691320136306718"
+SECRET_SCAN_PATTERN = re.compile(
+    r"OPENCLAW_GATEWAY_TOKEN|DISCORD_BOT_TOKEN|GITHUB_TOKEN=|Bearer [A-Za-z0-9_.-]{12,}|"
+    r"gh[opsu]_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9]|password\s*[=:]|secret\s*[=:]",
+    re.IGNORECASE,
+)
 
 
 class PilotError(ValueError):
@@ -148,6 +154,7 @@ def apply_first(args: argparse.Namespace, run_dir: Path, queue: dict[str, Any], 
         command.append("--detect-existing-github")
     result = subprocess.run(command, capture_output=True, text=True, timeout=120, check=False)
     if result.returncode != 0:
+        write_dispatch_failure(dispatch_run_dir, command, result)
         raise PilotError(f"pilot dispatch failed: {first_line(result.stderr) or first_line(result.stdout)}")
     summary = load_json_object(dispatch_run_dir / "auto_dispatch_summary.json", "auto dispatch summary")
     history_path = Path(args.history_json)
@@ -206,6 +213,45 @@ def snapshot_state(source: Path, target: Path) -> None:
         shutil.copy2(source, target)
     else:
         target.write_text("{}\n", encoding="utf-8")
+
+
+def write_dispatch_failure(run_dir: Path, command: list[str], result: subprocess.CompletedProcess[str]) -> None:
+    run_dir.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "pnhUnattendedDispatchFailure": True,
+        "generatedAt": utc_now(),
+        "command": redact_command(command),
+        "returnCode": result.returncode,
+        "stdoutFirstLines": safe_output_excerpt(result.stdout),
+        "stderrFirstLines": safe_output_excerpt(result.stderr),
+        "privateValuesPrinted": False,
+        "tokenValuePrinted": False,
+    }
+    (run_dir / "dispatch_failure.json").write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+
+def redact_command(command: list[str]) -> list[str]:
+    return [safe_command_arg(item) for item in command]
+
+
+def safe_command_arg(value: str) -> str:
+    text = str(value)
+    if text == sys.executable:
+        return "python3"
+    root_text = str(ROOT)
+    if text.startswith(root_text + os.sep):
+        return text[len(root_text) + 1 :]
+    return text
+
+
+def safe_output_excerpt(value: str) -> list[str]:
+    lines = []
+    for line in value.splitlines()[:12]:
+        lines.append(SECRET_SCAN_PATTERN.sub("[redacted]", line)[:500])
+    return lines
 
 
 def load_json_object(path: Path, label: str, *, missing_ok: bool = False) -> dict[str, Any]:

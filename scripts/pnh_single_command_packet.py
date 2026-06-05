@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -30,6 +31,7 @@ SECRET_SCAN_PATTERN = (
     r"OPENCLAW_GATEWAY_TOKEN|DISCORD_BOT_TOKEN|GITHUB_TOKEN=|Bearer [A-Za-z0-9_\-]+|"
     r"gho_[A-Za-z0-9_]+|sk-[A-Za-z0-9]|password\s*[=:]|secret\s*[=:]"
 )
+SECRET_SCAN_RE = re.compile(SECRET_SCAN_PATTERN, re.IGNORECASE)
 
 
 class SinglePacketError(ValueError):
@@ -62,6 +64,9 @@ def main() -> int:
     lock_path = Path(args.lock_file)
     acquired_lock = False
     commands_run: list[dict[str, Any]] = []
+    run_id = ""
+    run_dir: Path | None = None
+    paths: dict[str, Path] = {}
     try:
         run_id, run_dir = resolve_run(args.run_id, args.run_dir)
         paths = make_paths(run_dir)
@@ -118,6 +123,9 @@ def main() -> int:
         print(json.dumps(redact_stdout(result), ensure_ascii=False, sort_keys=True))
         return 0
     except (OSError, SinglePacketError) as exc:
+        if run_dir is not None:
+            result = build_failure_result(args, run_id, run_dir, paths, commands_run, str(exc))
+            write_outputs(run_dir, result, commands_run)
         print(f"pnh_single_command_packet=false error={exc}", file=sys.stderr)
         return 2
     finally:
@@ -391,6 +399,8 @@ def run_command(command: list[str], step: str, commands_run: list[dict[str, Any]
         "returnCode": result.returncode,
         "stdoutBytes": len(result.stdout.encode("utf-8")),
         "stderrBytes": len(result.stderr.encode("utf-8")),
+        "stdoutFirstLines": safe_output_excerpt(result.stdout),
+        "stderrFirstLines": safe_output_excerpt(result.stderr),
     }
     commands_run.append(entry)
     if result.returncode != 0:
@@ -411,6 +421,24 @@ def build_empty_result(
         "selectedCaptureId": "",
         "queuedCount": int(queue.get("queuedCount", 0) or 0),
         "externalWritesPerformed": False,
+        "workerRunPerformed": False,
+    }
+
+
+def build_failure_result(
+    args: argparse.Namespace,
+    run_id: str,
+    run_dir: Path,
+    paths: dict[str, Path],
+    commands_run: list[dict[str, Any]],
+    error: str,
+) -> dict[str, Any]:
+    return base_result(args, run_id, run_dir, paths, commands_run) | {
+        "pnhSingleCommandPacketFailed": True,
+        "error": SECRET_SCAN_RE.sub("[redacted]", error)[:500],
+        "selectedCaptureId": "",
+        "queuedCount": 0,
+        "externalWritesPerformed": any(bool(item.get("externalWritesPerformed")) for item in commands_run),
         "workerRunPerformed": False,
     }
 
@@ -580,6 +608,13 @@ def safe_command_arg(value: str) -> str:
     if text.startswith(root_text + os.sep):
         return text[len(root_text) + 1 :]
     return text
+
+
+def safe_output_excerpt(value: str) -> list[str]:
+    lines = []
+    for line in value.splitlines()[:12]:
+        lines.append(SECRET_SCAN_RE.sub("[redacted]", line)[:500])
+    return lines
 
 
 def compact(value: Any) -> str:
