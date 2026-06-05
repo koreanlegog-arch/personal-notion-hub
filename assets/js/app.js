@@ -489,7 +489,7 @@ function launchIntakePanel() {
   form.append(actions);
   form.addEventListener("submit", handleLaunchSubmit);
   section.append(form);
-  section.append(make("p", "fine-print", "이 MVP는 packet과 copy/export 초안만 만듭니다. Discord/GitHub/OpenClaw 자동 실행은 별도 승인 게이트입니다."));
+  section.append(make("p", "fine-print", "이 MVP는 packet 생성, local companion 저장, metadata-safe dry-run, dispatch 상태 확인을 지원합니다."));
   return section;
 }
 
@@ -695,9 +695,16 @@ function commandPacketStatusCard(status) {
   const card = make("article", "dispatch-record command-packet-status");
   card.append(make("strong", "", "Single command packet"));
   if (!status) {
+    card.append(operatorActionBanner({
+      label: "Pair required",
+      title: "Operator action: pair companion",
+      body: "Pair companion and refresh before running packet checks.",
+      variant: "muted",
+    }));
     card.append(make("p", "fine-print", "Pair companion and refresh to read wrapper status."));
     return card;
   }
+  card.append(operatorActionBanner(commandPacketOperatorAction(status, companionState.singleCommandPacketRun)));
   const latestRun = status.latestRun || {};
   const latestDispatch = status.latestDispatch || {};
   const facts = [
@@ -722,6 +729,66 @@ function commandPacketStatusCard(status) {
   }
   card.append(make("p", "fine-print", "metadata-only · private body hidden"));
   return card;
+}
+
+function commandPacketOperatorAction(status, run) {
+  const latestRun = status.latestRun || {};
+  if (run?.ok === false) {
+    return {
+      label: "Dry-run failed",
+      title: "Operator action: inspect run evidence",
+      body: "Open the latest run evidence before retrying the browser dry-run.",
+      variant: "blocked",
+    };
+  }
+  if ((status.readyForSupervisorReview ?? 0) > 0) {
+    return {
+      label: "Review ready",
+      title: "Operator action: review worker evidence",
+      body: "At least one worker-done packet is ready for supervisor review summary.",
+      variant: "ready",
+    };
+  }
+  if ((status.pendingWorkerSession ?? 0) > 0) {
+    return {
+      label: "Worker pending",
+      title: "Operator action: capture worker result",
+      body: "A dispatched packet is waiting for worker-session capture or refresh.",
+      variant: "pending",
+    };
+  }
+  if ((status.queueCount ?? 0) > 0 && !latestRun.externalWritesPerformed) {
+    return {
+      label: "Packet queued",
+      title: "Operator action: run dry-run first",
+      body: "A command packet is waiting. Use Run Dry-Run to inspect the safe plan before apply.",
+      variant: "pending",
+    };
+  }
+  if (run?.mode === "dry-run" || latestRun.message === "queue_empty" || (status.queueCount ?? 0) === 0) {
+    return {
+      label: "Queue clear",
+      title: "Operator action: wait for next packet",
+      body: "No command packet is currently queued for dispatch.",
+      variant: "ready",
+    };
+  }
+  return {
+    label: "Check needed",
+    title: "Operator action: refresh status",
+    body: "Refresh packet status before choosing the next dispatch step.",
+    variant: "muted",
+  };
+}
+
+function operatorActionBanner(action) {
+  const banner = make("div", `operator-action-banner operator-action-${action.variant || "muted"}`);
+  banner.append(badge(action.label || "Action"));
+  const copy = make("div", "");
+  copy.append(make("strong", "", action.title || "Operator action"));
+  copy.append(make("p", "fine-print", action.body || ""));
+  banner.append(copy);
+  return banner;
 }
 
 function dispatchRecordForLaunch(launch) {

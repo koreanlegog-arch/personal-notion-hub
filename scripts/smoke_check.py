@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REQUIRED = [
     "index.html",
     "favicon.ico",
+    "AGENTS.md",
     "assets/css/styles.css",
     "assets/js/app.js",
     "assets/js/companion-bridge.js",
@@ -459,6 +460,24 @@ def assert_private_data_policy_contracts() -> None:
                 raise SystemExit(f"missing_private_data_policy_contract={rel}:{token}")
 
 
+def assert_agent_approval_override_contracts() -> None:
+    agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+    expected = [
+        "Do not ask for approval for:",
+        "routine `git add`, `git commit`, and `git push`",
+        "local dry-runs and read-only status refreshes",
+        "bounded GitHub Issue, Discord/OpenClaw thread/message",
+        "OpenClaw worker/model execution",
+        "Treat \"next efficient work\" suggestions as backlog guidance, not approval gates.",
+        "If the supervisor replies with `진행해`, `쭉 진행해`, or equivalent continuation language",
+        "Do not ask whether to run smoke checks, browser QA, dry-runs, scoped commits, or pushes",
+        "When a material gate is opened, state why the gate is material",
+    ]
+    for token in expected:
+        if token not in agents:
+            raise SystemExit(f"missing_agent_approval_override_contract={token}")
+
+
 def assert_html_assets() -> None:
     parser = AssetParser()
     parser.feed((ROOT / "index.html").read_text(encoding="utf-8"))
@@ -512,6 +531,8 @@ def assert_expected_app_contracts() -> None:
         "launchCompanionPanel",
         "launchDispatchStatusPanel",
         "commandPacketStatusCard",
+        "commandPacketOperatorAction",
+        "operatorActionBanner",
         "refreshDispatchState",
         "refreshCommandPacketStatus",
         "runSingleCommandPacketDryRun",
@@ -536,6 +557,10 @@ def assert_expected_app_contracts() -> None:
         "workerResults",
         "commandPacketStatus",
         "Single command packet",
+        "Operator action",
+        "Review ready",
+        "Packet queued",
+        "Queue clear",
         "Run Dry-Run",
         "Apply Locked",
         "workerResultSet",
@@ -776,6 +801,7 @@ def main() -> int:
     assert_secret_backend_contracts()
     assert_github_ledger_bridge_contracts()
     assert_private_data_policy_contracts()
+    assert_agent_approval_override_contracts()
     assert_html_assets()
     assert_no_inline_handlers()
     assert_expected_app_contracts()

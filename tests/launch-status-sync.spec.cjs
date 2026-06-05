@@ -132,6 +132,8 @@ test.describe("Launch dispatch status sync", () => {
     await page.getByRole("button", { name: "Refresh Status" }).click();
     const packetStatusCard = page.locator(".command-packet-status");
     await expect(packetStatusCard.getByText("Single command packet")).toBeVisible();
+    await expect(packetStatusCard.getByText("Operator action: review worker evidence")).toBeVisible();
+    await expect(packetStatusCard.getByText("Review ready")).toBeVisible();
     await expect(packetStatusCard.getByText("Issue:")).toBeVisible();
     await expect(packetStatusCard.getByText("#2", { exact: true })).toBeVisible();
     await expect(packetStatusCard.getByText("Worker:")).toBeVisible();

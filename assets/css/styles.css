@@ -544,6 +544,38 @@ h1 {
   border-style: dashed;
 }
 
+.operator-action-banner {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-muted);
+}
+
+.operator-action-banner strong {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 0.82rem;
+}
+
+.operator-action-ready {
+  border-color: color-mix(in srgb, var(--success) 45%, var(--line));
+  background: color-mix(in srgb, var(--success) 9%, var(--surface-strong));
+}
+
+.operator-action-pending {
+  border-color: color-mix(in srgb, var(--warning) 45%, var(--line));
+  background: color-mix(in srgb, var(--warning) 10%, var(--surface-strong));
+}
+
+.operator-action-blocked {
+  border-color: color-mix(in srgb, var(--danger) 45%, var(--line));
+  background: color-mix(in srgb, var(--danger) 8%, var(--surface-strong));
+}
+
 .command-packet-status-row {
   display: grid;
   grid-template-columns: 72px minmax(0, 1fr);

@@ -68,6 +68,11 @@ will happen after approval.
 
 - Use phase-level progress, not micro-approval.
 - If the next step is reversible and within the active PNH phase, continue.
+- Treat "next efficient work" suggestions as backlog guidance, not approval gates.
+- If the supervisor replies with `진행해`, `쭉 진행해`, or equivalent continuation language,
+  execute the next scoped PNH task autonomously until a material gate is actually reached.
+- Do not ask whether to run smoke checks, browser QA, dry-runs, scoped commits, or pushes
+  when they are needed to verify a PNH implementation slice.
 - Prefer dry-run, metadata-safe evidence, and redacted artifacts for external workflow
   rehearsals.
 - Never print secret values or raw private command bodies in reports, logs, screenshots,
