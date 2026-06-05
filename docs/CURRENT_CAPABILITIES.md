@@ -112,6 +112,10 @@ python3 scripts/pnh_unattended_dispatch_queue_plan.py
 python3 scripts/pnh_unattended_dispatch_readiness.py
 ```
 
+For the full single packet flow from private inbox to worker-done evidence, see:
+
+- `docs/PNH_SINGLE_COMMAND_PACKET_RUNBOOK.md`
+
 Use `--apply` only when the script's apply mode is intentionally needed and the
 project `AGENTS.md` delegation or relevant approval gate has been satisfied.
 

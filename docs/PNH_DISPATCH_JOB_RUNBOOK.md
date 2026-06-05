@@ -7,6 +7,10 @@ Date: 2026-06-05
 
 The dispatch job turns a stored PNH mobile command packet into a durable GitHub Issue ledger entry and a Discord/OpenClaw routing thread without duplicating records on repeated runs.
 
+For the end-to-end single packet workflow through worker-session capture,
+label reconciliation, and supervisor summary, use
+`docs/PNH_SINGLE_COMMAND_PACKET_RUNBOOK.md`.
+
 ## Current Boundary
 
 Default behavior is dry-run only.
