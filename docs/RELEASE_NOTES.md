@@ -1,5 +1,25 @@
 # Release Notes
 
+## 2026-06-05 - Launch Flow Readiness Packet
+
+### Summary
+
+Documented the current owner-operated Launch flow MVP readiness and the usable
+capability boundary.
+
+### Included
+
+- `docs/CURRENT_CAPABILITIES.md`
+- `ops/runs/PNH-LAUNCH-FLOW-READINESS-20260605/release_readiness.md`
+- README update for current Launch dispatch boundaries
+
+### Verdict
+
+Ready for owner-operated MVP use.
+
+Not ready for unattended production automation, real phone data adapters, or
+distribution to other users.
+
 ## 2026-06-05 - Launch Status Sync Browser QA
 
 ### Summary

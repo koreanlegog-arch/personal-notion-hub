@@ -33,6 +33,8 @@ http://127.0.0.1:4173/
 
 이 앱은 public GitHub Pages 배포를 전제로 설계되었습니다.
 
+현재 사용 가능한 기능과 운영 경계는 [docs/CURRENT_CAPABILITIES.md](docs/CURRENT_CAPABILITIES.md)를 기준으로 확인합니다.
+
 저장소에 커밋하면 안 되는 것:
 
 - 실제 개인 업무 데이터
@@ -113,11 +115,17 @@ Expected:
 - GitHub issue draft 복사
 - 기존 Projects/Tasks에 local starter work 생성
 - repeated local start 중복 방지
+- paired local companion으로 Launch packet을 workspace private inbox/encrypted vault에 저장
+- 승인된 local operator command로 GitHub Issue ledger와 Discord/OpenClaw worker thread 연결
+- worker-session metadata를 local dispatch state에 기록
+- Launch UI에서 dispatch mapping과 task status를 확인해 Projects/Tasks board에 반영
 
 제외 범위:
 
-- 실제 Discord/GitHub/OpenClaw 전송
 - API token 또는 secret 저장
+- unattended Discord/GitHub/OpenClaw dispatch
+- real phone/contact/calendar/call/recording adapters
+- cloud sync of private data
 - 자동 외부 서비스 연동
 - real private data ingest
 
