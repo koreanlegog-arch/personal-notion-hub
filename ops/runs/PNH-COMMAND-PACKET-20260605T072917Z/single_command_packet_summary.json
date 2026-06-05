@@ -1,0 +1,323 @@
+{
+  "commandsRun": [
+    {
+      "command": [
+        "python3",
+        "scripts/pnh_unattended_dispatch_queue_plan.py",
+        "--out",
+        "ops/runs/PNH-COMMAND-PACKET-20260605T072917Z/queue_plan.json",
+        "--state-file",
+        "companion/private/pnh_dispatch_state.json",
+        "--history-json",
+        "companion/private/pnh_unattended_dispatch_history.json",
+        "--max-jobs-per-run",
+        "1",
+        "--max-external-writes-per-hour",
+        "3",
+        "--cooldown-minutes",
+        "10"
+      ],
+      "returnCode": 0,
+      "stderrBytes": 0,
+      "stdoutBytes": 322,
+      "step": "queue_plan"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/pnh_unattended_dispatch_readiness.py",
+        "--queue-plan",
+        "ops/runs/PNH-COMMAND-PACKET-20260605T072917Z/queue_plan.json",
+        "--out",
+        "ops/runs/PNH-COMMAND-PACKET-20260605T072917Z/readiness.json"
+      ],
+      "returnCode": 0,
+      "stderrBytes": 0,
+      "stdoutBytes": 281,
+      "step": "readiness"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/pnh_unattended_dispatch_pilot.py",
+        "--queue-plan",
+        "ops/runs/PNH-COMMAND-PACKET-20260605T072917Z/queue_plan.json",
+        "--run-dir",
+        "ops/runs/PNH-COMMAND-PACKET-20260605T072917Z/dispatch_pilot",
+        "--state-file",
+        "companion/private/pnh_dispatch_state.json",
+        "--history-json",
+        "companion/private/pnh_unattended_dispatch_history.json",
+        "--repo",
+        "koreanlegog-arch/personal-notion-hub",
+        "--discord-target",
+        "channel:1511691320136306718",
+        "--detect-existing-github",
+        "--apply",
+        "--approve-unattended-pilot"
+      ],
+      "returnCode": 0,
+      "stderrBytes": 0,
+      "stdoutBytes": 291,
+      "step": "dispatch_pilot"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/pnh_dispatch_status_refresh.py",
+        "--github-read",
+        "--apply"
+      ],
+      "returnCode": 0,
+      "stderrBytes": 0,
+      "stdoutBytes": 402,
+      "step": "github_status_refresh"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/pnh_discord_thread_status_refresh.py",
+        "--openclaw-read",
+        "--approve-discord-read",
+        "--apply",
+        "--limit",
+        "10"
+      ],
+      "returnCode": 0,
+      "stderrBytes": 0,
+      "stdoutBytes": 428,
+      "step": "discord_thread_refresh"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/pnh_dispatch_status_refresh.py",
+        "--github-read",
+        "--apply"
+      ],
+      "returnCode": 0,
+      "stderrBytes": 0,
+      "stdoutBytes": 402,
+      "step": "github_status_refresh_after_discord"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/pnh_openclaw_worker_capture.py",
+        "--packet-id",
+        "capture-40fc5ea5d769acebdb130781",
+        "--agent",
+        "qa",
+        "--message-file",
+        "[redacted-message]",
+        "--thinking",
+        "low",
+        "--timeout",
+        "300",
+        "--openclaw-env",
+        "/home/koreanlego/.config/openclaw/openclaw-gateway.env",
+        "--state-file",
+        "companion/private/pnh_dispatch_state.json",
+        "--run-dir",
+        "ops/runs/PNH-COMMAND-PACKET-20260605T072917Z/worker_capture"
+      ],
+      "returnCode": 0,
+      "stderrBytes": 0,
+      "stdoutBytes": 690,
+      "step": "worker_capture_dry_run"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/pnh_openclaw_worker_capture.py",
+        "--packet-id",
+        "capture-40fc5ea5d769acebdb130781",
+        "--agent",
+        "qa",
+        "--message-file",
+        "[redacted-message]",
+        "--thinking",
+        "low",
+        "--timeout",
+        "300",
+        "--openclaw-env",
+        "/home/koreanlego/.config/openclaw/openclaw-gateway.env",
+        "--state-file",
+        "companion/private/pnh_dispatch_state.json",
+        "--run-dir",
+        "ops/runs/PNH-COMMAND-PACKET-20260605T072917Z/worker_capture",
+        "--apply",
+        "--approve-openclaw-agent-run"
+      ],
+      "returnCode": 0,
+      "stderrBytes": 0,
+      "stdoutBytes": 951,
+      "step": "worker_capture_apply"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/pnh_dispatch_status_refresh.py",
+        "--github-read",
+        "--apply"
+      ],
+      "returnCode": 0,
+      "stderrBytes": 0,
+      "stdoutBytes": 402,
+      "step": "github_status_refresh"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/pnh_discord_thread_status_refresh.py",
+        "--openclaw-read",
+        "--approve-discord-read",
+        "--apply",
+        "--limit",
+        "10"
+      ],
+      "returnCode": 0,
+      "stderrBytes": 0,
+      "stdoutBytes": 428,
+      "step": "discord_thread_refresh"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/pnh_dispatch_status_refresh.py",
+        "--github-read",
+        "--apply"
+      ],
+      "returnCode": 0,
+      "stderrBytes": 0,
+      "stdoutBytes": 402,
+      "step": "github_status_refresh_after_discord"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/pnh_external_reconciliation_plan.py",
+        "--out",
+        "ops/runs/PNH-COMMAND-PACKET-20260605T072917Z/label_reconciliation/external_reconciliation_plan.json"
+      ],
+      "returnCode": 0,
+      "stderrBytes": 0,
+      "stdoutBytes": 391,
+      "step": "label_plan"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/pnh_github_label_reconciliation_apply.py",
+        "--plan-json",
+        "ops/runs/PNH-COMMAND-PACKET-20260605T072917Z/label_reconciliation/external_reconciliation_plan.json",
+        "--out",
+        "ops/runs/PNH-COMMAND-PACKET-20260605T072917Z/label_reconciliation/github_label_reconciliation_dry_run.json"
+      ],
+      "returnCode": 0,
+      "stderrBytes": 0,
+      "stdoutBytes": 315,
+      "step": "label_apply_dry_run"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/pnh_github_label_reconciliation_apply.py",
+        "--plan-json",
+        "ops/runs/PNH-COMMAND-PACKET-20260605T072917Z/label_reconciliation/external_reconciliation_plan.json",
+        "--out",
+        "ops/runs/PNH-COMMAND-PACKET-20260605T072917Z/label_reconciliation/github_label_reconciliation_apply.json",
+        "--apply",
+        "--approve-external-write"
+      ],
+      "returnCode": 0,
+      "stderrBytes": 0,
+      "stdoutBytes": 310,
+      "step": "label_apply"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/pnh_dispatch_status_refresh.py",
+        "--github-read",
+        "--apply"
+      ],
+      "returnCode": 0,
+      "stderrBytes": 0,
+      "stdoutBytes": 402,
+      "step": "github_status_refresh_after_label"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/pnh_external_reconciliation_plan.py",
+        "--out",
+        "ops/runs/PNH-COMMAND-PACKET-20260605T072917Z/label_reconciliation/post_reconciliation_plan.json"
+      ],
+      "returnCode": 0,
+      "stderrBytes": 0,
+      "stdoutBytes": 388,
+      "step": "post_label_plan"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/pnh_dispatch_state_status.py",
+        "--include-urls"
+      ],
+      "returnCode": 0,
+      "stderrBytes": 0,
+      "stdoutBytes": 4341,
+      "step": "dispatch_state_status"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/pnh_dispatch_evidence_summary.py"
+      ],
+      "returnCode": 0,
+      "stderrBytes": 0,
+      "stdoutBytes": 2186,
+      "step": "evidence_summary"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/pnh_supervisor_review_summary.py"
+      ],
+      "returnCode": 0,
+      "stderrBytes": 0,
+      "stdoutBytes": 177,
+      "step": "supervisor_review"
+    }
+  ],
+  "discordReplyDelivered": false,
+  "discordThreadSet": true,
+  "externalWritesPerformed": true,
+  "finalSummary": {
+    "dispatchEvidenceSummary": "ops/runs/PNH-DISPATCH-EVIDENCE-SUMMARY-20260605/dispatch_evidence_summary.json",
+    "supervisorReviewSummary": "ops/runs/PNH-SUPERVISOR-REVIEW-SUMMARY-20260605/supervisor_review_summary.md"
+  },
+  "generatedAt": "2026-06-05T07:31:48+00:00",
+  "githubIssueSet": true,
+  "mode": "apply",
+  "paths": {
+    "labels": "ops/runs/PNH-COMMAND-PACKET-20260605T072917Z/label_reconciliation",
+    "pilot": "ops/runs/PNH-COMMAND-PACKET-20260605T072917Z/dispatch_pilot",
+    "queue": "ops/runs/PNH-COMMAND-PACKET-20260605T072917Z",
+    "root": "ops/runs/PNH-COMMAND-PACKET-20260605T072917Z",
+    "worker": "ops/runs/PNH-COMMAND-PACKET-20260605T072917Z/worker_capture"
+  },
+  "pendingExternalWriteCount": 0,
+  "pnhSingleCommandPacket": true,
+  "privateValuesPrinted": false,
+  "queuedCount": 1,
+  "rawPrivateBodyRead": false,
+  "runDir": "ops/runs/PNH-COMMAND-PACKET-20260605T072917Z",
+  "runId": "PNH-COMMAND-PACKET-20260605T072917Z",
+  "selectedCaptureId": "capture-40fc5ea5d769acebdb130781",
+  "tokenValuePrinted": false,
+  "workerRunPerformed": true,
+  "workerSessionId": "pnh:capture-40fc5ea5d769acebdb130781:qa",
+  "workerStatus": "done"
+}

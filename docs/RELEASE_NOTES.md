@@ -1,5 +1,35 @@
 # Release Notes
 
+## 2026-06-05 - Synthetic Single Command Packet Rehearsal
+
+### Summary
+
+Added a synthetic encrypted command capture seeder and used it to run a full
+single command packet rehearsal through local private inbox, GitHub Issue
+ledger, Discord/OpenClaw worker thread, metadata-only OpenClaw worker capture,
+label reconciliation, and supervisor review summary.
+
+### Included
+
+- `scripts/pnh_seed_synthetic_command_capture.py`
+- `scripts/pnh_seed_synthetic_command_capture_smoke_check.py`
+- `ops/runs/PNH-COMMAND-PACKET-20260605T072917Z/`
+
+### Results
+
+- GitHub Issue `#5`
+- Discord thread `1512357660807270561`
+- worker session `pnh:capture-40fc5ea5d769acebdb130781:qa`
+- task status `worker_done`
+- evidence completeness `100%`
+- repeat queue planning returned `queuedCount=0` after the capture entered dispatch state
+
+### Safety
+
+- No raw private command body was read by the worker prompt.
+- Secret values and private values were not printed.
+- Browser-triggered apply remains gated.
+
 ## 2026-06-05 - Launch Flow Readiness Packet
 
 ### Summary

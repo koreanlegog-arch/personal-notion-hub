@@ -54,6 +54,7 @@ The current verified Launch flow can:
 15. run bounded unattended dispatch pilot batches with queue limits and rollback snapshot
 16. run metadata-only auto-dispatch dry-runs from the encrypted private inbox
 17. skip already-dispatched capture IDs before selecting an automatic dispatch candidate
+18. seed a synthetic encrypted command capture for end-to-end dispatch rehearsal
 
 Current verified live record:
 
@@ -72,6 +73,16 @@ Latest completed unattended pilot record:
 - task status: `worker_done`
 - evidence completeness: `100%`
 - next action: `summarize_worker_result_for_supervisor_review`
+
+Latest synthetic single command packet rehearsal:
+
+- GitHub Issue: `#5`
+- Discord thread id: `1512357660807270561`
+- worker session: `pnh:capture-40fc5ea5d769acebdb130781:qa`
+- GitHub dispatch label: `dispatch:worker-done`
+- task status: `worker_done`
+- evidence completeness: `100%`
+- raw private body read: `false`
 
 Previous completed unattended pilot record:
 
@@ -98,6 +109,7 @@ python3 scripts/keychain_readiness.py
 python3 companion/server.py --host 127.0.0.1 --port 8765 --enable-private-inbox --enable-encrypted-vault --vault-passphrase-provider windows-dpapi-file
 python3 scripts/private_inbox_status.py
 python3 scripts/private_inbox_status.py --include-recent
+python3 scripts/pnh_seed_synthetic_command_capture.py
 ```
 
 ### Dispatch Pipeline

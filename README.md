@@ -140,6 +140,7 @@ python3 scripts/pnh_dispatch_job_smoke_check.py
 python3 scripts/pnh_dispatch_state_status_smoke_check.py
 python3 scripts/pnh_dispatch_rehearsal_smoke_check.py
 python3 scripts/pnh_auto_dispatch_from_inbox_smoke_check.py
+python3 scripts/pnh_seed_synthetic_command_capture_smoke_check.py
 ```
 
 The bridge defaults to dry-run. Live GitHub Issue creation requires a separate
@@ -153,6 +154,13 @@ GitHub-Issue-to-Discord/OpenClaw routing. Apply-mode state lives under ignored
 Auto-dispatch from the private inbox is metadata-only by default. It reads local
 dispatch state and skips capture IDs that already have dispatch or worker
 records, so repeated runs fail closed when no new command candidate exists.
+
+For an end-to-end rehearsal without real owner content:
+
+```bash
+python3 scripts/pnh_seed_synthetic_command_capture.py
+python3 scripts/pnh_single_command_packet.py --apply
+```
 
 장기 방향:
 

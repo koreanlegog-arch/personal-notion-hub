@@ -1,9 +1,9 @@
 {
   "capturesInspected": 9,
-  "cooldownActive": true,
-  "eligibleCount": 0,
+  "cooldownActive": false,
+  "eligibleCount": 1,
   "externalWritesPerformed": false,
-  "generatedAt": "2026-06-05T07:34:29+00:00",
+  "generatedAt": "2026-06-05T07:29:17+00:00",
   "lockPlan": {
     "lockFile": "companion/private/pnh_unattended_dispatch.lock",
     "singleWriter": true,
@@ -20,10 +20,20 @@
   "privateValuesPrinted": false,
   "queueActivationGateReason": "unattended dispatch can create GitHub Issues, Discord/OpenClaw threads, GitHub comments, and worker/model calls without an operator present.",
   "queueActivationGateRequired": true,
-  "queued": [],
-  "queuedCount": 0,
-  "recentExternalWriteCount1h": 1,
-  "remainingExternalWriteCapacity1h": 2,
+  "queued": [
+    {
+      "captureId": "capture-40fc5ea5d769acebdb130781",
+      "commandType": "project_brief",
+      "eligible": true,
+      "encrypted": true,
+      "sensitivity": "private",
+      "skipReason": "",
+      "storageMode": "encrypted-vault"
+    }
+  ],
+  "queuedCount": 1,
+  "recentExternalWriteCount1h": 0,
+  "remainingExternalWriteCapacity1h": 3,
   "rollbackPlan": {
     "beforeApply": [
       "snapshot companion/private/pnh_dispatch_state.json",
@@ -40,15 +50,6 @@
   },
   "rollbackRequiredBeforeApply": true,
   "skipped": [
-    {
-      "captureId": "capture-40fc5ea5d769acebdb130781",
-      "commandType": "project_brief",
-      "eligible": false,
-      "encrypted": true,
-      "sensitivity": "private",
-      "skipReason": "already_in_dispatch_state",
-      "storageMode": "encrypted-vault"
-    },
     {
       "captureId": "assistant-capture-capture-mq05i9fq-i6hmfobg",
       "commandType": "assistant_capture",
@@ -122,6 +123,6 @@
       "storageMode": "encrypted-vault"
     }
   ],
-  "skippedCount": 9,
+  "skippedCount": 8,
   "tokenValuePrinted": false
 }

@@ -61,6 +61,16 @@ Optional:
 - a known capture id, if a specific inbox item must be dispatched
 - a custom run id, if evidence needs a named directory
 
+Synthetic rehearsal input:
+
+```bash
+python3 scripts/pnh_seed_synthetic_command_capture.py
+```
+
+The seeder writes one metadata-safe synthetic command capture into encrypted
+vault storage. Use it for end-to-end dispatch rehearsals when no real owner
+command should be used.
+
 ## Output Evidence
 
 Each complete packet run should leave evidence in:

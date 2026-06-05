@@ -1,0 +1,196 @@
+{
+  "approvalReason": "GitHub label/state/comment mutation or Discord/OpenClaw message/thread mutation would write to external systems.",
+  "approvalRequiredBeforeExternalWrite": true,
+  "externalReconciliationPlan": true,
+  "externalWritesPerformed": false,
+  "generatedAt": "2026-06-05T07:31:43+00:00",
+  "mode": "dry-run",
+  "plannedExternalWrites": [
+    {
+      "addLabels": [
+        "dispatch:worker-done"
+      ],
+      "githubIssueNumber": "5",
+      "operation": "replace_dispatch_status_labels",
+      "removeLabels": [
+        "dispatch:not-dispatched"
+      ],
+      "requiresApproval": true,
+      "system": "github"
+    }
+  ],
+  "plannedLocalFollowUps": [
+    {
+      "operation": "keep_local_dispatch_state_as_source_of_mapping",
+      "packetId": "capture-2a0fcdefc3f169ec30c6497f",
+      "reason": "ledger and thread ids are already linked locally"
+    },
+    {
+      "operation": "keep_local_dispatch_state_as_source_of_mapping",
+      "packetId": "capture-3b8522ff102b0469c683b027",
+      "reason": "ledger and thread ids are already linked locally"
+    },
+    {
+      "operation": "keep_local_dispatch_state_as_source_of_mapping",
+      "packetId": "capture-40fc5ea5d769acebdb130781",
+      "reason": "ledger and thread ids are already linked locally"
+    },
+    {
+      "operation": "keep_local_dispatch_state_as_source_of_mapping",
+      "packetId": "capture-5345e37040604a2fca64f317",
+      "reason": "ledger and thread ids are already linked locally"
+    },
+    {
+      "operation": "create_or_link_github_ledger_before_delivery",
+      "packetId": "pnh-live-openclaw-capture-20260605",
+      "reason": "worker result exists without durable GitHub ledger linkage"
+    },
+    {
+      "operation": "create_or_link_discord_thread_before_delivery",
+      "packetId": "pnh-live-openclaw-capture-20260605",
+      "reason": "worker result exists without Discord/OpenClaw thread linkage"
+    }
+  ],
+  "privateValuesPrinted": false,
+  "records": [
+    {
+      "discordThreadId": "1512315698351706183",
+      "discordThreadSet": true,
+      "externalWritePlan": [],
+      "githubIssueLabels": [
+        "pnh",
+        "mobile-command",
+        "command:project_brief",
+        "priority:normal",
+        "dispatch:worker-done"
+      ],
+      "githubIssueNumber": "3",
+      "githubIssueSet": true,
+      "githubIssueState": "open",
+      "githubLabelsKnown": true,
+      "localFollowUpPlan": [
+        {
+          "operation": "keep_local_dispatch_state_as_source_of_mapping",
+          "packetId": "capture-2a0fcdefc3f169ec30c6497f",
+          "reason": "ledger and thread ids are already linked locally"
+        }
+      ],
+      "packetId": "capture-2a0fcdefc3f169ec30c6497f",
+      "workerStatus": "done"
+    },
+    {
+      "discordThreadId": "1512323845514596373",
+      "discordThreadSet": true,
+      "externalWritePlan": [],
+      "githubIssueLabels": [
+        "pnh",
+        "mobile-command",
+        "command:project_brief",
+        "priority:normal",
+        "dispatch:worker-done"
+      ],
+      "githubIssueNumber": "4",
+      "githubIssueSet": true,
+      "githubIssueState": "open",
+      "githubLabelsKnown": true,
+      "localFollowUpPlan": [
+        {
+          "operation": "keep_local_dispatch_state_as_source_of_mapping",
+          "packetId": "capture-3b8522ff102b0469c683b027",
+          "reason": "ledger and thread ids are already linked locally"
+        }
+      ],
+      "packetId": "capture-3b8522ff102b0469c683b027",
+      "workerStatus": "done"
+    },
+    {
+      "discordThreadId": "1512357660807270561",
+      "discordThreadSet": true,
+      "externalWritePlan": [
+        {
+          "addLabels": [
+            "dispatch:worker-done"
+          ],
+          "githubIssueNumber": "5",
+          "operation": "replace_dispatch_status_labels",
+          "removeLabels": [
+            "dispatch:not-dispatched"
+          ],
+          "requiresApproval": true,
+          "system": "github"
+        }
+      ],
+      "githubIssueLabels": [
+        "pnh",
+        "mobile-command",
+        "command:project_brief",
+        "priority:normal",
+        "dispatch:not-dispatched"
+      ],
+      "githubIssueNumber": "5",
+      "githubIssueSet": true,
+      "githubIssueState": "open",
+      "githubLabelsKnown": true,
+      "localFollowUpPlan": [
+        {
+          "operation": "keep_local_dispatch_state_as_source_of_mapping",
+          "packetId": "capture-40fc5ea5d769acebdb130781",
+          "reason": "ledger and thread ids are already linked locally"
+        }
+      ],
+      "packetId": "capture-40fc5ea5d769acebdb130781",
+      "workerStatus": "done"
+    },
+    {
+      "discordThreadId": "1512295718054793419",
+      "discordThreadSet": true,
+      "externalWritePlan": [],
+      "githubIssueLabels": [
+        "pnh",
+        "mobile-command",
+        "command:project_brief",
+        "priority:normal",
+        "dispatch:worker-done"
+      ],
+      "githubIssueNumber": "2",
+      "githubIssueSet": true,
+      "githubIssueState": "open",
+      "githubLabelsKnown": true,
+      "localFollowUpPlan": [
+        {
+          "operation": "keep_local_dispatch_state_as_source_of_mapping",
+          "packetId": "capture-5345e37040604a2fca64f317",
+          "reason": "ledger and thread ids are already linked locally"
+        }
+      ],
+      "packetId": "capture-5345e37040604a2fca64f317",
+      "workerStatus": "done"
+    },
+    {
+      "discordThreadId": "",
+      "discordThreadSet": false,
+      "externalWritePlan": [],
+      "githubIssueLabels": [],
+      "githubIssueNumber": "",
+      "githubIssueSet": false,
+      "githubIssueState": "",
+      "githubLabelsKnown": false,
+      "localFollowUpPlan": [
+        {
+          "operation": "create_or_link_github_ledger_before_delivery",
+          "packetId": "pnh-live-openclaw-capture-20260605",
+          "reason": "worker result exists without durable GitHub ledger linkage"
+        },
+        {
+          "operation": "create_or_link_discord_thread_before_delivery",
+          "packetId": "pnh-live-openclaw-capture-20260605",
+          "reason": "worker result exists without Discord/OpenClaw thread linkage"
+        }
+      ],
+      "packetId": "pnh-live-openclaw-capture-20260605",
+      "workerStatus": "done"
+    }
+  ],
+  "recordsInspected": 5,
+  "tokenValuePrinted": false
+}
