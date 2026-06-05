@@ -6,6 +6,18 @@ const artifactDir = process.env.PNH_QA_ARTIFACT_DIR || "ops/runs/PNH-ASSISTANT-D
 test.describe("Assistant dispatch intent", () => {
   test("Assistant input can be stored as a command packet without alias correction", async ({ page }) => {
     await page.goto(baseURL);
+    await page.evaluate(
+      () =>
+        new Promise((resolve) => {
+          window.localStorage.clear();
+          window.sessionStorage.clear();
+          const request = window.indexedDB.deleteDatabase("personalNotionHubAssistant");
+          request.onsuccess = resolve;
+          request.onerror = resolve;
+          request.onblocked = resolve;
+        })
+    );
+    await page.reload();
     await page.waitForFunction(() => window.PNHCompanionBridge);
     await page.evaluate(() => {
       window.__assistantWorkspaceCalls = [];

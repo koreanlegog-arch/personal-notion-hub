@@ -1,0 +1,42 @@
+{
+  "cycleCount": 60,
+  "elapsedMinutes": 53.186,
+  "endedAt": "2026-06-05T09:13:17+00:00",
+  "externalWritesPerformed": false,
+  "harnessRun": {
+    "count": 60,
+    "failureCount": 1,
+    "maxSeconds": 9.18,
+    "meanSeconds": 8.066,
+    "medianSeconds": 8.041,
+    "minSeconds": 7.852
+  },
+  "includePlaywright": true,
+  "interpretation": {
+    "failureComparison": {
+      "harnessRun": 1,
+      "supervisorOnly": 0
+    },
+    "meanHarnessOverSupervisorRatio": 71.822,
+    "note": "Harness arm intentionally runs deeper checks; this benchmark measures reliability and overhead, not pure speedup.",
+    "verdict": "harness_quality_depth_costs_extra_time"
+  },
+  "pnhLocalHarnessBenchmark": true,
+  "privateValuesPrinted": false,
+  "rawPrivateBodyRead": false,
+  "reasoningEffort": "medium",
+  "reasoningPolicy": "fixed-baseline",
+  "requestedDurationMinutes": 55.0,
+  "runDir": "ops/runs/PNH-HARNESS-BENCHMARK-LOCAL-20260605",
+  "runId": "PNH-HARNESS-BENCHMARK-LOCAL-20260605",
+  "startedAt": "2026-06-05T08:21:31+00:00",
+  "supervisorOnly": {
+    "count": 60,
+    "failureCount": 0,
+    "maxSeconds": 0.116,
+    "meanSeconds": 0.112,
+    "medianSeconds": 0.112,
+    "minSeconds": 0.109
+  },
+  "tokenValuePrinted": false
+}

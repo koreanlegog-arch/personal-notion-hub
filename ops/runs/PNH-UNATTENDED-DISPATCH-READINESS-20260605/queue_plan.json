@@ -4,7 +4,7 @@
   "cooldownActive": false,
   "eligibleCount": 0,
   "externalWritesPerformed": false,
-  "generatedAt": "2026-06-05T08:08:15+00:00",
+  "generatedAt": "2026-06-05T09:17:06+00:00",
   "lockPlan": {
     "lockFile": "companion/private/pnh_unattended_dispatch.lock",
     "singleWriter": true,
@@ -23,8 +23,8 @@
   "queueActivationGateRequired": true,
   "queued": [],
   "queuedCount": 0,
-  "recentExternalWriteCount1h": 2,
-  "remainingExternalWriteCapacity1h": 1,
+  "recentExternalWriteCount1h": 0,
+  "remainingExternalWriteCapacity1h": 3,
   "rollbackPlan": {
     "beforeApply": [
       "snapshot companion/private/pnh_dispatch_state.json",

@@ -1,0 +1,118 @@
+{
+  "comparison": {
+    "harnessSlowerRatio": 69.526,
+    "harnessStatus": "pass",
+    "qualityProxy": "harness_has_deeper_validation",
+    "supervisorStatus": "pass",
+    "wallClockDeltaSeconds": 7.812
+  },
+  "cycle": 27,
+  "endedAt": "2026-06-05T08:44:05+00:00",
+  "harnessRun": {
+    "arm": "harness-run",
+    "commandCount": 8,
+    "commands": [
+      {
+        "command": "node --check assets/js/app.js",
+        "elapsedSeconds": 0.02,
+        "returnCode": 0,
+        "stderr": "ops/runs/PNH-HARNESS-BENCHMARK-LOCAL-20260605/cycle-027/harness-run/01-node---check-assets_js_app_js.stderr.txt",
+        "stdout": "ops/runs/PNH-HARNESS-BENCHMARK-LOCAL-20260605/cycle-027/harness-run/01-node---check-assets_js_app_js.stdout.txt"
+      },
+      {
+        "command": "node --check assets/js/assistant-import.js",
+        "elapsedSeconds": 0.019,
+        "returnCode": 0,
+        "stderr": "ops/runs/PNH-HARNESS-BENCHMARK-LOCAL-20260605/cycle-027/harness-run/02-node---check-assets_js_assistant-import_js.stderr.txt",
+        "stdout": "ops/runs/PNH-HARNESS-BENCHMARK-LOCAL-20260605/cycle-027/harness-run/02-node---check-assets_js_assistant-import_js.stdout.txt"
+      },
+      {
+        "command": "node --check tests/assistant-dispatch-intent.spec.cjs",
+        "elapsedSeconds": 0.019,
+        "returnCode": 0,
+        "stderr": "ops/runs/PNH-HARNESS-BENCHMARK-LOCAL-20260605/cycle-027/harness-run/03-node---check-tests_assistant-dispatch-intent_spec_cjs.stderr.txt",
+        "stdout": "ops/runs/PNH-HARNESS-BENCHMARK-LOCAL-20260605/cycle-027/harness-run/03-node---check-tests_assistant-dispatch-intent_spec_cjs.stdout.txt"
+      },
+      {
+        "command": "/usr/bin/python3 scripts/smoke_check.py",
+        "elapsedSeconds": 0.033,
+        "returnCode": 0,
+        "stderr": "ops/runs/PNH-HARNESS-BENCHMARK-LOCAL-20260605/cycle-027/harness-run/04-_usr_bin_python3-scripts_smoke_check_py.stderr.txt",
+        "stdout": "ops/runs/PNH-HARNESS-BENCHMARK-LOCAL-20260605/cycle-027/harness-run/04-_usr_bin_python3-scripts_smoke_check_py.stdout.txt"
+      },
+      {
+        "command": "/usr/bin/python3 scripts/browser_bridge_smoke_check.py",
+        "elapsedSeconds": 0.779,
+        "returnCode": 0,
+        "stderr": "ops/runs/PNH-HARNESS-BENCHMARK-LOCAL-20260605/cycle-027/harness-run/05-_usr_bin_python3-scripts_browser_bridge_smoke_check_py.stderr.txt",
+        "stdout": "ops/runs/PNH-HARNESS-BENCHMARK-LOCAL-20260605/cycle-027/harness-run/05-_usr_bin_python3-scripts_browser_bridge_smoke_check_py.stdout.txt"
+      },
+      {
+        "command": "/usr/bin/python3 scripts/pnh_unattended_dispatch_queue_plan.py",
+        "elapsedSeconds": 0.036,
+        "returnCode": 0,
+        "stderr": "ops/runs/PNH-HARNESS-BENCHMARK-LOCAL-20260605/cycle-027/harness-run/06-_usr_bin_python3-scripts_pnh_unattended_dispatch_queue_plan_py.stderr.txt",
+        "stdout": "ops/runs/PNH-HARNESS-BENCHMARK-LOCAL-20260605/cycle-027/harness-run/06-_usr_bin_python3-scripts_pnh_unattended_dispatch_queue_plan_py.stdout.txt"
+      },
+      {
+        "command": "bash scripts/run_playwright_assistant_dispatch_intent_qa.sh",
+        "elapsedSeconds": 3.483,
+        "returnCode": 0,
+        "stderr": "ops/runs/PNH-HARNESS-BENCHMARK-LOCAL-20260605/cycle-027/harness-run/07-bash-scripts_run_playwright_assistant_dispatch_intent_qa_sh.stderr.txt",
+        "stdout": "ops/runs/PNH-HARNESS-BENCHMARK-LOCAL-20260605/cycle-027/harness-run/07-bash-scripts_run_playwright_assistant_dispatch_intent_qa_sh.stdout.txt"
+      },
+      {
+        "command": "bash scripts/run_playwright_redacted_ui_qa.sh",
+        "elapsedSeconds": 3.534,
+        "returnCode": 0,
+        "stderr": "ops/runs/PNH-HARNESS-BENCHMARK-LOCAL-20260605/cycle-027/harness-run/08-bash-scripts_run_playwright_redacted_ui_qa_sh.stderr.txt",
+        "stdout": "ops/runs/PNH-HARNESS-BENCHMARK-LOCAL-20260605/cycle-027/harness-run/08-bash-scripts_run_playwright_redacted_ui_qa_sh.stdout.txt"
+      }
+    ],
+    "elapsedSeconds": 7.926,
+    "failureCount": 0,
+    "privateValuesPrinted": false,
+    "status": "pass",
+    "tokenValuePrinted": false
+  },
+  "startedAt": "2026-06-05T08:43:57+00:00",
+  "supervisorOnly": {
+    "arm": "supervisor-only",
+    "commandCount": 4,
+    "commands": [
+      {
+        "command": "node --check assets/js/app.js",
+        "elapsedSeconds": 0.021,
+        "returnCode": 0,
+        "stderr": "ops/runs/PNH-HARNESS-BENCHMARK-LOCAL-20260605/cycle-027/supervisor-only/01-node---check-assets_js_app_js.stderr.txt",
+        "stdout": "ops/runs/PNH-HARNESS-BENCHMARK-LOCAL-20260605/cycle-027/supervisor-only/01-node---check-assets_js_app_js.stdout.txt"
+      },
+      {
+        "command": "node --check assets/js/assistant-import.js",
+        "elapsedSeconds": 0.02,
+        "returnCode": 0,
+        "stderr": "ops/runs/PNH-HARNESS-BENCHMARK-LOCAL-20260605/cycle-027/supervisor-only/02-node---check-assets_js_assistant-import_js.stderr.txt",
+        "stdout": "ops/runs/PNH-HARNESS-BENCHMARK-LOCAL-20260605/cycle-027/supervisor-only/02-node---check-assets_js_assistant-import_js.stdout.txt"
+      },
+      {
+        "command": "/usr/bin/python3 scripts/smoke_check.py",
+        "elapsedSeconds": 0.034,
+        "returnCode": 0,
+        "stderr": "ops/runs/PNH-HARNESS-BENCHMARK-LOCAL-20260605/cycle-027/supervisor-only/03-_usr_bin_python3-scripts_smoke_check_py.stderr.txt",
+        "stdout": "ops/runs/PNH-HARNESS-BENCHMARK-LOCAL-20260605/cycle-027/supervisor-only/03-_usr_bin_python3-scripts_smoke_check_py.stdout.txt"
+      },
+      {
+        "command": "/usr/bin/python3 scripts/pnh_unattended_dispatch_queue_plan.py",
+        "elapsedSeconds": 0.037,
+        "returnCode": 0,
+        "stderr": "ops/runs/PNH-HARNESS-BENCHMARK-LOCAL-20260605/cycle-027/supervisor-only/04-_usr_bin_python3-scripts_pnh_unattended_dispatch_queue_plan_py.stderr.txt",
+        "stdout": "ops/runs/PNH-HARNESS-BENCHMARK-LOCAL-20260605/cycle-027/supervisor-only/04-_usr_bin_python3-scripts_pnh_unattended_dispatch_queue_plan_py.stdout.txt"
+      }
+    ],
+    "elapsedSeconds": 0.114,
+    "failureCount": 0,
+    "privateValuesPrinted": false,
+    "status": "pass",
+    "tokenValuePrinted": false
+  }
+}
