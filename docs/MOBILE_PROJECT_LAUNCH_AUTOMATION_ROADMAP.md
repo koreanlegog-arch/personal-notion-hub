@@ -189,6 +189,8 @@ Implemented inside the approved local/private boundary:
 - dispatch state can synthesize supervisor-facing `taskStatus`, `evidenceCompleteness`, `missingEvidence`, and `nextAction`
 - synthesized task/evidence metadata can be confirmed into browser-local Launch records
 - confirmed Launch task/evidence status can update Projects and Tasks board progress
+- stored PNH command packets can be exported into dispatch candidates with metadata only
+- automatic dispatch dry-run from the local private inbox can generate a redacted dispatch plan
 
 Still pending:
 
@@ -196,8 +198,8 @@ Still pending:
 - issue/thread status refresh after the first confirmed mapping
 - no token in repo remains enforced
 - dedupe and repeated ledger update strategy
-- metadata-only extraction of stored PNH command packets into dispatch jobs
-- automatic dispatch job from PNH local command packet
+- approved live apply from the auto-dispatch dry-run
+- status refresh and dedupe for repeated auto-dispatch runs
 
 Reference:
 
@@ -228,6 +230,7 @@ Dispatch job status:
 
 - `scripts/pnh_dispatch_job.py` prepares idempotent dry-run/apply flow.
 - `scripts/pnh_dispatch_candidate_export.py` prepares a metadata-only command packet from the local private inbox.
+- `scripts/pnh_auto_dispatch_from_inbox.py` wraps candidate export and dispatch planning for local dry-run operation.
 - Default apply-mode state path is ignored local private storage.
 - Live apply still requires explicit approval flags.
 

@@ -103,16 +103,35 @@ python3 scripts/pnh_dispatch_job.py \
   --discord-target channel:1511691320136306718
 ```
 
+Run the operational auto-dispatch dry-run from the local private inbox:
+
+```bash
+python3 scripts/pnh_auto_dispatch_from_inbox.py
+```
+
+This wrapper exports a metadata-only candidate from the local private inbox, generates a dispatch plan, and writes:
+
+```text
+ops/runs/PNH-AUTO-DISPATCH-FROM-INBOX-20260605/dispatch_candidate.json
+ops/runs/PNH-AUTO-DISPATCH-FROM-INBOX-20260605/dispatch_plan.json
+ops/runs/PNH-AUTO-DISPATCH-FROM-INBOX-20260605/auto_dispatch_summary.json
+```
+
+Default mode is dry-run and must not create GitHub Issues, Discord threads/messages, GitHub comments, or OpenClaw messages.
+
 ## Apply Requirements
 
 Apply mode requires:
 
 - supervisor approval for external writes
 - `--apply`
+- `--approve-live-dispatch`
 - `--approve-external-write`
 - `GITHUB_TOKEN` available in the runtime environment
 - `--approve-discord-dispatch` if creating a Discord thread
 - approved OpenClaw env file for gateway/Discord secrets
+
+The live-dispatch approval gate exists because apply mode can create GitHub Issues, Discord threads/messages, GitHub comments, and OpenClaw messages. Dry-run planning, local metadata export, and smoke checks do not require that gate.
 
 ## Privacy Rules
 

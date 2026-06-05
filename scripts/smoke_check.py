@@ -81,6 +81,8 @@ REQUIRED = [
     "scripts/pnh_openclaw_worker_capture_smoke_check.py",
     "scripts/pnh_dispatch_evidence_summary.py",
     "scripts/pnh_dispatch_evidence_summary_smoke_check.py",
+    "scripts/pnh_auto_dispatch_from_inbox.py",
+    "scripts/pnh_auto_dispatch_from_inbox_smoke_check.py",
     "scripts/start_tailnet_session.sh",
     "scripts/stop_tailnet_session.sh",
     "tests/redacted-ui.spec.cjs",
@@ -209,6 +211,8 @@ def assert_github_ledger_bridge_contracts() -> None:
     openclaw_capture_smoke = (ROOT / "scripts/pnh_openclaw_worker_capture_smoke_check.py").read_text(encoding="utf-8")
     evidence_summary = (ROOT / "scripts/pnh_dispatch_evidence_summary.py").read_text(encoding="utf-8")
     evidence_summary_smoke = (ROOT / "scripts/pnh_dispatch_evidence_summary_smoke_check.py").read_text(encoding="utf-8")
+    auto_dispatch = (ROOT / "scripts" / "pnh_auto_dispatch_from_inbox.py").read_text(encoding="utf-8")
+    auto_dispatch_smoke = (ROOT / "scripts" / "pnh_auto_dispatch_from_inbox_smoke_check.py").read_text(encoding="utf-8")
     expected = [
         "Dry-run is allowed",
         "APPROVE_PNH_GITHUB_ISSUE_LEDGER_APPLY",
@@ -240,6 +244,10 @@ def assert_github_ledger_bridge_contracts() -> None:
         "evidenceCompleteness",
         "missingEvidence",
         "nextAction",
+        "pnh_auto_dispatch_from_inbox_smoke_check_pass=true",
+        "pnhAutoDispatchFromInbox",
+        "--approve-live-dispatch",
+        "liveApplyGate",
     ]
     combined = "\n".join(
         [
@@ -261,6 +269,8 @@ def assert_github_ledger_bridge_contracts() -> None:
             openclaw_capture_smoke,
             evidence_summary,
             evidence_summary_smoke,
+            auto_dispatch,
+            auto_dispatch_smoke,
         ]
     )
     for token in expected:
