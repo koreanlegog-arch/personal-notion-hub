@@ -1,0 +1,20 @@
+{
+  "approvalGate": "dry_run_only_no_external_write",
+  "generatedAt": "2026-06-05T00:34:12+00:00",
+  "issue": {
+    "body": "## PNH Mobile Command Packet\n\n| Field | Value |\n| --- | --- |\n| Command type | `project_brief` |\n| Local capture ref | `capture-sample-001` |\n| Priority | `high` |\n| Sensitivity | `private` |\n| Command status | `queued` |\n| Dispatch state | `not_dispatched` |\n\n## Privacy Boundary\n\nThe private command body remains in the local encrypted vault by default.\nDo not request raw private contents in GitHub unless the supervisor approves repository privacy and data exposure.\n\n## Acceptance Criteria\n\n- [ ] Scope is clarified.\n- [ ] Implementation packet is created or linked.\n- [ ] QA/security evidence is attached before completion.\n- [ ] Supervisor approval is recorded before external dispatch or delivery.\n\n## Next Routing\n\n- Ledger status: queued\n- Worker dispatch: blocked until Discord/OpenClaw gate is approved",
+    "labels": [
+      "pnh",
+      "mobile-command",
+      "command:project_brief",
+      "priority:high",
+      "dispatch:not-dispatched"
+    ],
+    "title": "[PNH] project_brief command packet (capture-sample-001)"
+  },
+  "mode": "dry-run",
+  "privateValuesIncluded": false,
+  "repo": "koreanlegog-arch/personal-notion-hub",
+  "tokenValuePrinted": false,
+  "writesPerformed": false
+}

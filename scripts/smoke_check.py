@@ -30,6 +30,7 @@ REQUIRED = [
     "docs/PASSPHRASE_RECOVERY_POLICY.md",
     "docs/REAL_DATA_ADAPTER_PRIVACY_GATE.md",
     "docs/PHONE_INGRESS_SECURITY.md",
+    "docs/GITHUB_LEDGER_BRIDGE_DESIGN.md",
     "ops/templates/PRIVATE_DATA_ADAPTER_BRIEF_TEMPLATE.md",
     "ops/templates/PRIVATE_DATA_ADAPTER_SECURITY_GATE_TEMPLATE.md",
     "ops/checklists/PRIVATE_DATA_ADAPTER_QA_CHECKLIST.md",
@@ -63,6 +64,8 @@ REQUIRED = [
     "scripts/phone_ingress_lan_info.py",
     "scripts/phone_ingress_reachability_check.py",
     "scripts/tailnet_ingress_smoke_check.py",
+    "scripts/github_ledger_bridge.py",
+    "scripts/github_ledger_bridge_smoke_check.py",
     "scripts/start_tailnet_session.sh",
     "scripts/stop_tailnet_session.sh",
     "tests/redacted-ui.spec.cjs",
@@ -170,6 +173,26 @@ def assert_secret_backend_contracts() -> None:
             raise SystemExit(f"missing_secret_backend_contract={token}")
     if "cmdkey" in backend or "/pass:" in combined:
         raise SystemExit("unsafe_secret_backend_cmdkey_contract=true")
+
+
+def assert_github_ledger_bridge_contracts() -> None:
+    design = (ROOT / "docs/GITHUB_LEDGER_BRIDGE_DESIGN.md").read_text(encoding="utf-8")
+    bridge = (ROOT / "scripts/github_ledger_bridge.py").read_text(encoding="utf-8")
+    smoke = (ROOT / "scripts/github_ledger_bridge_smoke_check.py").read_text(encoding="utf-8")
+    expected = [
+        "Dry-run is allowed",
+        "APPROVE_PNH_GITHUB_ISSUE_LEDGER_APPLY",
+        "--approve-external-write",
+        "--approve-sensitive-github-body",
+        "writesPerformed",
+        "private_values_printed=false",
+    ]
+    combined = "\n".join([design, bridge, smoke])
+    for token in expected:
+        if token not in combined:
+            raise SystemExit(f"missing_github_ledger_bridge_contract={token}")
+    if "print(token)" in bridge or "GITHUB_TOKEN=" in design:
+        raise SystemExit("unsafe_github_ledger_token_contract=true")
 
 
 def assert_private_data_policy_contracts() -> None:
@@ -457,6 +480,7 @@ def main() -> int:
     assert_required_files()
     assert_private_data_adapter_governance_contracts()
     assert_secret_backend_contracts()
+    assert_github_ledger_bridge_contracts()
     assert_private_data_policy_contracts()
     assert_html_assets()
     assert_no_inline_handlers()

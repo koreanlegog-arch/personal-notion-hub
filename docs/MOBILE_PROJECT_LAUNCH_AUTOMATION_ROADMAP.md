@@ -171,13 +171,15 @@ Implemented:
 
 ### Stage 3: Approved GitHub Ledger Bridge
 
-Status: command packet typing started; external ledger bridge remains the next material gate.
+Status: design and dry-run bridge prepared; live GitHub mutation remains the next material gate.
 
 Implemented inside the approved local/private boundary:
 
 - command type field for mobile Launch intake
 - `pnh_mobile_command_packet` payload for companion writes
 - queued/not-dispatched metadata for future routing
+- privacy-preserving GitHub Issue payload dry-run
+- apply-mode approval flags for future live issue creation
 
 Next material gate:
 
@@ -185,6 +187,11 @@ Next material gate:
 - update issue status
 - map issue to PNH launch packet
 - no token in repo
+
+Reference:
+
+- `docs/GITHUB_LEDGER_BRIDGE_DESIGN.md`
+- `scripts/github_ledger_bridge.py`
 
 ### Stage 4: Approved Discord/OpenClaw Dispatch
 
@@ -216,7 +223,7 @@ Add:
 
 ## 9. Recommended Next Step
 
-Run the Launch MVP manually from mobile/desktop.
+Run GitHub ledger bridge apply only after approving the external write gate.
 
 Then implement Stage 2:
 

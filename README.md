@@ -121,9 +121,20 @@ Expected:
 - 자동 외부 서비스 연동
 - real private data ingest
 
+GitHub ledger bridge:
+
+```bash
+python3 scripts/github_ledger_bridge_smoke_check.py
+```
+
+The bridge defaults to dry-run. Live GitHub Issue creation requires a separate
+approval gate, a local runtime `GITHUB_TOKEN`, and explicit apply flags. Raw
+private command contents are not included by default.
+
 장기 방향:
 
 - `docs/MOBILE_PROJECT_LAUNCH_AUTOMATION_ROADMAP.md`
+- `docs/GITHUB_LEDGER_BRIDGE_DESIGN.md`
 
 ## Long-Term Private Data Direction
 

@@ -1,0 +1,11 @@
+{
+  "id": "capture-sample-001",
+  "payloadType": "pnh_mobile_command_packet",
+  "commandType": "project_brief",
+  "commandStatus": "queued",
+  "dispatchState": "not_dispatched",
+  "priority": "high",
+  "sensitivity": "private",
+  "title": "Synthetic private launch title for dry-run only",
+  "body": "Synthetic private launch body for dry-run only. This must not appear in the default GitHub issue output."
+}
