@@ -70,6 +70,25 @@ The rehearsal generates a synthetic payload, sends it through the phone adapter
 endpoint, and records metadata-only evidence. It does not persist the exact
 tailnet URL or print the bearer token.
 
+Probe whether a phone automation send reached the encrypted private vault:
+
+```bash
+python3 scripts/pnh_phone_automation_live_probe.py
+```
+
+To wait for the next owner phone automation send, capture the current inbox
+count first and use it as the baseline:
+
+```bash
+python3 scripts/private_inbox_status.py
+python3 scripts/pnh_phone_automation_live_probe.py \
+  --baseline-count <current-total-captures> \
+  --timeout-seconds 120
+```
+
+The live probe reads metadata only. It does not decrypt private bodies and does
+not print bearer tokens or owner-network URLs.
+
 ## Supported Adapters
 
 - `phone-contacts-json`
@@ -188,6 +207,7 @@ python3 scripts/pnh_phone_adapter_send_smoke_check.py
 python3 scripts/pnh_phone_automation_profile_template_smoke_check.py
 python3 scripts/pnh_phone_automation_setup_readiness_smoke_check.py
 python3 scripts/pnh_phone_automation_rehearsal_smoke_check.py
+python3 scripts/pnh_phone_automation_live_probe_smoke_check.py
 python3 scripts/phone_adapter_ingress_smoke_check.py
 python3 scripts/pnh_tailnet_companion_api_smoke_check.py
 python3 scripts/private_inbox_status.py --include-recent

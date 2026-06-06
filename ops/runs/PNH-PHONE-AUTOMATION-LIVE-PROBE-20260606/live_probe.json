@@ -1,0 +1,35 @@
+{
+  "baseUrlValuePrinted": false,
+  "baselineCount": null,
+  "byStorageMode": {
+    "encrypted-vault": 17,
+    "plaintext-inbox": 0
+  },
+  "currentCount": 17,
+  "delta": null,
+  "latestPhoneCapture": {
+    "createdAt": "2026-06-06T00:00:00Z",
+    "encrypted": true,
+    "id": "capture-8085de34c2771861bbbb0a35",
+    "kind": "call_note",
+    "sensitivity": "highly_sensitive",
+    "source": "phone_call_log",
+    "status": "inbox",
+    "storageMode": "encrypted-vault",
+    "storedAt": "2026-06-06T07:45:34+00:00",
+    "title": "[encrypted]"
+  },
+  "messageContentStored": false,
+  "mode": "status",
+  "observationCount": 1,
+  "pnhPhoneAutomationLiveProbe": true,
+  "pollSeconds": 2.0,
+  "privateValuesPrinted": false,
+  "rawPrivateBodyRead": false,
+  "requireEncryptedVault": true,
+  "sourcePrefix": "phone_",
+  "success": true,
+  "timeoutSeconds": 0.0,
+  "tokenValuePrinted": false,
+  "verdict": "latest_phone_capture_available"
+}

@@ -82,6 +82,8 @@ REQUIRED = [
     "scripts/pnh_phone_automation_setup_readiness_smoke_check.py",
     "scripts/pnh_phone_automation_rehearsal.py",
     "scripts/pnh_phone_automation_rehearsal_smoke_check.py",
+    "scripts/pnh_phone_automation_live_probe.py",
+    "scripts/pnh_phone_automation_live_probe_smoke_check.py",
     "scripts/phone_ingress_lan_info.py",
     "scripts/phone_ingress_reachability_check.py",
     "scripts/tailnet_ingress_smoke_check.py",

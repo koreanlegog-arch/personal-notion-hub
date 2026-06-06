@@ -79,6 +79,7 @@ The current verified Launch flow can:
 38. generate placeholder-only phone automation profile templates for owner mobile automation tools
 39. verify owner phone automation setup readiness without printing token values or persisting tailnet IPs
 40. run synthetic phone automation rehearsals over loopback or owner-tailnet and verify encrypted-vault ingress
+41. probe or wait for new phone automation captures using metadata-only encrypted-vault evidence
 
 Latest owner live command-packet dispatch:
 
