@@ -272,6 +272,14 @@ python3 scripts/pnh_phone_adapter_send_smoke_check.py
 python3 scripts/phone_adapter_ingress_smoke_check.py
 ```
 
+Owner-only tailnet companion API forwarding:
+
+```bash
+bash scripts/pnh_tailnet_companion_api_start.sh --apply
+python3 scripts/pnh_tailnet_companion_api_status.py
+bash scripts/pnh_tailnet_companion_api_stop.sh --apply
+```
+
 Runbook:
 
 - `docs/PHONE_AUTOMATION_ADAPTER_RUNBOOK.md`

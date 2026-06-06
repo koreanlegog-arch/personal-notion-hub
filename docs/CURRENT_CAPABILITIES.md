@@ -72,6 +72,7 @@ The current verified Launch flow can:
 31. accept authenticated phone automation adapter POST payloads into encrypted vault storage
 32. generate phone adapter JSON templates and rehearse local phone adapter sends without printing token or private values
 33. run a headless loopback companion user service with encrypted vault mode and browser bridge disabled
+34. expose the headless companion API to the owner tailnet through reversible Windows portproxy forwarding
 
 Latest owner live command-packet dispatch:
 
@@ -320,6 +321,7 @@ See:
 - `docs/TAILSCALE_REMOTE_ACCESS_RUNBOOK.md`
 - `docs/PHONE_INGRESS_SECURITY.md`
 - `docs/OWNER_LIVE_COMMAND_CAPTURE_RUNBOOK.md`
+- `docs/PHONE_AUTOMATION_ADAPTER_RUNBOOK.md`
 
 ## Requires Explicit Approval
 
@@ -338,7 +340,7 @@ project `AGENTS.md` and do not require a separate per-run approval.
 
 - unattended mobile-to-worker automation beyond bounded pilot batches,
   metadata-safe worker captures, and bounded local scheduler ticks
-- production non-loopback companion exposure
+- public or non-owner companion exposure
 - production-grade live phone/contact/call/recording/calendar API ingestion
 - native phone app extraction client
 - multi-user distribution
@@ -378,6 +380,10 @@ project `AGENTS.md` and do not require a separate per-run approval.
 - `scripts/pnh_companion_install_user_service.sh` and
   `scripts/pnh_companion_service_status.py`: install and verify headless
   loopback companion service mode.
+- `scripts/pnh_tailnet_companion_api_start.sh`,
+  `scripts/pnh_tailnet_companion_api_status.py`, and
+  `scripts/pnh_tailnet_companion_api_stop.sh`: expose or remove owner-only
+  tailnet forwarding for the headless companion API.
 
 ## Practical Current Usage
 

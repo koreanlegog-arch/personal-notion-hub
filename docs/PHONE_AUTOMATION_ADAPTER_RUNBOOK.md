@@ -92,6 +92,28 @@ python3 scripts/pnh_phone_adapter_send.py \
   --payload companion/private/scheduler/phone-call-template.json
 ```
 
+## Owner-Only Tailnet API Forwarding
+
+When the headless companion service is active on WSL loopback, expose it to the
+owner tailnet with:
+
+```bash
+bash scripts/pnh_tailnet_companion_api_start.sh --apply
+python3 scripts/pnh_tailnet_companion_api_status.py
+```
+
+Then send from an owner-controlled phone automation tool to:
+
+```text
+http://<windows-tailnet-ip>:8765/api/private/phone-adapter-captures
+```
+
+Remove forwarding:
+
+```bash
+bash scripts/pnh_tailnet_companion_api_stop.sh --apply
+```
+
 ## Expected Response
 
 The response is metadata-only:
@@ -119,12 +141,16 @@ Raw phone data is not echoed.
 - Use `--allow-owner-network` only for owner-controlled LAN/tailnet endpoints.
 - Do not route this endpoint through public internet without a separate
   production auth and exposure review.
+- Tailnet forwarding is owner-only and uses Tailscale's encrypted tunnel, but
+  the fallback browser/API URL is still `http://...`; do not treat it as a
+  client-facing HTTPS deployment.
 
 ## Verification
 
 ```bash
 python3 scripts/pnh_phone_adapter_send_smoke_check.py
 python3 scripts/phone_adapter_ingress_smoke_check.py
+python3 scripts/pnh_tailnet_companion_api_smoke_check.py
 python3 scripts/private_inbox_status.py --include-recent
 ```
 

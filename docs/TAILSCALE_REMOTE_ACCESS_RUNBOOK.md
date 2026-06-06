@@ -76,6 +76,28 @@ Stop Serve when finished:
 
 Use this only when Tailscale HTTPS certificates are unavailable.
 
+### Headless Companion API Service
+
+Use this path for phone automation POST requests when the headless companion
+service is already installed and active:
+
+```bash
+cd /home/koreanlego/projects/Personal_Notion_Hub
+bash scripts/pnh_tailnet_companion_api_start.sh --apply
+python3 scripts/pnh_tailnet_companion_api_status.py
+```
+
+Stop forwarding:
+
+```bash
+cd /home/koreanlego/projects/Personal_Notion_Hub
+bash scripts/pnh_tailnet_companion_api_stop.sh --apply
+```
+
+This path does not start a second companion process and does not enable browser
+pairing. It forwards the owner tailnet IP to the existing loopback companion
+service.
+
 ### Recommended WSL Helper
 
 Start a session from WSL:

@@ -24,6 +24,7 @@ including guarded live-adapter and bounded scheduler foundations.
 - phone automation adapter runbook, schema/template generator, and local send
   rehearsal script
 - headless loopback companion user-systemd service installer and status script
+- owner-only tailnet companion API forwarding helper scripts
 - bounded unattended dispatch delegation wording update
 - docs update for current capability boundaries
 
@@ -41,6 +42,8 @@ including guarded live-adapter and bounded scheduler foundations.
 - phone adapter schema/template/send smoke passed with metadata-only output
 - companion user service installed and verified with encrypted vault health
 - synthetic phone adapter payload reached the service-backed encrypted vault
+- synthetic phone adapter payload reached the encrypted vault through tailnet
+  companion API forwarding
 - no private values or token values printed by validation commands
 
 ### Boundaries
