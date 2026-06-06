@@ -77,6 +77,7 @@ The current verified Launch flow can:
 36. backfill semantic progress from existing redacted dispatch-state metadata without reading message bodies
 37. summarize bounded unattended automation status from queue, readiness, and retry/backoff evidence
 38. generate placeholder-only phone automation profile templates for owner mobile automation tools
+39. verify owner phone automation setup readiness without printing token values or persisting tailnet IPs
 
 Latest owner live command-packet dispatch:
 
@@ -383,6 +384,9 @@ project `AGENTS.md` and do not require a separate per-run approval.
 - `scripts/pnh_phone_automation_profile_template.py`: generates
   placeholder-only owner mobile automation profiles for the phone adapter POST
   endpoint without printing real bearer tokens.
+- `scripts/pnh_phone_automation_setup_readiness.py`: checks token-file
+  presence/permission, companion health, owner-tailnet health, and privacy gate
+  readiness before configuring a phone automation tool.
 - `scripts/pnh_scheduler_tick.py`, `scripts/pnh_scheduler_loop.py`, and
   `scripts/pnh_scheduler_install_user_service.sh`: run bounded local scheduler
   checks manually or through a user-systemd timer.

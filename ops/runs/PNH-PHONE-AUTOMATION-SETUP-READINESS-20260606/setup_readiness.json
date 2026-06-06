@@ -1,0 +1,65 @@
+{
+  "baseUrlPolicy": "owner-tailnet-or-loopback-only",
+  "checks": [
+    {
+      "detail": "private bearer token file exists",
+      "name": "token_file_present",
+      "pass": true
+    },
+    {
+      "detail": "private bearer token file is non-empty",
+      "name": "token_file_nonempty",
+      "pass": true
+    },
+    {
+      "detail": "token file is not group/world readable",
+      "name": "token_file_permission_restricted",
+      "pass": true
+    },
+    {
+      "detail": "companion user service is active",
+      "name": "companion_service_active",
+      "pass": true
+    },
+    {
+      "detail": "companion uses encrypted vault",
+      "name": "companion_encrypted_vault_health",
+      "pass": true
+    },
+    {
+      "detail": "owner tailnet is running",
+      "name": "tailnet_running",
+      "pass": true
+    },
+    {
+      "detail": "tailnet companion API health succeeds",
+      "name": "tailnet_health_ok",
+      "pass": true
+    },
+    {
+      "detail": "real-data privacy gate is ready",
+      "name": "privacy_gate_ready",
+      "pass": true
+    }
+  ],
+  "endpoint": "/api/private/phone-adapter-captures",
+  "failedChecks": [],
+  "operatorSetupChecklist": [
+    "Run pnh_tailnet_companion_api_status.py locally to identify the current owner-tailnet base URL.",
+    "Generate profile templates with pnh_phone_automation_profile_template.py.",
+    "In the phone automation tool, set Authorization to Bearer plus the local token from companion/private/auth_token.",
+    "Do not paste the token into chat, docs, screenshots, Git, or evidence files.",
+    "Send one synthetic payload first, then check private_inbox_status.py --include-recent."
+  ],
+  "pnhPhoneAutomationSetupReadiness": true,
+  "privateValuesPrinted": false,
+  "profileCount": 4,
+  "token": {
+    "operatorMustCopyLocally": true,
+    "path": "companion/private/auth_token",
+    "present": true,
+    "valuePrinted": false
+  },
+  "tokenValuePrinted": false,
+  "verdict": "ready_for_owner_phone_tool_configuration"
+}

@@ -21,6 +21,7 @@ including guarded live-adapter and bounded scheduler foundations.
 - batch live private data adapter readiness wrapper
 - authenticated phone automation adapter POST endpoint
 - placeholder-only phone automation profile generator for owner mobile tools
+- owner phone automation setup readiness checker
 - bounded unattended retry/backoff planning
 - bounded local scheduler tick/loop scripts with live-adapter readiness job
 - unattended automation status summary for queue/readiness/retry decisions
@@ -53,6 +54,7 @@ including guarded live-adapter and bounded scheduler foundations.
 - real-data privacy gate passed with `13/13` assertions and no blockers
 - no private values or token values printed by validation commands
 - unattended automation status currently reports `idle_ready`
+- phone automation setup readiness currently reports `ready_for_owner_phone_tool_configuration`
 
 ### Boundaries
 

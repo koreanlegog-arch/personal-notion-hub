@@ -44,6 +44,16 @@ python3 scripts/pnh_phone_automation_profile_template.py \
 The profile output uses placeholders such as
 `Bearer <PNH_PRIVATE_INBOX_TOKEN>`. It must not contain real tokens.
 
+Check whether the current machine is ready for owner phone-tool configuration:
+
+```bash
+python3 scripts/pnh_phone_automation_setup_readiness.py
+```
+
+This command checks token-file presence and permissions, companion service
+health, owner-tailnet reachability, and the real-data privacy gate. It does not
+print the bearer token or persist the tailnet IP in evidence.
+
 ## Supported Adapters
 
 - `phone-contacts-json`
@@ -160,6 +170,7 @@ Raw phone data is not echoed.
 ```bash
 python3 scripts/pnh_phone_adapter_send_smoke_check.py
 python3 scripts/pnh_phone_automation_profile_template_smoke_check.py
+python3 scripts/pnh_phone_automation_setup_readiness_smoke_check.py
 python3 scripts/phone_adapter_ingress_smoke_check.py
 python3 scripts/pnh_tailnet_companion_api_smoke_check.py
 python3 scripts/private_inbox_status.py --include-recent
