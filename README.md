@@ -237,6 +237,29 @@ python3 scripts/pnh_scheduler_smoke_check.py
 The scheduler scripts run bounded local checks only. They do not install a
 daemon, cron job, or systemd service.
 
+Phone automation POST ingress:
+
+```text
+POST /api/private/phone-adapter-captures
+```
+
+Supported adapter payload names:
+
+- `phone-contacts-json`
+- `phone-calendar-json`
+- `phone-call-log-json`
+- `phone-recording-transcript-json`
+
+The endpoint uses the same bearer/session auth as `/api/private/mobile-captures`
+and stores accepted records in the configured private storage mode. In encrypted
+vault mode, response bodies stay metadata-only.
+
+Smoke:
+
+```bash
+python3 scripts/phone_adapter_ingress_smoke_check.py
+```
+
 ## Local Companion Prototype
 
 `companion/` contains a loopback-only local companion. It keeps fixture preview mode for public-safe QA, a transitional authenticated plaintext private inbox, and an explicit encrypted vault mode for sensitive local capture.
@@ -252,6 +275,8 @@ Current limits:
   calendar ICS, call-log CSV, and recording transcript text
 - guarded live adapter sync and batch readiness scripts are available for
   env-backed calendar, contacts, call-log, and transcript endpoints
+- authenticated phone automation POST endpoint is available for JSON payloads
+  from owner-controlled tools such as Shortcuts or Tasker
 - bounded local scheduler tick/loop scripts are available without service
   installation
 - encrypted backup/restore/delete scripts are available for encrypted capture rows

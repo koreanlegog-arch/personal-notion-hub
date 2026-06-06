@@ -16,6 +16,7 @@ including guarded live-adapter and bounded scheduler foundations.
 - owner-exported local private data adapter registry/status and batch plan
 - guarded live private data adapter sync framework
 - batch live private data adapter readiness wrapper
+- authenticated phone automation adapter POST endpoint
 - bounded unattended retry/backoff planning
 - bounded local scheduler tick/loop scripts with live-adapter readiness job
 - bounded unattended dispatch delegation wording update
@@ -29,6 +30,8 @@ including guarded live-adapter and bounded scheduler foundations.
 - contacts/calendar/call-log/transcript adapter MVP smoke tested with fixture data
 - live adapter sync fixture smoke passed without printing private values
 - scheduler smoke passed without installing a daemon or service
+- phone adapter POST ingress smoke stored fixture data through encrypted vault
+  mode without echoing private values
 - no private values or token values printed by validation commands
 
 ### Boundaries

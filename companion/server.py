@@ -6,6 +6,7 @@ Endpoints:
 - GET /api/schema
 - POST /api/import/preview
 - POST /api/private/mobile-captures
+- POST /api/private/phone-adapter-captures
 - GET /api/private/mobile-captures
 - GET /api/private/summary
 - GET /api/private/dispatch-state
@@ -44,6 +45,7 @@ try:
         read_token,
         store_summary,
     )
+    from .phone_adapter_ingest import PhoneAdapterIngestError, normalize_phone_adapter_payload
     from .preview import SCHEMA, preview_import, zero_counts
     from .single_command_packet_runner import SingleCommandPacketRunError, run_single_command_packet_from_browser
 except ImportError:  # pragma: no cover - supports direct script execution.
@@ -61,6 +63,7 @@ except ImportError:  # pragma: no cover - supports direct script execution.
         read_token,
         store_summary,
     )
+    from phone_adapter_ingest import PhoneAdapterIngestError, normalize_phone_adapter_payload  # type: ignore
     from preview import SCHEMA, preview_import, zero_counts
     from single_command_packet_runner import SingleCommandPacketRunError, run_single_command_packet_from_browser  # type: ignore
 
@@ -193,6 +196,7 @@ class CompanionHandler(BaseHTTPRequestHandler):
                 "enabled": self.server.private_enabled,
                 "auth": "bearer-token" if self.server.private_enabled else "disabled",
                 "writeEndpoint": "/api/private/mobile-captures",
+                "phoneAdapterEndpoint": "/api/private/phone-adapter-captures",
                 "summaryEndpoint": "/api/private/summary",
                 "dispatchStateEndpoint": "/api/private/dispatch-state",
                 "commandPacketStatusEndpoint": "/api/private/command-packet-status",
@@ -279,6 +283,9 @@ class CompanionHandler(BaseHTTPRequestHandler):
         if path == "/api/private/mobile-captures":
             self._handle_private_capture()
             return
+        if path == "/api/private/phone-adapter-captures":
+            self._handle_phone_adapter_capture()
+            return
         if path == "/api/private/single-command-packet/run":
             self._handle_single_command_packet_run()
             return
@@ -288,6 +295,7 @@ class CompanionHandler(BaseHTTPRequestHandler):
         if self._path() not in {
             "/api/private/pair",
             "/api/private/mobile-captures",
+            "/api/private/phone-adapter-captures",
             "/api/private/summary",
             "/api/private/dispatch-state",
             "/api/private/command-packet-status",
@@ -382,6 +390,48 @@ class CompanionHandler(BaseHTTPRequestHandler):
             return
 
         self._send_json(HTTPStatus.CREATED, {"ok": True, "writesPerformed": True, "capture": capture})
+
+    def _handle_phone_adapter_capture(self) -> None:
+        if not self._require_private_auth():
+            return
+
+        payload, error = self._read_json_payload(MAX_PRIVATE_BODY_BYTES)
+        if error:
+            status, _path, code = error
+            self._send_json(status, {"error": code})
+            return
+
+        try:
+            records = normalize_phone_adapter_payload(payload)
+            captures = [
+                insert_capture(
+                    self.server.private_db_path,
+                    record,
+                    allow_external=self.server.allow_external_private_paths,
+                    vault=self.server.private_vault,
+                )
+                for record in records
+            ]
+        except (PhoneAdapterIngestError, PrivateStoreError) as exc:
+            self._send_json(HTTPStatus.BAD_REQUEST, {"error": str(exc)})
+            return
+        except (OSError, sqlite3.Error):
+            self._send_json(HTTPStatus.INTERNAL_SERVER_ERROR, {"error": "phone_adapter_store_write_failed"})
+            return
+
+        self._send_json(
+            HTTPStatus.CREATED,
+            {
+                "ok": True,
+                "writesPerformed": True,
+                "phoneAdapterCapture": {
+                    "recordsAccepted": len(captures),
+                    "captureIds": [item["id"] for item in captures],
+                    "storageMode": self.server.private_storage_mode,
+                    "privateValuesPrinted": False,
+                },
+            },
+        )
 
     def _handle_single_command_packet_run(self) -> None:
         if not self._require_private_auth():

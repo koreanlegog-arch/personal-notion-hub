@@ -69,6 +69,7 @@ The current verified Launch flow can:
 28. plan unattended retry/backoff candidates for failed or blocked dispatch records
 29. batch-check all live adapter slots from one readiness command
 30. run bounded scheduler ticks/loops for local status, queue, retry, evidence, and live-adapter readiness checks without installing a daemon
+31. accept authenticated phone automation adapter POST payloads into encrypted vault storage
 
 Latest owner live command-packet dispatch:
 
@@ -253,6 +254,32 @@ python3 scripts/pnh_scheduler_loop.py --iterations 1 --interval-seconds 1
 python3 scripts/pnh_scheduler_smoke_check.py
 ```
 
+### Phone Automation Adapter POST
+
+The companion can accept authenticated phone automation JSON payloads and store
+them as encrypted private captures:
+
+```text
+POST /api/private/phone-adapter-captures
+```
+
+Supported adapter names:
+
+- `phone-contacts-json`
+- `phone-calendar-json`
+- `phone-call-log-json`
+- `phone-recording-transcript-json`
+
+The endpoint uses the same private bearer/session authentication as
+`/api/private/mobile-captures`. Responses are metadata-only and do not echo raw
+phone data.
+
+Smoke:
+
+```bash
+python3 scripts/phone_adapter_ingress_smoke_check.py
+```
+
 ### Browser QA
 
 ```bash
@@ -287,6 +314,7 @@ project `AGENTS.md` and do not require a separate per-run approval.
   metadata-safe worker captures, and bounded local scheduler ticks
 - installed daemon/service activation
 - production-grade live phone/contact/call/recording/calendar API ingestion
+- native phone app extraction client
 - multi-user distribution
 - cloud sync of private data
 - production auth model
@@ -314,6 +342,8 @@ project `AGENTS.md` and do not require a separate per-run approval.
   failed or blocked dispatch records.
 - `scripts/pnh_scheduler_tick.py` and `scripts/pnh_scheduler_loop.py`: run
   bounded local scheduler checks without service installation.
+- `POST /api/private/phone-adapter-captures`: accepts authenticated phone
+  automation adapter JSON payloads and stores them in encrypted vault mode.
 
 ## Practical Current Usage
 
