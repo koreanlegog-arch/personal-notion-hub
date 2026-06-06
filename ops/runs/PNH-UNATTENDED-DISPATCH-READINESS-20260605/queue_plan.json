@@ -4,7 +4,7 @@
   "cooldownActive": false,
   "eligibleCount": 0,
   "externalWritesPerformed": false,
-  "generatedAt": "2026-06-05T15:05:37+00:00",
+  "generatedAt": "2026-06-06T06:00:49+00:00",
   "lockPlan": {
     "lockFile": "companion/private/pnh_unattended_dispatch.lock",
     "singleWriter": true,
