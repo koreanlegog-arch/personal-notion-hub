@@ -5,7 +5,7 @@ set -euo pipefail
 # This script does not stop a companion process running in another terminal.
 
 PORT="${PNH_TAILNET_PORT:-8765}"
-RULE_NAME="${PNH_TAILNET_FIREWALL_RULE:-PNH Tailnet Ingress 8765}"
+RULE_NAME="${PNH_TAILNET_FIREWALL_RULE:-PNH Tailnet Ingress ${PORT}}"
 TAILSCALE_EXE="${PNH_TAILSCALE_EXE:-C:\\Program Files\\Tailscale\\tailscale.exe}"
 
 detect_tailnet_ip() {

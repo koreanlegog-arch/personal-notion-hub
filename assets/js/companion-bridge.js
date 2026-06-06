@@ -2,12 +2,12 @@
   "use strict";
 
   const LOOPBACK_BASE_URL = "http://127.0.0.1:8765";
-  const COMPANION_PORT = "8765";
+  const DEFAULT_COMPANION_PORT = "8765";
   let sessionToken = "";
 
   function defaultBaseUrl() {
     const page = new URL(window.location.href);
-    if (page.protocol === "http:" && page.port === COMPANION_PORT && page.hostname) {
+    if (page.protocol === "http:" && page.port && validCompanionOrigin(page.origin)) {
       return page.origin;
     }
     if (page.protocol === "https:" && page.hostname.endsWith(".ts.net")) {
@@ -21,7 +21,7 @@
     if (parsed.protocol === "https:" && parsed.hostname.endsWith(".ts.net") && !parsed.port && parsed.pathname === "/") {
       return true;
     }
-    if (parsed.protocol !== "http:" || parsed.port !== COMPANION_PORT || parsed.pathname !== "/") {
+    if (parsed.protocol !== "http:" || !validCompanionPort(parsed.port) || parsed.pathname !== "/") {
       return false;
     }
     if (parsed.hostname.endsWith(".ts.net")) return true;
@@ -33,10 +33,16 @@
     return Boolean(match && Number(match[1]) >= 16 && Number(match[1]) <= 31);
   }
 
+  function validCompanionPort(port) {
+    if (port === DEFAULT_COMPANION_PORT) return true;
+    const page = new URL(window.location.href);
+    return Boolean(page.protocol === "http:" && page.port && port === page.port);
+  }
+
   function validatedBaseUrl(value = defaultBaseUrl()) {
     const parsed = new URL(value);
     if (!validCompanionOrigin(parsed.origin) || parsed.search || parsed.hash) {
-      throw new Error("Companion base URL must be loopback/private LAN http on port 8765 or Tailscale HTTPS/tailnet HTTP");
+      throw new Error("Companion base URL must be loopback/private LAN http on the active companion port or Tailscale HTTPS/tailnet HTTP");
     }
     return parsed.origin;
   }
