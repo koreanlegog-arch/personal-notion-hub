@@ -78,6 +78,7 @@ The current verified Launch flow can:
 37. summarize bounded unattended automation status from queue, readiness, and retry/backoff evidence
 38. generate placeholder-only phone automation profile templates for owner mobile automation tools
 39. verify owner phone automation setup readiness without printing token values or persisting tailnet IPs
+40. run synthetic phone automation rehearsals over loopback or owner-tailnet and verify encrypted-vault ingress
 
 Latest owner live command-packet dispatch:
 
@@ -387,6 +388,9 @@ project `AGENTS.md` and do not require a separate per-run approval.
 - `scripts/pnh_phone_automation_setup_readiness.py`: checks token-file
   presence/permission, companion health, owner-tailnet health, and privacy gate
   readiness before configuring a phone automation tool.
+- `scripts/pnh_phone_automation_rehearsal.py`: sends a synthetic phone adapter
+  payload through loopback or owner-tailnet and records encrypted-vault ingress
+  metadata without printing bearer tokens or exact tailnet URLs.
 - `scripts/pnh_scheduler_tick.py`, `scripts/pnh_scheduler_loop.py`, and
   `scripts/pnh_scheduler_install_user_service.sh`: run bounded local scheduler
   checks manually or through a user-systemd timer.

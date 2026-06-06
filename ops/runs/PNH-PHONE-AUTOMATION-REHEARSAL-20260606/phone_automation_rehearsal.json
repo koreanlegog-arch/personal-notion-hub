@@ -1,0 +1,18 @@
+{
+  "adapter": "phone-call-log-json",
+  "baseUrlMode": "owner_tailnet",
+  "baseUrlValuePrinted": false,
+  "captureIds": [
+    "capture-a900bce2cc505444b693853b"
+  ],
+  "externalServicesContacted": true,
+  "inboxCountAfter": 16,
+  "inboxCountBefore": 15,
+  "inboxCountDelta": 1,
+  "payloadSynthetic": true,
+  "pnhPhoneAutomationRehearsal": true,
+  "privateValuesPrinted": false,
+  "recordsAccepted": 1,
+  "success": true,
+  "tokenValuePrinted": false
+}

@@ -54,6 +54,22 @@ This command checks token-file presence and permissions, companion service
 health, owner-tailnet reachability, and the real-data privacy gate. It does not
 print the bearer token or persist the tailnet IP in evidence.
 
+Run a synthetic phone automation rehearsal:
+
+```bash
+python3 scripts/pnh_phone_automation_rehearsal.py
+```
+
+For owner-tailnet rehearsal:
+
+```bash
+python3 scripts/pnh_phone_automation_rehearsal.py --use-tailnet
+```
+
+The rehearsal generates a synthetic payload, sends it through the phone adapter
+endpoint, and records metadata-only evidence. It does not persist the exact
+tailnet URL or print the bearer token.
+
 ## Supported Adapters
 
 - `phone-contacts-json`
@@ -171,6 +187,7 @@ Raw phone data is not echoed.
 python3 scripts/pnh_phone_adapter_send_smoke_check.py
 python3 scripts/pnh_phone_automation_profile_template_smoke_check.py
 python3 scripts/pnh_phone_automation_setup_readiness_smoke_check.py
+python3 scripts/pnh_phone_automation_rehearsal_smoke_check.py
 python3 scripts/phone_adapter_ingress_smoke_check.py
 python3 scripts/pnh_tailnet_companion_api_smoke_check.py
 python3 scripts/private_inbox_status.py --include-recent

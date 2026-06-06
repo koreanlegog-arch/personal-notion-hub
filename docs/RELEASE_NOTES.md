@@ -22,6 +22,7 @@ including guarded live-adapter and bounded scheduler foundations.
 - authenticated phone automation adapter POST endpoint
 - placeholder-only phone automation profile generator for owner mobile tools
 - owner phone automation setup readiness checker
+- synthetic phone automation rehearsal runner for loopback and owner-tailnet
 - bounded unattended retry/backoff planning
 - bounded local scheduler tick/loop scripts with live-adapter readiness job
 - unattended automation status summary for queue/readiness/retry decisions
@@ -55,6 +56,7 @@ including guarded live-adapter and bounded scheduler foundations.
 - no private values or token values printed by validation commands
 - unattended automation status currently reports `idle_ready`
 - phone automation setup readiness currently reports `ready_for_owner_phone_tool_configuration`
+- owner-tailnet synthetic phone automation rehearsal accepted `1` encrypted-vault record
 
 ### Boundaries
 
