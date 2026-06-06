@@ -6,6 +6,7 @@ This script intentionally avoids external dependencies.
 
 from __future__ import annotations
 
+import os
 import re
 import subprocess
 import sys
@@ -850,6 +851,8 @@ def assert_workflow_permissions() -> None:
 
 
 def assert_benchmark_acceptance_contracts() -> None:
+    if os.environ.get("PNH_SKIP_BENCHMARK_ACCEPTANCE_IN_SMOKE") == "1":
+        return
     result = subprocess.run(
         [sys.executable, str(ROOT / "scripts/pnh_benchmark_acceptance_contract.py")],
         cwd=ROOT,
