@@ -217,7 +217,9 @@ Guarded live adapter framework:
 
 ```bash
 python3 scripts/pnh_live_private_data_adapter_sync.py
+python3 scripts/pnh_live_private_data_adapter_batch_sync.py
 python3 scripts/pnh_live_private_data_adapter_sync_smoke_check.py
+python3 scripts/pnh_live_private_data_adapter_batch_sync_smoke_check.py
 ```
 
 Live fetch/apply mode reads endpoint references from local environment
@@ -248,8 +250,8 @@ Current limits:
 - browser UI bridge is local-only and disabled unless the companion is started with explicit bridge flags
 - owner-exported local import adapters are available for contacts CSV,
   calendar ICS, call-log CSV, and recording transcript text
-- guarded live adapter sync scripts are available for env-backed calendar,
-  contacts, call-log, and transcript endpoints
+- guarded live adapter sync and batch readiness scripts are available for
+  env-backed calendar, contacts, call-log, and transcript endpoints
 - bounded local scheduler tick/loop scripts are available without service
   installation
 - encrypted backup/restore/delete scripts are available for encrypted capture rows

@@ -1,5 +1,5 @@
 {
-  "adapter": "live-recording-transcript-url",
+  "adapter": "live-calendar-ics-url",
   "externalServicesContacted": false,
   "fixtureMode": false,
   "mode": "readiness",
@@ -8,9 +8,9 @@
   "recordsParsed": 0,
   "recordsWritten": 0,
   "storageMode": "encrypted-vault",
-  "tokenEnv": "PNH_LIVE_RECORDING_TOKEN",
+  "tokenEnv": "PNH_LIVE_CALENDAR_TOKEN",
   "tokenSet": false,
   "tokenValuePrinted": false,
-  "urlEnv": "PNH_LIVE_RECORDING_TRANSCRIPT_URL",
+  "urlEnv": "PNH_LIVE_CALENDAR_ICS_URL",
   "urlSet": false
 }

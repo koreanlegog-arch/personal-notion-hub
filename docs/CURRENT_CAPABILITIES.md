@@ -67,7 +67,8 @@ The current verified Launch flow can:
 26. read live adapter readiness from environment-backed endpoints without printing URL or token values
 27. fetch fixture or approved live adapter payloads into encrypted vault storage through fail-closed apply mode
 28. plan unattended retry/backoff candidates for failed or blocked dispatch records
-29. run bounded scheduler ticks/loops for local status, queue, retry, and evidence checks without installing a daemon
+29. batch-check all live adapter slots from one readiness command
+30. run bounded scheduler ticks/loops for local status, queue, retry, evidence, and live-adapter readiness checks without installing a daemon
 
 Latest owner live command-packet dispatch:
 
@@ -231,12 +232,14 @@ Readiness check:
 
 ```bash
 python3 scripts/pnh_live_private_data_adapter_sync.py
+python3 scripts/pnh_live_private_data_adapter_batch_sync.py
 ```
 
 Fixture-safe fetch smoke:
 
 ```bash
 python3 scripts/pnh_live_private_data_adapter_sync_smoke_check.py
+python3 scripts/pnh_live_private_data_adapter_batch_sync_smoke_check.py
 ```
 
 ### Bounded Scheduler MVP
@@ -303,7 +306,8 @@ project `AGENTS.md` and do not require a separate per-run approval.
   encrypted vault storage. It does not connect to phone APIs or cloud accounts.
 - `scripts/pnh_private_data_adapter_batch_plan.py`: plans or applies local
   owner-exported adapter batches with encrypted-vault apply gates.
-- `scripts/pnh_live_private_data_adapter_sync.py`: checks live adapter
+- `scripts/pnh_live_private_data_adapter_sync.py` and
+  `scripts/pnh_live_private_data_adapter_batch_sync.py`: check live adapter
   readiness and can fetch approved live or fixture payloads without exposing
   URL or token values.
 - `scripts/pnh_unattended_retry_backoff.py`: plans bounded retry candidates for

@@ -22,12 +22,13 @@ JOBS = {
     "retry-backoff": ["scripts/pnh_unattended_retry_backoff.py"],
     "dispatch-evidence": ["scripts/pnh_dispatch_evidence_summary.py"],
     "adapter-status": ["scripts/pnh_private_data_adapter_status.py"],
+    "live-adapter-status": ["scripts/pnh_live_private_data_adapter_batch_sync.py"],
 }
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run one PNH scheduler tick.")
-    parser.add_argument("--jobs", default="private-status,queue-plan,retry-backoff,dispatch-evidence,adapter-status")
+    parser.add_argument("--jobs", default="private-status,queue-plan,retry-backoff,dispatch-evidence,adapter-status,live-adapter-status")
     parser.add_argument("--out", default=str(DEFAULT_OUT), help="Output JSON.")
     args = parser.parse_args()
 

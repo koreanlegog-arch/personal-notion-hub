@@ -126,6 +126,8 @@ REQUIRED = [
     "scripts/pnh_private_data_adapter_batch_plan_smoke_check.py",
     "scripts/pnh_live_private_data_adapter_sync.py",
     "scripts/pnh_live_private_data_adapter_sync_smoke_check.py",
+    "scripts/pnh_live_private_data_adapter_batch_sync.py",
+    "scripts/pnh_live_private_data_adapter_batch_sync_smoke_check.py",
     "scripts/pnh_unattended_retry_backoff.py",
     "scripts/pnh_unattended_retry_backoff_smoke_check.py",
     "scripts/pnh_worker_progress_batch_import.py",

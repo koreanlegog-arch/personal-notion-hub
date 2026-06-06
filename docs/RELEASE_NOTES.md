@@ -15,8 +15,9 @@ including guarded live-adapter and bounded scheduler foundations.
 - owner-exported local private data adapter import script
 - owner-exported local private data adapter registry/status and batch plan
 - guarded live private data adapter sync framework
+- batch live private data adapter readiness wrapper
 - bounded unattended retry/backoff planning
-- bounded local scheduler tick/loop scripts
+- bounded local scheduler tick/loop scripts with live-adapter readiness job
 - bounded unattended dispatch delegation wording update
 - docs update for current capability boundaries
 

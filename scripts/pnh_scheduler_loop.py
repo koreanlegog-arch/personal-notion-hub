@@ -22,7 +22,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Run bounded PNH scheduler loop.")
     parser.add_argument("--iterations", type=int, default=1, help="Bounded loop iterations.")
     parser.add_argument("--interval-seconds", type=int, default=60, help="Sleep between iterations.")
-    parser.add_argument("--jobs", default="private-status,queue-plan,retry-backoff,dispatch-evidence,adapter-status")
+    parser.add_argument("--jobs", default="private-status,queue-plan,retry-backoff,dispatch-evidence,adapter-status,live-adapter-status")
     parser.add_argument("--run-dir", default=str(DEFAULT_RUN_DIR))
     parser.add_argument("--lock-file", default=str(DEFAULT_LOCK))
     args = parser.parse_args()

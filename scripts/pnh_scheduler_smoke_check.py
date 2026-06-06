@@ -25,7 +25,7 @@ def main() -> int:
                 "--interval-seconds",
                 "1",
                 "--jobs",
-                "adapter-status,retry-backoff",
+                "adapter-status,live-adapter-status,retry-backoff",
                 "--run-dir",
                 str(temp / "runs"),
                 "--lock-file",

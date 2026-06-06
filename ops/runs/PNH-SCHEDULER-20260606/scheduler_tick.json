@@ -1,11 +1,39 @@
 {
   "externalWritesPerformed": false,
   "failedJobs": [],
-  "generatedAt": "2026-06-06T06:26:55+00:00",
-  "jobsRun": 2,
+  "generatedAt": "2026-06-06T06:35:02+00:00",
+  "jobsRun": 6,
   "pnhSchedulerTick": true,
   "privateValuesPrinted": false,
   "results": [
+    {
+      "job": "private-status",
+      "returnCode": 0,
+      "status": "ok",
+      "stderrFirstLine": "",
+      "stdoutFirstLine": "{"
+    },
+    {
+      "job": "queue-plan",
+      "returnCode": 0,
+      "status": "ok",
+      "stderrFirstLine": "",
+      "stdoutFirstLine": "{\"capturesInspected\": 12, \"delegationScope\": \"bounded_pnh_test_implementation_pilot\", \"externalWritesPerformed\": false, \"mode\": \"dry-run\", \"out\": \"ops/runs/PNH-UNATTENDED-DISPATCH-READINESS-20260605/queue_plan.json\", \"pnhUnattendedDispatchQ"
+    },
+    {
+      "job": "retry-backoff",
+      "returnCode": 0,
+      "status": "ok",
+      "stderrFirstLine": "",
+      "stdoutFirstLine": "{\"externalWritesPerformed\": false, \"mode\": \"dry-run\", \"out\": \"ops/runs/PNH-UNATTENDED-RETRY-BACKOFF-20260606/retry_backoff_plan.json\", \"pnhUnattendedRetryBackoff\": true, \"privateValuesPrinted\": false, \"recordsInspected\": 6, \"retryCandidates"
+    },
+    {
+      "job": "dispatch-evidence",
+      "returnCode": 0,
+      "status": "ok",
+      "stderrFirstLine": "",
+      "stdoutFirstLine": "{\"averageEvidenceCompleteness\": 100, \"blockedOrFailed\": 0, \"dispatchEvidenceSummary\": true, \"includedRecords\": 6, \"out\": \"ops/runs/PNH-DISPATCH-EVIDENCE-SUMMARY-20260605/dispatch_evidence_summary.json\", \"privateValuesPrinted\": false, \"ready"
+    },
     {
       "job": "adapter-status",
       "returnCode": 0,
@@ -14,11 +42,11 @@
       "stdoutFirstLine": "{"
     },
     {
-      "job": "retry-backoff",
+      "job": "live-adapter-status",
       "returnCode": 0,
       "status": "ok",
       "stderrFirstLine": "",
-      "stdoutFirstLine": "{\"externalWritesPerformed\": false, \"mode\": \"dry-run\", \"out\": \"ops/runs/PNH-UNATTENDED-RETRY-BACKOFF-20260606/retry_backoff_plan.json\", \"pnhUnattendedRetryBackoff\": true, \"privateValuesPrinted\": false, \"recordsInspected\": 6, \"retryCandidates"
+      "stdoutFirstLine": "{\"adapterCount\": 4, \"externalServicesContacted\": false, \"failedAdapters\": [], \"generatedAt\": \"2026-06-06T06:35:02+00:00\", \"mode\": \"readiness\", \"out\": \"ops/runs/PNH-LIVE-PRIVATE-DATA-ADAPTER-20260606/live_adapter_batch_sync.json\", \"pnhLivePr"
     }
   ],
   "tokenValuePrinted": false

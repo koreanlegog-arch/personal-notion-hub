@@ -28,8 +28,8 @@ It can:
 - assess readiness for a bounded pilot batch
 - run bounded pilot batches with rollback snapshot and single-writer lock
 - plan retry/backoff candidates for failed or blocked dispatch records
-- run bounded local scheduler ticks/loops for status, queue, retry, and
-  evidence checks
+- run bounded local scheduler ticks/loops for status, queue, retry, evidence,
+  and live-adapter readiness checks
 
 It must not:
 
@@ -135,6 +135,8 @@ Safety boundaries:
 - no unbounded loop; iterations and intervals are capped
 - no raw private values in scheduler output
 - no external write by default
+- live adapter job is readiness-only by default and does not fetch external
+  data unless a separate guarded sync command is run
 
 ## Readiness Assessment
 
@@ -265,4 +267,5 @@ First approved pilot batch:
 - `scripts/pnh_unattended_retry_backoff.py` plans bounded retry candidates for
   failed or blocked records.
 - `scripts/pnh_scheduler_tick.py` and `scripts/pnh_scheduler_loop.py` run
-  bounded local scheduler checks without installing a service.
+  bounded local scheduler checks, including live-adapter readiness, without
+  installing a service.
