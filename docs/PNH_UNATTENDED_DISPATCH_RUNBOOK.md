@@ -147,6 +147,26 @@ bash scripts/pnh_scheduler_install_user_service.sh --apply --interval-minutes 10
 bash scripts/pnh_scheduler_uninstall_user_service.sh --apply
 ```
 
+## Companion Service Model
+
+The companion can also run as a headless user-systemd service for loopback API
+ingress:
+
+```bash
+bash scripts/pnh_companion_install_user_service.sh --apply
+python3 scripts/pnh_companion_service_status.py
+bash scripts/pnh_companion_uninstall_user_service.sh --apply
+```
+
+Current service boundary:
+
+- `127.0.0.1:8765`
+- private inbox enabled
+- encrypted vault enabled through `windows-dpapi-file`
+- browser bridge disabled
+- no pairing code printed by the service
+- no non-loopback exposure by default
+
 ## Readiness Assessment
 
 Run:

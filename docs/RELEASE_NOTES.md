@@ -23,6 +23,7 @@ including guarded live-adapter and bounded scheduler foundations.
   runtime output routing
 - phone automation adapter runbook, schema/template generator, and local send
   rehearsal script
+- headless loopback companion user-systemd service installer and status script
 - bounded unattended dispatch delegation wording update
 - docs update for current capability boundaries
 
@@ -38,13 +39,15 @@ including guarded live-adapter and bounded scheduler foundations.
 - phone adapter POST ingress smoke stored fixture data through encrypted vault
   mode without echoing private values
 - phone adapter schema/template/send smoke passed with metadata-only output
+- companion user service installed and verified with encrypted vault health
+- synthetic phone adapter payload reached the service-backed encrypted vault
 - no private values or token values printed by validation commands
 
 ### Boundaries
 
 - no production live phone API, cloud account, OAuth, Discord thread body, or external real-data adapter was connected
 - real private adapter apply mode writes only to local encrypted vault
-- production companion server daemon activation and unbounded unattended automation remain out of scope
+- production non-loopback companion exposure and unbounded unattended automation remain out of scope
 
 ## 2026-06-05 - Assistant Dispatch Intent
 

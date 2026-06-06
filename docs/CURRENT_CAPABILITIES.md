@@ -71,6 +71,7 @@ The current verified Launch flow can:
 30. run bounded scheduler ticks/loops or a user-systemd timer for local status, queue, retry, evidence, and live-adapter readiness checks
 31. accept authenticated phone automation adapter POST payloads into encrypted vault storage
 32. generate phone adapter JSON templates and rehearse local phone adapter sends without printing token or private values
+33. run a headless loopback companion user service with encrypted vault mode and browser bridge disabled
 
 Latest owner live command-packet dispatch:
 
@@ -286,6 +287,25 @@ python3 scripts/pnh_phone_adapter_send_smoke_check.py
 python3 scripts/phone_adapter_ingress_smoke_check.py
 ```
 
+### Headless Companion Service
+
+The companion API can run as a user-systemd service on loopback:
+
+```bash
+bash scripts/pnh_companion_install_user_service.sh --apply
+python3 scripts/pnh_companion_service_status.py
+bash scripts/pnh_companion_uninstall_user_service.sh --apply
+```
+
+Current verified service mode:
+
+- host: `127.0.0.1`
+- port: `8765`
+- private inbox: enabled
+- encrypted vault: enabled
+- browser bridge: disabled
+- pairing code in service logs: no
+
 ### Browser QA
 
 ```bash
@@ -318,7 +338,7 @@ project `AGENTS.md` and do not require a separate per-run approval.
 
 - unattended mobile-to-worker automation beyond bounded pilot batches,
   metadata-safe worker captures, and bounded local scheduler ticks
-- production companion server daemon activation
+- production non-loopback companion exposure
 - production-grade live phone/contact/call/recording/calendar API ingestion
 - native phone app extraction client
 - multi-user distribution
@@ -355,6 +375,9 @@ project `AGENTS.md` and do not require a separate per-run approval.
   `scripts/pnh_phone_adapter_payload_template.py`, and
   `scripts/pnh_phone_adapter_send.py`: define and rehearse phone automation
   payload contracts.
+- `scripts/pnh_companion_install_user_service.sh` and
+  `scripts/pnh_companion_service_status.py`: install and verify headless
+  loopback companion service mode.
 
 ## Practical Current Usage
 

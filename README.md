@@ -280,6 +280,18 @@ Runbook:
 
 `companion/` contains a loopback-only local companion. It keeps fixture preview mode for public-safe QA, a transitional authenticated plaintext private inbox, and an explicit encrypted vault mode for sensitive local capture.
 
+Headless companion user service:
+
+```bash
+bash scripts/pnh_companion_install_user_service.sh --apply
+python3 scripts/pnh_companion_service_status.py
+bash scripts/pnh_companion_uninstall_user_service.sh --apply
+```
+
+The installed service runs on `127.0.0.1:8765`, enables private inbox plus
+encrypted vault mode, and keeps browser bridge disabled so no pairing code is
+written to service logs.
+
 Current limits:
 
 - `127.0.0.1` loopback only
@@ -295,6 +307,7 @@ Current limits:
   from owner-controlled tools such as Shortcuts or Tasker
 - bounded local scheduler tick/loop scripts and user-systemd timer installer are
   available
+- headless loopback companion user service installer is available
 - encrypted backup/restore/delete scripts are available for encrypted capture rows
 - plaintext migration apply is available behind an explicit backup and confirmation gate
 - prompt-first passphrase input is available
