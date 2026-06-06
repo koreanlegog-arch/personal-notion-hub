@@ -12,6 +12,7 @@ including guarded live-adapter and bounded scheduler foundations.
 - `scripts/private_inbox_status.py --include-recent` compatibility option
 - dispatch-state cleanup and archive script
 - semantic worker progress parser for redacted snippets
+- semantic worker progress v2 fields and metadata-only dispatch-state backfill
 - owner-exported local private data adapter import script
 - owner-exported local private data adapter registry/status and batch plan
 - guarded live private data adapter sync framework
@@ -25,6 +26,7 @@ including guarded live-adapter and bounded scheduler foundations.
   rehearsal script
 - headless loopback companion user-systemd service installer and status script
 - owner-only tailnet companion API forwarding helper scripts
+- final real-data privacy gate for controlled owner phone-adapter runs
 - bounded unattended dispatch delegation wording update
 - docs update for current capability boundaries
 
@@ -32,7 +34,7 @@ including guarded live-adapter and bounded scheduler foundations.
 
 - stale incomplete dispatch state record archived out of active state
 - active dispatch evidence average restored to `100%`
-- semantic progress metadata applied to the latest Launch packet without storing message content
+- semantic progress metadata applied to all active dispatch records without storing message content
 - contacts/calendar/call-log/transcript adapter MVP smoke tested with fixture data
 - live adapter sync fixture smoke passed without printing private values
 - scheduler smoke passed and user-systemd timer installed with ignored runtime
@@ -44,13 +46,14 @@ including guarded live-adapter and bounded scheduler foundations.
 - synthetic phone adapter payload reached the service-backed encrypted vault
 - synthetic phone adapter payload reached the encrypted vault through tailnet
   companion API forwarding
+- real-data privacy gate passed with `13/13` assertions and no blockers
 - no private values or token values printed by validation commands
 
 ### Boundaries
 
 - no production live phone API, cloud account, OAuth, Discord thread body, or external real-data adapter was connected
 - real private adapter apply mode writes only to local encrypted vault
-- production non-loopback companion exposure and unbounded unattended automation remain out of scope
+- non-owner public exposure and unbounded unattended automation remain out of scope
 
 ## 2026-06-05 - Assistant Dispatch Intent
 

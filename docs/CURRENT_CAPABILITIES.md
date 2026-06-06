@@ -61,7 +61,7 @@ The current verified Launch flow can:
 20. send Assistant input as a selected command type without metadata alias correction
 21. close GitHub Issues for worker_done dispatch records after redacted evidence reaches 100%
 22. archive stale incomplete dispatch-state records out of active evidence summaries
-23. parse redacted worker progress snippets into metadata-only semantic progress
+23. parse redacted worker progress snippets into metadata-only semantic progress v2 fields
 24. import owner-exported local contacts/calendar/call-log/recording transcript files into encrypted vault storage
 25. batch-plan owner-exported private data imports without printing private values
 26. read live adapter readiness from environment-backed endpoints without printing URL or token values
@@ -73,6 +73,8 @@ The current verified Launch flow can:
 32. generate phone adapter JSON templates and rehearse local phone adapter sends without printing token or private values
 33. run a headless loopback companion user service with encrypted vault mode and browser bridge disabled
 34. expose the headless companion API to the owner tailnet through reversible Windows portproxy forwarding
+35. run a final real-data privacy gate before controlled owner phone-adapter data runs
+36. backfill semantic progress from existing redacted dispatch-state metadata without reading message bodies
 
 Latest owner live command-packet dispatch:
 
@@ -92,12 +94,12 @@ Latest dispatch state cleanup:
 - active evidence completeness average: `100%`
 - archive path: `companion/private/pnh_dispatch_state_archive.json`
 
-Latest semantic worker progress parse:
+Latest semantic worker progress state:
 
-- packet: `launch-packet-launch-mq11rzo5-8kcrgo`
-- semantic status: `done`
-- semantic stage: `done`
-- confidence: `75`
+- active dispatch records: `6`
+- semantic records: `6`
+- high evidence strength records: `6`
+- supervisor-action-required records: `0`
 - message content stored: `false`
 
 Current verified Launch record:
@@ -356,7 +358,10 @@ project `AGENTS.md` and do not require a separate per-run approval.
 - `scripts/pnh_dispatch_state_cleanup.py`: archives stale incomplete dispatch
   records out of the active dispatch state.
 - `scripts/pnh_worker_progress_parse.py`: parses redacted worker progress text
-  into metadata-only semantic progress fields without storing message content.
+  into metadata-only semantic progress v2 fields without storing message content.
+- `scripts/pnh_worker_progress_backfill_from_state.py`: upgrades active
+  dispatch-state records from existing redacted metadata without reading
+  Discord/OpenClaw messages or GitHub issue bodies.
 - `scripts/pnh_private_data_adapter_import.py`: imports owner-exported local
   contacts CSV, call-log CSV, calendar ICS, or recording transcript text into
   encrypted vault storage. It does not connect to phone APIs or cloud accounts.

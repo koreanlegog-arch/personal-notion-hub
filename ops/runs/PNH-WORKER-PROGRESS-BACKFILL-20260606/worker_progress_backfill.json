@@ -1,0 +1,21 @@
+{
+  "backfilled": [
+    {
+      "confidence": 80,
+      "evidenceStrength": "high",
+      "packetId": "launch-packet-launch-mq11rzo5-8kcrgo",
+      "recommendedNextAction": "record_worker_result_and_close_dispatch",
+      "stage": "done",
+      "status": "done"
+    }
+  ],
+  "messageContentStored": false,
+  "mode": "apply",
+  "pnhWorkerProgressBackfillFromState": true,
+  "privateValuesPrinted": false,
+  "recordsBackfilled": 1,
+  "recordsInspected": 6,
+  "stateFile": "companion/private/pnh_dispatch_state.json",
+  "tokenValuePrinted": false,
+  "writesPerformed": true
+}

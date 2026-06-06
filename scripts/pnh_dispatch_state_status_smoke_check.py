@@ -25,6 +25,16 @@ def main() -> int:
                         "githubIssueUrl": "https://github.com/example/private/issues/7",
                         "discordThreadId": "1234567890",
                         "updatedAt": "2026-06-05T00:00:00+00:00",
+                        "semanticProgress": {
+                            "status": "done",
+                            "stage": "done",
+                            "confidence": 90,
+                            "evidenceStrength": "high",
+                            "requiresSupervisorAction": False,
+                            "recommendedNextAction": "record_worker_result_and_close_dispatch",
+                            "signals": ["done", "tests_passed", "evidence_recorded"],
+                            "updatedAt": "2026-06-05T00:00:00+00:00",
+                        },
                         "privateNote": PRIVATE_MARKER,
                     }
                 },
@@ -53,6 +63,10 @@ def main() -> int:
         assert_true(payload["discordLinked"] == 1, "discord_link_count_mismatch=true")
         assert_true(payload["privateValuesPrinted"] is False, "private_values_printed=true")
         assert_true("githubIssueUrl" not in payload["records"][0], "url_included_without_flag=true")
+        record = payload["records"][0]
+        assert_true(record["semanticProgressSet"] is True, "semantic_progress_not_reported=true")
+        assert_true(record["semanticProgressEvidenceStrength"] == "high", "semantic_evidence_strength_missing=true")
+        assert_true(record["semanticProgressRecommendedNextAction"], "semantic_next_action_missing=true")
 
     print("pnh_dispatch_state_status_smoke_check_pass=true")
     print("private_values_printed=false")

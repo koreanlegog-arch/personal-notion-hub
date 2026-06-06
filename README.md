@@ -162,10 +162,13 @@ python3 scripts/pnh_dispatch_state_cleanup.py
 python3 scripts/pnh_worker_progress_parse.py \
   --packet-id "<packet-id>" \
   --text "<redacted worker progress text>"
+python3 scripts/pnh_worker_progress_backfill_from_state.py --apply
 ```
 
-The progress parser stores status/stage/confidence metadata only. It does not
-store Discord/OpenClaw message bodies.
+The progress parser stores metadata-only fields such as status, stage,
+confidence, evidence strength, risk signals, and recommended next action. The
+backfill command derives semantic progress from existing redacted dispatch
+metadata. Neither command stores Discord/OpenClaw message bodies.
 
 For an end-to-end rehearsal without real owner content:
 

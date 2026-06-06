@@ -22,7 +22,15 @@ def main() -> int:
         out = temp / "batch.json"
         state.write_text(json.dumps({"packet-a": {"privateNote": PRIVATE_MARKER}}, ensure_ascii=False), encoding="utf-8")
         input_json.write_text(
-            json.dumps([{"packetId": "packet-a", "text": "Implementation done and QA passed."}], ensure_ascii=False),
+            json.dumps(
+                [
+                    {
+                        "packetId": "packet-a",
+                        "text": "Implementation done, QA tests passed, evidence recorded, Discord thread updated.",
+                    }
+                ],
+                ensure_ascii=False,
+            ),
             encoding="utf-8",
         )
         result = subprocess.run(
@@ -48,7 +56,10 @@ def main() -> int:
         payload = json.loads(out.read_text(encoding="utf-8"))
         assert_true(payload["entriesProcessed"] == 1, "entry_count_mismatch=true")
         state_payload = json.loads(state.read_text(encoding="utf-8"))
-        assert_true(state_payload["packet-a"]["semanticProgress"]["status"] == "done", "semantic_progress_missing=true")
+        progress = state_payload["packet-a"]["semanticProgress"]
+        assert_true(progress["status"] == "done", "semantic_progress_missing=true")
+        assert_true(progress["evidenceStrength"] == "high", "semantic_batch_evidence_strength_low=true")
+        assert_true(progress["messageContentStored"] is False, "message_content_storage_flag_wrong=true")
 
     print("pnh_worker_progress_batch_import_smoke_check_pass=true")
     print("private_values_printed=false")

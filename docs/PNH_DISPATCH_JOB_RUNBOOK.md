@@ -141,6 +141,23 @@ python3 scripts/pnh_supervisor_review_summary.py
 
 This converts redacted dispatch evidence into a review checklist and per-packet status summary. It does not include raw private command bodies, token values, or secret values.
 
+Parse redacted worker progress or backfill active state from metadata:
+
+```bash
+python3 scripts/pnh_worker_progress_parse.py \
+  --packet-id <capture_or_packet_id> \
+  --text "<redacted worker progress text>" \
+  --apply
+
+python3 scripts/pnh_worker_progress_backfill_from_state.py --apply
+```
+
+The parser stores semantic metadata only: status, stage, confidence, signal
+labels, evidence strength, supervisor-action requirement, and recommended next
+action. The backfill command uses existing redacted dispatch-state metadata and
+does not read private command bodies, Discord message bodies, or GitHub issue
+bodies.
+
 After refreshing dispatch state in the Launch UI, use `Confirm Task Status` to persist the synthesized task/evidence metadata into the browser-local Launch record and update the Projects/Tasks board. This stores status fields and evidence references only, not private command bodies.
 
 ## Dry Run
@@ -229,3 +246,5 @@ The live-dispatch approval gate exists because apply mode can create GitHub Issu
   approval gate.
 - Promote browser-local Projects/Tasks progress to a durable local task store
   if multi-device status authority becomes necessary.
+- Extend semantic parsing to live thread-body reads only after a redacted
+  Discord/OpenClaw read adapter is validated.

@@ -41,6 +41,10 @@ def summarize_dispatch_record(packet_id: str, value: dict[str, Any]) -> dict[str
         "semanticProgressStage": semantic_progress["stage"],
         "semanticProgressConfidence": semantic_progress["confidence"],
         "semanticProgressUpdatedAt": semantic_progress["updatedAt"],
+        "semanticProgressEvidenceStrength": semantic_progress["evidenceStrength"],
+        "semanticProgressRequiresSupervisorAction": semantic_progress["requiresSupervisorAction"],
+        "semanticProgressRecommendedNextAction": semantic_progress["recommendedNextAction"],
+        "semanticProgressSignals": semantic_progress["signals"],
         "workerResultSet": worker_result_set,
         "workerEvidenceRefSet": worker_evidence_ref_set,
         "workerResultRecordedAt": value.get("workerResultRecordedAt", ""),
@@ -133,7 +137,16 @@ def next_action_for(task_status: str, missing: list[str]) -> str:
 def semantic_progress_for(value: dict[str, Any]) -> dict[str, Any]:
     progress = value.get("semanticProgress")
     if not isinstance(progress, dict):
-        return {"status": "", "stage": "", "confidence": 0, "updatedAt": ""}
+        return {
+            "status": "",
+            "stage": "",
+            "confidence": 0,
+            "updatedAt": "",
+            "evidenceStrength": "",
+            "requiresSupervisorAction": False,
+            "recommendedNextAction": "",
+            "signals": [],
+        }
     status = str(progress.get("status") or "")
     stage = str(progress.get("stage") or "")
     try:
@@ -145,4 +158,19 @@ def semantic_progress_for(value: dict[str, Any]) -> dict[str, Any]:
         "stage": stage,
         "confidence": max(0, min(100, confidence)),
         "updatedAt": str(progress.get("updatedAt") or ""),
+        "evidenceStrength": str(progress.get("evidenceStrength") or ""),
+        "requiresSupervisorAction": bool(progress.get("requiresSupervisorAction")),
+        "recommendedNextAction": str(progress.get("recommendedNextAction") or ""),
+        "signals": safe_string_list(progress.get("signals")),
     }
+
+
+def safe_string_list(value: Any) -> list[str]:
+    if not isinstance(value, list):
+        return []
+    result = []
+    for item in value:
+        text = str(item or "").strip()
+        if text:
+            result.append(text[:80])
+    return result[:12]

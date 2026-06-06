@@ -91,6 +91,8 @@ REQUIRED = [
     "scripts/pnh_dispatch_state_cleanup_smoke_check.py",
     "scripts/pnh_worker_progress_parse.py",
     "scripts/pnh_worker_progress_parse_smoke_check.py",
+    "scripts/pnh_worker_progress_backfill_from_state.py",
+    "scripts/pnh_worker_progress_backfill_from_state_smoke_check.py",
     "scripts/pnh_dispatch_status_refresh.py",
     "scripts/pnh_dispatch_status_refresh_smoke_check.py",
     "scripts/pnh_external_reconciliation_plan.py",
