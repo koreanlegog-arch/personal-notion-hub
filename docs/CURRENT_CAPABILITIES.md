@@ -85,6 +85,7 @@ The current verified Launch flow can:
 44. include phone automation readiness and live-probe status in bounded scheduler ticks
 45. audit private assistant backend MVP readiness from consolidated evidence in one command
 46. run a first owner phone capture session with post-capture privacy/completion checks
+47. summarize recent phone automation captures and source coverage metadata-only
 
 Latest owner live command-packet dispatch:
 

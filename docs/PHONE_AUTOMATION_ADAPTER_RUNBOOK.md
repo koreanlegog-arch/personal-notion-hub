@@ -114,6 +114,12 @@ For fixture-only diagnostics:
 python3 scripts/pnh_owner_phone_capture_session.py --skip-post-checks
 ```
 
+Summarize recent phone automation captures without reading private bodies:
+
+```bash
+python3 scripts/pnh_phone_capture_recent_summary.py
+```
+
 ## Supported Adapters
 
 - `phone-contacts-json`
@@ -240,6 +246,7 @@ python3 scripts/pnh_phone_automation_setup_readiness_smoke_check.py
 python3 scripts/pnh_phone_automation_rehearsal_smoke_check.py
 python3 scripts/pnh_phone_automation_live_probe_smoke_check.py
 python3 scripts/pnh_owner_phone_capture_session_smoke_check.py
+python3 scripts/pnh_phone_capture_recent_summary_smoke_check.py
 python3 scripts/pnh_private_ingest_dedup_smoke_check.py
 python3 scripts/phone_adapter_ingress_smoke_check.py
 python3 scripts/pnh_tailnet_companion_api_smoke_check.py

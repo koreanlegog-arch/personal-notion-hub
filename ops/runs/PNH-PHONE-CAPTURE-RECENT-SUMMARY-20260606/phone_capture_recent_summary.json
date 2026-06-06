@@ -1,0 +1,42 @@
+{
+  "baseUrlValuePrinted": false,
+  "byKind": {
+    "call_note": 5,
+    "voice_note": 1
+  },
+  "bySensitivity": {
+    "highly_sensitive": 6
+  },
+  "bySource": {
+    "phone_call_log": 5,
+    "phone_recording": 1
+  },
+  "capturesInspected": 18,
+  "coverageNote": "not_all_supported_phone_sources_seen_yet",
+  "encryptedPhoneCaptureCount": 6,
+  "exactOwnerNetworkUrlPersisted": false,
+  "latestPhoneCapture": {
+    "createdAt": "2026-06-06T00:00:00Z",
+    "encrypted": true,
+    "id": "capture-d68616a65dff41f2c6d27e82",
+    "kind": "call_note",
+    "sensitivity": "highly_sensitive",
+    "source": "phone_call_log",
+    "status": "inbox",
+    "storageMode": "encrypted-vault",
+    "storedAt": "2026-06-06T08:11:43+00:00",
+    "title": "[encrypted]"
+  },
+  "missingPhoneSourcesInRecentWindow": [
+    "phone_contacts",
+    "phone_calendar"
+  ],
+  "phoneCaptureCount": 6,
+  "plaintextPhoneCaptureCount": 0,
+  "pnhPhoneCaptureRecentSummary": true,
+  "privateValuesPrinted": false,
+  "rawPrivateBodyRead": false,
+  "tokenValuePrinted": false,
+  "totalPrivateInboxCaptures": 18,
+  "verdict": "phone_capture_recent_summary_ready"
+}

@@ -27,6 +27,7 @@ JOBS = {
     "live-adapter-status": ["scripts/pnh_live_private_data_adapter_batch_sync.py"],
     "phone-automation-readiness": ["scripts/pnh_phone_automation_setup_readiness.py"],
     "phone-automation-live-probe": ["scripts/pnh_phone_automation_live_probe.py"],
+    "phone-capture-summary": ["scripts/pnh_phone_capture_recent_summary.py"],
 }
 
 
@@ -37,7 +38,7 @@ def main() -> int:
         default=(
             "private-status,queue-plan,unattended-readiness,retry-backoff,unattended-status,"
             "dispatch-evidence,adapter-status,live-adapter-status,phone-automation-readiness,"
-            "phone-automation-live-probe"
+            "phone-automation-live-probe,phone-capture-summary"
         ),
     )
     parser.add_argument("--out", default=str(DEFAULT_OUT), help="Output JSON.")
@@ -83,6 +84,7 @@ def build_job_command(name: str, command: list[str], runtime_dir: Path | None) -
         "live-adapter-status": "live_adapter_batch_sync.json",
         "phone-automation-readiness": "phone_automation_setup_readiness.json",
         "phone-automation-live-probe": "phone_automation_live_probe.json",
+        "phone-capture-summary": "phone_capture_recent_summary.json",
     }
     if name not in out_map:
         return command
