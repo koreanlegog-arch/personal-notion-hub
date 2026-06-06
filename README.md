@@ -11,7 +11,7 @@
 - 기본 hub 데이터는 브라우저 `localStorage`에 저장됩니다.
 - assistant inbox 데이터는 브라우저 `IndexedDB`에 저장됩니다.
 - 전체 데이터는 JSON으로 export/import할 수 있습니다.
-- 서버, 외부 API, OAuth, cloud sync는 사용하지 않습니다.
+- 기본 사용은 서버, 외부 API, OAuth, cloud sync 없이 동작합니다.
 
 ## Run Locally
 
@@ -49,7 +49,7 @@ http://127.0.0.1:4173/
 
 민감 입력 MVP는 명시적으로 켠 local companion encrypted vault 모드에서 `companion/private/` 아래 ignored SQLite DB에 암호화 저장됩니다. Plaintext private inbox 모드는 호환성 검증용 transitional mode로만 사용합니다.
 
-Assistant MVP는 수동 입력과 demo fixture만 다룹니다. Slack, email, SMS, KakaoTalk, call, voice memo, YouTube, calendar, Bible verse 같은 입력 경로는 source label일 뿐이며 실제 외부 서비스에 연결하지 않습니다.
+Assistant MVP는 수동 입력, demo fixture, local companion encrypted vault를 우선합니다. Slack, email, SMS, KakaoTalk, call, voice memo, YouTube, calendar, Bible verse 같은 입력 경로는 기본적으로 source label이며, live adapter는 별도 guarded MVP 스크립트에서만 다룹니다.
 
 ## Assistant MVP
 
@@ -74,7 +74,7 @@ manual input routes
 
 제외 범위:
 
-- 실제 Slack/Google/Notion/Kakao/phone API 연동
+- 실제 Slack/Google/Notion/Kakao API 연동
 - 연락처, 통화기록, 문자, 녹음파일 자동 접근
 - OAuth, API key, token, cloud sync
 - cloud AI/STT/LLM 처리
@@ -126,7 +126,7 @@ Expected:
 
 - API token 또는 secret 저장
 - unbounded or always-on unattended Discord/GitHub/OpenClaw dispatch
-- live phone/contact/calendar/call/recording API adapters
+- production-grade live phone/contact/calendar/call/recording API adapters
 - cloud sync of private data
 - 자동 외부 서비스 연동
 - real private data ingest
@@ -201,14 +201,39 @@ Personal_Notion_Hub web UI
 Owner-exported local private data import MVP:
 
 ```bash
+python3 scripts/pnh_private_data_adapter_status.py
 python3 scripts/pnh_private_data_adapter_import.py --adapter contacts-csv --input ./contacts.csv
 python3 scripts/pnh_private_data_adapter_import.py --adapter calendar-ics --input ./calendar.ics
 python3 scripts/pnh_private_data_adapter_import.py --adapter call-log-csv --input ./calls.csv
 python3 scripts/pnh_private_data_adapter_import.py --adapter recording-transcript-txt --input ./recording-transcript.txt
+python3 scripts/pnh_private_data_adapter_batch_plan.py --input-dir ./owner-export
 ```
 
-These adapters do not connect to phone APIs, cloud accounts, OAuth, or external
-services. Apply mode stores records in the approved local encrypted vault.
+These local adapters do not connect to phone APIs, cloud accounts, OAuth, or
+external services. Apply mode stores records in the approved local encrypted
+vault.
+
+Guarded live adapter framework:
+
+```bash
+python3 scripts/pnh_live_private_data_adapter_sync.py
+python3 scripts/pnh_live_private_data_adapter_sync_smoke_check.py
+```
+
+Live fetch/apply mode reads endpoint references from local environment
+variables and requires explicit live-adapter flags. It must not print URL,
+token, or private payload values.
+
+Bounded scheduler MVP:
+
+```bash
+python3 scripts/pnh_scheduler_tick.py
+python3 scripts/pnh_scheduler_loop.py --iterations 1 --interval-seconds 1
+python3 scripts/pnh_scheduler_smoke_check.py
+```
+
+The scheduler scripts run bounded local checks only. They do not install a
+daemon, cron job, or systemd service.
 
 ## Local Companion Prototype
 
@@ -217,12 +242,16 @@ services. Apply mode stores records in the approved local encrypted vault.
 Current limits:
 
 - `127.0.0.1` loopback only
-- no live phone/cloud access to contacts, schedules, calls, recordings,
-  transcripts, or private notes
+- no production-grade phone/cloud sync to contacts, schedules, calls,
+  recordings, transcripts, or private notes
 - no file write from import preview mode
 - browser UI bridge is local-only and disabled unless the companion is started with explicit bridge flags
 - owner-exported local import adapters are available for contacts CSV,
   calendar ICS, call-log CSV, and recording transcript text
+- guarded live adapter sync scripts are available for env-backed calendar,
+  contacts, call-log, and transcript endpoints
+- bounded local scheduler tick/loop scripts are available without service
+  installation
 - encrypted backup/restore/delete scripts are available for encrypted capture rows
 - plaintext migration apply is available behind an explicit backup and confirmation gate
 - prompt-first passphrase input is available
@@ -253,7 +282,7 @@ http://127.0.0.1:8765/api/health
 http://127.0.0.1:8765/api/schema
 ```
 
-Live phone/contact/calendar/recording API adapters, unbounded external dispatch, non-loopback access outside owner-only LAN/tailnet, plaintext migration apply, OS keychain storage/retrieval policy changes, and packaging remain separate approval gates.
+Production-grade live phone/contact/calendar/recording API activation, unbounded external dispatch, non-loopback access outside owner-only LAN/tailnet, plaintext migration apply, OS keychain storage/retrieval policy changes, daemon installation, and packaging remain separate material gates.
 
 ## Browser Companion Bridge
 

@@ -1,0 +1,25 @@
+{
+  "externalWritesPerformed": false,
+  "failedJobs": [],
+  "generatedAt": "2026-06-06T06:26:55+00:00",
+  "jobsRun": 2,
+  "pnhSchedulerTick": true,
+  "privateValuesPrinted": false,
+  "results": [
+    {
+      "job": "adapter-status",
+      "returnCode": 0,
+      "status": "ok",
+      "stderrFirstLine": "",
+      "stdoutFirstLine": "{"
+    },
+    {
+      "job": "retry-backoff",
+      "returnCode": 0,
+      "status": "ok",
+      "stderrFirstLine": "",
+      "stdoutFirstLine": "{\"externalWritesPerformed\": false, \"mode\": \"dry-run\", \"out\": \"ops/runs/PNH-UNATTENDED-RETRY-BACKOFF-20260606/retry_backoff_plan.json\", \"pnhUnattendedRetryBackoff\": true, \"privateValuesPrinted\": false, \"recordsInspected\": 6, \"retryCandidates"
+    }
+  ],
+  "tokenValuePrinted": false
+}

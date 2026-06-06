@@ -1,0 +1,10 @@
+{
+  "externalWritesPerformed": false,
+  "mode": "dry-run",
+  "pnhUnattendedRetryBackoff": true,
+  "privateValuesPrinted": false,
+  "recordsInspected": 6,
+  "retryCandidates": [],
+  "tokenValuePrinted": false,
+  "writesPerformed": false
+}

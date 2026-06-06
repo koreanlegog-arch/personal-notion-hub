@@ -4,8 +4,8 @@
 
 ### Summary
 
-Advanced the PNH backend toward a practical private assistant automation MVP
-without changing live phone/cloud integration boundaries.
+Advanced the PNH backend toward a practical private assistant automation MVP,
+including guarded live-adapter and bounded scheduler foundations.
 
 ### Included
 
@@ -13,6 +13,10 @@ without changing live phone/cloud integration boundaries.
 - dispatch-state cleanup and archive script
 - semantic worker progress parser for redacted snippets
 - owner-exported local private data adapter import script
+- owner-exported local private data adapter registry/status and batch plan
+- guarded live private data adapter sync framework
+- bounded unattended retry/backoff planning
+- bounded local scheduler tick/loop scripts
 - bounded unattended dispatch delegation wording update
 - docs update for current capability boundaries
 
@@ -22,13 +26,15 @@ without changing live phone/cloud integration boundaries.
 - active dispatch evidence average restored to `100%`
 - semantic progress metadata applied to the latest Launch packet without storing message content
 - contacts/calendar/call-log/transcript adapter MVP smoke tested with fixture data
+- live adapter sync fixture smoke passed without printing private values
+- scheduler smoke passed without installing a daemon or service
 - no private values or token values printed by validation commands
 
 ### Boundaries
 
-- no live phone API, cloud account, OAuth, Discord thread body, or external real-data adapter was connected
+- no production live phone API, cloud account, OAuth, Discord thread body, or external real-data adapter was connected
 - real private adapter apply mode writes only to local encrypted vault
-- daemon/scheduler and unbounded unattended automation remain out of scope
+- installed daemon/service activation and unbounded unattended automation remain out of scope
 
 ## 2026-06-05 - Assistant Dispatch Intent
 

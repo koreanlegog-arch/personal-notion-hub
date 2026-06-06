@@ -1,8 +1,9 @@
 # PNH Unattended Dispatch Runbook
 
 Status: bounded pilot batches are delegated for PNH test and implementation
-evidence; daemon/scheduler mode is not enabled.
-Date: 2026-06-05
+evidence; bounded local scheduler scripts are available, but installed daemon
+mode is not enabled.
+Date: 2026-06-06
 
 ## Purpose
 
@@ -26,11 +27,14 @@ It can:
 - produce rollback requirements
 - assess readiness for a bounded pilot batch
 - run bounded pilot batches with rollback snapshot and single-writer lock
+- plan retry/backoff candidates for failed or blocked dispatch records
+- run bounded local scheduler ticks/loops for status, queue, retry, and
+  evidence checks
 
 It must not:
 
 - run unbounded OpenClaw worker/model calls or include raw private command bodies
-- run as a daemon or scheduled service
+- install or activate a daemon or scheduled service
 - store raw private command bodies in reports
 
 ## Queue Model
@@ -100,11 +104,37 @@ The pilot must use bounded external writes:
 - one queue item per run by default
 - maximum three external write events per hour by default
 - minimum ten-minute cooldown between unattended runs
-- no retry storm; failed items require explicit review before retry
+- no retry storm; failed or blocked items use bounded retry/backoff planning
 - queue planner returns zero queued items while cooldown is active
 
-Rate limit enforcement is currently a dry-run planning contract. Future apply
-mode must persist dispatch history before it can be considered safe.
+Rate limit enforcement is persisted in local dispatch history for pilot runs.
+Retry/backoff planning writes metadata-only retry plans to local history when
+apply mode is used.
+
+Retry/backoff check:
+
+```bash
+python3 scripts/pnh_unattended_retry_backoff.py
+python3 scripts/pnh_unattended_retry_backoff.py --apply
+```
+
+## Scheduler Model
+
+The scheduler MVP is a bounded local runner, not an installed daemon. It can run
+status, queue, retry, and evidence jobs in one tick or in a capped loop.
+
+```bash
+python3 scripts/pnh_scheduler_tick.py
+python3 scripts/pnh_scheduler_loop.py --iterations 1 --interval-seconds 1
+```
+
+Safety boundaries:
+
+- no service installation
+- no cron or systemd mutation
+- no unbounded loop; iterations and intervals are capped
+- no raw private values in scheduler output
+- no external write by default
 
 ## Readiness Assessment
 
@@ -219,10 +249,10 @@ First approved pilot batch:
 
 ## Remaining Gaps
 
-- daemon/service/scheduler integration
-- automatic retry/backoff state machine
+- installed daemon/service integration
+- production scheduler supervision
 - live Discord worker-progress parsing from thread bodies
-- live phone/cloud private-data adapters
+- production live phone/cloud private-data adapters
 
 ## Rough MVP Additions
 
@@ -232,3 +262,7 @@ First approved pilot batch:
   from active dispatch state.
 - `scripts/pnh_private_data_adapter_import.py` supports owner-exported local
   private data imports into encrypted vault storage.
+- `scripts/pnh_unattended_retry_backoff.py` plans bounded retry candidates for
+  failed or blocked records.
+- `scripts/pnh_scheduler_tick.py` and `scripts/pnh_scheduler_loop.py` run
+  bounded local scheduler checks without installing a service.
