@@ -21,6 +21,11 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Inspect private inbox status with redacted recent records.")
     parser.add_argument("--db", default=str(DEFAULT_DB_PATH), help="SQLite DB path.")
     parser.add_argument("--limit", type=int, default=5, help="Recent item count.")
+    parser.add_argument(
+        "--include-recent",
+        action="store_true",
+        help="Compatibility no-op. Recent redacted records are included by default.",
+    )
     parser.add_argument("--vault-passphrase-env", default="", help="Optional env var for decrypted local-only inspection.")
     parser.add_argument("--prompt-vault-passphrase", action="store_true", help="Prompt for vault passphrase without echo for decrypted local-only inspection.")
     parser.add_argument("--vault-passphrase-provider", default="", help="Optional passphrase provider for decrypted local-only inspection.")

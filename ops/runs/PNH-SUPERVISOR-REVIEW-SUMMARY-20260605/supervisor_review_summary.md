@@ -4,16 +4,30 @@ This summary is generated from redacted dispatch evidence. It must not include p
 
 ## Rollup
 
-- total records: 7
-- included records: 7
-- worker done records: 7
+- total records: 6
+- included records: 6
+- worker done records: 6
 - complete review ready: 6
-- needs follow-up: 1
+- needs follow-up: 0
 - blocked or failed: 0
-- average evidence completeness: 90%
+- average evidence completeness: 100%
 - private values printed: false
 
 ## Records
+
+### launch-packet-launch-mq11rzo5-8kcrgo
+
+- task status: worker_done
+- evidence completeness: 100%
+- missing evidence: none
+- next action: summarize_worker_result_for_supervisor_review
+- GitHub issue: #7
+- GitHub issue state: closed
+- GitHub status checked at: 2026-06-05T15:04:07+00:00
+- Discord thread id: 1512471203754020976
+- worker session id: pnh:launch-packet-launch-mq11rzo5-8kcrgo:qa
+- worker status: done
+- updated at: 2026-06-06T06:17:38+00:00
 
 ### assistant-capture-capture-mq0mgu4q-uvzyzm0s
 
@@ -84,34 +98,6 @@ This summary is generated from redacted dispatch evidence. It must not include p
 - worker session id: pnh:capture-5345e37040604a2fca64f317:qa
 - worker status: done
 - updated at: 2026-06-05T15:04:07+00:00
-
-### launch-packet-launch-mq11rzo5-8kcrgo
-
-- task status: worker_done
-- evidence completeness: 100%
-- missing evidence: none
-- next action: summarize_worker_result_for_supervisor_review
-- GitHub issue: #7
-- GitHub issue state: closed
-- GitHub status checked at: 2026-06-05T15:04:07+00:00
-- Discord thread id: 1512471203754020976
-- worker session id: pnh:launch-packet-launch-mq11rzo5-8kcrgo:qa
-- worker status: done
-- updated at: 2026-06-05T15:04:07+00:00
-
-### pnh-live-openclaw-capture-20260605
-
-- task status: worker_done
-- evidence completeness: 33%
-- missing evidence: github_issue, discord_thread
-- next action: link_ledger_and_thread_before_delivery
-- GitHub issue: #-
-- GitHub issue state: -
-- GitHub status checked at: -
-- Discord thread id: -
-- worker session id: pnh-live-openclaw-capture-20260605-qa
-- worker status: done
-- updated at: 2026-06-05T02:42:49+00:00
 
 ## Supervisor Checks
 

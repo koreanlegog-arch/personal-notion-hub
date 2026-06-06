@@ -12,11 +12,13 @@ def summarize_dispatch_record(packet_id: str, value: dict[str, Any]) -> dict[str
     worker_result_set = bool(value.get("workerSessionId"))
     worker_evidence_ref_set = bool(value.get("workerEvidenceRef"))
     worker_status = str(value.get("workerStatus") or "")
+    semantic_progress = semantic_progress_for(value)
     task_status = task_status_for(
         github_issue_set=github_issue_set,
         discord_thread_set=discord_thread_set,
         worker_result_set=worker_result_set,
         worker_status=worker_status,
+        semantic_status=semantic_progress["status"],
     )
     missing = missing_evidence_for(
         github_issue_set=github_issue_set,
@@ -34,6 +36,11 @@ def summarize_dispatch_record(packet_id: str, value: dict[str, Any]) -> dict[str
         "discordThreadSet": discord_thread_set,
         "workerSessionId": value.get("workerSessionId", ""),
         "workerStatus": worker_status,
+        "semanticProgressSet": bool(semantic_progress["status"]),
+        "semanticProgressStatus": semantic_progress["status"],
+        "semanticProgressStage": semantic_progress["stage"],
+        "semanticProgressConfidence": semantic_progress["confidence"],
+        "semanticProgressUpdatedAt": semantic_progress["updatedAt"],
         "workerResultSet": worker_result_set,
         "workerEvidenceRefSet": worker_evidence_ref_set,
         "workerResultRecordedAt": value.get("workerResultRecordedAt", ""),
@@ -51,6 +58,7 @@ def task_status_for(
     discord_thread_set: bool,
     worker_result_set: bool,
     worker_status: str,
+    semantic_status: str = "",
 ) -> str:
     if worker_status == "failed":
         return "worker_failed"
@@ -60,6 +68,14 @@ def task_status_for(
         return "worker_done"
     if worker_result_set:
         return "worker_result_recorded"
+    if semantic_status == "failed":
+        return "worker_failed"
+    if semantic_status == "blocked":
+        return "worker_blocked"
+    if semantic_status == "done":
+        return "worker_progress_done"
+    if semantic_status in {"qa", "review", "running"}:
+        return f"worker_progress_{semantic_status}"
     if discord_thread_set:
         return "dispatched_to_worker_thread"
     if github_issue_set:
@@ -103,8 +119,30 @@ def next_action_for(task_status: str, missing: list[str]) -> str:
         return "summarize_worker_result_for_supervisor_review"
     if task_status == "worker_result_recorded":
         return "inspect_worker_status_before_delivery"
+    if task_status == "worker_progress_done":
+        return "record_worker_result_metadata"
+    if task_status in {"worker_progress_qa", "worker_progress_review", "worker_progress_running"}:
+        return "continue_worker_progress_monitoring"
     if task_status == "dispatched_to_worker_thread":
         return "capture_worker_session_result"
     if task_status == "ledger_ready":
         return "dispatch_to_worker_thread"
     return "export_candidate_and_create_ledger"
+
+
+def semantic_progress_for(value: dict[str, Any]) -> dict[str, Any]:
+    progress = value.get("semanticProgress")
+    if not isinstance(progress, dict):
+        return {"status": "", "stage": "", "confidence": 0, "updatedAt": ""}
+    status = str(progress.get("status") or "")
+    stage = str(progress.get("stage") or "")
+    try:
+        confidence = int(progress.get("confidence") or 0)
+    except (TypeError, ValueError):
+        confidence = 0
+    return {
+        "status": status,
+        "stage": stage,
+        "confidence": max(0, min(100, confidence)),
+        "updatedAt": str(progress.get("updatedAt") or ""),
+    }

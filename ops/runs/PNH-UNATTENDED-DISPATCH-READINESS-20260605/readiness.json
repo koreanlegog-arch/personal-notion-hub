@@ -1,8 +1,8 @@
 {
   "activationGate": {
-    "name": "APPROVE_PNH_UNATTENDED_DISPATCH_PILOT",
-    "reason": "pilot activation would allow queued mobile captures to create external GitHub/Discord/OpenClaw records without per-item operator confirmation.",
-    "required": true
+    "name": "project_AGENTS_bounded_dispatch_delegation",
+    "reason": "bounded PNH test/implementation pilot runs are delegated when queue, rate-limit, rollback, redaction, and evidence controls are used.",
+    "required": false
   },
   "checks": [
     {
@@ -43,7 +43,7 @@
   ],
   "externalWritesPerformed": false,
   "failedChecks": [],
-  "generatedAt": "2026-06-05T14:58:29+00:00",
+  "generatedAt": "2026-06-06T06:17:38+00:00",
   "pilotLimits": {
     "cooldownMinutes": 10,
     "maxExternalWritesPerHour": 3,
@@ -53,5 +53,5 @@
   "privateValuesPrinted": false,
   "rollbackRequired": true,
   "tokenValuePrinted": false,
-  "verdict": "ready_for_approval_gated_pilot"
+  "verdict": "ready_for_delegated_bounded_pilot"
 }

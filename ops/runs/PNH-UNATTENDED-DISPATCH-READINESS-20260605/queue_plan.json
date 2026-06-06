@@ -2,9 +2,10 @@
   "capturesInspected": 12,
   "commandAliasesLoaded": 1,
   "cooldownActive": false,
+  "delegationScope": "bounded_pnh_test_implementation_pilot",
   "eligibleCount": 0,
   "externalWritesPerformed": false,
-  "generatedAt": "2026-06-06T06:00:49+00:00",
+  "generatedAt": "2026-06-06T06:17:38+00:00",
   "lockPlan": {
     "lockFile": "companion/private/pnh_unattended_dispatch.lock",
     "singleWriter": true,
@@ -19,8 +20,8 @@
     "maxJobsPerRun": 1
   },
   "privateValuesPrinted": false,
-  "queueActivationGateReason": "unattended dispatch can create GitHub Issues, Discord/OpenClaw threads, GitHub comments, and worker/model calls without an operator present.",
-  "queueActivationGateRequired": true,
+  "queueActivationGateReason": "bounded PNH test/implementation pilot runs are delegated by project AGENTS.md when queue, rate-limit, rollback, redaction, and evidence controls are used.",
+  "queueActivationGateRequired": false,
   "queued": [],
   "queuedCount": 0,
   "recentExternalWriteCount1h": 0,

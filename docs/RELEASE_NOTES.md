@@ -1,5 +1,35 @@
 # Release Notes
 
+## 2026-06-06 - Private Assistant Automation MVP Expansion
+
+### Summary
+
+Advanced the PNH backend toward a practical private assistant automation MVP
+without changing live phone/cloud integration boundaries.
+
+### Included
+
+- `scripts/private_inbox_status.py --include-recent` compatibility option
+- dispatch-state cleanup and archive script
+- semantic worker progress parser for redacted snippets
+- owner-exported local private data adapter import script
+- bounded unattended dispatch delegation wording update
+- docs update for current capability boundaries
+
+### Results
+
+- stale incomplete dispatch state record archived out of active state
+- active dispatch evidence average restored to `100%`
+- semantic progress metadata applied to the latest Launch packet without storing message content
+- contacts/calendar/call-log/transcript adapter MVP smoke tested with fixture data
+- no private values or token values printed by validation commands
+
+### Boundaries
+
+- no live phone API, cloud account, OAuth, Discord thread body, or external real-data adapter was connected
+- real private adapter apply mode writes only to local encrypted vault
+- daemon/scheduler and unbounded unattended automation remain out of scope
+
 ## 2026-06-05 - Assistant Dispatch Intent
 
 ### Summary

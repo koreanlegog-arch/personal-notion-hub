@@ -55,7 +55,8 @@ def main() -> int:
         assert_true(result.returncode == 0, f"readiness_failed={result.stderr.strip()}")
         payload = json.loads(out.read_text(encoding="utf-8"))
         assert_true(payload["pnhUnattendedDispatchReadiness"] is True, "readiness_flag_missing=true")
-        assert_true(payload["activationGate"]["required"] is True, "activation_gate_missing=true")
+        assert_true(payload["activationGate"]["required"] is False, "delegated_gate_not_reflected=true")
+        assert_true(payload["activationGate"]["name"] == "project_AGENTS_bounded_dispatch_delegation", "delegation_scope_missing=true")
         assert_true(payload["externalWritesPerformed"] is False, "external_write_performed=true")
 
         reconciliation.write_text(

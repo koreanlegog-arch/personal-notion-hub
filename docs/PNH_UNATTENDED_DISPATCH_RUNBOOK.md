@@ -217,9 +217,18 @@ First approved pilot batch:
 - GitHub dispatch label: `dispatch:worker-done`
 - external reconciliation: no pending writes
 
-## Not Yet Implemented
+## Remaining Gaps
 
 - daemon/service/scheduler integration
 - automatic retry/backoff state machine
-- semantic Discord worker-progress parsing
-- real private-data adapters
+- live Discord worker-progress parsing from thread bodies
+- live phone/cloud private-data adapters
+
+## Rough MVP Additions
+
+- `scripts/pnh_worker_progress_parse.py` can parse redacted worker progress
+  snippets into metadata-only semantic progress.
+- `scripts/pnh_dispatch_state_cleanup.py` can archive stale incomplete records
+  from active dispatch state.
+- `scripts/pnh_private_data_adapter_import.py` supports owner-exported local
+  private data imports into encrypted vault storage.

@@ -71,7 +71,8 @@ def main() -> int:
         assert_true(payload["queuedCount"] == 1, "queued_count_mismatch=true")
         assert_true(payload["queued"][0]["captureId"] == inserted["id"], "queued_capture_id_mismatch=true")
         assert_true(payload["externalWritesPerformed"] is False, "external_write_performed=true")
-        assert_true(payload["queueActivationGateRequired"] is True, "activation_gate_missing=true")
+        assert_true(payload["queueActivationGateRequired"] is False, "delegated_gate_not_reflected=true")
+        assert_true(payload["delegationScope"] == "bounded_pnh_test_implementation_pilot", "delegation_scope_missing=true")
 
     print("pnh_unattended_dispatch_queue_plan_smoke_check_pass=true")
     print("external_writes_performed=false")

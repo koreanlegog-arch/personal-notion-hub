@@ -60,6 +60,9 @@ The current verified Launch flow can:
 19. verify owner live capture readiness before the owner enters real private content
 20. send Assistant input as a selected command type without metadata alias correction
 21. close GitHub Issues for worker_done dispatch records after redacted evidence reaches 100%
+22. archive stale incomplete dispatch-state records out of active evidence summaries
+23. parse redacted worker progress snippets into metadata-only semantic progress
+24. import owner-exported local contacts/calendar/call-log/recording transcript files into encrypted vault storage
 
 Latest owner live command-packet dispatch:
 
@@ -71,6 +74,21 @@ Latest owner live command-packet dispatch:
 - task status: `worker_done`
 - evidence completeness: `100%`
 - raw private body read: `false`
+
+Latest dispatch state cleanup:
+
+- archived stale incomplete record: `pnh-live-openclaw-capture-20260605`
+- active dispatch records: `6`
+- active evidence completeness average: `100%`
+- archive path: `companion/private/pnh_dispatch_state_archive.json`
+
+Latest semantic worker progress parse:
+
+- packet: `launch-packet-launch-mq11rzo5-8kcrgo`
+- semantic status: `done`
+- semantic stage: `done`
+- confidence: `75`
+- message content stored: `false`
 
 Current verified Launch record:
 
@@ -151,6 +169,8 @@ python3 scripts/pnh_auto_dispatch_from_inbox_smoke_check.py
 python3 scripts/pnh_dispatch_state_status.py
 python3 scripts/pnh_dispatch_evidence_summary.py
 python3 scripts/pnh_supervisor_review_summary.py
+python3 scripts/pnh_dispatch_state_cleanup.py
+python3 scripts/pnh_worker_progress_parse.py --packet-id "<packet-id>" --text "<redacted progress text>"
 python3 scripts/pnh_dispatch_status_refresh.py --github-read
 python3 scripts/pnh_external_reconciliation_plan.py
 python3 scripts/pnh_github_worker_done_closure.py
@@ -170,6 +190,21 @@ For the full single packet flow from private inbox to worker-done evidence, see:
 
 Use `--apply` only when the script's apply mode is intentionally needed and the
 project `AGENTS.md` delegation or relevant approval gate has been satisfied.
+
+### Local Private Data Adapter Import
+
+These adapters read owner-exported local files only. They do not connect to
+phone APIs, cloud accounts, OAuth, or external services.
+
+```bash
+python3 scripts/pnh_private_data_adapter_import.py --adapter contacts-csv --input ./contacts.csv
+python3 scripts/pnh_private_data_adapter_import.py --adapter calendar-ics --input ./calendar.ics
+python3 scripts/pnh_private_data_adapter_import.py --adapter call-log-csv --input ./calls.csv
+python3 scripts/pnh_private_data_adapter_import.py --adapter recording-transcript-txt --input ./recording-transcript.txt
+```
+
+Apply mode requires encrypted vault passphrase resolution and stores records in
+the local encrypted vault without printing private values.
 
 ### Browser QA
 
@@ -191,7 +226,7 @@ See:
 These actions still require explicit approval because they change security posture
 or expand data risk:
 
-- adding real phone/contact/calendar/call/recording adapters
+- connecting live phone/contact/calendar/call/recording APIs or cloud accounts
 - exposing the companion beyond owner-only local or tailnet scope
 - distributing the app to another user
 
@@ -204,14 +239,24 @@ project `AGENTS.md` and do not require a separate per-run approval.
 - unattended mobile-to-worker automation beyond bounded pilot batches and
   metadata-safe worker captures
 - unattended daemon/scheduler activation
-- real contact/call/recording/calendar ingestion
+- live phone/contact/call/recording/calendar API ingestion
 - multi-user distribution
 - cloud sync of private data
 - production auth model
 - packaged desktop/mobile app
-- semantic Discord/OpenClaw worker progress parsing beyond metadata-only refresh
+- semantic Discord/OpenClaw worker progress parsing from live thread bodies
 - unattended unbounded worker/model execution
 - GitHub Projects board mutation
+
+## Newly Available Rough MVPs
+
+- `scripts/pnh_dispatch_state_cleanup.py`: archives stale incomplete dispatch
+  records out of the active dispatch state.
+- `scripts/pnh_worker_progress_parse.py`: parses redacted worker progress text
+  into metadata-only semantic progress fields without storing message content.
+- `scripts/pnh_private_data_adapter_import.py`: imports owner-exported local
+  contacts CSV, call-log CSV, calendar ICS, or recording transcript text into
+  encrypted vault storage. It does not connect to phone APIs or cloud accounts.
 
 ## Practical Current Usage
 

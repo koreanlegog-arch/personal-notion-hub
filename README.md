@@ -126,7 +126,7 @@ Expected:
 
 - API token 또는 secret 저장
 - unbounded or always-on unattended Discord/GitHub/OpenClaw dispatch
-- real phone/contact/calendar/call/recording adapters
+- live phone/contact/calendar/call/recording API adapters
 - cloud sync of private data
 - 자동 외부 서비스 연동
 - real private data ingest
@@ -154,6 +154,18 @@ GitHub-Issue-to-Discord/OpenClaw routing. Apply-mode state lives under ignored
 Auto-dispatch from the private inbox is metadata-only by default. It reads local
 dispatch state and skips capture IDs that already have dispatch or worker
 records, so repeated runs fail closed when no new command candidate exists.
+
+Dispatch state cleanup and semantic progress parsing:
+
+```bash
+python3 scripts/pnh_dispatch_state_cleanup.py
+python3 scripts/pnh_worker_progress_parse.py \
+  --packet-id "<packet-id>" \
+  --text "<redacted worker progress text>"
+```
+
+The progress parser stores status/stage/confidence metadata only. It does not
+store Discord/OpenClaw message bodies.
 
 For an end-to-end rehearsal without real owner content:
 
@@ -186,6 +198,18 @@ Personal_Notion_Hub web UI
 - `docs/OWNER_LIVE_COMMAND_CAPTURE_RUNBOOK.md`
 - `docs/adr-0001-local-companion-vault.md`
 
+Owner-exported local private data import MVP:
+
+```bash
+python3 scripts/pnh_private_data_adapter_import.py --adapter contacts-csv --input ./contacts.csv
+python3 scripts/pnh_private_data_adapter_import.py --adapter calendar-ics --input ./calendar.ics
+python3 scripts/pnh_private_data_adapter_import.py --adapter call-log-csv --input ./calls.csv
+python3 scripts/pnh_private_data_adapter_import.py --adapter recording-transcript-txt --input ./recording-transcript.txt
+```
+
+These adapters do not connect to phone APIs, cloud accounts, OAuth, or external
+services. Apply mode stores records in the approved local encrypted vault.
+
 ## Local Companion Prototype
 
 `companion/` contains a loopback-only local companion. It keeps fixture preview mode for public-safe QA, a transitional authenticated plaintext private inbox, and an explicit encrypted vault mode for sensitive local capture.
@@ -193,10 +217,12 @@ Personal_Notion_Hub web UI
 Current limits:
 
 - `127.0.0.1` loopback only
-- no real contacts, schedules, calls, recordings, transcripts, or private notes
+- no live phone/cloud access to contacts, schedules, calls, recordings,
+  transcripts, or private notes
 - no file write from import preview mode
 - browser UI bridge is local-only and disabled unless the companion is started with explicit bridge flags
-- no phone/contact/calendar/recording adapters yet
+- owner-exported local import adapters are available for contacts CSV,
+  calendar ICS, call-log CSV, and recording transcript text
 - encrypted backup/restore/delete scripts are available for encrypted capture rows
 - plaintext migration apply is available behind an explicit backup and confirmation gate
 - prompt-first passphrase input is available
@@ -227,7 +253,7 @@ http://127.0.0.1:8765/api/health
 http://127.0.0.1:8765/api/schema
 ```
 
-Actual phone/contact/calendar/recording adapters, unbounded external dispatch, non-loopback access outside owner-only LAN/tailnet, plaintext migration apply, OS keychain storage/retrieval policy changes, and packaging remain separate approval gates.
+Live phone/contact/calendar/recording API adapters, unbounded external dispatch, non-loopback access outside owner-only LAN/tailnet, plaintext migration apply, OS keychain storage/retrieval policy changes, and packaging remain separate approval gates.
 
 ## Browser Companion Bridge
 
@@ -453,7 +479,8 @@ Encrypted vault boundaries:
 - plaintext migration apply requires `--confirm MIGRATE_PLAINTEXT_TO_ENCRYPTED` and an existing encrypted backup path
 - `windows-dpapi-file` stores a DPAPI-protected blob under the current Windows user's LocalAppData path
 - passphrase recovery is policy-only; there is no cryptographic recovery mechanism
-- real-data adapter ingestion and forensic secure erase are not implemented yet
+- owner-exported local real-data import adapter MVP is implemented; live
+  phone/cloud adapter ingestion and forensic secure erase are not implemented yet
 
 ## Local Private Inbox MVP
 

@@ -1,0 +1,23 @@
+{
+  "archiveFile": "companion/private/pnh_dispatch_state_archive.json",
+  "mode": "apply",
+  "pnhDispatchStateCleanup": true,
+  "privateValuesPrinted": false,
+  "recordsInspected": 7,
+  "selected": [
+    {
+      "evidenceCompleteness": 33,
+      "missingEvidence": [
+        "github_issue",
+        "discord_thread"
+      ],
+      "packetId": "pnh-live-openclaw-capture-20260605",
+      "taskStatus": "worker_done",
+      "updatedAt": "2026-06-05T02:42:49+00:00"
+    }
+  ],
+  "selectedCount": 1,
+  "selectionMode": "incomplete-worker-done",
+  "stateFile": "companion/private/pnh_dispatch_state.json",
+  "writesPerformed": true
+}

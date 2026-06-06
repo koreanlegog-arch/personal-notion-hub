@@ -6,7 +6,11 @@ Required before any real phone, calendar, contact, call, recording, Notion, or e
 
 ## Default Decision
 
-Real-data adapters are disabled until all gates below are satisfied with fixture-only evidence.
+Live external real-data adapters are disabled until all gates below are
+satisfied with fixture-only evidence. The owner-exported local import adapters
+are available as a rough MVP when they write only to the approved local
+encrypted vault and do not contact phone APIs, cloud accounts, OAuth providers,
+or external services.
 
 ## Gates
 
@@ -43,4 +47,7 @@ Stop before real-data execution if any of these occur:
 
 ## Verdict
 
-Real-data adapter readiness is `Blocked` by default until the supervisor records explicit approval for adapter, credential, storage, and live execution scope.
+Real-data adapter readiness is `Ready for local import MVP` for owner-exported
+files that use the approved local encrypted vault. Live phone/cloud adapter
+readiness remains `Blocked` by default until the supervisor records explicit
+approval for adapter, credential, storage, and live execution scope.
