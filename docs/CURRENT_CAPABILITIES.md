@@ -84,6 +84,7 @@ The current verified Launch flow can:
 43. skip duplicate normalized private-data adapter and phone automation ingests with metadata-safe fingerprints
 44. include phone automation readiness and live-probe status in bounded scheduler ticks
 45. audit private assistant backend MVP readiness from consolidated evidence in one command
+46. run a first owner phone capture session with post-capture privacy/completion checks
 
 Latest owner live command-packet dispatch:
 

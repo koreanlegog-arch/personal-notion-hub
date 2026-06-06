@@ -28,6 +28,7 @@ including guarded live-adapter and bounded scheduler foundations.
 - opt-in private ingest fingerprint dedup for adapters and phone automation
 - bounded scheduler phone automation readiness and live-probe jobs
 - consolidated private assistant MVP completion audit
+- owner phone capture session runner for first phone-tool payload verification
 - bounded unattended retry/backoff planning
 - bounded local scheduler tick/loop scripts with live-adapter readiness job
 - unattended automation status summary for queue/readiness/retry decisions
@@ -67,6 +68,7 @@ including guarded live-adapter and bounded scheduler foundations.
 - repeated identical normalized adapter/phone ingests are skipped without printing private values
 - scheduler ticks now include phone automation readiness and metadata-only live-probe status
 - completion audit distinguishes implementation readiness from owner-side phone configuration actions
+- owner phone capture sessions combine baseline, live probe, and post-capture verification
 
 ### Boundaries
 

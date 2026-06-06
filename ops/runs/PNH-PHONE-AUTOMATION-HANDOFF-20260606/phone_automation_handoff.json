@@ -26,7 +26,7 @@
   "endpoint": "/api/private/phone-adapter-captures",
   "exactOwnerNetworkUrlPersisted": false,
   "liveProbe": {
-    "currentCount": 17,
+    "currentCount": 18,
     "latestPhoneCaptureSource": "phone_call_log",
     "latestPhoneCaptureStorageMode": "encrypted-vault",
     "privateValuesPrinted": false,
@@ -56,7 +56,7 @@
       "step": "configure-phone-automation-endpoint"
     },
     {
-      "command": "python3 scripts/pnh_phone_automation_live_probe.py --baseline-count 17 --timeout-seconds 120",
+      "command": "python3 scripts/pnh_phone_automation_live_probe.py --baseline-count 18 --timeout-seconds 120",
       "expected": "new_phone_capture_detected",
       "step": "start-live-probe"
     },

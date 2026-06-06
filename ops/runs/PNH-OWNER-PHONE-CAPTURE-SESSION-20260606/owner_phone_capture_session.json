@@ -1,0 +1,65 @@
+{
+  "after": {
+    "byStorageMode": {
+      "encrypted-vault": 18,
+      "plaintext-inbox": 0
+    },
+    "encryptedVaultEnabled": true,
+    "totalCaptures": 18
+  },
+  "baseUrlValuePrinted": false,
+  "baselineCount": 17,
+  "before": {
+    "byStorageMode": {
+      "encrypted-vault": 17,
+      "plaintext-inbox": 0
+    },
+    "encryptedVaultEnabled": true,
+    "totalCaptures": 17
+  },
+  "exactOwnerNetworkUrlPersisted": false,
+  "generatedAt": "2026-06-06T08:11:52+00:00",
+  "ownerNextAction": "ready_for_controlled_owner_operation",
+  "pnhOwnerPhoneCaptureSession": true,
+  "postChecks": {
+    "completionAudit": {
+      "completionPercent": 100.0,
+      "ok": true,
+      "readyForOwnerControlledMvpUse": true,
+      "userActionCount": null,
+      "verdict": "backend_mvp_ready_owner_action_required"
+    },
+    "privacyGate": {
+      "blockerCount": 0,
+      "ok": true,
+      "verdict": "ready_for_controlled_real_phone_adapter_run"
+    }
+  },
+  "postChecksRun": true,
+  "privateValuesPrinted": false,
+  "probe": {
+    "baselineCount": 17,
+    "currentCount": 18,
+    "delta": 1,
+    "latestPhoneCapture": {
+      "encrypted": true,
+      "id": "capture-d68616a65dff41f2c6d27e82",
+      "kind": "call_note",
+      "sensitivity": "highly_sensitive",
+      "source": "phone_call_log",
+      "status": "inbox",
+      "storageMode": "encrypted-vault",
+      "title": "[encrypted]"
+    },
+    "mode": "wait",
+    "privateValuesPrinted": false,
+    "rawPrivateBodyRead": false,
+    "success": true,
+    "tokenValuePrinted": false,
+    "verdict": "new_phone_capture_detected"
+  },
+  "rawPrivateBodyRead": false,
+  "success": true,
+  "tokenValuePrinted": false,
+  "verdict": "owner_phone_capture_verified"
+}

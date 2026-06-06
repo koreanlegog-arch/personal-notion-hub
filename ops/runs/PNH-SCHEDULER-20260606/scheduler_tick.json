@@ -1,7 +1,7 @@
 {
   "externalWritesPerformed": false,
   "failedJobs": [],
-  "generatedAt": "2026-06-06T08:07:23+00:00",
+  "generatedAt": "2026-06-06T08:12:27+00:00",
   "jobsRun": 10,
   "pnhSchedulerTick": true,
   "privateValuesPrinted": false,
@@ -18,7 +18,7 @@
       "returnCode": 0,
       "status": "ok",
       "stderrFirstLine": "",
-      "stdoutFirstLine": "{\"capturesInspected\": 17, \"delegationScope\": \"bounded_pnh_test_implementation_pilot\", \"externalWritesPerformed\": false, \"mode\": \"dry-run\", \"out\": \"ops/runs/PNH-UNATTENDED-DISPATCH-READINESS-20260605/queue_plan.json\", \"pnhUnattendedDispatchQ"
+      "stdoutFirstLine": "{\"capturesInspected\": 18, \"delegationScope\": \"bounded_pnh_test_implementation_pilot\", \"externalWritesPerformed\": false, \"mode\": \"dry-run\", \"out\": \"ops/runs/PNH-UNATTENDED-DISPATCH-READINESS-20260605/queue_plan.json\", \"pnhUnattendedDispatchQ"
     },
     {
       "job": "unattended-readiness",
@@ -60,7 +60,7 @@
       "returnCode": 0,
       "status": "ok",
       "stderrFirstLine": "",
-      "stdoutFirstLine": "{\"adapterCount\": 4, \"externalServicesContacted\": false, \"failedAdapters\": [], \"generatedAt\": \"2026-06-06T08:07:21+00:00\", \"mode\": \"readiness\", \"out\": \"ops/runs/PNH-LIVE-PRIVATE-DATA-ADAPTER-20260606/live_adapter_batch_sync.json\", \"pnhLivePr"
+      "stdoutFirstLine": "{\"adapterCount\": 4, \"externalServicesContacted\": false, \"failedAdapters\": [], \"generatedAt\": \"2026-06-06T08:12:26+00:00\", \"mode\": \"readiness\", \"out\": \"ops/runs/PNH-LIVE-PRIVATE-DATA-ADAPTER-20260606/live_adapter_batch_sync.json\", \"pnhLivePr"
     },
     {
       "job": "phone-automation-readiness",
@@ -74,7 +74,7 @@
       "returnCode": 0,
       "status": "ok",
       "stderrFirstLine": "",
-      "stdoutFirstLine": "{\"baseUrlValuePrinted\": false, \"baselineCount\": null, \"currentCount\": 17, \"delta\": null, \"latestPhoneCaptureId\": \"capture-8085de34c2771861bbbb0a35\", \"latestPhoneCaptureSource\": \"phone_call_log\", \"latestPhoneCaptureStorageMode\": \"encrypted-v"
+      "stdoutFirstLine": "{\"baseUrlValuePrinted\": false, \"baselineCount\": null, \"currentCount\": 18, \"delta\": null, \"latestPhoneCaptureId\": \"capture-d68616a65dff41f2c6d27e82\", \"latestPhoneCaptureSource\": \"phone_call_log\", \"latestPhoneCaptureStorageMode\": \"encrypted-v"
     }
   ],
   "runtimeDir": "",

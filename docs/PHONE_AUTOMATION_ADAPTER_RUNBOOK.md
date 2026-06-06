@@ -101,6 +101,19 @@ python3 scripts/pnh_phone_automation_live_probe.py \
 The live probe reads metadata only. It does not decrypt private bodies and does
 not print bearer tokens or owner-network URLs.
 
+Run an owner capture session that waits for a new phone payload and then runs
+post-capture privacy/completion checks:
+
+```bash
+python3 scripts/pnh_owner_phone_capture_session.py --timeout-seconds 300
+```
+
+For fixture-only diagnostics:
+
+```bash
+python3 scripts/pnh_owner_phone_capture_session.py --skip-post-checks
+```
+
 ## Supported Adapters
 
 - `phone-contacts-json`
@@ -226,6 +239,7 @@ python3 scripts/pnh_phone_automation_handoff_packet_smoke_check.py
 python3 scripts/pnh_phone_automation_setup_readiness_smoke_check.py
 python3 scripts/pnh_phone_automation_rehearsal_smoke_check.py
 python3 scripts/pnh_phone_automation_live_probe_smoke_check.py
+python3 scripts/pnh_owner_phone_capture_session_smoke_check.py
 python3 scripts/pnh_private_ingest_dedup_smoke_check.py
 python3 scripts/phone_adapter_ingress_smoke_check.py
 python3 scripts/pnh_tailnet_companion_api_smoke_check.py

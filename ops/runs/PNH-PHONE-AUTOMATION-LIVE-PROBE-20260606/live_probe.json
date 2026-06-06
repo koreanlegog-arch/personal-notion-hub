@@ -2,21 +2,21 @@
   "baseUrlValuePrinted": false,
   "baselineCount": null,
   "byStorageMode": {
-    "encrypted-vault": 17,
+    "encrypted-vault": 18,
     "plaintext-inbox": 0
   },
-  "currentCount": 17,
+  "currentCount": 18,
   "delta": null,
   "latestPhoneCapture": {
     "createdAt": "2026-06-06T00:00:00Z",
     "encrypted": true,
-    "id": "capture-8085de34c2771861bbbb0a35",
+    "id": "capture-d68616a65dff41f2c6d27e82",
     "kind": "call_note",
     "sensitivity": "highly_sensitive",
     "source": "phone_call_log",
     "status": "inbox",
     "storageMode": "encrypted-vault",
-    "storedAt": "2026-06-06T07:45:34+00:00",
+    "storedAt": "2026-06-06T08:11:43+00:00",
     "title": "[encrypted]"
   },
   "messageContentStored": false,
