@@ -1,11 +1,11 @@
 {
-  "capturesInspected": 18,
+  "capturesInspected": 20,
   "commandAliasesLoaded": 1,
   "cooldownActive": false,
   "delegationScope": "bounded_pnh_test_implementation_pilot",
   "eligibleCount": 0,
   "externalWritesPerformed": false,
-  "generatedAt": "2026-06-06T08:16:08+00:00",
+  "generatedAt": "2026-06-06T08:20:42+00:00",
   "lockPlan": {
     "lockFile": "companion/private/pnh_unattended_dispatch.lock",
     "singleWriter": true,
@@ -42,6 +42,28 @@
   },
   "rollbackRequiredBeforeApply": true,
   "skipped": [
+    {
+      "captureId": "capture-ec7d8372c0106038afcc93ba",
+      "commandAliasApplied": false,
+      "commandType": "contact",
+      "eligible": false,
+      "encrypted": true,
+      "originalKind": "contact",
+      "sensitivity": "private",
+      "skipReason": "not_dispatch_command_kind",
+      "storageMode": "encrypted-vault"
+    },
+    {
+      "captureId": "capture-72c8a594ed1b3a730727c14b",
+      "commandAliasApplied": false,
+      "commandType": "calendar",
+      "eligible": false,
+      "encrypted": true,
+      "originalKind": "calendar",
+      "sensitivity": "private",
+      "skipReason": "not_dispatch_command_kind",
+      "storageMode": "encrypted-vault"
+    },
     {
       "captureId": "capture-d68616a65dff41f2c6d27e82",
       "commandAliasApplied": false,
@@ -241,6 +263,6 @@
       "storageMode": "encrypted-vault"
     }
   ],
-  "skippedCount": 18,
+  "skippedCount": 20,
   "tokenValuePrinted": false
 }

@@ -1,0 +1,53 @@
+{
+  "after": {
+    "bySource": {
+      "phone_call_log": 5,
+      "phone_recording": 1
+    },
+    "coverageNote": "not_all_supported_phone_sources_seen_yet",
+    "encryptedPhoneCaptureCount": 6,
+    "missingPhoneSourcesInRecentWindow": [
+      "phone_contacts",
+      "phone_calendar"
+    ],
+    "phoneCaptureCount": 6,
+    "plaintextPhoneCaptureCount": 0,
+    "verdict": "phone_capture_recent_summary_ready"
+  },
+  "baseUrlValuePrinted": false,
+  "before": {
+    "bySource": {
+      "phone_call_log": 5,
+      "phone_recording": 1
+    },
+    "coverageNote": "not_all_supported_phone_sources_seen_yet",
+    "encryptedPhoneCaptureCount": 6,
+    "missingPhoneSourcesInRecentWindow": [
+      "phone_contacts",
+      "phone_calendar"
+    ],
+    "phoneCaptureCount": 6,
+    "plaintextPhoneCaptureCount": 0,
+    "verdict": "phone_capture_recent_summary_ready"
+  },
+  "exactOwnerNetworkUrlPersisted": false,
+  "externalServicesContacted": false,
+  "generatedAt": "2026-06-06T08:20:02+00:00",
+  "missingAfter": [
+    "phone_contacts",
+    "phone_calendar"
+  ],
+  "missingBefore": [
+    "phone_contacts",
+    "phone_calendar"
+  ],
+  "mode": "status",
+  "pnhPhoneSourceCoverageSession": true,
+  "privateValuesPrinted": false,
+  "rawPrivateBodyRead": false,
+  "rehearsalCount": 0,
+  "rehearsals": [],
+  "success": true,
+  "tokenValuePrinted": false,
+  "verdict": "phone_source_coverage_incomplete"
+}

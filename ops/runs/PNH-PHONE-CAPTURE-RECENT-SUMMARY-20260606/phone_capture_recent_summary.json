@@ -1,42 +1,44 @@
 {
   "baseUrlValuePrinted": false,
   "byKind": {
+    "calendar": 1,
     "call_note": 5,
+    "contact": 1,
     "voice_note": 1
   },
   "bySensitivity": {
-    "highly_sensitive": 6
+    "highly_sensitive": 6,
+    "private": 2
   },
   "bySource": {
+    "phone_calendar": 1,
     "phone_call_log": 5,
+    "phone_contacts": 1,
     "phone_recording": 1
   },
-  "capturesInspected": 18,
-  "coverageNote": "not_all_supported_phone_sources_seen_yet",
-  "encryptedPhoneCaptureCount": 6,
+  "capturesInspected": 20,
+  "coverageNote": "all_supported_phone_sources_seen_in_recent_window",
+  "encryptedPhoneCaptureCount": 8,
   "exactOwnerNetworkUrlPersisted": false,
   "latestPhoneCapture": {
     "createdAt": "2026-06-06T00:00:00Z",
     "encrypted": true,
-    "id": "capture-d68616a65dff41f2c6d27e82",
-    "kind": "call_note",
-    "sensitivity": "highly_sensitive",
-    "source": "phone_call_log",
+    "id": "capture-ec7d8372c0106038afcc93ba",
+    "kind": "contact",
+    "sensitivity": "private",
+    "source": "phone_contacts",
     "status": "inbox",
     "storageMode": "encrypted-vault",
-    "storedAt": "2026-06-06T08:11:43+00:00",
+    "storedAt": "2026-06-06T08:20:12+00:00",
     "title": "[encrypted]"
   },
-  "missingPhoneSourcesInRecentWindow": [
-    "phone_contacts",
-    "phone_calendar"
-  ],
-  "phoneCaptureCount": 6,
+  "missingPhoneSourcesInRecentWindow": [],
+  "phoneCaptureCount": 8,
   "plaintextPhoneCaptureCount": 0,
   "pnhPhoneCaptureRecentSummary": true,
   "privateValuesPrinted": false,
   "rawPrivateBodyRead": false,
   "tokenValuePrinted": false,
-  "totalPrivateInboxCaptures": 18,
+  "totalPrivateInboxCaptures": 20,
   "verdict": "phone_capture_recent_summary_ready"
 }

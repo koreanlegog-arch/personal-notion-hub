@@ -86,6 +86,7 @@ The current verified Launch flow can:
 45. audit private assistant backend MVP readiness from consolidated evidence in one command
 46. run a first owner phone capture session with post-capture privacy/completion checks
 47. summarize recent phone automation captures and source coverage metadata-only
+48. run a bounded phone source coverage session across contacts/calendar/call/recording adapters
 
 Latest owner live command-packet dispatch:
 

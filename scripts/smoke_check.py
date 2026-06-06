@@ -88,6 +88,8 @@ REQUIRED = [
     "scripts/pnh_owner_phone_capture_session_smoke_check.py",
     "scripts/pnh_phone_capture_recent_summary.py",
     "scripts/pnh_phone_capture_recent_summary_smoke_check.py",
+    "scripts/pnh_phone_source_coverage_session.py",
+    "scripts/pnh_phone_source_coverage_session_smoke_check.py",
     "scripts/pnh_phone_automation_handoff_packet.py",
     "scripts/pnh_phone_automation_handoff_packet_smoke_check.py",
     "scripts/phone_ingress_lan_info.py",

@@ -30,6 +30,7 @@ including guarded live-adapter and bounded scheduler foundations.
 - consolidated private assistant MVP completion audit
 - owner phone capture session runner for first phone-tool payload verification
 - metadata-only recent phone capture summary and scheduler job
+- phone source coverage session across all supported phone adapters
 - bounded unattended retry/backoff planning
 - bounded local scheduler tick/loop scripts with live-adapter readiness job
 - unattended automation status summary for queue/readiness/retry decisions
@@ -71,6 +72,7 @@ including guarded live-adapter and bounded scheduler foundations.
 - completion audit distinguishes implementation readiness from owner-side phone configuration actions
 - owner phone capture sessions combine baseline, live probe, and post-capture verification
 - recent phone capture summary reports source coverage without decrypting private bodies
+- source coverage session can rehearse missing phone adapter sources with synthetic payloads
 
 ### Boundaries
 
