@@ -1021,6 +1021,10 @@ async function checkCompanionStatus() {
   }
   try {
     const health = await bridge.health();
+    let restored = null;
+    if (health.ok && !bridge.isPaired() && bridge.restoreOwnerDeviceSession) {
+      restored = await bridge.restoreOwnerDeviceSession();
+    }
     companionState = {
       checked: true,
       online: health.ok,
@@ -1028,7 +1032,9 @@ async function checkCompanionStatus() {
       statusText: health.ok
         ? `Companion reachable at ${bridge.baseUrl}. Mode: ${health.mode}.`
         : "Companion did not report a healthy loopback bridge.",
-      lastResult: health.writesEnabled ? "Private inbox writes are enabled." : "Private inbox writes are disabled.",
+      lastResult: restored?.restored
+        ? "Owner device session restored. Private inbox writes are enabled."
+        : health.writesEnabled ? "Private inbox writes are enabled." : "Private inbox writes are disabled.",
     };
   } catch (error) {
     companionState = {
@@ -1052,7 +1058,7 @@ async function pairCompanion(event) {
   const input = event.currentTarget.elements.pairingCode;
   const pairingCode = String(input?.value || "").trim();
   try {
-    await bridge.pair(pairingCode);
+    const pairResult = await bridge.pair(pairingCode);
     if (input) input.value = "";
     companionState = {
       ...companionState,
@@ -1060,7 +1066,9 @@ async function pairCompanion(event) {
       online: true,
       paired: true,
       statusText: `Companion paired at ${bridge.baseUrl}.`,
-      lastResult: "Ready to send the latest launch packet.",
+      lastResult: pairResult.ownerDeviceIssued
+        ? "Ready to send the latest launch packet. Owner device session saved for reconnect."
+        : "Ready to send the latest launch packet.",
     };
     await refreshDispatchState({ silent: true });
     toast("Companion paired");
@@ -1330,7 +1338,7 @@ async function sendLatestLaunchToCompanion() {
       ...companionState,
       online: true,
       paired: true,
-      lastResult: result.writesPerformed ? "Latest mobile command packet stored in private inbox." : "Companion responded without a private write.",
+      lastResult: captureSendResultMessage(result, "Latest mobile command packet"),
     };
     launch.commandStatus = result.writesPerformed ? "stored" : "send_failed";
     launch.dispatchState = "not_dispatched";
@@ -1339,7 +1347,7 @@ async function sendLatestLaunchToCompanion() {
     launch.updatedAt = nowISO();
     writeStoredState();
     render();
-    toast("Command packet stored", "Local companion private inbox에 metadata-only 응답으로 저장했습니다.");
+    toast("Command packet stored", result.autoDispatch?.requested ? "Workspace dispatch가 background로 시작됐습니다." : "Local companion private inbox에 metadata-only 응답으로 저장했습니다.");
   } catch (error) {
     companionState = {
       ...companionState,
@@ -1348,6 +1356,12 @@ async function sendLatestLaunchToCompanion() {
     render();
     toast("Send failed", "companion 상태와 pairing을 확인하세요.");
   }
+}
+
+function captureSendResultMessage(result, label) {
+  if (!result?.writesPerformed) return "Companion responded without a private write.";
+  if (result.autoDispatch?.requested) return `${label} stored and workspace dispatch started.`;
+  return `${label} stored in private inbox.`;
 }
 
 function handleLaunchSubmit(event) {
@@ -2106,9 +2120,7 @@ async function sendAssistantCaptureToCompanion(capture) {
       ...companionState,
       online: true,
       paired: true,
-      lastResult: result.writesPerformed
-        ? `${assistantDispatchIntentLabel(payload.commandType || payload.kind)} sent to workspace private inbox.`
-        : "Companion responded without a private write.",
+      lastResult: captureSendResultMessage(result, assistantDispatchIntentLabel(payload.commandType || payload.kind)),
     };
     await updateAssistantCapture(capture.id, { workspaceSentAt: nowISO(), workspaceCaptureId: result.captureId }, "Assistant input sent to workspace");
   } catch (error) {

@@ -119,9 +119,26 @@ The script prints:
 
 - `tailnet_url`
 - `allowed_origin`
-- the companion startup output including the local-only pairing code
+- `pairing_handoff_file`
+- `pairing_code_policy`
+- `capture_auto_dispatch_enabled`
 
-Use the pairing code only in the phone browser. Do not paste it into chat or docs.
+For remote operation, set owner-only Discord handoff before starting:
+
+```bash
+cd /home/koreanlego/projects/Personal_Notion_Hub
+export PNH_OWNER_DISCORD_TARGET="user:<discord-user-id>"
+PNH_TAILNET_PORT=8766 bash scripts/start_tailnet_session.sh
+```
+
+With `PNH_OWNER_DISCORD_TARGET` set, the pairing code is delivered to the owner
+DM through OpenClaw and also written only to ignored local handoff storage. Do
+not paste the code into Codex chat, docs, screenshots, Git, or shared channels.
+
+`PNH_CAPTURE_AUTO_DISPATCH` defaults to `1` for this helper. New browser
+captures can therefore start bounded background dispatch without a second
+terminal command. Set `PNH_CAPTURE_AUTO_DISPATCH=0` only when intentionally
+testing storage without dispatch.
 
 When the companion process exits normally, the script removes the temporary Windows forwarding rule. If cleanup is needed manually, run:
 
@@ -169,7 +186,14 @@ Get-NetFirewallRule -DisplayName "PNH Tailnet Ingress 8765" -ErrorAction Silentl
 
 ## Pairing
 
-The companion prints a short-lived pairing code at startup. Use it only in the browser UI. Do not paste it into chat or write it into docs.
+The companion still creates a short-lived pairing code at startup. Preferred
+remote handoff is owner-only Discord DM through `PNH_OWNER_DISCORD_TARGET`.
+Local terminal/file handoff is fallback-only.
+
+If `PNH_ENABLE_OWNER_DEVICE_SESSIONS=1` is set, the paired browser may receive a
+revocable owner-device credential for reconnect. The raw credential must not be
+logged, screenshotted, or copied into chat. It is stored only in the browser
+localStorage and the ignored local credential hash store.
 
 After pairing, the browser receives a short-lived session token. Do not record it.
 

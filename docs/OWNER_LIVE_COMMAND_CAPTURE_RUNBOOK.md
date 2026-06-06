@@ -45,7 +45,7 @@ Use this when phone/tailnet is not needed.
 
 1. Start the encrypted companion in local browser bridge mode.
 2. Open the local PNH page.
-3. Pair using the local terminal code.
+3. Pair using the short-lived pairing code from the approved owner-only path.
 4. Enter the owner command in Launch.
 5. Send the packet to workspace private storage.
 
@@ -57,21 +57,34 @@ Use this when mobile access is required and the phone is on the same tailnet.
 bash scripts/start_tailnet_session.sh
 ```
 
-The script prints the phone URL and pairing code in the local terminal. Use them
-only in the phone browser. Do not paste them into chat, docs, screenshots, or
-Git.
+For unattended remote use, set an owner-only Discord DM target before starting:
+
+```bash
+export PNH_OWNER_DISCORD_TARGET="user:<discord-user-id>"
+bash scripts/start_tailnet_session.sh
+```
+
+The script prints the phone URL and writes a short-lived pairing handoff event
+to ignored local storage. When `PNH_OWNER_DISCORD_TARGET` is set, the pairing
+code is sent to the owner-only Discord DM through OpenClaw. Do not paste the
+pairing code into Codex chat, docs, screenshots, Git, or shared channels.
+
+By default, `start_tailnet_session.sh` enables bounded background dispatch for
+new captures. The browser response shows whether `autoDispatch.requested=true`.
+Manual dispatch commands are now fallback-only.
 
 ## After Owner Capture
 
-After the owner submits the command:
+After the owner submits the command, check metadata-only status:
 
 ```bash
 python3 scripts/private_inbox_status.py
 python3 scripts/pnh_unattended_dispatch_queue_plan.py
-python3 scripts/pnh_single_command_packet.py
+python3 scripts/pnh_dispatch_state_status.py
+python3 scripts/pnh_dispatch_evidence_summary.py
 ```
 
-Review the dry-run first. When the packet is correct and metadata-safe:
+Fallback manual dispatch, only if background dispatch did not run:
 
 ```bash
 python3 scripts/pnh_single_command_packet.py --apply

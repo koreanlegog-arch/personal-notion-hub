@@ -142,7 +142,10 @@ Required:
 - fixture-only QA for screenshots and public reports
 - browser bridge disabled by default
 - exact-origin CORS and CSP
-- no persistent browser storage for token, pairing code, or session token
+- no persistent browser storage for pairing code or browser session token
+- revocable owner-device credential may be stored in browser `localStorage` only
+  when explicitly enabled for remote owner reconnect; the raw credential must
+  not appear in logs, screenshots, chat, docs, or tracked evidence
 - screenshot redaction enabled before capture evidence
 
 Limitations:

@@ -3,6 +3,7 @@
 
   const LOOPBACK_BASE_URL = "http://127.0.0.1:8765";
   const DEFAULT_COMPANION_PORT = "8765";
+  const OWNER_DEVICE_STORAGE_KEY = "pnhOwnerDeviceCredential";
   let sessionToken = "";
 
   function defaultBaseUrl() {
@@ -93,7 +94,7 @@
     if (!code) throw new Error("Pairing code is required");
     const result = await controlledFetch("/api/private/pair", {
       method: "POST",
-      body: { pairingCode: code },
+      body: { pairingCode: code, deviceLabel: ownerDeviceLabel() },
     });
     const token = String(result.headers?.get("X-PNH-Browser-Session") || "");
     if (!result.ok || token.length < 16) {
@@ -101,7 +102,48 @@
       throw new Error(result.data?.error || "Pairing failed");
     }
     sessionToken = token;
-    return { paired: true, status: result.status };
+    const ownerDeviceCredential = String(result.headers?.get("X-PNH-Owner-Device-Credential") || "");
+    if (ownerDeviceCredential) storeOwnerDeviceCredential(ownerDeviceCredential);
+    return {
+      paired: true,
+      status: result.status,
+      ownerDeviceIssued: Boolean(ownerDeviceCredential),
+      ownerDevice: result.data?.ownerDevice || {},
+    };
+  }
+
+  async function restoreOwnerDeviceSession() {
+    const credential = readOwnerDeviceCredential();
+    if (!credential) return { paired: false, restored: false, reason: "owner_device_credential_missing" };
+    const result = await controlledFetch("/api/private/owner-device-session", {
+      method: "POST",
+      body: { ownerDeviceCredential: credential },
+    });
+    const token = String(result.headers?.get("X-PNH-Browser-Session") || "");
+    if (!result.ok || token.length < 16) {
+      clearOwnerDeviceCredential();
+      sessionToken = "";
+      return { paired: false, restored: false, reason: result.data?.error || "owner_device_restore_failed" };
+    }
+    sessionToken = token;
+    return {
+      paired: true,
+      restored: true,
+      status: result.status,
+      ownerDevice: result.data?.ownerDevice || {},
+    };
+  }
+
+  async function revokeOwnerDeviceSession() {
+    const credential = readOwnerDeviceCredential();
+    clearOwnerDeviceCredential();
+    sessionToken = "";
+    if (!credential) return { revoked: false, reason: "owner_device_credential_missing" };
+    const result = await controlledFetch("/api/private/owner-device/revoke", {
+      method: "POST",
+      body: { ownerDeviceCredential: credential },
+    });
+    return { revoked: Boolean(result.data?.revoked), status: result.status };
   }
 
   function disconnect() {
@@ -130,6 +172,7 @@
       status: result.status,
       writesPerformed: Boolean(result.data?.writesPerformed),
       captureId: result.data?.capture?.id || "",
+      autoDispatch: result.data?.autoDispatch || { requested: false },
     };
   }
 
@@ -212,10 +255,42 @@
     health,
     isPaired,
     pair,
+    restoreOwnerDeviceSession,
+    revokeOwnerDeviceSession,
     runSingleCommandPacket,
     sendAssistantCapture,
     sendCapture,
     sendLaunchPacket,
     sendMobileCommandPacket,
   });
+
+  function ownerDeviceLabel() {
+    const ua = window.navigator?.userAgent || "browser";
+    return `owner-browser ${ua.slice(0, 48)}`;
+  }
+
+  function readOwnerDeviceCredential() {
+    try {
+      return String(window.localStorage.getItem(OWNER_DEVICE_STORAGE_KEY) || "");
+    } catch {
+      return "";
+    }
+  }
+
+  function storeOwnerDeviceCredential(value) {
+    try {
+      window.localStorage.setItem(OWNER_DEVICE_STORAGE_KEY, value);
+    } catch {
+      // Persistent owner-device sessions are an enhancement. If localStorage is
+      // unavailable, the normal one-time pairing session remains valid.
+    }
+  }
+
+  function clearOwnerDeviceCredential() {
+    try {
+      window.localStorage.removeItem(OWNER_DEVICE_STORAGE_KEY);
+    } catch {
+      // No-op.
+    }
+  }
 })();

@@ -1,0 +1,48 @@
+{
+  "commandsRun": [
+    {
+      "command": [
+        "/usr/bin/python3",
+        "/home/koreanlego/projects/Personal_Notion_Hub/scripts/pnh_single_command_packet.py",
+        "--run-dir",
+        "/home/koreanlego/projects/Personal_Notion_Hub/ops/runs/PNH-UNATTENDED-ORCHESTRATOR-VALIDATION-20260606/single_command_packet",
+        "--openclaw-env",
+        "[redacted]",
+        "--max-jobs-per-run",
+        "1",
+        "--max-external-writes-per-hour",
+        "3",
+        "--cooldown-minutes",
+        "10"
+      ],
+      "returnCode": 0,
+      "stderrBytes": 0,
+      "stderrFirstLines": [],
+      "stdoutBytes": 370,
+      "stdoutFirstLines": [
+        "{\"externalWritesPerformed\": false, \"mode\": \"dry-run\", \"pendingExternalWriteCount\": 0, \"pnhSingleCommandPacket\": true, \"privateValuesPrinted\": false, \"queuedCount\": 0, \"rawPrivateBodyRead\": false, \"runDir\": \"ops/runs/PNH-UNATTENDED-ORCHESTRATOR-VALIDATION-20260606/single_command_packet\", \"selectedCap"
+      ],
+      "step": "single_command_packet"
+    }
+  ],
+  "generatedAt": "2026-06-06T11:15:48+00:00",
+  "mode": "dry-run",
+  "ownerNotification": {
+    "delivered": false,
+    "reason": "owner_notification_not_requested",
+    "requested": false
+  },
+  "pnhUnattendedOrchestrator": true,
+  "privateValuesPrinted": false,
+  "rawPrivateBodyRead": false,
+  "runDir": "ops/runs/PNH-UNATTENDED-ORCHESTRATOR-VALIDATION-20260606",
+  "singleCommandPacket": {
+    "externalWritesPerformed": false,
+    "out": "ops/runs/PNH-UNATTENDED-ORCHESTRATOR-VALIDATION-20260606/single_command_packet/single_command_packet_summary.json",
+    "queuedCount": 0,
+    "selectedCaptureId": "",
+    "workerRunPerformed": false
+  },
+  "tokenValuePrinted": false,
+  "triggerCaptureId": ""
+}

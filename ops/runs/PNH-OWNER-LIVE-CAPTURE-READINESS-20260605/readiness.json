@@ -106,7 +106,7 @@
     },
     "externalWritesPerformed": false,
     "failedChecks": [],
-    "generatedAt": "2026-06-06T10:50:21+00:00",
+    "generatedAt": "2026-06-06T11:15:52+00:00",
     "materialGateReached": true,
     "materialGateReason": "The next step requires the human owner to pair a browser session and enter real private command content. Codex must not receive or print the pairing code, session token, or raw private body.",
     "nextOperatorAction": "Start the approved tailnet session, pair locally, enter the owner command in the phone browser, then run the single command packet wrapper.",

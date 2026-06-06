@@ -50,6 +50,7 @@ REQUIRED = [
     "companion/secret_backends.py",
     "companion/command_packet_status.py",
     "companion/single_command_packet_runner.py",
+    "companion/owner_device_sessions.py",
     "companion/server.py",
     "scripts/private_inbox_init.py",
     "scripts/simulate_mobile_capture.py",
@@ -137,6 +138,13 @@ REQUIRED = [
     "scripts/pnh_unattended_dispatch_readiness_smoke_check.py",
     "scripts/pnh_unattended_dispatch_pilot.py",
     "scripts/pnh_unattended_dispatch_pilot_smoke_check.py",
+    "scripts/pnh_unattended_orchestrator.py",
+    "scripts/pnh_unattended_orchestrator_smoke_check.py",
+    "scripts/pnh_remote_pairing_handoff.py",
+    "scripts/pnh_remote_pairing_handoff_smoke_check.py",
+    "scripts/pnh_remote_status_notify.py",
+    "scripts/pnh_remote_status_notify_smoke_check.py",
+    "scripts/pnh_owner_device_sessions_smoke_check.py",
     "scripts/pnh_unattended_automation_status.py",
     "scripts/pnh_unattended_automation_status_smoke_check.py",
     "scripts/pnh_single_command_packet.py",
@@ -741,16 +749,22 @@ def assert_companion_bridge_contracts() -> None:
         "dispatchState",
         "commandPacketStatus",
         "runSingleCommandPacket",
+        "OWNER_DEVICE_STORAGE_KEY",
+        "restoreOwnerDeviceSession",
     ]
     for token in expected:
         if token not in bridge:
             raise SystemExit(f"missing_companion_bridge_contract={token}")
     if bridge.count("fetch(") != 1 or "await fetch(target.href" not in bridge:
         raise SystemExit("uncontrolled_companion_fetch=true")
-    forbidden_storage = ["localStorage", "sessionStorage", "indexedDB", "indexedDB.open", "document.cookie"]
+    forbidden_storage = ["sessionStorage", "indexedDB", "indexedDB.open", "document.cookie"]
     for token in forbidden_storage:
         if token in bridge:
             raise SystemExit(f"companion_secret_storage_token={token}")
+    if "localStorage.setItem(\"sessionToken\"" in bridge or "localStorage.setItem('sessionToken'" in bridge:
+        raise SystemExit("companion_session_token_persisted=true")
+    if "localStorage.setItem(\"pairingCode\"" in bridge or "localStorage.setItem('pairingCode'" in bridge:
+        raise SystemExit("companion_pairing_code_persisted=true")
     server = (ROOT / "companion/server.py").read_text(encoding="utf-8")
     for token in [
         "--enable-phone-ingress",

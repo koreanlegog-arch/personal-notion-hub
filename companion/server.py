@@ -20,9 +20,12 @@ from __future__ import annotations
 import argparse
 import json
 import mimetypes
+import os
 import secrets
 import sqlite3
+import subprocess
 import sys
+import threading
 import time
 from ipaddress import ip_address
 from http import HTTPStatus
@@ -36,6 +39,12 @@ try:
     from .dispatch_summary import summarize_dispatch_record
     from .encrypted_vault import EncryptedVault, EncryptedVaultError, cryptography_available, init_encrypted_vault
     from .passphrase_provider import PassphraseProviderError, resolve_passphrase
+    from .owner_device_sessions import (
+        DEFAULT_OWNER_DEVICE_STORE,
+        issue_owner_device_credential,
+        revoke_owner_device_credential,
+        validate_owner_device_credential,
+    )
     from .private_store import (
         DEFAULT_DB_PATH,
         DEFAULT_TOKEN_PATH,
@@ -54,6 +63,12 @@ except ImportError:  # pragma: no cover - supports direct script execution.
     from dispatch_summary import summarize_dispatch_record  # type: ignore
     from encrypted_vault import EncryptedVault, EncryptedVaultError, cryptography_available, init_encrypted_vault  # type: ignore
     from passphrase_provider import PassphraseProviderError, resolve_passphrase  # type: ignore
+    from owner_device_sessions import (  # type: ignore
+        DEFAULT_OWNER_DEVICE_STORE,
+        issue_owner_device_credential,
+        revoke_owner_device_credential,
+        validate_owner_device_credential,
+    )
     from private_store import (  # type: ignore
         DEFAULT_DB_PATH,
         DEFAULT_TOKEN_PATH,
@@ -77,6 +92,8 @@ BROWSER_SESSION_TTL_SECONDS = 10 * 60
 BROWSER_PAIRING_TTL_SECONDS = 5 * 60
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DISPATCH_STATE_PATH = ROOT / "companion" / "private" / "pnh_dispatch_state.json"
+DEFAULT_PAIRING_HANDOFF_PATH = ROOT / "companion" / "private" / "pairing_handoff.json"
+DEFAULT_AUTO_DISPATCH_RUN_DIR = ROOT / "companion" / "private" / "scheduler" / "jobs" / "capture_auto_dispatch"
 STATIC_ALLOWED_PREFIXES = ("assets/", "data/")
 STATIC_ALLOWED_FILES = {"index.html", "favicon.ico"}
 
@@ -99,6 +116,14 @@ class CompanionServer(ThreadingHTTPServer):
         tailnet_ingress_enabled: bool = False,
         browser_session_ttl_seconds: int = BROWSER_SESSION_TTL_SECONDS,
         browser_pairing_ttl_seconds: int = BROWSER_PAIRING_TTL_SECONDS,
+        pairing_handoff_path: Path | None = None,
+        pairing_handoff_channel: str = "",
+        pairing_handoff_owner_target: str = "",
+        capture_auto_dispatch_enabled: bool = False,
+        capture_auto_dispatch_run_dir: Path | None = None,
+        owner_device_sessions_enabled: bool = False,
+        owner_device_store_path: Path | None = None,
+        owner_device_ttl_days: int = 14,
     ) -> None:
         super().__init__(server_address, handler_class)
         self.private_db_path = private_db_path
@@ -115,6 +140,18 @@ class CompanionServer(ThreadingHTTPServer):
         self._pairing_code_expires_at = time.monotonic() + browser_pairing_ttl_seconds
         self._pairing_code_used = False
         self._browser_sessions: dict[str, float] = {}
+        self.pairing_handoff_path = pairing_handoff_path
+        self.pairing_handoff_channel = pairing_handoff_channel
+        self.pairing_handoff_owner_target = pairing_handoff_owner_target
+        self.capture_auto_dispatch_enabled = capture_auto_dispatch_enabled
+        self.capture_auto_dispatch_run_dir = capture_auto_dispatch_run_dir or DEFAULT_AUTO_DISPATCH_RUN_DIR
+        self.owner_device_sessions_enabled = owner_device_sessions_enabled
+        self.owner_device_store_path = owner_device_store_path or DEFAULT_OWNER_DEVICE_STORE
+        self.owner_device_ttl_days = max(1, min(int(owner_device_ttl_days), 30))
+        if self.browser_bridge_enabled and self.browser_pairing_code and self.pairing_handoff_path:
+            self.write_pairing_handoff_event("issued")
+            if self.pairing_handoff_channel:
+                self.deliver_pairing_handoff_event()
 
     @property
     def private_enabled(self) -> bool:
@@ -128,7 +165,7 @@ class CompanionServer(ThreadingHTTPServer):
             return "plaintext-inbox"
         return "disabled"
 
-    def create_browser_session(self, pairing_code: str) -> str | None:
+    def create_browser_session(self, pairing_code: str, *, device_label: str = "owner-browser") -> dict[str, Any] | None:
         if not self.browser_bridge_enabled or not self.private_enabled or self._pairing_code_used:
             return None
         if self._pairing_code_expires_at <= time.monotonic():
@@ -140,7 +177,39 @@ class CompanionServer(ThreadingHTTPServer):
         self.browser_pairing_code = ""
         session_token = secrets.token_urlsafe(32)
         self._browser_sessions[session_token] = time.monotonic() + self.browser_session_ttl_seconds
-        return session_token
+        self.write_pairing_handoff_event("used")
+        result: dict[str, Any] = {
+            "sessionToken": session_token,
+            "ownerDeviceCredential": "",
+            "ownerDevice": {},
+        }
+        if self.owner_device_sessions_enabled:
+            issued = issue_owner_device_credential(
+                self.owner_device_store_path,
+                ttl_days=self.owner_device_ttl_days,
+                device_label=device_label,
+                origin=self.allowed_origin or "",
+            )
+            result["ownerDeviceCredential"] = issued["credential"]
+            result["ownerDevice"] = {
+                **issued["metadata"],
+                "ttlSeconds": issued["ttlSeconds"],
+            }
+        return result
+
+    def create_browser_session_from_owner_device(self, credential: str) -> dict[str, Any] | None:
+        if not self.owner_device_sessions_enabled or not self.browser_bridge_enabled or not self.private_enabled:
+            return None
+        metadata = validate_owner_device_credential(
+            credential,
+            self.owner_device_store_path,
+            origin=self.allowed_origin or "",
+        )
+        if metadata is None:
+            return None
+        session_token = secrets.token_urlsafe(32)
+        self._browser_sessions[session_token] = time.monotonic() + self.browser_session_ttl_seconds
+        return {"sessionToken": session_token, "ownerDevice": metadata}
 
     def has_browser_session(self, session_token: str) -> bool:
         expires_at = self._browser_sessions.get(session_token)
@@ -150,6 +219,92 @@ class CompanionServer(ThreadingHTTPServer):
             self._browser_sessions.pop(session_token, None)
             return False
         return True
+
+    def revoke_owner_device(self, credential: str) -> bool:
+        if not self.owner_device_sessions_enabled:
+            return False
+        return revoke_owner_device_credential(credential, self.owner_device_store_path)
+
+    def write_pairing_handoff_event(self, status: str) -> None:
+        if not self.pairing_handoff_path:
+            return
+        payload = {
+            "pnhPairingHandoff": True,
+            "status": status,
+            "issuedAt": utc_now(),
+            "ttlSeconds": self.browser_pairing_ttl_seconds,
+            "expiresAtEpochHint": int(time.time() + max(0, self._pairing_code_expires_at - time.monotonic())),
+            "pairingCode": self.browser_pairing_code if status == "issued" else "",
+            "deliveryChannel": self.pairing_handoff_channel or "file-only",
+            "ownerTargetSet": bool(self.pairing_handoff_owner_target),
+            "privateValuesPrinted": False,
+            "tokenValuePrinted": False,
+        }
+        try:
+            self.pairing_handoff_path.parent.mkdir(parents=True, exist_ok=True)
+            self.pairing_handoff_path.write_text(
+                json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+                encoding="utf-8",
+            )
+            os.chmod(self.pairing_handoff_path, 0o600)
+        except OSError:
+            return
+
+    def deliver_pairing_handoff_event(self) -> None:
+        if not self.pairing_handoff_path or self.pairing_handoff_channel != "discord-dm":
+            return
+        if not self.pairing_handoff_owner_target:
+            return
+
+        def run_delivery() -> None:
+            out_path = self.pairing_handoff_path.with_name("pairing_handoff_delivery.json")
+            command = [
+                sys.executable,
+                str(ROOT / "scripts" / "pnh_remote_pairing_handoff.py"),
+                "--event-file",
+                str(self.pairing_handoff_path),
+                "--delivery",
+                "discord-dm",
+                "--owner-target",
+                self.pairing_handoff_owner_target,
+                "--out",
+                str(out_path),
+                "--apply",
+                "--approve-owner-dm",
+            ]
+            try:
+                subprocess.run(command, cwd=ROOT, capture_output=True, text=True, timeout=45, check=False)
+            except (OSError, subprocess.TimeoutExpired):
+                return
+
+        threading.Thread(target=run_delivery, name="pnh-pairing-handoff", daemon=True).start()
+
+    def trigger_capture_auto_dispatch(self, capture_id: str) -> dict[str, Any]:
+        if not self.capture_auto_dispatch_enabled:
+            return {"requested": False, "reason": "capture_auto_dispatch_disabled"}
+        capture_id = " ".join(str(capture_id or "").split()).strip()
+        if not capture_id:
+            return {"requested": False, "reason": "capture_id_missing"}
+        run_dir = self.capture_auto_dispatch_run_dir / capture_id
+
+        def run_dispatch() -> None:
+            command = [
+                sys.executable,
+                str(ROOT / "scripts" / "pnh_unattended_orchestrator.py"),
+                "--trigger-capture-id",
+                capture_id,
+                "--run-dir",
+                str(run_dir),
+                "--apply",
+                "--approve-unattended-orchestrator",
+            ]
+            try:
+                subprocess.run(command, cwd=ROOT, capture_output=True, text=True, timeout=900, check=False)
+            except (OSError, subprocess.TimeoutExpired):
+                return
+
+        threading.Thread(target=run_dispatch, name="pnh-capture-auto-dispatch", daemon=True).start()
+        return {"requested": True, "runDir": safe_path_label(run_dir), "privateValuesPrinted": False}
 
 
 class CompanionHandler(BaseHTTPRequestHandler):
@@ -188,6 +343,15 @@ class CompanionHandler(BaseHTTPRequestHandler):
                         "sessionTtlSeconds": self.server.browser_session_ttl_seconds,
                         "pairingTtlSeconds": self.server.browser_pairing_ttl_seconds,
                     },
+                    "captureAutoDispatch": {
+                        "enabled": self.server.capture_auto_dispatch_enabled,
+                        "mode": "background-bounded-orchestrator",
+                    },
+                    "ownerDeviceSessions": {
+                        "enabled": self.server.owner_device_sessions_enabled,
+                        "ttlDays": self.server.owner_device_ttl_days if self.server.owner_device_sessions_enabled else 0,
+                        "responsePolicy": "credential_returned_once_header_only",
+                    },
                 },
             )
             return
@@ -210,6 +374,8 @@ class CompanionHandler(BaseHTTPRequestHandler):
             schema["browserBridge"] = {
                 "enabled": self.server.browser_bridge_enabled,
                 "pairEndpoint": "/api/private/pair",
+                "ownerDeviceSessionEndpoint": "/api/private/owner-device-session",
+                "ownerDeviceRevokeEndpoint": "/api/private/owner-device/revoke",
                 "allowedOriginConfigured": bool(self.server.allowed_origin),
                 "responsePolicy": "metadata-only",
                 "phoneIngressEnabled": self.server.phone_ingress_enabled,
@@ -287,6 +453,12 @@ class CompanionHandler(BaseHTTPRequestHandler):
         if path == "/api/private/pair":
             self._handle_private_pair()
             return
+        if path == "/api/private/owner-device-session":
+            self._handle_owner_device_session()
+            return
+        if path == "/api/private/owner-device/revoke":
+            self._handle_owner_device_revoke()
+            return
         if path == "/api/private/mobile-captures":
             self._handle_private_capture()
             return
@@ -301,6 +473,8 @@ class CompanionHandler(BaseHTTPRequestHandler):
     def do_OPTIONS(self) -> None:
         if self._path() not in {
             "/api/private/pair",
+            "/api/private/owner-device-session",
+            "/api/private/owner-device/revoke",
             "/api/private/mobile-captures",
             "/api/private/phone-adapter-schema",
             "/api/private/phone-adapter-captures",
@@ -355,10 +529,16 @@ class CompanionHandler(BaseHTTPRequestHandler):
             return
 
         pairing_code = str(payload.get("pairingCode") or "")
-        session_token = self.server.create_browser_session(pairing_code)
-        if session_token is None:
+        device_label = str(payload.get("deviceLabel") or "owner-browser")
+        session = self.server.create_browser_session(pairing_code, device_label=device_label)
+        if session is None:
             self._send_json(HTTPStatus.UNAUTHORIZED, {"error": "unauthorized"})
             return
+        session_token = session["sessionToken"]
+        owner_device_credential = str(session.get("ownerDeviceCredential") or "")
+        extra_headers = {"X-PNH-Browser-Session": session_token}
+        if owner_device_credential:
+            extra_headers["X-PNH-Owner-Device-Credential"] = owner_device_credential
 
         self._send_json(
             HTTPStatus.CREATED,
@@ -369,8 +549,76 @@ class CompanionHandler(BaseHTTPRequestHandler):
                     "issued": True,
                     "ttlSeconds": self.server.browser_session_ttl_seconds,
                 },
+                "ownerDevice": {
+                    "issued": bool(owner_device_credential),
+                    "metadata": session.get("ownerDevice", {}),
+                },
             },
-            extra_headers={"X-PNH-Browser-Session": session_token},
+            extra_headers=extra_headers,
+        )
+
+    def _handle_owner_device_session(self) -> None:
+        if not self.server.owner_device_sessions_enabled:
+            self._send_json(HTTPStatus.FORBIDDEN, {"error": "owner_device_sessions_disabled"})
+            return
+        if not self._origin_allowed():
+            self._send_json(HTTPStatus.FORBIDDEN, {"error": "origin_not_allowed"})
+            return
+        payload, error = self._read_json_payload(MAX_BODY_BYTES)
+        if error:
+            status, _path, code = error
+            self._send_json(status, {"error": code})
+            return
+        if not isinstance(payload, dict):
+            self._send_json(HTTPStatus.BAD_REQUEST, {"error": "owner_device_payload_must_be_object"})
+            return
+        credential = str(payload.get("ownerDeviceCredential") or "")
+        session = self.server.create_browser_session_from_owner_device(credential)
+        if session is None:
+            self._send_json(HTTPStatus.UNAUTHORIZED, {"error": "owner_device_unauthorized"})
+            return
+        self._send_json(
+            HTTPStatus.CREATED,
+            {
+                "ok": True,
+                "paired": True,
+                "session": {
+                    "issued": True,
+                    "ttlSeconds": self.server.browser_session_ttl_seconds,
+                    "source": "owner-device",
+                },
+                "ownerDevice": {
+                    "restored": True,
+                    "metadata": session.get("ownerDevice", {}),
+                },
+            },
+            extra_headers={"X-PNH-Browser-Session": session["sessionToken"]},
+        )
+
+    def _handle_owner_device_revoke(self) -> None:
+        if not self.server.owner_device_sessions_enabled:
+            self._send_json(HTTPStatus.FORBIDDEN, {"error": "owner_device_sessions_disabled"})
+            return
+        if not self._origin_allowed():
+            self._send_json(HTTPStatus.FORBIDDEN, {"error": "origin_not_allowed"})
+            return
+        payload, error = self._read_json_payload(MAX_BODY_BYTES)
+        if error:
+            status, _path, code = error
+            self._send_json(status, {"error": code})
+            return
+        if not isinstance(payload, dict):
+            self._send_json(HTTPStatus.BAD_REQUEST, {"error": "owner_device_payload_must_be_object"})
+            return
+        revoked = self.server.revoke_owner_device(str(payload.get("ownerDeviceCredential") or ""))
+        self._send_json(
+            HTTPStatus.OK,
+            {
+                "ok": True,
+                "revoked": revoked,
+                "privateValuesPrinted": False,
+                "tokenValuePrinted": False,
+            },
         )
 
     def _handle_private_capture(self) -> None:
@@ -397,7 +645,16 @@ class CompanionHandler(BaseHTTPRequestHandler):
             self._send_json(HTTPStatus.INTERNAL_SERVER_ERROR, {"error": "private_store_write_failed"})
             return
 
-        self._send_json(HTTPStatus.CREATED, {"ok": True, "writesPerformed": True, "capture": capture})
+        auto_dispatch = self.server.trigger_capture_auto_dispatch(capture["id"])
+        self._send_json(
+            HTTPStatus.CREATED,
+            {
+                "ok": True,
+                "writesPerformed": True,
+                "capture": capture,
+                "autoDispatch": auto_dispatch,
+            },
+        )
 
     def _handle_phone_adapter_capture(self) -> None:
         if not self._require_private_auth():
@@ -563,7 +820,10 @@ class CompanionHandler(BaseHTTPRequestHandler):
     def _send_cors_headers(self) -> None:
         if self._origin_allowed():
             self.send_header("Access-Control-Allow-Origin", self.server.allowed_origin or "")
-            self.send_header("Access-Control-Expose-Headers", "X-PNH-Browser-Session")
+            self.send_header(
+                "Access-Control-Expose-Headers",
+                "X-PNH-Browser-Session, X-PNH-Owner-Device-Credential",
+            )
             self.send_header("Vary", "Origin")
 
     def _send_json(
@@ -652,6 +912,14 @@ def create_server(
     tailnet_ingress_enabled: bool = False,
     browser_session_ttl_seconds: int = BROWSER_SESSION_TTL_SECONDS,
     browser_pairing_ttl_seconds: int = BROWSER_PAIRING_TTL_SECONDS,
+    pairing_handoff_path: Path | None = None,
+    pairing_handoff_channel: str = "",
+    pairing_handoff_owner_target: str = "",
+    capture_auto_dispatch_enabled: bool = False,
+    capture_auto_dispatch_run_dir: Path | None = None,
+    owner_device_sessions_enabled: bool = False,
+    owner_device_store_path: Path | None = None,
+    owner_device_ttl_days: int = 14,
 ) -> CompanionServer:
     if phone_ingress_enabled and tailnet_ingress_enabled:
         raise ValueError("phone ingress and tailnet ingress are separate modes")
@@ -663,6 +931,8 @@ def create_server(
         raise ValueError("phone ingress host must be 0.0.0.0, 127.0.0.1, or a private LAN IP")
     if (phone_ingress_enabled or tailnet_ingress_enabled) and not browser_bridge_enabled:
         raise ValueError("phone ingress requires --enable-browser-bridge")
+    if owner_device_sessions_enabled and not browser_bridge_enabled:
+        raise ValueError("owner device sessions require --enable-browser-bridge")
     if browser_bridge_enabled:
         if not allowed_origin:
             raise ValueError("browser bridge requires --allowed-origin")
@@ -701,6 +971,14 @@ def create_server(
         tailnet_ingress_enabled=tailnet_ingress_enabled,
         browser_session_ttl_seconds=browser_session_ttl_seconds,
         browser_pairing_ttl_seconds=browser_pairing_ttl_seconds,
+        pairing_handoff_path=pairing_handoff_path,
+        pairing_handoff_channel=pairing_handoff_channel,
+        pairing_handoff_owner_target=pairing_handoff_owner_target,
+        capture_auto_dispatch_enabled=capture_auto_dispatch_enabled,
+        capture_auto_dispatch_run_dir=capture_auto_dispatch_run_dir,
+        owner_device_sessions_enabled=owner_device_sessions_enabled,
+        owner_device_store_path=owner_device_store_path,
+        owner_device_ttl_days=owner_device_ttl_days,
     )
 
 
@@ -763,6 +1041,19 @@ def _static_path_allowed(rel: str) -> bool:
     return rel.startswith(STATIC_ALLOWED_PREFIXES)
 
 
+def safe_path_label(path: Path) -> str:
+    try:
+        return str(path.resolve().relative_to(ROOT))
+    except ValueError:
+        return "[external-path]"
+
+
+def utc_now() -> str:
+    from datetime import datetime, timezone
+
+    return datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run the local Personal Notion Hub companion.")
     parser.add_argument("--host", default="127.0.0.1", help="Bind host. Default: 127.0.0.1. Non-loopback requires --enable-phone-ingress.")
@@ -778,6 +1069,14 @@ def main() -> int:
     parser.add_argument("--allowed-origin", default="", help="Allowed browser origin, for example http://127.0.0.1:8000.")
     parser.add_argument("--enable-phone-ingress", action="store_true", help="Serve PNH UI/API for explicit private LAN phone testing.")
     parser.add_argument("--enable-tailnet-ingress", action="store_true", help="Serve PNH UI/API through Tailscale Serve while binding only to 127.0.0.1.")
+    parser.add_argument("--pairing-handoff-file", default="", help="Ignored local file for one-time pairing handoff events.")
+    parser.add_argument("--pairing-handoff-channel", default="", choices=["", "discord-dm"], help="Optional owner-only pairing code delivery channel.")
+    parser.add_argument("--pairing-handoff-owner-target", default="", help="Owner-only OpenClaw target, e.g. user:<discord-user-id>.")
+    parser.add_argument("--enable-capture-auto-dispatch", action="store_true", help="Trigger bounded background dispatch after mobile command capture writes.")
+    parser.add_argument("--capture-auto-dispatch-run-dir", default="", help="Ignored run dir for background capture auto-dispatch.")
+    parser.add_argument("--enable-owner-device-sessions", action="store_true", help="Issue revocable owner device credentials after pairing.")
+    parser.add_argument("--owner-device-store", default="", help="Ignored owner device credential hash store.")
+    parser.add_argument("--owner-device-ttl-days", type=int, default=14, help="Owner device credential TTL, 1-30 days.")
     parser.add_argument("--private-db", default="", help="Private inbox SQLite path. Default: companion/private/...")
     parser.add_argument("--token-file", default="", help="Auth token file path. Default: companion/private/auth_token")
     args = parser.parse_args()
@@ -826,6 +1125,14 @@ def main() -> int:
             allowed_origin=args.allowed_origin or None,
             phone_ingress_enabled=args.enable_phone_ingress,
             tailnet_ingress_enabled=args.enable_tailnet_ingress,
+            pairing_handoff_path=Path(args.pairing_handoff_file) if args.pairing_handoff_file else None,
+            pairing_handoff_channel=args.pairing_handoff_channel,
+            pairing_handoff_owner_target=args.pairing_handoff_owner_target,
+            capture_auto_dispatch_enabled=args.enable_capture_auto_dispatch,
+            capture_auto_dispatch_run_dir=Path(args.capture_auto_dispatch_run_dir) if args.capture_auto_dispatch_run_dir else None,
+            owner_device_sessions_enabled=args.enable_owner_device_sessions,
+            owner_device_store_path=Path(args.owner_device_store) if args.owner_device_store else None,
+            owner_device_ttl_days=args.owner_device_ttl_days,
         )
     except ValueError as exc:
         print(f"startup_error={exc}", file=sys.stderr)
@@ -839,9 +1146,14 @@ def main() -> int:
     print(f"browser_bridge_enabled={httpd.browser_bridge_enabled}")
     print(f"phone_ingress_enabled={httpd.phone_ingress_enabled}")
     print(f"tailnet_ingress_enabled={httpd.tailnet_ingress_enabled}")
+    print(f"capture_auto_dispatch_enabled={httpd.capture_auto_dispatch_enabled}")
+    print(f"owner_device_sessions_enabled={httpd.owner_device_sessions_enabled}")
     if httpd.browser_bridge_enabled:
         print(f"browser_pairing_code={httpd.browser_pairing_code}")
         print(f"browser_pairing_code_ttl_seconds={httpd.browser_pairing_ttl_seconds}")
+        if httpd.pairing_handoff_path:
+            print(f"pairing_handoff_file={safe_path_label(httpd.pairing_handoff_path)}")
+            print(f"pairing_handoff_channel={httpd.pairing_handoff_channel or 'file-only'}")
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:

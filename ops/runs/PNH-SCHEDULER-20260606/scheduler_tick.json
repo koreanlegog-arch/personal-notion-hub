@@ -1,7 +1,7 @@
 {
   "externalWritesPerformed": false,
   "failedJobs": [],
-  "generatedAt": "2026-06-06T10:50:26+00:00",
+  "generatedAt": "2026-06-06T11:19:14+00:00",
   "jobsRun": 11,
   "pnhSchedulerTick": true,
   "privateValuesPrinted": false,
@@ -60,7 +60,7 @@
       "returnCode": 0,
       "status": "ok",
       "stderrFirstLine": "",
-      "stdoutFirstLine": "{\"adapterCount\": 4, \"externalServicesContacted\": false, \"failedAdapters\": [], \"generatedAt\": \"2026-06-06T10:50:24+00:00\", \"mode\": \"readiness\", \"out\": \"ops/runs/PNH-LIVE-PRIVATE-DATA-ADAPTER-20260606/live_adapter_batch_sync.json\", \"pnhLivePr"
+      "stdoutFirstLine": "{\"adapterCount\": 4, \"externalServicesContacted\": false, \"failedAdapters\": [], \"generatedAt\": \"2026-06-06T11:19:12+00:00\", \"mode\": \"readiness\", \"out\": \"ops/runs/PNH-LIVE-PRIVATE-DATA-ADAPTER-20260606/live_adapter_batch_sync.json\", \"pnhLivePr"
     },
     {
       "job": "phone-automation-readiness",

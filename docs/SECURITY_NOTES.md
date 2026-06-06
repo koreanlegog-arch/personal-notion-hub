@@ -144,7 +144,9 @@ Forbidden in all modes:
 - phone ingress without `--enable-phone-ingress`
 - wildcard, public IP, `localhost`, or `0.0.0.0` browser origins for phone ingress
 - committed private inbox files
-- persistent browser storage of token, pairing code, or session token
+- persistent browser storage of pairing code or browser session token
+- raw owner-device credential in logs, screenshots, chat, docs, tracked files,
+  or shared channels
 - passing vault passphrases as CLI values or printing them in evidence
 
 Current private inbox protections:
@@ -183,7 +185,10 @@ Residual risks:
 - `windows-dpapi-file` is tied to the current Windows user/machine and is not a cross-device recovery mechanism
 - existing plaintext private inbox rows are not migrated automatically; apply requires backup and explicit confirmation
 - encrypted capture backup/restore/delete/rotation exists, but forensic secure erase and encrypted attachment/audio export are not implemented
-- browser session token is memory-only, so reload requires re-pairing
+- browser session token is memory-only
+- when owner-device sessions are explicitly enabled, a revocable browser
+  reconnect credential can restore a new short-lived session without exposing
+  the raw credential outside the owner browser and ignored local hash store
 - screenshot redaction is best-effort UI masking, not a substitute for fake-fixture QA
 - phone ingress exposes the companion to the local LAN and should only run on trusted networks
 

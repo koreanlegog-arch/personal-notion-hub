@@ -1,0 +1,69 @@
+{
+  "commandsRun": [
+    {
+      "command": [
+        "python3",
+        "scripts/pnh_unattended_dispatch_queue_plan.py",
+        "--out",
+        "ops/runs/PNH-UNATTENDED-ORCHESTRATOR-VALIDATION-20260606/single_command_packet/queue_plan.json",
+        "--state-file",
+        "companion/private/pnh_dispatch_state.json",
+        "--history-json",
+        "companion/private/pnh_unattended_dispatch_history.json",
+        "--max-jobs-per-run",
+        "1",
+        "--max-external-writes-per-hour",
+        "3",
+        "--cooldown-minutes",
+        "10"
+      ],
+      "returnCode": 0,
+      "stderrBytes": 0,
+      "stderrFirstLines": [],
+      "stdoutBytes": 419,
+      "stdoutFirstLines": [
+        "{\"capturesInspected\": 23, \"delegationScope\": \"bounded_pnh_test_implementation_pilot\", \"externalWritesPerformed\": false, \"mode\": \"dry-run\", \"out\": \"ops/runs/PNH-UNATTENDED-ORCHESTRATOR-VALIDATION-20260606/single_command_packet/queue_plan.json\", \"pnhUnattendedDispatchQueuePlan\": true, \"privateValuesPrinted\": false, \"queueActivationGateRequired\": false, \"queuedCount\": 0, \"skippedCount\": 23, \"tokenValuePrinted\": false}"
+      ],
+      "step": "queue_plan"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/pnh_unattended_dispatch_readiness.py",
+        "--queue-plan",
+        "ops/runs/PNH-UNATTENDED-ORCHESTRATOR-VALIDATION-20260606/single_command_packet/queue_plan.json",
+        "--out",
+        "ops/runs/PNH-UNATTENDED-ORCHESTRATOR-VALIDATION-20260606/single_command_packet/readiness.json"
+      ],
+      "returnCode": 0,
+      "stderrBytes": 0,
+      "stderrFirstLines": [],
+      "stdoutBytes": 384,
+      "stdoutFirstLines": [
+        "{\"activationGateRequired\": false, \"delegationScope\": \"project_AGENTS_bounded_dispatch_delegation\", \"externalWritesPerformed\": false, \"out\": \"ops/runs/PNH-UNATTENDED-ORCHESTRATOR-VALIDATION-20260606/single_command_packet/readiness.json\", \"pnhUnattendedDispatchReadiness\": true, \"privateValuesPrinted\": false, \"tokenValuePrinted\": false, \"verdict\": \"ready_for_delegated_bounded_pilot\"}"
+      ],
+      "step": "readiness"
+    }
+  ],
+  "discordReplyDelivered": false,
+  "externalWritesPerformed": false,
+  "generatedAt": "2026-06-06T11:15:48+00:00",
+  "message": "queue_empty",
+  "mode": "dry-run",
+  "paths": {
+    "labels": "ops/runs/PNH-UNATTENDED-ORCHESTRATOR-VALIDATION-20260606/single_command_packet/label_reconciliation",
+    "pilot": "ops/runs/PNH-UNATTENDED-ORCHESTRATOR-VALIDATION-20260606/single_command_packet/dispatch_pilot",
+    "queue": "ops/runs/PNH-UNATTENDED-ORCHESTRATOR-VALIDATION-20260606/single_command_packet",
+    "root": "ops/runs/PNH-UNATTENDED-ORCHESTRATOR-VALIDATION-20260606/single_command_packet",
+    "worker": "ops/runs/PNH-UNATTENDED-ORCHESTRATOR-VALIDATION-20260606/single_command_packet/worker_capture"
+  },
+  "pnhSingleCommandPacket": true,
+  "privateValuesPrinted": false,
+  "queuedCount": 0,
+  "rawPrivateBodyRead": false,
+  "runDir": "ops/runs/PNH-UNATTENDED-ORCHESTRATOR-VALIDATION-20260606/single_command_packet",
+  "runId": "PNH-COMMAND-PACKET-20260606T111548Z",
+  "selectedCaptureId": "",
+  "tokenValuePrinted": false,
+  "workerRunPerformed": false
+}
