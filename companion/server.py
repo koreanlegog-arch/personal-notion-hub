@@ -7,6 +7,7 @@ Endpoints:
 - POST /api/import/preview
 - POST /api/private/mobile-captures
 - POST /api/private/phone-adapter-captures
+- GET /api/private/phone-adapter-schema
 - GET /api/private/mobile-captures
 - GET /api/private/summary
 - GET /api/private/dispatch-state
@@ -45,7 +46,7 @@ try:
         read_token,
         store_summary,
     )
-    from .phone_adapter_ingest import PhoneAdapterIngestError, normalize_phone_adapter_payload
+    from .phone_adapter_ingest import PhoneAdapterIngestError, normalize_phone_adapter_payload, phone_adapter_schema
     from .preview import SCHEMA, preview_import, zero_counts
     from .single_command_packet_runner import SingleCommandPacketRunError, run_single_command_packet_from_browser
 except ImportError:  # pragma: no cover - supports direct script execution.
@@ -63,7 +64,7 @@ except ImportError:  # pragma: no cover - supports direct script execution.
         read_token,
         store_summary,
     )
-    from phone_adapter_ingest import PhoneAdapterIngestError, normalize_phone_adapter_payload  # type: ignore
+    from phone_adapter_ingest import PhoneAdapterIngestError, normalize_phone_adapter_payload, phone_adapter_schema  # type: ignore
     from preview import SCHEMA, preview_import, zero_counts
     from single_command_packet_runner import SingleCommandPacketRunError, run_single_command_packet_from_browser  # type: ignore
 
@@ -197,6 +198,7 @@ class CompanionHandler(BaseHTTPRequestHandler):
                 "auth": "bearer-token" if self.server.private_enabled else "disabled",
                 "writeEndpoint": "/api/private/mobile-captures",
                 "phoneAdapterEndpoint": "/api/private/phone-adapter-captures",
+                "phoneAdapterSchemaEndpoint": "/api/private/phone-adapter-schema",
                 "summaryEndpoint": "/api/private/summary",
                 "dispatchStateEndpoint": "/api/private/dispatch-state",
                 "commandPacketStatusEndpoint": "/api/private/command-packet-status",
@@ -270,6 +272,11 @@ class CompanionHandler(BaseHTTPRequestHandler):
                 return
             self._send_json(HTTPStatus.OK, {"ok": True, "items": items})
             return
+        if path == "/api/private/phone-adapter-schema":
+            if not self._require_private_auth():
+                return
+            self._send_json(HTTPStatus.OK, {"ok": True, "phoneAdapterSchema": phone_adapter_schema()})
+            return
         self._send_json(HTTPStatus.NOT_FOUND, {"error": "not_found"})
 
     def do_POST(self) -> None:
@@ -295,6 +302,7 @@ class CompanionHandler(BaseHTTPRequestHandler):
         if self._path() not in {
             "/api/private/pair",
             "/api/private/mobile-captures",
+            "/api/private/phone-adapter-schema",
             "/api/private/phone-adapter-captures",
             "/api/private/summary",
             "/api/private/dispatch-state",

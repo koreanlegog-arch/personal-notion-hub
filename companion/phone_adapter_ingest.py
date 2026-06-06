@@ -7,6 +7,7 @@ private body values in response summaries.
 
 from __future__ import annotations
 
+import json
 from typing import Any
 
 
@@ -32,6 +33,13 @@ PHONE_ADAPTERS = {
         "kind": "voice_note",
         "sensitivity": "highly_sensitive",
     },
+}
+
+PHONE_ADAPTER_ITEM_FIELDS = {
+    "title": "Short item title. Falls back to name, summary, or generated label.",
+    "body": "Private content body. Falls back to text, notes, description, or full item JSON.",
+    "sensitivity": "internal, private, or highly_sensitive.",
+    "createdAt": "Optional ISO-like timestamp from the source automation.",
 }
 
 
@@ -80,5 +88,44 @@ def clean_sensitivity(value: Any) -> str:
 
 def clean_text(value: Any) -> str:
     if isinstance(value, (dict, list)):
-        return str(value)
+        return json.dumps(value, ensure_ascii=False, sort_keys=True)
     return " ".join(str(value or "").replace("\r\n", "\n").split()).strip()
+
+
+def phone_adapter_schema() -> dict[str, Any]:
+    return {
+        "endpoint": "/api/private/phone-adapter-captures",
+        "method": "POST",
+        "auth": "bearer-token-or-browser-session",
+        "contentType": "application/json",
+        "maxItems": MAX_ITEMS,
+        "responsePolicy": "metadata-only",
+        "privateValuesPrinted": False,
+        "adapters": [
+            {
+                "name": name,
+                "source": config["source"],
+                "kind": config["kind"],
+                "defaultSensitivity": config["sensitivity"],
+                "itemFields": PHONE_ADAPTER_ITEM_FIELDS,
+            }
+            for name, config in sorted(PHONE_ADAPTERS.items())
+        ],
+    }
+
+
+def phone_adapter_template(adapter_name: str) -> dict[str, Any]:
+    if adapter_name not in PHONE_ADAPTERS:
+        raise PhoneAdapterIngestError("unknown phone adapter")
+    return {
+        "adapter": adapter_name,
+        "createdAt": "2026-06-06T00:00:00Z",
+        "items": [
+            {
+                "title": "Synthetic private item",
+                "body": "Synthetic private body for local fixture rehearsal only.",
+                "sensitivity": PHONE_ADAPTERS[adapter_name]["sensitivity"],
+                "createdAt": "2026-06-06T00:00:00Z",
+            }
+        ],
+    }

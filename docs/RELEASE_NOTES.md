@@ -21,6 +21,8 @@ including guarded live-adapter and bounded scheduler foundations.
 - bounded local scheduler tick/loop scripts with live-adapter readiness job
 - user-systemd scheduler timer installer, uninstaller, status script, and
   runtime output routing
+- phone automation adapter runbook, schema/template generator, and local send
+  rehearsal script
 - bounded unattended dispatch delegation wording update
 - docs update for current capability boundaries
 
@@ -35,6 +37,7 @@ including guarded live-adapter and bounded scheduler foundations.
   output routing
 - phone adapter POST ingress smoke stored fixture data through encrypted vault
   mode without echoing private values
+- phone adapter schema/template/send smoke passed with metadata-only output
 - no private values or token values printed by validation commands
 
 ### Boundaries

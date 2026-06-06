@@ -70,6 +70,7 @@ The current verified Launch flow can:
 29. batch-check all live adapter slots from one readiness command
 30. run bounded scheduler ticks/loops or a user-systemd timer for local status, queue, retry, evidence, and live-adapter readiness checks
 31. accept authenticated phone automation adapter POST payloads into encrypted vault storage
+32. generate phone adapter JSON templates and rehearse local phone adapter sends without printing token or private values
 
 Latest owner live command-packet dispatch:
 
@@ -280,6 +281,8 @@ phone data.
 Smoke:
 
 ```bash
+python3 scripts/pnh_phone_adapter_payload_template.py --schema
+python3 scripts/pnh_phone_adapter_send_smoke_check.py
 python3 scripts/phone_adapter_ingress_smoke_check.py
 ```
 
@@ -348,6 +351,10 @@ project `AGENTS.md` and do not require a separate per-run approval.
   checks manually or through a user-systemd timer.
 - `POST /api/private/phone-adapter-captures`: accepts authenticated phone
   automation adapter JSON payloads and stores them in encrypted vault mode.
+- `docs/PHONE_AUTOMATION_ADAPTER_RUNBOOK.md`,
+  `scripts/pnh_phone_adapter_payload_template.py`, and
+  `scripts/pnh_phone_adapter_send.py`: define and rehearse phone automation
+  payload contracts.
 
 ## Practical Current Usage
 

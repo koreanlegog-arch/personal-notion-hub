@@ -266,8 +266,15 @@ vault mode, response bodies stay metadata-only.
 Smoke:
 
 ```bash
+python3 scripts/pnh_phone_adapter_payload_template.py --schema
+python3 scripts/pnh_phone_adapter_payload_template.py --adapter phone-call-log-json
+python3 scripts/pnh_phone_adapter_send_smoke_check.py
 python3 scripts/phone_adapter_ingress_smoke_check.py
 ```
+
+Runbook:
+
+- `docs/PHONE_AUTOMATION_ADAPTER_RUNBOOK.md`
 
 ## Local Companion Prototype
 
