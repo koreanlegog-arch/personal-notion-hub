@@ -66,7 +66,6 @@ def main() -> int:
 
 def run_model(args: argparse.Namespace, run_id: str, model: dict[str, Any]) -> dict[str, Any]:
     task_family = model["taskFamilies"][0]
-    modes = ",".join(model["defaultModes"])
     prefix = f"{run_id}-{model['id']}"
     command = [
         sys.executable,
@@ -83,8 +82,6 @@ def run_model(args: argparse.Namespace, run_id: str, model: dict[str, Any]) -> d
         task_family,
         "--surface",
         args.surface,
-        "--modes",
-        modes,
     ]
     if args.retain_passing_command_logs:
         command.append("--retain-passing-command-logs")

@@ -49,11 +49,6 @@ def main() -> int:
     parser.add_argument("--difficulty-band", default="M", choices=["S", "M", "L"])
     parser.add_argument("--task-family", default="pnh-local-validation")
     parser.add_argument("--surface", default="local-cli-browser-qa")
-    parser.add_argument(
-        "--modes",
-        default=",".join(VALID_MODES),
-        help="Comma-separated operation modes to run. Default: all four modes.",
-    )
     parser.add_argument("--retain-passing-command-logs", action="store_true")
     args = parser.parse_args()
 
@@ -69,7 +64,7 @@ def main() -> int:
 def run_benchmark(args: argparse.Namespace) -> dict[str, Any]:
     if args.sets < 1:
         raise FourModeBenchmarkError("sets must be at least 1")
-    modes = parse_modes(args.modes)
+    modes = list(VALID_MODES)
     run_id = f"{args.benchmark_prefix}-SETS{args.sets}"
     run_dir = ROOT / "ops" / "runs" / run_id
     run_dir.mkdir(parents=True, exist_ok=False)
@@ -120,17 +115,6 @@ def run_benchmark(args: argparse.Namespace) -> dict[str, Any]:
     )
     (run_dir / "operation_mode_summary.json").write_text(summarize_result.stdout, encoding="utf-8")
     return summary
-
-
-def parse_modes(value: str) -> list[str]:
-    modes = [item.strip() for item in value.split(",") if item.strip()]
-    if not modes:
-        raise FourModeBenchmarkError("modes must include at least one mode")
-    invalid = [mode for mode in modes if mode not in VALID_MODES]
-    if invalid:
-        raise FourModeBenchmarkError(f"invalid mode(s): {', '.join(invalid)}")
-    return modes
-
 
 def run_mode(args: argparse.Namespace, benchmark_id: str, mode: str, mode_dir: Path) -> dict[str, Any]:
     mode_dir.mkdir(parents=True, exist_ok=True)

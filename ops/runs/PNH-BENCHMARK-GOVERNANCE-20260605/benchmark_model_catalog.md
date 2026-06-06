@@ -25,7 +25,7 @@ This catalog defines benchmark models to collect comparable speed, quality, and 
 - purpose: Measure security-preflight, implementation, review, and validation separation for sensitive local storage/auth work.
 - task families: `security-sensitive-local-storage, auth-boundary-change, secret-handling-workflow`
 - recommended reasoning: `high`
-- default modes: `supervisor-central, normal-harness, strict-harness`
+- default modes: `supervisor-only, supervisor-central, normal-harness, strict-harness`
 - primary metrics: `defect_count, security_risk_handling_score, quality_adjusted_efficiency`
 - when to use: Before accepting sensitive-data MVP changes or modifying auth/encryption behavior.
 
@@ -52,15 +52,15 @@ This catalog defines benchmark models to collect comparable speed, quality, and 
 - purpose: Compare release packet, QA checklist, security gate, evidence summary, and handoff review distribution.
 - task families: `release-readiness, client-handoff, delivery-gate`
 - recommended reasoning: `high`
-- default modes: `supervisor-central, normal-harness, strict-harness`
+- default modes: `supervisor-only, supervisor-central, normal-harness, strict-harness`
 - primary metrics: `total_quality_score, evidence_report_score, supervisor_direct_implementation_ratio`
 - when to use: Before external handoff, deployment readiness decisions, or pilot release.
 
-## long-run-unattended-benchmark
+## long-run-unattended-four-mode
 
 - purpose: Measure sustained queue processing, rollback behavior, rate-limit behavior, and failure recovery over longer unattended runs.
 - task families: `unattended-dispatch, queue-processing, rollback-recovery`
 - recommended reasoning: `medium`
-- default modes: `normal-harness, strict-harness`
+- default modes: `supervisor-only, supervisor-central, normal-harness, strict-harness`
 - primary metrics: `defect_count, rework_count, stop_condition_triggered, elapsed_minutes`
 - when to use: Only when the user explicitly starts a longer benchmark window.

@@ -2,17 +2,6 @@
 
 Thresholds are generated from existing completed benchmark records. Provisional thresholds warn but should not hard-block until sample count is sufficient.
 
-## benchmark-runner-smoke
-
-- minimum samples for active gate: `3`
-
-| Mode | Status | Samples | Max elapsed min | Min quality | Min operational | Max rework | Max defect |
-| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| supervisor-only | provisional | 1 | 0.1863 | 19 | 40.38 | 1 | 1 |
-| supervisor-central | provisional | 0 |  |  |  |  |  |
-| normal-harness | provisional | 0 |  |  |  |  |  |
-| strict-harness | provisional | 0 |  |  |  |  |  |
-
 ## bug-triage
 
 - minimum samples for active gate: `3`
@@ -56,36 +45,3 @@ Thresholds are generated from existing completed benchmark records. Provisional 
 | supervisor-central | active | 13 | 0.2694 | 23 | 55.25 | 1 | 1 |
 | normal-harness | active | 13 | 0.16 | 24 | 69.45 | 1 | 1 |
 | strict-harness | active | 13 | 0.0998 | 27 | 68.72 | 1 | 1 |
-
-## release-readiness
-
-- minimum samples for active gate: `3`
-
-| Mode | Status | Samples | Max elapsed min | Min quality | Min operational | Max rework | Max defect |
-| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| supervisor-only | provisional | 0 |  |  |  |  |  |
-| supervisor-central | active | 10 | 0.2051 | 23 | 55.25 | 1 | 1 |
-| normal-harness | active | 10 | 0.1489 | 24 | 69.45 | 1 | 1 |
-| strict-harness | active | 10 | 0.1401 | 27 | 68.72 | 1 | 1 |
-
-## security-sensitive-local-storage
-
-- minimum samples for active gate: `3`
-
-| Mode | Status | Samples | Max elapsed min | Min quality | Min operational | Max rework | Max defect |
-| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| supervisor-only | provisional | 0 |  |  |  |  |  |
-| supervisor-central | active | 10 | 0.1913 | 23 | 55.25 | 1 | 1 |
-| normal-harness | active | 10 | 0.0922 | 24 | 69.45 | 1 | 1 |
-| strict-harness | active | 10 | 0.213 | 27 | 68.72 | 1 | 1 |
-
-## unattended-dispatch
-
-- minimum samples for active gate: `3`
-
-| Mode | Status | Samples | Max elapsed min | Min quality | Min operational | Max rework | Max defect |
-| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| supervisor-only | provisional | 0 |  |  |  |  |  |
-| supervisor-central | provisional | 0 |  |  |  |  |  |
-| normal-harness | active | 10 | 0.1471 | 24 | 69.45 | 1 | 1 |
-| strict-harness | active | 10 | 0.1014 | 27 | 68.72 | 1 | 1 |

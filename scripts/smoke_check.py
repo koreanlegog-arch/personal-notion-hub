@@ -7,6 +7,8 @@ This script intentionally avoids external dependencies.
 from __future__ import annotations
 
 import re
+import subprocess
+import sys
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -111,6 +113,7 @@ REQUIRED = [
     "scripts/pnh_single_command_packet_browser_run_smoke_check.py",
     "scripts/pnh_supervisor_review_summary.py",
     "scripts/pnh_supervisor_review_summary_smoke_check.py",
+    "scripts/pnh_benchmark_acceptance_contract.py",
     "scripts/pnh_benchmark_model_catalog_runner.py",
     "scripts/start_tailnet_session.sh",
     "scripts/stop_tailnet_session.sh",
@@ -846,6 +849,19 @@ def assert_workflow_permissions() -> None:
             raise SystemExit(f"missing_workflow_contract={token}")
 
 
+def assert_benchmark_acceptance_contracts() -> None:
+    result = subprocess.run(
+        [sys.executable, str(ROOT / "scripts/pnh_benchmark_acceptance_contract.py")],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        timeout=30,
+        check=False,
+    )
+    if result.returncode != 0:
+        raise SystemExit(result.stderr.strip() or result.stdout.strip() or "benchmark_acceptance_contract_failed")
+
+
 def main() -> int:
     assert_required_files()
     assert_private_data_adapter_governance_contracts()
@@ -861,6 +877,7 @@ def main() -> int:
     assert_encrypted_vault_contracts()
     assert_redaction_contracts()
     assert_workflow_permissions()
+    assert_benchmark_acceptance_contracts()
     print("smoke_check_pass=true")
     return 0
 

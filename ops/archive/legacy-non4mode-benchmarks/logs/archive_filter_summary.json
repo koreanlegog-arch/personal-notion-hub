@@ -1,0 +1,13 @@
+{
+  "archive": "ops/archive/legacy-non4mode-benchmarks/logs/harness_operation_mode_measurements_with_partial_modes_20260606.jsonl",
+  "archivedPartialModeOperationRecords": true,
+  "archivedPrefixes": [
+    "PNH-4MODE-BENCHMARK-SMOKE-20260606",
+    "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-security-sensitive-change-four-mode",
+    "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-release-readiness-four-mode",
+    "PNH-BENCHMARK-MODEL-CATALOG-20260606-HIGH-long-run-unattended-benchmark"
+  ],
+  "archivedRecordCount": 81,
+  "keptRecordCount": 172,
+  "source": "ops/runs/harness_operation_mode_measurements.jsonl"
+}
