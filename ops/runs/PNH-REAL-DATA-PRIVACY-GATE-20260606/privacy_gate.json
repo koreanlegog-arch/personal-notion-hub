@@ -1,0 +1,73 @@
+{
+  "assertions": [
+    {
+      "name": "sensitive_owner_ready",
+      "pass": true
+    },
+    {
+      "name": "plaintext_rows_zero",
+      "pass": true
+    },
+    {
+      "name": "encrypted_vault_has_rows",
+      "pass": true
+    },
+    {
+      "name": "vault_passphrase_stored",
+      "pass": true
+    },
+    {
+      "name": "companion_service_active",
+      "pass": true
+    },
+    {
+      "name": "companion_encrypted_vault_health",
+      "pass": true
+    },
+    {
+      "name": "companion_browser_bridge_disabled",
+      "pass": true
+    },
+    {
+      "name": "scheduler_timer_active",
+      "pass": true
+    },
+    {
+      "name": "scheduler_runtime_output_exists",
+      "pass": true
+    },
+    {
+      "name": "tailnet_health_ok",
+      "pass": true
+    },
+    {
+      "name": "tailnet_owner_path_available",
+      "pass": true
+    },
+    {
+      "name": "no_private_values_printed",
+      "pass": true
+    },
+    {
+      "name": "no_token_values_printed",
+      "pass": true
+    }
+  ],
+  "blockers": [],
+  "checks": {
+    "companionEncryptedVaultEnabled": true,
+    "companionServiceActive": "active",
+    "encryptedVaultRows": 14,
+    "plaintextInboxRows": 0,
+    "schedulerTimerActive": "active",
+    "sensitiveOwnerVerdict": "ready_for_sensitive_local_owner_mode",
+    "tailnetIpv4Set": true,
+    "tailnetRunning": true
+  },
+  "generatedAt": "2026-06-06T07:06:53+00:00",
+  "pnhRealDataPrivacyGate": true,
+  "privateValuesPrinted": false,
+  "rawPrivateBodyRead": false,
+  "tokenValuePrinted": false,
+  "verdict": "ready_for_controlled_real_phone_adapter_run"
+}

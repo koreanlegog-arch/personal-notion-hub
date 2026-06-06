@@ -161,6 +161,8 @@ REQUIRED = [
     "scripts/pnh_tailnet_companion_api_stop.sh",
     "scripts/pnh_tailnet_companion_api_status.py",
     "scripts/pnh_tailnet_companion_api_smoke_check.py",
+    "scripts/pnh_real_data_privacy_gate.py",
+    "scripts/pnh_real_data_privacy_gate_smoke_check.py",
     "tests/redacted-ui.spec.cjs",
     "tests/launch-status-sync.spec.cjs",
     "scripts/run_playwright_launch_status_sync_qa.sh",
