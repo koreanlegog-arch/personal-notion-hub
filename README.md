@@ -232,10 +232,19 @@ Bounded scheduler MVP:
 python3 scripts/pnh_scheduler_tick.py
 python3 scripts/pnh_scheduler_loop.py --iterations 1 --interval-seconds 1
 python3 scripts/pnh_scheduler_smoke_check.py
+python3 scripts/pnh_scheduler_service_status.py
 ```
 
-The scheduler scripts run bounded local checks only. They do not install a
-daemon, cron job, or systemd service.
+The scheduler can run manually or as an installed user-systemd timer. Service
+runtime output is written under ignored `companion/private/scheduler/`, not
+tracked `ops/runs/`.
+
+Install or remove the user timer:
+
+```bash
+bash scripts/pnh_scheduler_install_user_service.sh --apply --interval-minutes 10
+bash scripts/pnh_scheduler_uninstall_user_service.sh --apply
+```
 
 Phone automation POST ingress:
 
@@ -277,8 +286,8 @@ Current limits:
   env-backed calendar, contacts, call-log, and transcript endpoints
 - authenticated phone automation POST endpoint is available for JSON payloads
   from owner-controlled tools such as Shortcuts or Tasker
-- bounded local scheduler tick/loop scripts are available without service
-  installation
+- bounded local scheduler tick/loop scripts and user-systemd timer installer are
+  available
 - encrypted backup/restore/delete scripts are available for encrypted capture rows
 - plaintext migration apply is available behind an explicit backup and confirmation gate
 - prompt-first passphrase input is available

@@ -1,8 +1,8 @@
 # PNH Unattended Dispatch Runbook
 
 Status: bounded pilot batches are delegated for PNH test and implementation
-evidence; bounded local scheduler scripts are available, but installed daemon
-mode is not enabled.
+evidence; bounded local scheduler scripts and a user-systemd timer are
+available.
 Date: 2026-06-06
 
 ## Purpose
@@ -120,23 +120,32 @@ python3 scripts/pnh_unattended_retry_backoff.py --apply
 
 ## Scheduler Model
 
-The scheduler MVP is a bounded local runner, not an installed daemon. It can run
-status, queue, retry, and evidence jobs in one tick or in a capped loop.
+The scheduler MVP is a bounded local runner. It can run status, queue, retry,
+evidence, and live-adapter readiness jobs in one tick, in a capped loop, or as a
+user-systemd timer.
 
 ```bash
 python3 scripts/pnh_scheduler_tick.py
 python3 scripts/pnh_scheduler_loop.py --iterations 1 --interval-seconds 1
+python3 scripts/pnh_scheduler_service_status.py
 ```
 
 Safety boundaries:
 
-- no service installation
-- no cron or systemd mutation
+- user-systemd timer only; no system-level service
+- service runtime output goes to ignored `companion/private/scheduler/`
 - no unbounded loop; iterations and intervals are capped
 - no raw private values in scheduler output
 - no external write by default
 - live adapter job is readiness-only by default and does not fetch external
   data unless a separate guarded sync command is run
+
+Install or remove the user timer:
+
+```bash
+bash scripts/pnh_scheduler_install_user_service.sh --apply --interval-minutes 10
+bash scripts/pnh_scheduler_uninstall_user_service.sh --apply
+```
 
 ## Readiness Assessment
 
@@ -251,8 +260,8 @@ First approved pilot batch:
 
 ## Remaining Gaps
 
-- installed daemon/service integration
-- production scheduler supervision
+- production companion server daemon
+- production scheduler alerting and escalation
 - live Discord worker-progress parsing from thread bodies
 - production live phone/cloud private-data adapters
 
@@ -266,6 +275,7 @@ First approved pilot batch:
   private data imports into encrypted vault storage.
 - `scripts/pnh_unattended_retry_backoff.py` plans bounded retry candidates for
   failed or blocked records.
-- `scripts/pnh_scheduler_tick.py` and `scripts/pnh_scheduler_loop.py` run
-  bounded local scheduler checks, including live-adapter readiness, without
-  installing a service.
+- `scripts/pnh_scheduler_tick.py`, `scripts/pnh_scheduler_loop.py`, and
+  `scripts/pnh_scheduler_install_user_service.sh` run bounded local scheduler
+  checks, including live-adapter readiness, manually or through a user-systemd
+  timer.

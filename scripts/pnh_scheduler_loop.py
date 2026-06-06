@@ -25,6 +25,7 @@ def main() -> int:
     parser.add_argument("--jobs", default="private-status,queue-plan,retry-backoff,dispatch-evidence,adapter-status,live-adapter-status")
     parser.add_argument("--run-dir", default=str(DEFAULT_RUN_DIR))
     parser.add_argument("--lock-file", default=str(DEFAULT_LOCK))
+    parser.add_argument("--runtime-dir", default="", help="Optional ignored runtime dir for child job outputs.")
     args = parser.parse_args()
 
     lock = Path(args.lock_file)
@@ -45,6 +46,8 @@ def main() -> int:
                 "--out",
                 str(tick_out),
             ]
+            if args.runtime_dir:
+                command.extend(["--runtime-dir", str(Path(args.runtime_dir) / f"iteration_{index + 1}")])
             result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, timeout=90, check=False)
             events.append({"iteration": index + 1, "returnCode": result.returncode, "out": safe_path_label(tick_out)})
             if index < iterations - 1:

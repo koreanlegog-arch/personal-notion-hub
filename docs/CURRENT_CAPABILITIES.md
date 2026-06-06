@@ -68,7 +68,7 @@ The current verified Launch flow can:
 27. fetch fixture or approved live adapter payloads into encrypted vault storage through fail-closed apply mode
 28. plan unattended retry/backoff candidates for failed or blocked dispatch records
 29. batch-check all live adapter slots from one readiness command
-30. run bounded scheduler ticks/loops for local status, queue, retry, evidence, and live-adapter readiness checks without installing a daemon
+30. run bounded scheduler ticks/loops or a user-systemd timer for local status, queue, retry, evidence, and live-adapter readiness checks
 31. accept authenticated phone automation adapter POST payloads into encrypted vault storage
 
 Latest owner live command-packet dispatch:
@@ -245,14 +245,17 @@ python3 scripts/pnh_live_private_data_adapter_batch_sync_smoke_check.py
 
 ### Bounded Scheduler MVP
 
-Scheduler scripts are available for bounded local ticks and loops. They do not
-install a service, daemon, cron entry, or systemd unit.
+Scheduler scripts are available for bounded local ticks and loops. A
+user-systemd timer installer is also available for WSL/systemd environments.
 
 ```bash
 python3 scripts/pnh_scheduler_tick.py
 python3 scripts/pnh_scheduler_loop.py --iterations 1 --interval-seconds 1
 python3 scripts/pnh_scheduler_smoke_check.py
+python3 scripts/pnh_scheduler_service_status.py
 ```
+
+Runtime service output is written under ignored `companion/private/scheduler/`.
 
 ### Phone Automation Adapter POST
 
@@ -312,7 +315,7 @@ project `AGENTS.md` and do not require a separate per-run approval.
 
 - unattended mobile-to-worker automation beyond bounded pilot batches,
   metadata-safe worker captures, and bounded local scheduler ticks
-- installed daemon/service activation
+- production companion server daemon activation
 - production-grade live phone/contact/call/recording/calendar API ingestion
 - native phone app extraction client
 - multi-user distribution
@@ -340,8 +343,9 @@ project `AGENTS.md` and do not require a separate per-run approval.
   URL or token values.
 - `scripts/pnh_unattended_retry_backoff.py`: plans bounded retry candidates for
   failed or blocked dispatch records.
-- `scripts/pnh_scheduler_tick.py` and `scripts/pnh_scheduler_loop.py`: run
-  bounded local scheduler checks without service installation.
+- `scripts/pnh_scheduler_tick.py`, `scripts/pnh_scheduler_loop.py`, and
+  `scripts/pnh_scheduler_install_user_service.sh`: run bounded local scheduler
+  checks manually or through a user-systemd timer.
 - `POST /api/private/phone-adapter-captures`: accepts authenticated phone
   automation adapter JSON payloads and stores them in encrypted vault mode.
 

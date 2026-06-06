@@ -19,6 +19,8 @@ including guarded live-adapter and bounded scheduler foundations.
 - authenticated phone automation adapter POST endpoint
 - bounded unattended retry/backoff planning
 - bounded local scheduler tick/loop scripts with live-adapter readiness job
+- user-systemd scheduler timer installer, uninstaller, status script, and
+  runtime output routing
 - bounded unattended dispatch delegation wording update
 - docs update for current capability boundaries
 
@@ -29,7 +31,8 @@ including guarded live-adapter and bounded scheduler foundations.
 - semantic progress metadata applied to the latest Launch packet without storing message content
 - contacts/calendar/call-log/transcript adapter MVP smoke tested with fixture data
 - live adapter sync fixture smoke passed without printing private values
-- scheduler smoke passed without installing a daemon or service
+- scheduler smoke passed and user-systemd timer installed with ignored runtime
+  output routing
 - phone adapter POST ingress smoke stored fixture data through encrypted vault
   mode without echoing private values
 - no private values or token values printed by validation commands
@@ -38,7 +41,7 @@ including guarded live-adapter and bounded scheduler foundations.
 
 - no production live phone API, cloud account, OAuth, Discord thread body, or external real-data adapter was connected
 - real private adapter apply mode writes only to local encrypted vault
-- installed daemon/service activation and unbounded unattended automation remain out of scope
+- production companion server daemon activation and unbounded unattended automation remain out of scope
 
 ## 2026-06-05 - Assistant Dispatch Intent
 

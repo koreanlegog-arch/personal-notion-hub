@@ -30,6 +30,8 @@ def main() -> int:
                 str(temp / "runs"),
                 "--lock-file",
                 str(temp / "scheduler.lock"),
+                "--runtime-dir",
+                str(temp / "runtime"),
             ],
             capture_output=True,
             text=True,
