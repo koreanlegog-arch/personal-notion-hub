@@ -1,0 +1,106 @@
+{
+  "authHeader": "Bearer <PNH_PRIVATE_INBOX_TOKEN>",
+  "baseUrl": "http://<owner-tailnet-ip>:8765",
+  "contentType": "application/json",
+  "endpoint": "/api/private/phone-adapter-captures",
+  "method": "POST",
+  "operatorWarnings": [
+    "Do not paste the real bearer token into chat, docs, screenshots, or Git.",
+    "Store the token only in the phone automation tool's local secret field if available.",
+    "Use owner tailnet/local endpoint only until production auth is separately reviewed."
+  ],
+  "pnhPhoneAutomationProfileTemplate": true,
+  "privateValuesPrinted": false,
+  "profiles": [
+    {
+      "adapter": "phone-calendar-json",
+      "bodyTemplate": {
+        "adapter": "phone-calendar-json",
+        "createdAt": "2026-06-06T00:00:00Z",
+        "items": [
+          {
+            "body": "Synthetic private body for local fixture rehearsal only.",
+            "createdAt": "2026-06-06T00:00:00Z",
+            "sensitivity": "private",
+            "title": "Synthetic private item"
+          }
+        ]
+      },
+      "headers": {
+        "Authorization": "Bearer <PNH_PRIVATE_INBOX_TOKEN>",
+        "Content-Type": "application/json"
+      },
+      "name": "PNH phone-calendar-json",
+      "responsePolicy": "metadata-only",
+      "url": "http://<owner-tailnet-ip>:8765/api/private/phone-adapter-captures"
+    },
+    {
+      "adapter": "phone-call-log-json",
+      "bodyTemplate": {
+        "adapter": "phone-call-log-json",
+        "createdAt": "2026-06-06T00:00:00Z",
+        "items": [
+          {
+            "body": "Synthetic private body for local fixture rehearsal only.",
+            "createdAt": "2026-06-06T00:00:00Z",
+            "sensitivity": "highly_sensitive",
+            "title": "Synthetic private item"
+          }
+        ]
+      },
+      "headers": {
+        "Authorization": "Bearer <PNH_PRIVATE_INBOX_TOKEN>",
+        "Content-Type": "application/json"
+      },
+      "name": "PNH phone-call-log-json",
+      "responsePolicy": "metadata-only",
+      "url": "http://<owner-tailnet-ip>:8765/api/private/phone-adapter-captures"
+    },
+    {
+      "adapter": "phone-contacts-json",
+      "bodyTemplate": {
+        "adapter": "phone-contacts-json",
+        "createdAt": "2026-06-06T00:00:00Z",
+        "items": [
+          {
+            "body": "Synthetic private body for local fixture rehearsal only.",
+            "createdAt": "2026-06-06T00:00:00Z",
+            "sensitivity": "private",
+            "title": "Synthetic private item"
+          }
+        ]
+      },
+      "headers": {
+        "Authorization": "Bearer <PNH_PRIVATE_INBOX_TOKEN>",
+        "Content-Type": "application/json"
+      },
+      "name": "PNH phone-contacts-json",
+      "responsePolicy": "metadata-only",
+      "url": "http://<owner-tailnet-ip>:8765/api/private/phone-adapter-captures"
+    },
+    {
+      "adapter": "phone-recording-transcript-json",
+      "bodyTemplate": {
+        "adapter": "phone-recording-transcript-json",
+        "createdAt": "2026-06-06T00:00:00Z",
+        "items": [
+          {
+            "body": "Synthetic private body for local fixture rehearsal only.",
+            "createdAt": "2026-06-06T00:00:00Z",
+            "sensitivity": "highly_sensitive",
+            "title": "Synthetic private item"
+          }
+        ]
+      },
+      "headers": {
+        "Authorization": "Bearer <PNH_PRIVATE_INBOX_TOKEN>",
+        "Content-Type": "application/json"
+      },
+      "name": "PNH phone-recording-transcript-json",
+      "responsePolicy": "metadata-only",
+      "url": "http://<owner-tailnet-ip>:8765/api/private/phone-adapter-captures"
+    }
+  ],
+  "tokenPlaceholderOnly": true,
+  "tokenValuePrinted": false
+}

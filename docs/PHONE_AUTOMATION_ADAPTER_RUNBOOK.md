@@ -34,6 +34,16 @@ Local schema command:
 python3 scripts/pnh_phone_adapter_payload_template.py --schema
 ```
 
+Generate owner-mobile automation profile templates:
+
+```bash
+python3 scripts/pnh_phone_automation_profile_template.py \
+  --out ops/runs/PNH-PHONE-AUTOMATION-PROFILE-20260606/phone_automation_profile.json
+```
+
+The profile output uses placeholders such as
+`Bearer <PNH_PRIVATE_INBOX_TOKEN>`. It must not contain real tokens.
+
 ## Supported Adapters
 
 - `phone-contacts-json`
@@ -149,6 +159,7 @@ Raw phone data is not echoed.
 
 ```bash
 python3 scripts/pnh_phone_adapter_send_smoke_check.py
+python3 scripts/pnh_phone_automation_profile_template_smoke_check.py
 python3 scripts/phone_adapter_ingress_smoke_check.py
 python3 scripts/pnh_tailnet_companion_api_smoke_check.py
 python3 scripts/private_inbox_status.py --include-recent

@@ -20,6 +20,7 @@ including guarded live-adapter and bounded scheduler foundations.
 - guarded live private data adapter sync framework
 - batch live private data adapter readiness wrapper
 - authenticated phone automation adapter POST endpoint
+- placeholder-only phone automation profile generator for owner mobile tools
 - bounded unattended retry/backoff planning
 - bounded local scheduler tick/loop scripts with live-adapter readiness job
 - unattended automation status summary for queue/readiness/retry decisions

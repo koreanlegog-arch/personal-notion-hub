@@ -76,6 +76,8 @@ REQUIRED = [
     "scripts/pnh_phone_adapter_payload_template.py",
     "scripts/pnh_phone_adapter_send.py",
     "scripts/pnh_phone_adapter_send_smoke_check.py",
+    "scripts/pnh_phone_automation_profile_template.py",
+    "scripts/pnh_phone_automation_profile_template_smoke_check.py",
     "scripts/phone_ingress_lan_info.py",
     "scripts/phone_ingress_reachability_check.py",
     "scripts/tailnet_ingress_smoke_check.py",

@@ -76,6 +76,7 @@ The current verified Launch flow can:
 35. run a final real-data privacy gate before controlled owner phone-adapter data runs
 36. backfill semantic progress from existing redacted dispatch-state metadata without reading message bodies
 37. summarize bounded unattended automation status from queue, readiness, and retry/backoff evidence
+38. generate placeholder-only phone automation profile templates for owner mobile automation tools
 
 Latest owner live command-packet dispatch:
 
@@ -379,6 +380,9 @@ project `AGENTS.md` and do not require a separate per-run approval.
   readiness, and retry/backoff outputs into an `idle_ready`,
   `ready_to_run_bounded_pilot`, `retry_candidates_waiting`, or
   `hold_for_readiness` decision without performing external writes.
+- `scripts/pnh_phone_automation_profile_template.py`: generates
+  placeholder-only owner mobile automation profiles for the phone adapter POST
+  endpoint without printing real bearer tokens.
 - `scripts/pnh_scheduler_tick.py`, `scripts/pnh_scheduler_loop.py`, and
   `scripts/pnh_scheduler_install_user_service.sh`: run bounded local scheduler
   checks manually or through a user-systemd timer.
