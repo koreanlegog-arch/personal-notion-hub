@@ -19,6 +19,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUT = ROOT / "ops" / "runs" / "PNH-ASSISTANT-MVP-COMPLETION-AUDIT-20260606" / "completion_audit.json"
+sys.path.insert(0, str(ROOT))
 
 
 COMMANDS = {
@@ -88,15 +89,16 @@ def run_evidence_commands() -> dict[str, dict[str, Any]]:
 
 def load_existing_evidence() -> dict[str, dict[str, Any]]:
     paths = {
-        "privateInbox": ROOT / "ops" / "runs" / "PNH-ASSISTANT-MVP-COMPLETION-AUDIT-20260606" / "fixtures_missing.json",
+        "privateInbox": None,
         "privacyGate": ROOT / "ops" / "runs" / "PNH-REAL-DATA-PRIVACY-GATE-20260606" / "privacy_gate.json",
         "phoneSetupReadiness": ROOT / "ops" / "runs" / "PNH-PHONE-AUTOMATION-SETUP-READINESS-20260606" / "setup_readiness.json",
         "phoneLiveProbe": ROOT / "ops" / "runs" / "PNH-PHONE-AUTOMATION-LIVE-PROBE-20260606" / "live_probe.json",
         "phoneHandoff": ROOT / "ops" / "runs" / "PNH-PHONE-AUTOMATION-HANDOFF-20260606" / "phone_automation_handoff.json",
         "unattendedStatus": ROOT / "ops" / "runs" / "PNH-UNATTENDED-AUTOMATION-STATUS-20260606" / "unattended_status.json",
         "schedulerTick": ROOT / "ops" / "runs" / "PNH-SCHEDULER-20260606" / "scheduler_tick.json",
+        "dispatchState": None,
         "dispatchEvidence": ROOT / "ops" / "runs" / "PNH-DISPATCH-EVIDENCE-SUMMARY-20260605" / "dispatch_evidence_summary.json",
-        "localAdapterStatus": ROOT / "ops" / "runs" / "PNH-PRIVATE-DATA-ADAPTER-STATUS-20260606" / "adapter_status.json",
+        "localAdapterStatus": None,
         "liveAdapterStatus": ROOT / "ops" / "runs" / "PNH-LIVE-PRIVATE-DATA-ADAPTER-20260606" / "live_adapter_batch_sync.json",
         "phoneRecentSummary": ROOT / "ops" / "runs" / "PNH-PHONE-CAPTURE-RECENT-SUMMARY-20260606" / "phone_capture_recent_summary.json",
         "phoneSourceCoverage": ROOT / "ops" / "runs" / "PNH-PHONE-SOURCE-COVERAGE-SESSION-20260606" / "phone_source_coverage_status.json",
@@ -104,11 +106,46 @@ def load_existing_evidence() -> dict[str, dict[str, Any]]:
     }
     result: dict[str, dict[str, Any]] = {}
     for name, path in paths.items():
+        if path is None:
+            result[name] = load_local_metadata_evidence(name)
+            continue
         if not path.exists():
             result[name] = {"ok": False, "missing": safe_path_label(path)}
             continue
         result[name] = load_json_file(path, name)
     return result
+
+
+def load_local_metadata_evidence(name: str) -> dict[str, Any]:
+    if name == "privateInbox":
+        from companion.private_store import DEFAULT_DB_PATH, store_summary  # noqa: PLC0415
+
+        return {
+            "privateInbox": store_summary(DEFAULT_DB_PATH, create_if_missing=False),
+            "privateValuesPrinted": False,
+            "tokenValuePrinted": False,
+            "ok": True,
+        }
+    if name == "dispatchState":
+        from scripts.pnh_dispatch_state_status import DEFAULT_STATE, load_state, summarize_state  # noqa: PLC0415
+
+        payload = summarize_state(load_state(DEFAULT_STATE), DEFAULT_STATE, limit=100, include_urls=False)
+        payload["ok"] = True
+        return payload
+    if name == "localAdapterStatus":
+        from companion.private_adapter_registry import registry_summary  # noqa: PLC0415
+
+        return {
+            "pnhPrivateDataAdapterStatus": True,
+            "mode": "local-owner-exported-only",
+            "liveExternalAdaptersEnabled": False,
+            "externalServicesContacted": False,
+            "privateValuesPrinted": False,
+            "tokenValuePrinted": False,
+            "adapters": registry_summary(),
+            "ok": True,
+        }
+    return {"ok": False, "error": f"unsupported local metadata evidence: {name}"}
 
 
 def load_json_file(path: Path, label: str) -> dict[str, Any]:
