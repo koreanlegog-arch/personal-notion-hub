@@ -1,8 +1,8 @@
 {
   "axisStatus": {
     "dispatchState": "ready",
-    "documentScriptDrift": "controlled_by_smoke_and_completion_audit",
-    "realPrivateDataAdapters": "ready_for_owner_configured_inputs",
+    "documentScriptDrift": "ready",
+    "realPrivateDataAdapters": "covered_metadata_ready",
     "semanticWorkerProgress": "ready",
     "unattendedAutomation": "idle_ready"
   },
@@ -61,6 +61,14 @@
       "pass": true
     },
     {
+      "name": "phone_capture_sources_covered",
+      "pass": true
+    },
+    {
+      "name": "current_doc_script_refs_ok",
+      "pass": true
+    },
+    {
       "name": "private_ingest_dedup_evidence_exists",
       "pass": true
     },
@@ -69,18 +77,23 @@
       "pass": true
     }
   ],
-  "checksPassed": 15,
-  "checksTotal": 15,
+  "checksPassed": 17,
+  "checksTotal": 17,
   "completionPercent": 100.0,
   "evidenceSummary": {
     "dispatchAverageEvidenceCompleteness": 100,
     "dispatchBlockedOrFailed": 0,
+    "docScriptDriftVerdict": "current_docs_script_refs_ok",
+    "docScriptMissingRefs": 0,
     "encryptedVaultRows": 20,
     "liveAdapterCount": 4,
     "liveAdapterFailedCount": 0,
+    "phoneCaptureCount": 8,
     "phoneHandoffVerdict": "ready_for_owner_phone_tool_configuration",
     "phoneLiveProbeVerdict": "latest_phone_capture_available",
+    "phoneMissingSourceCount": 0,
     "phoneSetupVerdict": "ready_for_owner_phone_tool_configuration",
+    "phoneSourceCoverageVerdict": "all_phone_sources_covered",
     "plaintextInboxRows": 0,
     "privacyGateVerdict": "ready_for_controlled_real_phone_adapter_run",
     "privateInboxTotal": 20,
@@ -90,27 +103,14 @@
   },
   "exactOwnerNetworkUrlPersisted": false,
   "failedChecks": [],
-  "generatedAt": "2026-06-06T08:26:52+00:00",
+  "generatedAt": "2026-06-06T08:31:46+00:00",
   "pnhAssistantMvpCompletionAudit": true,
   "privateValuesPrinted": false,
   "rawPrivateBodyRead": false,
   "readyForOwnerControlledMvpUse": true,
   "tokenValuePrinted": false,
-  "userActionsRequired": [
-    {
-      "action": "configure_owner_phone_automation_tool",
-      "reason": "The repo can generate placeholder-only profiles, but the owner must copy the local token and endpoint into the phone tool outside chat/Git."
-    },
-    {
-      "action": "send_first_owner_synthetic_or_real_phone_payload",
-      "reason": "The live probe is ready, but actual phone-tool delivery must be initiated from the owner-controlled phone app."
-    },
-    {
-      "action": "rerun_final_privacy_gate_after_first_real_payload",
-      "reason": "Long-term real sensitive data operation should be gated after the first real owner payload is observed."
-    }
-  ],
-  "verdict": "backend_mvp_ready_owner_action_required",
+  "userActionsRequired": [],
+  "verdict": "assistant_mvp_ready_for_controlled_operation",
   "workMode": {
     "efficiencyNote": "The audit aggregates specialist evidence from private ingress, phone automation, scheduler, dispatch, and adapter checks instead of reimplementing their logic.",
     "mode": "normal-harness"

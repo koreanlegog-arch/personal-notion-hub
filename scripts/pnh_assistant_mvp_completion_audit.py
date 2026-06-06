@@ -33,12 +33,22 @@ COMMANDS = {
     "dispatchEvidence": ["scripts/pnh_dispatch_evidence_summary.py"],
     "localAdapterStatus": ["scripts/pnh_private_data_adapter_status.py"],
     "liveAdapterStatus": ["scripts/pnh_live_private_data_adapter_batch_sync.py"],
+    "phoneRecentSummary": ["scripts/pnh_phone_capture_recent_summary.py"],
+    "phoneSourceCoverage": [
+        "scripts/pnh_phone_source_coverage_session.py",
+        "--out",
+        "ops/runs/PNH-PHONE-SOURCE-COVERAGE-SESSION-20260606/phone_source_coverage_status.json",
+    ],
+    "docScriptDrift": ["scripts/pnh_doc_script_drift_check.py"],
 }
 
 COMMAND_OUTPUTS = {
     "schedulerTick": ROOT / "ops" / "runs" / "PNH-SCHEDULER-20260606" / "scheduler_tick.json",
     "dispatchEvidence": ROOT / "ops" / "runs" / "PNH-DISPATCH-EVIDENCE-SUMMARY-20260605" / "dispatch_evidence_summary.json",
     "liveAdapterStatus": ROOT / "ops" / "runs" / "PNH-LIVE-PRIVATE-DATA-ADAPTER-20260606" / "live_adapter_batch_sync.json",
+    "phoneRecentSummary": ROOT / "ops" / "runs" / "PNH-PHONE-CAPTURE-RECENT-SUMMARY-20260606" / "phone_capture_recent_summary.json",
+    "phoneSourceCoverage": ROOT / "ops" / "runs" / "PNH-PHONE-SOURCE-COVERAGE-SESSION-20260606" / "phone_source_coverage_status.json",
+    "docScriptDrift": ROOT / "ops" / "runs" / "PNH-DOC-SCRIPT-DRIFT-CHECK-20260606" / "doc_script_drift_check.json",
 }
 
 
@@ -88,6 +98,9 @@ def load_existing_evidence() -> dict[str, dict[str, Any]]:
         "dispatchEvidence": ROOT / "ops" / "runs" / "PNH-DISPATCH-EVIDENCE-SUMMARY-20260605" / "dispatch_evidence_summary.json",
         "localAdapterStatus": ROOT / "ops" / "runs" / "PNH-PRIVATE-DATA-ADAPTER-STATUS-20260606" / "adapter_status.json",
         "liveAdapterStatus": ROOT / "ops" / "runs" / "PNH-LIVE-PRIVATE-DATA-ADAPTER-20260606" / "live_adapter_batch_sync.json",
+        "phoneRecentSummary": ROOT / "ops" / "runs" / "PNH-PHONE-CAPTURE-RECENT-SUMMARY-20260606" / "phone_capture_recent_summary.json",
+        "phoneSourceCoverage": ROOT / "ops" / "runs" / "PNH-PHONE-SOURCE-COVERAGE-SESSION-20260606" / "phone_source_coverage_status.json",
+        "docScriptDrift": ROOT / "ops" / "runs" / "PNH-DOC-SCRIPT-DRIFT-CHECK-20260606" / "doc_script_drift_check.json",
     }
     result: dict[str, dict[str, Any]] = {}
     for name, path in paths.items():
@@ -180,6 +193,9 @@ def build_checks(evidence: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
     dispatch_evidence = evidence["dispatchEvidence"]
     local_adapters = evidence["localAdapterStatus"]
     live_adapters = evidence["liveAdapterStatus"]
+    phone_recent = evidence["phoneRecentSummary"]
+    phone_coverage = evidence["phoneSourceCoverage"]
+    doc_drift = evidence["docScriptDrift"]
     dispatch_records = dispatch_state.get("records") if isinstance(dispatch_state.get("records"), list) else []
     semantic_records = [item for item in dispatch_records if isinstance(item, dict) and item.get("semanticProgressSet")]
     phone_jobs = [
@@ -201,6 +217,8 @@ def build_checks(evidence: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
         check("dispatch_evidence_complete", dispatch_evidence.get("averageEvidenceCompleteness", 0) >= 100 and dispatch_evidence.get("blockedOrFailed", 1) == 0),
         check("local_private_adapters_available", len(local_adapters.get("adapters", [])) >= 8),
         check("live_adapter_framework_ready", live_adapters.get("adapterCount", 0) >= 4 and not live_adapters.get("failedAdapters")),
+        check("phone_capture_sources_covered", phone_recent.get("phoneCaptureCount", 0) > 0 and not phone_recent.get("missingPhoneSourcesInRecentWindow") and phone_coverage.get("verdict") == "all_phone_sources_covered"),
+        check("current_doc_script_refs_ok", doc_drift.get("verdict") == "current_docs_script_refs_ok" and doc_drift.get("missingScriptRefCount") == 0),
         check("private_ingest_dedup_evidence_exists", (ROOT / "ops" / "runs" / "PNH-PRIVATE-INGEST-DEDUP-20260606" / "evidence_log.md").exists()),
         check("no_private_or_token_values_printed", no_sensitive_flags(evidence)),
     ]
@@ -214,7 +232,17 @@ def check(name: str, passed: bool) -> dict[str, Any]:
 def required_user_actions(evidence: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     actions = []
     handoff = evidence["phoneHandoff"]
-    if handoff.get("verdict") == "ready_for_owner_phone_tool_configuration":
+    setup_ready = evidence["phoneSetupReadiness"].get("verdict") == "ready_for_owner_phone_tool_configuration"
+    phone_live_probe_ready = evidence["phoneLiveProbe"].get("success") is True
+    recent_phone_count = int(evidence["phoneRecentSummary"].get("phoneCaptureCount") or 0)
+    phone_payload_observed = phone_live_probe_ready or recent_phone_count > 0
+    phone_sources_covered = (
+        evidence["phoneSourceCoverage"].get("verdict") == "all_phone_sources_covered"
+        and not evidence["phoneSourceCoverage"].get("missingAfter")
+    )
+    privacy_ready = evidence["privacyGate"].get("verdict") == "ready_for_controlled_real_phone_adapter_run"
+
+    if handoff.get("verdict") == "ready_for_owner_phone_tool_configuration" and not phone_payload_observed:
         actions.append(
             {
                 "action": "configure_owner_phone_automation_tool",
@@ -227,10 +255,26 @@ def required_user_actions(evidence: dict[str, dict[str, Any]]) -> list[dict[str,
                 "reason": "The live probe is ready, but actual phone-tool delivery must be initiated from the owner-controlled phone app.",
             }
         )
+    elif not setup_ready:
+        actions.append(
+            {
+                "action": "fix_owner_phone_automation_setup",
+                "reason": "Phone automation setup readiness did not pass.",
+            }
+        )
+    elif not phone_sources_covered:
+        actions.append(
+            {
+                "action": "complete_phone_source_adapter_configuration",
+                "reason": "At least one supported phone source has not been observed in recent encrypted-vault metadata.",
+            }
+        )
+
+    if phone_payload_observed and not privacy_ready:
         actions.append(
             {
                 "action": "rerun_final_privacy_gate_after_first_real_payload",
-                "reason": "Long-term real sensitive data operation should be gated after the first real owner payload is observed.",
+                "reason": "Phone payload metadata is present, but the final privacy gate is not currently passing.",
             }
         )
     return actions
@@ -238,11 +282,11 @@ def required_user_actions(evidence: dict[str, dict[str, Any]]) -> list[dict[str,
 
 def axis_status(evidence: dict[str, dict[str, Any]]) -> dict[str, str]:
     return {
-        "documentScriptDrift": "controlled_by_smoke_and_completion_audit",
+        "documentScriptDrift": "ready" if evidence["docScriptDrift"].get("verdict") == "current_docs_script_refs_ok" else "needs_attention",
         "dispatchState": "ready" if evidence["dispatchEvidence"].get("averageEvidenceCompleteness", 0) >= 100 else "needs_attention",
         "semanticWorkerProgress": "ready" if evidence["dispatchState"].get("totalRecords", 0) > 0 else "needs_attention",
         "unattendedAutomation": str(evidence["unattendedStatus"].get("decision") or "unknown"),
-        "realPrivateDataAdapters": "ready_for_owner_configured_inputs" if evidence["phoneSetupReadiness"].get("verdict") == "ready_for_owner_phone_tool_configuration" else "needs_attention",
+        "realPrivateDataAdapters": "covered_metadata_ready" if evidence["phoneSourceCoverage"].get("verdict") == "all_phone_sources_covered" else "ready_for_owner_configured_inputs" if evidence["phoneSetupReadiness"].get("verdict") == "ready_for_owner_phone_tool_configuration" else "needs_attention",
     }
 
 
@@ -251,6 +295,9 @@ def summarize_evidence(evidence: dict[str, dict[str, Any]]) -> dict[str, Any]:
     scheduler = evidence["schedulerTick"]
     dispatch = evidence["dispatchEvidence"]
     live_adapters = evidence["liveAdapterStatus"]
+    phone_recent = evidence["phoneRecentSummary"]
+    phone_coverage = evidence["phoneSourceCoverage"]
+    doc_drift = evidence["docScriptDrift"]
     return {
         "privateInboxTotal": inbox.get("totalCaptures"),
         "encryptedVaultRows": inbox.get("byStorageMode", {}).get("encrypted-vault"),
@@ -258,7 +305,12 @@ def summarize_evidence(evidence: dict[str, dict[str, Any]]) -> dict[str, Any]:
         "privacyGateVerdict": evidence["privacyGate"].get("verdict"),
         "phoneSetupVerdict": evidence["phoneSetupReadiness"].get("verdict"),
         "phoneLiveProbeVerdict": evidence["phoneLiveProbe"].get("verdict"),
+        "phoneCaptureCount": phone_recent.get("phoneCaptureCount"),
+        "phoneMissingSourceCount": len(phone_recent.get("missingPhoneSourcesInRecentWindow", [])) if isinstance(phone_recent.get("missingPhoneSourcesInRecentWindow"), list) else None,
+        "phoneSourceCoverageVerdict": phone_coverage.get("verdict"),
         "phoneHandoffVerdict": evidence["phoneHandoff"].get("verdict"),
+        "docScriptDriftVerdict": doc_drift.get("verdict"),
+        "docScriptMissingRefs": doc_drift.get("missingScriptRefCount"),
         "unattendedDecision": evidence["unattendedStatus"].get("decision"),
         "schedulerJobsRun": scheduler.get("jobsRun"),
         "schedulerFailedJobs": len(scheduler.get("failedJobs", [])) if isinstance(scheduler.get("failedJobs"), list) else None,

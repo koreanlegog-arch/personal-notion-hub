@@ -32,6 +32,7 @@ including guarded live-adapter and bounded scheduler foundations.
 - metadata-only recent phone capture summary and scheduler job
 - phone source coverage session across all supported phone adapters
 - current-doc script reference drift checker
+- completion audit now includes current-doc script drift and phone source coverage gates
 - bounded unattended retry/backoff planning
 - bounded local scheduler tick/loop scripts with live-adapter readiness job
 - unattended automation status summary for queue/readiness/retry decisions
@@ -75,6 +76,7 @@ including guarded live-adapter and bounded scheduler foundations.
 - recent phone capture summary reports source coverage without decrypting private bodies
 - source coverage session can rehearse missing phone adapter sources with synthetic payloads
 - current operating docs can be checked for stale `scripts/...` references
+- completion audit now reports `17/17` checks and clears obsolete owner-action prompts when phone payload metadata, source coverage, and privacy gates are already satisfied
 
 ### Boundaries
 
