@@ -6,7 +6,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PORT="${PNH_TAILNET_PORT:-8765}"
-RULE_NAME="${PNH_TAILNET_FIREWALL_RULE:-PNH Tailnet Ingress 8765}"
+RULE_NAME="${PNH_TAILNET_FIREWALL_RULE:-PNH Tailnet Ingress ${PORT}}"
 TAILSCALE_EXE="${PNH_TAILSCALE_EXE:-C:\\Program Files\\Tailscale\\tailscale.exe}"
 
 detect_tailnet_ip() {
@@ -56,4 +56,3 @@ python3 companion/server.py \
   --enable-browser-bridge \
   --enable-tailnet-ingress \
   --allowed-origin "$ORIGIN"
-

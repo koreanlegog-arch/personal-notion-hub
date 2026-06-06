@@ -670,10 +670,10 @@ def create_server(
         if _has_origin_path_or_credentials(parsed_origin):
             raise ValueError("browser bridge allowed origin must not include path, query, credentials, or fragment")
         if tailnet_ingress_enabled:
-            if not _is_tailnet_allowed_origin(parsed_origin):
+            if not _is_tailnet_allowed_origin(parsed_origin, port):
                 raise ValueError(
                     "tailnet ingress allowed origin must be https://<device>.<tailnet>.ts.net "
-                    "or http://<tailnet-ip-or-dns>:8765"
+                    "or http://<tailnet-ip-or-dns>:<companion-port>"
                 )
         elif (
             parsed_origin.scheme != "http"
@@ -738,7 +738,7 @@ def _is_tailnet_ipv4_host(host: str) -> bool:
     return parsed.version == 4 and ip_address("100.64.0.0") <= parsed <= ip_address("100.127.255.255")
 
 
-def _is_tailnet_allowed_origin(parsed_origin) -> bool:
+def _is_tailnet_allowed_origin(parsed_origin, companion_port: int) -> bool:
     hostname = parsed_origin.hostname or ""
     if (
         parsed_origin.scheme == "https"
@@ -746,7 +746,11 @@ def _is_tailnet_allowed_origin(parsed_origin) -> bool:
         and parsed_origin.port in {None, 443}
     ):
         return True
-    if parsed_origin.scheme != "http" or parsed_origin.port != 8765:
+    if parsed_origin.scheme != "http":
+        return False
+    if companion_port > 0 and parsed_origin.port != companion_port:
+        return False
+    if companion_port == 0 and parsed_origin.port is None:
         return False
     return hostname.endswith(".ts.net") or _is_tailnet_ipv4_host(hostname)
 

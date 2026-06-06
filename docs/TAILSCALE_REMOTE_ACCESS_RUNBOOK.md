@@ -107,6 +107,14 @@ cd /home/koreanlego/projects/Personal_Notion_Hub
 bash scripts/start_tailnet_session.sh
 ```
 
+If the managed headless companion API service already uses port `8765`, start a
+separate browser-pairing session on another port:
+
+```bash
+cd /home/koreanlego/projects/Personal_Notion_Hub
+PNH_TAILNET_PORT=8766 bash scripts/start_tailnet_session.sh
+```
+
 The script prints:
 
 - `tailnet_url`
