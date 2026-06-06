@@ -62,7 +62,7 @@ The current verified Launch flow can:
 21. close GitHub Issues for worker_done dispatch records after redacted evidence reaches 100%
 22. archive stale incomplete dispatch-state records out of active evidence summaries
 23. parse redacted worker progress snippets into metadata-only semantic progress v2 fields
-24. import owner-exported local contacts/calendar/call-log/recording transcript files into encrypted vault storage
+24. import owner-exported local contacts/calendar/call-log/recording transcript CSV/ICS/TXT/JSON files into encrypted vault storage
 25. batch-plan owner-exported private data imports without printing private values
 26. read live adapter readiness from environment-backed endpoints without printing URL or token values
 27. fetch fixture or approved live adapter payloads into encrypted vault storage through fail-closed apply mode
@@ -364,8 +364,9 @@ project `AGENTS.md` and do not require a separate per-run approval.
   dispatch-state records from existing redacted metadata without reading
   Discord/OpenClaw messages or GitHub issue bodies.
 - `scripts/pnh_private_data_adapter_import.py`: imports owner-exported local
-  contacts CSV, call-log CSV, calendar ICS, or recording transcript text into
-  encrypted vault storage. It does not connect to phone APIs or cloud accounts.
+  contacts CSV/JSON, call-log CSV/JSON, calendar ICS/JSON, or recording
+  transcript TXT/JSON into encrypted vault storage. It does not connect to
+  phone APIs or cloud accounts.
 - `scripts/pnh_private_data_adapter_batch_plan.py`: plans or applies local
   owner-exported adapter batches with encrypted-vault apply gates.
 - `scripts/pnh_live_private_data_adapter_sync.py` and

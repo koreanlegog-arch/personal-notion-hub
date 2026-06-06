@@ -28,9 +28,13 @@ from companion.private_store import DEFAULT_DB_PATH, PrivateStoreError, insert_c
 DEFAULT_OUT = ROOT / "ops" / "runs" / "PNH-PRIVATE-DATA-ADAPTER-IMPORT-20260606" / "adapter_import_plan.json"
 ADAPTER_KINDS = {
     "contacts-csv": "contact",
+    "contacts-json": "contact",
     "calendar-ics": "calendar",
+    "calendar-json": "calendar",
     "call-log-csv": "call_note",
+    "call-log-json": "call_note",
     "recording-transcript-txt": "voice_note",
+    "recording-transcript-json": "voice_note",
 }
 
 
@@ -100,12 +104,26 @@ def parse_adapter_records(adapter: str, input_path: Path, *, limit: int) -> list
     bounded = min(max(int(limit), 1), 500)
     if adapter == "contacts-csv":
         return parse_contacts_csv(input_path, bounded)
+    if adapter == "contacts-json":
+        return parse_json_records(input_path, bounded, source="contacts_json_adapter", kind="contact", sensitivity="private")
     if adapter == "call-log-csv":
         return parse_call_log_csv(input_path, bounded)
+    if adapter == "call-log-json":
+        return parse_json_records(input_path, bounded, source="call_log_json_adapter", kind="call_note", sensitivity="highly_sensitive")
     if adapter == "calendar-ics":
         return parse_calendar_ics(input_path, bounded)
+    if adapter == "calendar-json":
+        return parse_json_records(input_path, bounded, source="calendar_json_adapter", kind="calendar", sensitivity="private")
     if adapter == "recording-transcript-txt":
         return parse_recording_transcript(input_path)
+    if adapter == "recording-transcript-json":
+        return parse_json_records(
+            input_path,
+            bounded,
+            source="recording_transcript_json_adapter",
+            kind="voice_note",
+            sensitivity="highly_sensitive",
+        )
     raise AdapterImportError("unsupported adapter")
 
 
@@ -153,6 +171,47 @@ def parse_recording_transcript(path: Path) -> list[dict[str, Any]]:
         raise AdapterImportError("transcript is empty")
     title = f"Recording transcript import: {path.stem}"
     return [base_record("recording_transcript_adapter", "voice_note", title, text, "highly_sensitive")]
+
+
+def parse_json_records(path: Path, limit: int, *, source: str, kind: str, sensitivity: str) -> list[dict[str, Any]]:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise AdapterImportError(f"JSON input is invalid: {exc.msg}") from exc
+    items = json_items(payload)
+    if not items:
+        raise AdapterImportError("JSON input has no records")
+    records = []
+    for idx, item in enumerate(items[:limit], start=1):
+        if not isinstance(item, dict):
+            item = {"value": item}
+        title = json_record_title(item, kind, idx)
+        body = json.dumps(item, ensure_ascii=False, sort_keys=True)
+        records.append(base_record(source, kind, title, body, sensitivity))
+    return records
+
+
+def json_items(payload: Any) -> list[Any]:
+    if isinstance(payload, list):
+        return payload
+    if isinstance(payload, dict):
+        for key in ("records", "items", "events", "contacts", "calls", "transcripts", "messages"):
+            value = payload.get(key)
+            if isinstance(value, list):
+                return value
+        return [payload]
+    return [payload]
+
+
+def json_record_title(item: dict[str, Any], kind: str, index: int) -> str:
+    for key in ("title", "name", "displayName", "summary", "subject", "phone", "number", "filename"):
+        value = str(item.get(key) or "").strip()
+        if value:
+            return f"{kind} import: {value}"
+    timestamp = str(item.get("timestamp") or item.get("date") or item.get("start") or item.get("createdAt") or "").strip()
+    if timestamp:
+        return f"{kind} import: {timestamp}"
+    return f"{kind} import: record {index}"
 
 
 def read_csv_rows(path: Path, limit: int) -> list[dict[str, str]]:

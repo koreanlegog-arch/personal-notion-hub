@@ -12,6 +12,16 @@ are available as a rough MVP when they write only to the approved local
 encrypted vault and do not contact phone APIs, cloud accounts, OAuth providers,
 or external services.
 
+Current controlled phone-adapter readiness is verified by:
+
+```bash
+python3 scripts/pnh_real_data_privacy_gate.py
+```
+
+The gate checks encrypted vault mode, zero plaintext rows, companion service
+health, scheduler timer health, owner-tailnet availability, and no token/private
+value output. It does not read raw private bodies.
+
 ## Gates
 
 | Gate | Requirement |
@@ -48,6 +58,12 @@ Stop before real-data execution if any of these occur:
 ## Verdict
 
 Real-data adapter readiness is `Ready for local import MVP` for owner-exported
-files that use the approved local encrypted vault. Live phone/cloud adapter
-readiness remains `Blocked` by default until the supervisor records explicit
-approval for adapter, credential, storage, and live execution scope.
+CSV/ICS/TXT/JSON files that use the approved local encrypted vault.
+
+Controlled owner phone-adapter POST runs are `Ready for controlled owner run`
+when `scripts/pnh_real_data_privacy_gate.py` returns
+`ready_for_controlled_real_phone_adapter_run`.
+
+Native phone/cloud API readiness remains `Blocked` by default until a concrete
+adapter, credential source, storage scope, and live execution scope are
+configured and validated.

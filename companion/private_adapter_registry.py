@@ -24,11 +24,25 @@ ADAPTERS: dict[str, PrivateAdapter] = {
         extensions=(".csv",),
         sensitivity="private",
     ),
+    "contacts-json": PrivateAdapter(
+        name="contacts-json",
+        kind="contact",
+        source="contacts_json_adapter",
+        extensions=(".json",),
+        sensitivity="private",
+    ),
     "calendar-ics": PrivateAdapter(
         name="calendar-ics",
         kind="calendar",
         source="calendar_adapter",
         extensions=(".ics",),
+        sensitivity="private",
+    ),
+    "calendar-json": PrivateAdapter(
+        name="calendar-json",
+        kind="calendar",
+        source="calendar_json_adapter",
+        extensions=(".json",),
         sensitivity="private",
     ),
     "call-log-csv": PrivateAdapter(
@@ -38,11 +52,25 @@ ADAPTERS: dict[str, PrivateAdapter] = {
         extensions=(".csv",),
         sensitivity="highly_sensitive",
     ),
+    "call-log-json": PrivateAdapter(
+        name="call-log-json",
+        kind="call_note",
+        source="call_log_json_adapter",
+        extensions=(".json",),
+        sensitivity="highly_sensitive",
+    ),
     "recording-transcript-txt": PrivateAdapter(
         name="recording-transcript-txt",
         kind="voice_note",
         source="recording_transcript_adapter",
         extensions=(".txt",),
+        sensitivity="highly_sensitive",
+    ),
+    "recording-transcript-json": PrivateAdapter(
+        name="recording-transcript-json",
+        kind="voice_note",
+        source="recording_transcript_json_adapter",
+        extensions=(".json",),
         sensitivity="highly_sensitive",
     ),
 }
@@ -66,6 +94,14 @@ def infer_adapter_from_path(path: Path) -> str:
         return "calendar-ics"
     if suffix == ".txt":
         return "recording-transcript-txt"
+    if suffix == ".json":
+        if any(token in lower_name for token in ("call", "calls", "phone-log", "call-log")):
+            return "call-log-json"
+        if any(token in lower_name for token in ("calendar", "event", "events", "schedule")):
+            return "calendar-json"
+        if any(token in lower_name for token in ("recording", "transcript", "voice", "memo")):
+            return "recording-transcript-json"
+        return "contacts-json"
     if suffix == ".csv":
         if any(token in lower_name for token in ("call", "calls", "phone-log", "call-log")):
             return "call-log-csv"

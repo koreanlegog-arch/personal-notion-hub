@@ -14,6 +14,8 @@ including guarded live-adapter and bounded scheduler foundations.
 - semantic worker progress parser for redacted snippets
 - semantic worker progress v2 fields and metadata-only dispatch-state backfill
 - owner-exported local private data adapter import script
+- owner-exported JSON private data adapter support for contacts, calendar,
+  call logs, and recording transcripts
 - owner-exported local private data adapter registry/status and batch plan
 - guarded live private data adapter sync framework
 - batch live private data adapter readiness wrapper
