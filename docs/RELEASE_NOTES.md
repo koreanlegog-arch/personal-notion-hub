@@ -27,6 +27,7 @@ including guarded live-adapter and bounded scheduler foundations.
 - placeholder-only owner phone automation handoff packet
 - opt-in private ingest fingerprint dedup for adapters and phone automation
 - bounded scheduler phone automation readiness and live-probe jobs
+- consolidated private assistant MVP completion audit
 - bounded unattended retry/backoff planning
 - bounded local scheduler tick/loop scripts with live-adapter readiness job
 - unattended automation status summary for queue/readiness/retry decisions
@@ -65,6 +66,7 @@ including guarded live-adapter and bounded scheduler foundations.
 - phone automation handoff packet consolidates owner setup steps without storing token values or exact tailnet URLs
 - repeated identical normalized adapter/phone ingests are skipped without printing private values
 - scheduler ticks now include phone automation readiness and metadata-only live-probe status
+- completion audit distinguishes implementation readiness from owner-side phone configuration actions
 
 ### Boundaries
 

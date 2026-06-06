@@ -83,6 +83,7 @@ The current verified Launch flow can:
 42. generate a placeholder-only owner phone automation handoff packet for configuring external phone tools
 43. skip duplicate normalized private-data adapter and phone automation ingests with metadata-safe fingerprints
 44. include phone automation readiness and live-probe status in bounded scheduler ticks
+45. audit private assistant backend MVP readiness from consolidated evidence in one command
 
 Latest owner live command-packet dispatch:
 
@@ -169,6 +170,7 @@ Previous completed unattended pilot record:
 python3 scripts/smoke_check.py
 python3 scripts/sensitive_owner_readiness_check.py
 python3 scripts/keychain_readiness.py
+python3 scripts/pnh_assistant_mvp_completion_audit.py
 ```
 
 ### Local Companion And Private Storage
