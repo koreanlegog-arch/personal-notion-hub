@@ -81,6 +81,7 @@ The current verified Launch flow can:
 40. run synthetic phone automation rehearsals over loopback or owner-tailnet and verify encrypted-vault ingress
 41. probe or wait for new phone automation captures using metadata-only encrypted-vault evidence
 42. generate a placeholder-only owner phone automation handoff packet for configuring external phone tools
+43. skip duplicate normalized private-data adapter and phone automation ingests with metadata-safe fingerprints
 
 Latest owner live command-packet dispatch:
 

@@ -70,6 +70,7 @@ def main() -> int:
             "inputFile": safe_input_label(input_path),
             "recordsParsed": len(records),
             "recordsWritten": 0,
+            "duplicatesSkipped": 0,
             "storageMode": "encrypted-vault",
             "externalServicesContacted": False,
             "privateValuesPrinted": False,
@@ -85,9 +86,16 @@ def main() -> int:
                 raise AdapterImportError("--apply requires --approve-real-data-adapter")
             passphrase = resolve_adapter_passphrase(args)
             vault = init_encrypted_vault(db_path, passphrase)
+            written = 0
+            skipped = 0
             for record in records:
-                insert_capture(db_path, record, allow_external=args.allow_external_db, vault=vault)
-            result["recordsWritten"] = len(records)
+                capture = insert_capture(db_path, record, allow_external=args.allow_external_db, vault=vault, dedupe=True)
+                if capture.get("duplicateSkipped"):
+                    skipped += 1
+                else:
+                    written += 1
+            result["recordsWritten"] = written
+            result["duplicatesSkipped"] = skipped
         out_path = Path(args.out)
         out_path.parent.mkdir(parents=True, exist_ok=True)
         out_path.write_text(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")

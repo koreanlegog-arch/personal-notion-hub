@@ -191,6 +191,8 @@ The response is metadata-only:
   "writesPerformed": true,
   "phoneAdapterCapture": {
     "recordsAccepted": 1,
+    "recordsWritten": 1,
+    "duplicatesSkipped": 0,
     "captureIds": ["capture-id"],
     "storageMode": "encrypted-vault",
     "privateValuesPrinted": false
@@ -199,6 +201,9 @@ The response is metadata-only:
 ```
 
 Raw phone data is not echoed.
+
+Repeated identical normalized phone payloads are skipped by the private ingest
+dedup layer. The response remains metadata-only and reports `duplicatesSkipped`.
 
 ## Safety Rules
 
@@ -221,6 +226,7 @@ python3 scripts/pnh_phone_automation_handoff_packet_smoke_check.py
 python3 scripts/pnh_phone_automation_setup_readiness_smoke_check.py
 python3 scripts/pnh_phone_automation_rehearsal_smoke_check.py
 python3 scripts/pnh_phone_automation_live_probe_smoke_check.py
+python3 scripts/pnh_private_ingest_dedup_smoke_check.py
 python3 scripts/phone_adapter_ingress_smoke_check.py
 python3 scripts/pnh_tailnet_companion_api_smoke_check.py
 python3 scripts/private_inbox_status.py --include-recent

@@ -82,6 +82,7 @@ def main() -> int:
     parser.add_argument("--vault-passphrase-provider", default="", help="Passphrase provider such as windows-dpapi-file.")
     parser.add_argument("--vault-passphrase-name", default="vault-passphrase", help="Provider secret name.")
     parser.add_argument("--vault-passphrase-file", default="", help="Provider secret file path.")
+    parser.add_argument("--allow-external-db", action="store_true", help="Allow fixture DB path outside companion/private.")
     parser.add_argument("--fetch", action="store_true", help="Fetch/parse live data without writing records.")
     parser.add_argument("--apply", action="store_true", help="Fetch and write records to encrypted vault.")
     parser.add_argument("--approve-live-adapter", action="store_true", help="Required with --fetch or --apply for non-fixture live URLs.")
@@ -109,6 +110,7 @@ def main() -> int:
             "fixtureMode": use_fixture,
             "recordsParsed": len(records),
             "recordsWritten": 0,
+            "duplicatesSkipped": 0,
             "externalServicesContacted": bool((args.fetch or args.apply) and not use_fixture),
             "privateValuesPrinted": False,
             "tokenValuePrinted": False,
@@ -117,9 +119,16 @@ def main() -> int:
         if args.apply:
             passphrase = resolve_adapter_passphrase(args)
             vault = init_encrypted_vault(Path(args.db), passphrase)
+            written = 0
+            skipped = 0
             for record in records:
-                insert_capture(Path(args.db), record, vault=vault)
-            result["recordsWritten"] = len(records)
+                capture = insert_capture(Path(args.db), record, allow_external=args.allow_external_db, vault=vault, dedupe=True)
+                if capture.get("duplicateSkipped"):
+                    skipped += 1
+                else:
+                    written += 1
+            result["recordsWritten"] = written
+            result["duplicatesSkipped"] = skipped
         out_path = Path(args.out)
         out_path.parent.mkdir(parents=True, exist_ok=True)
         out_path.write_text(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")

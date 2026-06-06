@@ -10,6 +10,7 @@ import json
 import os
 import secrets
 import sqlite3
+import hashlib
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -35,6 +36,16 @@ ALLOWED_SOURCES = {
     "phone_calendar",
     "phone_call_log",
     "phone_recording",
+    "contacts_adapter",
+    "contacts_json_adapter",
+    "calendar_adapter",
+    "calendar_json_adapter",
+    "call_log_adapter",
+    "call_log_json_adapter",
+    "recording_transcript_adapter",
+    "recording_transcript_json_adapter",
+    "live_contacts_adapter",
+    "live_call_log_adapter",
     "project_brief",
     "calendar",
     "routine",
@@ -141,6 +152,17 @@ def init_private_store(db_path: Path = DEFAULT_DB_PATH, *, allow_external: bool 
             )
             """
         )
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS capture_ingest_fingerprints (
+              fingerprint TEXT PRIMARY KEY,
+              capture_id TEXT NOT NULL,
+              source TEXT NOT NULL,
+              kind TEXT NOT NULL,
+              created_at TEXT NOT NULL
+            )
+            """
+        )
         conn.execute("CREATE INDEX IF NOT EXISTS idx_mobile_captures_status ON mobile_captures(status)")
         conn.execute("CREATE INDEX IF NOT EXISTS idx_mobile_captures_stored_at ON mobile_captures(stored_at)")
         conn.execute("CREATE INDEX IF NOT EXISTS idx_encrypted_mobile_captures_status ON encrypted_mobile_captures(status)")
@@ -149,6 +171,7 @@ def init_private_store(db_path: Path = DEFAULT_DB_PATH, *, allow_external: bool 
             "INSERT OR REPLACE INTO meta(key, value) VALUES (?, ?)",
             ("schema_version", str(SCHEMA_VERSION)),
         )
+        ensure_fingerprint_salt(conn)
     try:
         apply_private_file_mode(db_path)
         apply_private_file_mode(db_path.with_suffix(db_path.suffix + "-journal"))
@@ -220,9 +243,26 @@ def insert_capture(
     *,
     allow_external: bool = False,
     vault: EncryptedVault | None = None,
+    dedupe: bool = False,
 ) -> dict[str, Any]:
     db_path = init_private_store(db_path, allow_external=allow_external)
     record = normalize_capture(payload)
+    fingerprint = capture_fingerprint(db_path, record) if dedupe else ""
+    if dedupe:
+        existing = find_existing_fingerprint(db_path, fingerprint)
+        if existing is not None:
+            write_duplicate_audit_event(db_path, existing, record)
+            return {
+                "id": existing["capture_id"],
+                "source": record["source"],
+                "kind": record["kind"],
+                "sensitivity": record["sensitivity"],
+                "status": "duplicate-skipped",
+                "storedAt": existing["created_at"],
+                "storageMode": "encrypted-vault" if vault is not None else "plaintext-inbox",
+                "encrypted": vault is not None,
+                "duplicateSkipped": True,
+            }
     if vault is not None:
         if vault.db_path != db_path.resolve():
             raise PrivateStoreError("encrypted vault path does not match private DB path")
@@ -232,6 +272,9 @@ def insert_capture(
                 "INSERT INTO audit_events(event_type, capture_id, source, created_at) VALUES (?, ?, ?, ?)",
                 ("encrypted_mobile_capture_created", capture["id"], capture["source"], utc_now()),
             )
+            if dedupe:
+                register_fingerprint(conn, fingerprint, capture["id"], record)
+        capture["duplicateSkipped"] = False
         return capture
     with sqlite3.connect(db_path) as conn:
         conn.execute(
@@ -248,6 +291,8 @@ def insert_capture(
             "INSERT INTO audit_events(event_type, capture_id, source, created_at) VALUES (?, ?, ?, ?)",
             ("mobile_capture_created", record["id"], record["source"], utc_now()),
         )
+        if dedupe:
+            register_fingerprint(conn, fingerprint, record["id"], record)
     return {
         "id": record["id"],
         "source": record["source"],
@@ -257,7 +302,69 @@ def insert_capture(
         "storedAt": record["stored_at"],
         "storageMode": "plaintext-inbox",
         "encrypted": False,
+        "duplicateSkipped": False,
     }
+
+
+def capture_fingerprint(db_path: Path, record: dict[str, Any]) -> str:
+    with sqlite3.connect(db_path) as conn:
+        salt = ensure_fingerprint_salt(conn)
+    material = {
+        "source": record["source"],
+        "kind": record["kind"],
+        "title": record["title"],
+        "body": record["body"],
+        "sensitivity": record["sensitivity"],
+    }
+    canonical = json.dumps(material, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(f"{salt}:".encode("utf-8") + canonical.encode("utf-8")).hexdigest()
+
+
+def ensure_fingerprint_salt(conn: sqlite3.Connection) -> str:
+    row = conn.execute("SELECT value FROM meta WHERE key = ?", ("fingerprint_salt",)).fetchone()
+    if row is not None:
+        return str(row[0])
+    salt = secrets.token_hex(32)
+    conn.execute("INSERT INTO meta(key, value) VALUES (?, ?)", ("fingerprint_salt", salt))
+    return salt
+
+
+def find_existing_fingerprint(db_path: Path, fingerprint: str) -> dict[str, str] | None:
+    with sqlite3.connect(db_path) as conn:
+        conn.row_factory = sqlite3.Row
+        row = conn.execute(
+            """
+            SELECT capture_id, source, kind, created_at
+            FROM capture_ingest_fingerprints
+            WHERE fingerprint = ?
+            """,
+            (fingerprint,),
+        ).fetchone()
+    return dict(row) if row is not None else None
+
+
+def register_fingerprint(
+    conn: sqlite3.Connection,
+    fingerprint: str,
+    capture_id: str,
+    record: dict[str, Any],
+) -> None:
+    conn.execute(
+        """
+        INSERT OR IGNORE INTO capture_ingest_fingerprints(
+          fingerprint, capture_id, source, kind, created_at
+        ) VALUES (?, ?, ?, ?, ?)
+        """,
+        (fingerprint, capture_id, record["source"], record["kind"], utc_now()),
+    )
+
+
+def write_duplicate_audit_event(db_path: Path, existing: dict[str, str], record: dict[str, Any]) -> None:
+    with sqlite3.connect(db_path) as conn:
+        conn.execute(
+            "INSERT INTO audit_events(event_type, capture_id, source, created_at) VALUES (?, ?, ?, ?)",
+            ("mobile_capture_duplicate_skipped", existing["capture_id"], record["source"], utc_now()),
+        )
 
 
 def list_captures(

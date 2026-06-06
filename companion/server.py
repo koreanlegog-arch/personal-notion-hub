@@ -417,6 +417,7 @@ class CompanionHandler(BaseHTTPRequestHandler):
                     record,
                     allow_external=self.server.allow_external_private_paths,
                     vault=self.server.private_vault,
+                    dedupe=True,
                 )
                 for record in records
             ]
@@ -434,6 +435,8 @@ class CompanionHandler(BaseHTTPRequestHandler):
                 "writesPerformed": True,
                 "phoneAdapterCapture": {
                     "recordsAccepted": len(captures),
+                    "recordsWritten": len([item for item in captures if not item.get("duplicateSkipped")]),
+                    "duplicatesSkipped": len([item for item in captures if item.get("duplicateSkipped")]),
                     "captureIds": [item["id"] for item in captures],
                     "storageMode": self.server.private_storage_mode,
                     "privateValuesPrinted": False,

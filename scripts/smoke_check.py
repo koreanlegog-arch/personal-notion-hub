@@ -141,6 +141,7 @@ REQUIRED = [
     "scripts/pnh_supervisor_review_summary_smoke_check.py",
     "scripts/pnh_private_data_adapter_import.py",
     "scripts/pnh_private_data_adapter_import_smoke_check.py",
+    "scripts/pnh_private_ingest_dedup_smoke_check.py",
     "scripts/pnh_private_data_adapter_status.py",
     "scripts/pnh_private_data_adapter_batch_plan.py",
     "scripts/pnh_private_data_adapter_batch_plan_smoke_check.py",
