@@ -1,0 +1,15 @@
+{
+  "actions": [],
+  "applied": [],
+  "appliedActionCount": 0,
+  "approvalSource": "project AGENTS.md bounded GitHub Issue update delegation",
+  "externalWritesPerformed": false,
+  "generatedAt": "2026-06-06T11:30:21+00:00",
+  "githubWorkerDoneClosure": true,
+  "mode": "apply",
+  "plannedActionCount": 0,
+  "privateValuesPrinted": false,
+  "rawPrivateBodyRead": false,
+  "repo": "koreanlegog-arch/personal-notion-hub",
+  "tokenValuePrinted": false
+}

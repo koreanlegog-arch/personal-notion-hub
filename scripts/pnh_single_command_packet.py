@@ -112,6 +112,7 @@ def main() -> int:
         worker = run_worker_capture(args, paths, packet_id, prompt_path, commands_run, apply=True)
         refresh_state(commands_run)
         label_plan = run_label_reconciliation(paths, commands_run)
+        worker_completion = run_worker_completion_auto(paths, packet_id, commands_run)
         final_summary = run_final_summary(paths, commands_run)
         result = build_apply_result(
             args,
@@ -122,6 +123,7 @@ def main() -> int:
             pilot,
             worker,
             label_plan,
+            worker_completion,
             final_summary,
             commands_run,
         )
@@ -426,6 +428,26 @@ def run_label_reconciliation(paths: dict[str, Path], commands_run: list[dict[str
     return load_json_object(post, "post reconciliation plan")
 
 
+def run_worker_completion_auto(paths: dict[str, Path], packet_id: str, commands_run: list[dict[str, Any]]) -> dict[str, Any]:
+    run_dir = paths["root"] / "worker_completion_auto"
+    run_command(
+        [
+            sys.executable,
+            str(ROOT / "scripts" / "pnh_worker_completion_auto.py"),
+            "--packet-id",
+            packet_id,
+            "--run-dir",
+            str(run_dir),
+            "--apply",
+            "--approve-worker-completion-auto",
+        ],
+        "worker_completion_auto",
+        commands_run,
+        timeout=180,
+    )
+    return load_json_object(run_dir / "worker_completion_auto_summary.json", "worker completion auto summary")
+
+
 def run_final_summary(paths: dict[str, Path], commands_run: list[dict[str, Any]]) -> dict[str, Any]:
     run_command(
         [sys.executable, str(ROOT / "scripts" / "pnh_dispatch_state_status.py"), "--include-urls"],
@@ -519,6 +541,7 @@ def build_apply_result(
     pilot: dict[str, Any],
     worker: dict[str, Any],
     label_plan: dict[str, Any],
+    worker_completion: dict[str, Any],
     final_summary: dict[str, Any],
     commands_run: list[dict[str, Any]],
 ) -> dict[str, Any]:
@@ -530,8 +553,14 @@ def build_apply_result(
         "workerRunPerformed": bool(worker.get("externalAgentRunPerformed")),
         "workerSessionId": compact(worker.get("workerSessionId")),
         "workerStatus": compact(worker.get("workerStatus")),
+        "workerCompletionAutoRun": bool(worker_completion.get("pnhWorkerCompletionAuto")),
+        "workerCompletionClosureApplied": int(worker_completion.get("closureAppliedActionCount", 0) or 0),
         "pendingExternalWriteCount": len(label_plan.get("plannedExternalWrites", [])),
-        "externalWritesPerformed": bool(pilot.get("externalWritesPerformed")) or bool(worker.get("externalAgentRunPerformed")),
+        "externalWritesPerformed": (
+            bool(pilot.get("externalWritesPerformed"))
+            or bool(worker.get("externalAgentRunPerformed"))
+            or bool(worker_completion.get("externalWritesPerformed"))
+        ),
         "finalSummary": final_summary,
     }
 

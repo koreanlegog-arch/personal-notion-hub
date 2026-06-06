@@ -34,6 +34,11 @@ This document summarizes what the current `Personal_Notion_Hub` can do now, what
 - Tailscale owner-only access runbook
 - phone browser can use the companion-served PNH UI when the local companion is running and the allowed origin matches
 - owner live capture readiness check for private pairing/input handoff
+- owner-only Discord DM handoff for short-lived browser pairing codes when
+  `PNH_OWNER_DISCORD_TARGET=user:<id>` is set
+- persistent owner-device sessions for paired owner browsers in tailnet startup
+  mode, with local revoke through disconnect/forget
+- metadata-only remote owner status notification through owner-only Discord DM
 
 ### Launch-To-Worker MVP
 
@@ -87,6 +92,12 @@ The current verified Launch flow can:
 46. run a first owner phone capture session with post-capture privacy/completion checks
 47. summarize recent phone automation captures and source coverage metadata-only
 48. run a bounded phone source coverage session across contacts/calendar/call/recording adapters
+49. finalize already completed worker records through an idempotent worker
+    completion lane that closes worker-done GitHub Issues and refreshes local
+    dispatch evidence without raw private body reads
+50. start a tailnet owner session with capture auto-dispatch and owner-device
+    sessions enabled by default, so command captures can proceed into the
+    bounded dispatch/worker lane without terminal follow-up
 
 Latest owner live command-packet dispatch:
 
@@ -200,6 +211,7 @@ python3 scripts/pnh_worker_progress_parse.py --packet-id "<packet-id>" --text "<
 python3 scripts/pnh_dispatch_status_refresh.py --github-read
 python3 scripts/pnh_external_reconciliation_plan.py
 python3 scripts/pnh_github_worker_done_closure.py
+python3 scripts/pnh_worker_completion_auto.py
 python3 scripts/pnh_discord_thread_readiness_probe.py
 python3 scripts/pnh_github_label_reconciliation_apply.py
 python3 scripts/pnh_discord_thread_status_refresh.py
@@ -339,6 +351,16 @@ See:
 - `docs/OWNER_LIVE_COMMAND_CAPTURE_RUNBOOK.md`
 - `docs/PHONE_AUTOMATION_ADAPTER_RUNBOOK.md`
 
+Tailnet owner session startup:
+
+```bash
+PNH_OWNER_DISCORD_TARGET="user:<discord-user-id>" bash scripts/start_tailnet_session.sh
+```
+
+This starts the companion with capture auto-dispatch and owner-device sessions
+enabled by default. Pairing code delivery stays owner-only and the pairing code
+is not stored in tracked evidence.
+
 ## Requires Explicit Approval
 
 These actions still require explicit approval because they change security posture
@@ -354,7 +376,7 @@ project `AGENTS.md` and do not require a separate per-run approval.
 
 ## Not Ready Yet
 
-- unattended mobile-to-worker automation beyond bounded pilot batches,
+- unattended mobile-to-worker automation beyond bounded owner-only apply lanes,
   metadata-safe worker captures, and bounded local scheduler ticks
 - public or non-owner companion exposure
 - production-grade live phone/contact/call/recording/calendar API ingestion
@@ -376,6 +398,14 @@ project `AGENTS.md` and do not require a separate per-run approval.
 - `scripts/pnh_worker_progress_backfill_from_state.py`: upgrades active
   dispatch-state records from existing redacted metadata without reading
   Discord/OpenClaw messages or GitHub issue bodies.
+- `scripts/pnh_worker_completion_auto.py`: finalizes ready worker-done dispatch
+  records by generating scoped evidence, closing eligible GitHub Issues, and
+  refreshing local dispatch metadata without reading raw private command bodies.
+- `scripts/pnh_remote_pairing_handoff.py`: sends the short-lived pairing code to
+  an owner-only Discord DM when explicitly configured, while keeping tracked
+  evidence metadata-only.
+- `scripts/pnh_remote_status_notify.py`: sends metadata-only automation status
+  to an owner-only Discord DM without private command body content.
 - `scripts/pnh_private_data_adapter_import.py`: imports owner-exported local
   contacts CSV/JSON, call-log CSV/JSON, calendar ICS/JSON, or recording
   transcript TXT/JSON into encrypted vault storage. It does not connect to

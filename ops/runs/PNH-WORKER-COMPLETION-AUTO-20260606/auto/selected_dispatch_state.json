@@ -1,0 +1,58 @@
+{
+  "launch-packet-launch-mq2593m2-wxwgt3": {
+    "discordThreadId": "1512748856499245096",
+    "githubIssueLabels": [
+      "pnh",
+      "mobile-command",
+      "priority:normal",
+      "dispatch:worker-done",
+      "command:task_request"
+    ],
+    "githubIssueNumber": 8,
+    "githubIssueState": "closed",
+    "githubIssueUrl": "https://github.com/koreanlegog-arch/personal-notion-hub/issues/8",
+    "semanticProgress": {
+      "confidence": 88,
+      "evidenceStrength": "high",
+      "messageContentStored": false,
+      "recommendedNextAction": "record_worker_result_and_close_dispatch",
+      "requiresSupervisorAction": false,
+      "stage": "done",
+      "status": "done",
+      "updatedAt": "2026-06-06T10:46:20+00:00"
+    },
+    "updatedAt": "2026-06-06T10:49:37+00:00",
+    "workerEvidenceRef": "ops/runs/PNH-WORKER-COMPLETION-AUTO-20260606/issue_8/openclaw_worker_capture_metadata.json",
+    "workerResultRecordedAt": "2026-06-06T10:46:07+00:00",
+    "workerSessionId": "pnh:launch-packet-launch-mq2593m2-wxwgt3:qa",
+    "workerStatus": "done"
+  },
+  "launch-packet-launch-mq25eht2-1dzjhy": {
+    "discordThreadId": "1512749820119482568",
+    "githubIssueLabels": [
+      "pnh",
+      "mobile-command",
+      "priority:normal",
+      "dispatch:worker-done",
+      "command:task_request"
+    ],
+    "githubIssueNumber": 9,
+    "githubIssueState": "closed",
+    "githubIssueUrl": "https://github.com/koreanlegog-arch/personal-notion-hub/issues/9",
+    "semanticProgress": {
+      "confidence": 88,
+      "evidenceStrength": "high",
+      "messageContentStored": false,
+      "recommendedNextAction": "record_worker_result_and_close_dispatch",
+      "requiresSupervisorAction": false,
+      "stage": "done",
+      "status": "done",
+      "updatedAt": "2026-06-06T10:46:21+00:00"
+    },
+    "updatedAt": "2026-06-06T10:49:37+00:00",
+    "workerEvidenceRef": "ops/runs/PNH-WORKER-COMPLETION-AUTO-20260606/issue_9/openclaw_worker_capture_metadata.json",
+    "workerResultRecordedAt": "2026-06-06T10:46:06+00:00",
+    "workerSessionId": "pnh:launch-packet-launch-mq25eht2-1dzjhy:qa",
+    "workerStatus": "done"
+  }
+}

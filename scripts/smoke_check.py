@@ -126,6 +126,8 @@ REQUIRED = [
     "scripts/pnh_dispatch_rehearsal_smoke_check.py",
     "scripts/pnh_worker_result_record.py",
     "scripts/pnh_worker_result_record_smoke_check.py",
+    "scripts/pnh_worker_completion_auto.py",
+    "scripts/pnh_worker_completion_auto_smoke_check.py",
     "scripts/pnh_openclaw_worker_capture.py",
     "scripts/pnh_openclaw_worker_capture_smoke_check.py",
     "scripts/pnh_dispatch_evidence_summary.py",

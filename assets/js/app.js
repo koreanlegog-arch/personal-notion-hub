@@ -1270,18 +1270,30 @@ function commandPacketStageLabelForKey(stage) {
   return labels[stage] || "Unknown";
 }
 
-function disconnectCompanion() {
-  window.PNHCompanionBridge?.disconnect?.();
+async function disconnectCompanion() {
+  const bridge = window.PNHCompanionBridge;
+  let revoked = null;
+  if (bridge?.revokeOwnerDeviceSession) {
+    try {
+      revoked = await bridge.revokeOwnerDeviceSession();
+    } catch {
+      revoked = { revoked: false };
+    }
+  } else {
+    bridge?.disconnect?.();
+  }
   companionState = {
     ...companionState,
     paired: false,
     dispatchState: null,
     commandPacketStatus: null,
     singleCommandPacketRun: null,
-    lastResult: "Disconnected. No browser session token is retained.",
+    lastResult: revoked?.revoked
+      ? "Disconnected. Owner device credential was revoked and no browser session token is retained."
+      : "Disconnected. No browser session token is retained.",
   };
   render();
-  toast("Companion disconnected");
+  toast(revoked?.revoked ? "Device forgotten" : "Companion disconnected");
 }
 
 function toggleScreenshotRedaction() {

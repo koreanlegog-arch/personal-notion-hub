@@ -1,0 +1,107 @@
+{
+  "closureAppliedActionCount": 0,
+  "closurePlannedActionCount": 0,
+  "commandsRun": [
+    {
+      "command": [
+        "python3",
+        "scripts/pnh_dispatch_evidence_summary.py",
+        "--state-file",
+        "ops/runs/PNH-WORKER-COMPLETION-AUTO-20260606/auto/selected_dispatch_state.json",
+        "--out",
+        "ops/runs/PNH-WORKER-COMPLETION-AUTO-20260606/auto/selected_dispatch_evidence_summary.json"
+      ],
+      "returnCode": 0,
+      "stderrBytes": 0,
+      "stderrFirstLines": [],
+      "stdoutBytes": 2334,
+      "stdoutFirstLines": [
+        "{\"averageEvidenceCompleteness\": 100, \"blockedOrFailed\": 0, \"dispatchEvidenceSummary\": true, \"includedRecords\": 2, \"out\": \"ops/runs/PNH-WORKER-COMPLETION-AUTO-20260606/auto/selected_dispatch_evidence_summary.json\", \"privateValuesPrinted\": false, \"readyForSupervisorReview\": 2, \"records\": [{\"discordThreadId\": \"1512748856499245096\", \"discordThreadSet\": true, \"evidenceCompleteness\": 100, \"githubIssueNu"
+      ],
+      "step": "selected_evidence_summary"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/pnh_github_worker_done_closure.py",
+        "--evidence",
+        "ops/runs/PNH-WORKER-COMPLETION-AUTO-20260606/auto/selected_dispatch_evidence_summary.json",
+        "--repo",
+        "koreanlegog-arch/personal-notion-hub",
+        "--out",
+        "ops/runs/PNH-WORKER-COMPLETION-AUTO-20260606/auto/github_worker_done_closure.json",
+        "--apply",
+        "--approve-external-write"
+      ],
+      "returnCode": 0,
+      "stderrBytes": 0,
+      "stderrFirstLines": [],
+      "stdoutBytes": 315,
+      "stdoutFirstLines": [
+        "{\"appliedActionCount\": 0, \"externalWritesPerformed\": false, \"githubWorkerDoneClosure\": true, \"mode\": \"apply\", \"out\": \"ops/runs/PNH-WORKER-COMPLETION-AUTO-20260606/auto/github_worker_done_closure.json\", \"plannedActionCount\": 0, \"privateValuesPrinted\": false, \"rawPrivateBodyRead\": false, \"tokenValuePrinted\": false}"
+      ],
+      "step": "github_worker_done_closure"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/pnh_dispatch_status_refresh.py",
+        "--state-file",
+        "companion/private/pnh_dispatch_state.json",
+        "--repo",
+        "koreanlegog-arch/personal-notion-hub",
+        "--github-read",
+        "--apply",
+        "--out",
+        "ops/runs/PNH-WORKER-COMPLETION-AUTO-20260606/auto/dispatch_status_refresh.json",
+        "--limit",
+        "10"
+      ],
+      "returnCode": 0,
+      "stderrBytes": 0,
+      "stderrFirstLines": [],
+      "stdoutBytes": 406,
+      "stdoutFirstLines": [
+        "{\"dispatchStatusRefresh\": true, \"externalWritesPerformed\": false, \"fixtureUsed\": false, \"githubReadRequested\": true, \"mode\": \"apply\", \"out\": \"ops/runs/PNH-WORKER-COMPLETION-AUTO-20260606/auto/dispatch_status_refresh.json\", \"privateValuesPrinted\": false, \"recordsInspected\": 8, \"recordsNeedingFollowUp\": 0, \"recordsRefreshed\": 8, \"recordsWithGitHub\": 8, \"tokenValuePrinted\": false, \"writesPerformed\": "
+      ],
+      "step": "github_status_refresh"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/pnh_dispatch_evidence_summary.py",
+        "--state-file",
+        "companion/private/pnh_dispatch_state.json",
+        "--out",
+        "ops/runs/PNH-WORKER-COMPLETION-AUTO-20260606/auto/final_dispatch_evidence_summary.json"
+      ],
+      "returnCode": 0,
+      "stderrBytes": 0,
+      "stderrFirstLines": [],
+      "stdoutBytes": 3660,
+      "stdoutFirstLines": [
+        "{\"averageEvidenceCompleteness\": 100, \"blockedOrFailed\": 0, \"dispatchEvidenceSummary\": true, \"includedRecords\": 8, \"out\": \"ops/runs/PNH-WORKER-COMPLETION-AUTO-20260606/auto/final_dispatch_evidence_summary.json\", \"privateValuesPrinted\": false, \"readyForSupervisorReview\": 8, \"records\": [{\"discordThreadId\": \"1512364450869547130\", \"discordThreadSet\": true, \"evidenceCompleteness\": 100, \"githubIssueNumbe"
+      ],
+      "step": "final_evidence_summary"
+    }
+  ],
+  "externalWritesPerformed": false,
+  "generatedAt": "2026-06-06T11:30:23+00:00",
+  "githubStatusRefreshPerformed": true,
+  "mode": "apply",
+  "pnhWorkerCompletionAuto": true,
+  "privateValuesPrinted": false,
+  "rawPrivateBodyRead": false,
+  "runDir": "ops/runs/PNH-WORKER-COMPLETION-AUTO-20260606/auto",
+  "selectedCandidateCount": 2,
+  "selectedIssueNumbers": [
+    8,
+    9
+  ],
+  "selectedPacketIds": [
+    "launch-packet-launch-mq2593m2-wxwgt3",
+    "launch-packet-launch-mq25eht2-1dzjhy"
+  ],
+  "stateFile": "companion/private/pnh_dispatch_state.json",
+  "tokenValuePrinted": false
+}

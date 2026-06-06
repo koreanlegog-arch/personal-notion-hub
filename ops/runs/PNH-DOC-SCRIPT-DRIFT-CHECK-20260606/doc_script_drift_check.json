@@ -1,7 +1,7 @@
 {
   "exactOwnerNetworkUrlPersisted": false,
-  "existingScriptRefCount": 130,
-  "generatedAt": "2026-06-06T11:19:14+00:00",
+  "existingScriptRefCount": 133,
+  "generatedAt": "2026-06-06T11:33:17+00:00",
   "missingScriptRefCount": 0,
   "missingScriptRefs": [],
   "pnhDocScriptDriftCheck": true,
@@ -32,7 +32,7 @@
     "docs/TEST_PLAN.md",
     "docs/adr-0001-local-companion-vault.md"
   ],
-  "scriptRefCount": 130,
+  "scriptRefCount": 133,
   "tokenValuePrinted": false,
   "verdict": "current_docs_script_refs_ok",
   "workMode": {
