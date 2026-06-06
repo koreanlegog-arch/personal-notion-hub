@@ -1,5 +1,6 @@
 {
   "adapter": "live-recording-transcript-url",
+  "duplicatesSkipped": 0,
   "externalServicesContacted": false,
   "fixtureMode": false,
   "mode": "readiness",

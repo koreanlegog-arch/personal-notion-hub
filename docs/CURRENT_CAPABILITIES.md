@@ -82,6 +82,7 @@ The current verified Launch flow can:
 41. probe or wait for new phone automation captures using metadata-only encrypted-vault evidence
 42. generate a placeholder-only owner phone automation handoff packet for configuring external phone tools
 43. skip duplicate normalized private-data adapter and phone automation ingests with metadata-safe fingerprints
+44. include phone automation readiness and live-probe status in bounded scheduler ticks
 
 Latest owner live command-packet dispatch:
 

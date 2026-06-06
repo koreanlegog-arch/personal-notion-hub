@@ -1,11 +1,11 @@
 {
-  "capturesInspected": 14,
+  "capturesInspected": 17,
   "commandAliasesLoaded": 1,
   "cooldownActive": false,
   "delegationScope": "bounded_pnh_test_implementation_pilot",
   "eligibleCount": 0,
   "externalWritesPerformed": false,
-  "generatedAt": "2026-06-06T07:18:57+00:00",
+  "generatedAt": "2026-06-06T08:01:04+00:00",
   "lockPlan": {
     "lockFile": "companion/private/pnh_unattended_dispatch.lock",
     "singleWriter": true,
@@ -42,6 +42,39 @@
   },
   "rollbackRequiredBeforeApply": true,
   "skipped": [
+    {
+      "captureId": "capture-8085de34c2771861bbbb0a35",
+      "commandAliasApplied": false,
+      "commandType": "call_note",
+      "eligible": false,
+      "encrypted": true,
+      "originalKind": "call_note",
+      "sensitivity": "highly_sensitive",
+      "skipReason": "not_dispatch_command_kind",
+      "storageMode": "encrypted-vault"
+    },
+    {
+      "captureId": "capture-a900bce2cc505444b693853b",
+      "commandAliasApplied": false,
+      "commandType": "call_note",
+      "eligible": false,
+      "encrypted": true,
+      "originalKind": "call_note",
+      "sensitivity": "highly_sensitive",
+      "skipReason": "not_dispatch_command_kind",
+      "storageMode": "encrypted-vault"
+    },
+    {
+      "captureId": "capture-742edd002a19f7d720982e6a",
+      "commandAliasApplied": false,
+      "commandType": "call_note",
+      "eligible": false,
+      "encrypted": true,
+      "originalKind": "call_note",
+      "sensitivity": "highly_sensitive",
+      "skipReason": "not_dispatch_command_kind",
+      "storageMode": "encrypted-vault"
+    },
     {
       "captureId": "capture-10eb0c7a94c5e1f04cd35b41",
       "commandAliasApplied": false,
@@ -197,6 +230,6 @@
       "storageMode": "encrypted-vault"
     }
   ],
-  "skippedCount": 14,
+  "skippedCount": 17,
   "tokenValuePrinted": false
 }

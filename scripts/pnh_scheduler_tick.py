@@ -25,12 +25,21 @@ JOBS = {
     "dispatch-evidence": ["scripts/pnh_dispatch_evidence_summary.py"],
     "adapter-status": ["scripts/pnh_private_data_adapter_status.py"],
     "live-adapter-status": ["scripts/pnh_live_private_data_adapter_batch_sync.py"],
+    "phone-automation-readiness": ["scripts/pnh_phone_automation_setup_readiness.py"],
+    "phone-automation-live-probe": ["scripts/pnh_phone_automation_live_probe.py"],
 }
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run one PNH scheduler tick.")
-    parser.add_argument("--jobs", default="private-status,queue-plan,unattended-readiness,retry-backoff,unattended-status,dispatch-evidence,adapter-status,live-adapter-status")
+    parser.add_argument(
+        "--jobs",
+        default=(
+            "private-status,queue-plan,unattended-readiness,retry-backoff,unattended-status,"
+            "dispatch-evidence,adapter-status,live-adapter-status,phone-automation-readiness,"
+            "phone-automation-live-probe"
+        ),
+    )
     parser.add_argument("--out", default=str(DEFAULT_OUT), help="Output JSON.")
     parser.add_argument("--runtime-dir", default="", help="Optional ignored runtime dir for child job outputs.")
     args = parser.parse_args()
@@ -72,6 +81,8 @@ def build_job_command(name: str, command: list[str], runtime_dir: Path | None) -
         "unattended-status": "unattended_status.json",
         "dispatch-evidence": "dispatch_evidence_summary.json",
         "live-adapter-status": "live_adapter_batch_sync.json",
+        "phone-automation-readiness": "phone_automation_setup_readiness.json",
+        "phone-automation-live-probe": "phone_automation_live_probe.json",
     }
     if name not in out_map:
         return command

@@ -26,6 +26,7 @@ including guarded live-adapter and bounded scheduler foundations.
 - metadata-only phone automation live probe for new encrypted-vault captures
 - placeholder-only owner phone automation handoff packet
 - opt-in private ingest fingerprint dedup for adapters and phone automation
+- bounded scheduler phone automation readiness and live-probe jobs
 - bounded unattended retry/backoff planning
 - bounded local scheduler tick/loop scripts with live-adapter readiness job
 - unattended automation status summary for queue/readiness/retry decisions
@@ -63,6 +64,7 @@ including guarded live-adapter and bounded scheduler foundations.
 - phone automation live probe can detect new phone captures without decrypting private bodies
 - phone automation handoff packet consolidates owner setup steps without storing token values or exact tailnet URLs
 - repeated identical normalized adapter/phone ingests are skipped without printing private values
+- scheduler ticks now include phone automation readiness and metadata-only live-probe status
 
 ### Boundaries
 
