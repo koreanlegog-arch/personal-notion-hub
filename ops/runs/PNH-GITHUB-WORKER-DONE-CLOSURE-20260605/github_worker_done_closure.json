@@ -1,13 +1,22 @@
 {
   "actions": [
     {
-      "discordThreadId": "1512471203754020976",
+      "discordThreadId": "1512749820119482568",
       "evidenceCompleteness": 100,
-      "githubIssueNumber": "7",
+      "githubIssueNumber": "9",
       "operation": "close_worker_done_issue",
-      "packetId": "launch-packet-launch-mq11rzo5-8kcrgo",
+      "packetId": "launch-packet-launch-mq25eht2-1dzjhy",
       "taskStatus": "worker_done",
-      "workerSessionId": "pnh:launch-packet-launch-mq11rzo5-8kcrgo:qa"
+      "workerSessionId": "pnh:launch-packet-launch-mq25eht2-1dzjhy:qa"
+    },
+    {
+      "discordThreadId": "1512748856499245096",
+      "evidenceCompleteness": 100,
+      "githubIssueNumber": "8",
+      "operation": "close_worker_done_issue",
+      "packetId": "launch-packet-launch-mq2593m2-wxwgt3",
+      "taskStatus": "worker_done",
+      "workerSessionId": "pnh:launch-packet-launch-mq2593m2-wxwgt3:qa"
     }
   ],
   "applied": [
@@ -16,16 +25,23 @@
       "beforeState": "OPEN",
       "commentBodyPrivate": false,
       "contentPrinted": false,
-      "githubIssueNumber": "7"
+      "githubIssueNumber": "9"
+    },
+    {
+      "afterState": "CLOSED",
+      "beforeState": "OPEN",
+      "commentBodyPrivate": false,
+      "contentPrinted": false,
+      "githubIssueNumber": "8"
     }
   ],
-  "appliedActionCount": 1,
+  "appliedActionCount": 2,
   "approvalSource": "project AGENTS.md bounded GitHub Issue update delegation",
   "externalWritesPerformed": true,
-  "generatedAt": "2026-06-05T15:04:01+00:00",
+  "generatedAt": "2026-06-06T10:48:11+00:00",
   "githubWorkerDoneClosure": true,
   "mode": "apply",
-  "plannedActionCount": 1,
+  "plannedActionCount": 2,
   "privateValuesPrinted": false,
   "rawPrivateBodyRead": false,
   "repo": "koreanlegog-arch/personal-notion-hub",

@@ -53,7 +53,7 @@
         ],
         "returnCode": 0,
         "stderrBytes": 0,
-        "stdoutBytes": 2285,
+        "stdoutBytes": 2275,
         "step": "private_inbox"
       },
       {
@@ -63,7 +63,7 @@
         ],
         "returnCode": 0,
         "stderrBytes": 0,
-        "stdoutBytes": 331,
+        "stdoutBytes": 392,
         "step": "queue_plan"
       },
       {
@@ -84,7 +84,7 @@
         ],
         "returnCode": 0,
         "stderrBytes": 0,
-        "stdoutBytes": 6051,
+        "stdoutBytes": 11690,
         "step": "dispatch_state"
       },
       {
@@ -99,14 +99,14 @@
       }
     ],
     "dispatch": {
-      "discordLinked": 6,
-      "githubLinked": 6,
-      "totalRecords": 7,
-      "workerResults": 7
+      "discordLinked": 8,
+      "githubLinked": 8,
+      "totalRecords": 8,
+      "workerResults": 8
     },
     "externalWritesPerformed": false,
     "failedChecks": [],
-    "generatedAt": "2026-06-06T06:00:35+00:00",
+    "generatedAt": "2026-06-06T10:50:21+00:00",
     "materialGateReached": true,
     "materialGateReason": "The next step requires the human owner to pair a browser session and enter real private command content. Codex must not receive or print the pairing code, session token, or raw private body.",
     "nextOperatorAction": "Start the approved tailnet session, pair locally, enter the owner command in the phone browser, then run the single command packet wrapper.",
@@ -119,13 +119,13 @@
     },
     "privateInbox": {
       "statusCounts": {
-        "inbox": 12
+        "inbox": 23
       },
       "storageModeCounts": {
-        "encrypted-vault": 12,
+        "encrypted-vault": 23,
         "plaintext-inbox": 0
       },
-      "totalCaptures": 12
+      "totalCaptures": 23
     },
     "privateValuesPrinted": false,
     "secretValuePrinted": false,

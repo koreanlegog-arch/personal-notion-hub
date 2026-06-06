@@ -1,6 +1,6 @@
 {
   "axisStatus": {
-    "dispatchState": "needs_attention",
+    "dispatchState": "ready",
     "documentScriptDrift": "ready",
     "realPrivateDataAdapters": "covered_metadata_ready",
     "semanticWorkerProgress": "ready",
@@ -46,11 +46,11 @@
     },
     {
       "name": "semantic_progress_complete",
-      "pass": false
+      "pass": true
     },
     {
       "name": "dispatch_evidence_complete",
-      "pass": false
+      "pass": true
     },
     {
       "name": "local_private_adapters_available",
@@ -77,11 +77,11 @@
       "pass": true
     }
   ],
-  "checksPassed": 15,
+  "checksPassed": 17,
   "checksTotal": 17,
-  "completionPercent": 88.2,
+  "completionPercent": 100.0,
   "evidenceSummary": {
-    "dispatchAverageEvidenceCompleteness": 92,
+    "dispatchAverageEvidenceCompleteness": 100,
     "dispatchBlockedOrFailed": 0,
     "docScriptDriftVerdict": "current_docs_script_refs_ok",
     "docScriptMissingRefs": 0,
@@ -102,24 +102,15 @@
     "unattendedDecision": "idle_ready"
   },
   "exactOwnerNetworkUrlPersisted": false,
-  "failedChecks": [
-    {
-      "name": "semantic_progress_complete",
-      "pass": false
-    },
-    {
-      "name": "dispatch_evidence_complete",
-      "pass": false
-    }
-  ],
-  "generatedAt": "2026-06-06T09:31:15+00:00",
+  "failedChecks": [],
+  "generatedAt": "2026-06-06T10:50:26+00:00",
   "pnhAssistantMvpCompletionAudit": true,
   "privateValuesPrinted": false,
   "rawPrivateBodyRead": false,
-  "readyForOwnerControlledMvpUse": false,
+  "readyForOwnerControlledMvpUse": true,
   "tokenValuePrinted": false,
   "userActionsRequired": [],
-  "verdict": "not_ready",
+  "verdict": "assistant_mvp_ready_for_controlled_operation",
   "workMode": {
     "efficiencyNote": "The audit aggregates specialist evidence from private ingress, phone automation, scheduler, dispatch, and adapter checks instead of reimplementing their logic.",
     "mode": "normal-harness"

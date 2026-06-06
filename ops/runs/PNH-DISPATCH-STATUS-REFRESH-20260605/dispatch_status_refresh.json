@@ -3,69 +3,9 @@
   "externalWritesPerformed": false,
   "fixtureUsed": false,
   "githubReadRequested": true,
-  "mode": "dry-run",
+  "mode": "apply",
   "privateValuesPrinted": false,
   "records": [
-    {
-      "discordThreadSet": true,
-      "error": "",
-      "githubIssueClosedAt": "",
-      "githubIssueLabels": [
-        "pnh",
-        "mobile-command",
-        "priority:normal",
-        "dispatch:not-dispatched",
-        "command:task_request"
-      ],
-      "githubIssueNumber": "9",
-      "githubIssueSet": true,
-      "githubIssueState": "open",
-      "githubIssueUpdatedAt": "2026-06-06T09:28:01Z",
-      "githubStatusRefreshed": true,
-      "needsFollowUp": false,
-      "packetId": "launch-packet-launch-mq25eht2-1dzjhy",
-      "workerStatus": ""
-    },
-    {
-      "discordThreadSet": true,
-      "error": "",
-      "githubIssueClosedAt": "",
-      "githubIssueLabels": [
-        "pnh",
-        "mobile-command",
-        "priority:normal",
-        "dispatch:not-dispatched",
-        "command:task_request"
-      ],
-      "githubIssueNumber": "8",
-      "githubIssueSet": true,
-      "githubIssueState": "open",
-      "githubIssueUpdatedAt": "2026-06-06T09:23:46Z",
-      "githubStatusRefreshed": true,
-      "needsFollowUp": false,
-      "packetId": "launch-packet-launch-mq2593m2-wxwgt3",
-      "workerStatus": ""
-    },
-    {
-      "discordThreadSet": true,
-      "error": "",
-      "githubIssueClosedAt": "2026-06-05T15:04:02Z",
-      "githubIssueLabels": [
-        "pnh",
-        "mobile-command",
-        "priority:normal",
-        "dispatch:worker-done",
-        "command:task_request"
-      ],
-      "githubIssueNumber": "7",
-      "githubIssueSet": true,
-      "githubIssueState": "closed",
-      "githubIssueUpdatedAt": "2026-06-05T15:04:02Z",
-      "githubStatusRefreshed": true,
-      "needsFollowUp": false,
-      "packetId": "launch-packet-launch-mq11rzo5-8kcrgo",
-      "workerStatus": "done"
-    },
     {
       "discordThreadSet": true,
       "error": "",
@@ -165,6 +105,66 @@
       "needsFollowUp": false,
       "packetId": "capture-5345e37040604a2fca64f317",
       "workerStatus": "done"
+    },
+    {
+      "discordThreadSet": true,
+      "error": "",
+      "githubIssueClosedAt": "2026-06-05T15:04:02Z",
+      "githubIssueLabels": [
+        "pnh",
+        "mobile-command",
+        "priority:normal",
+        "dispatch:worker-done",
+        "command:task_request"
+      ],
+      "githubIssueNumber": "7",
+      "githubIssueSet": true,
+      "githubIssueState": "closed",
+      "githubIssueUpdatedAt": "2026-06-05T15:04:02Z",
+      "githubStatusRefreshed": true,
+      "needsFollowUp": false,
+      "packetId": "launch-packet-launch-mq11rzo5-8kcrgo",
+      "workerStatus": "done"
+    },
+    {
+      "discordThreadSet": true,
+      "error": "",
+      "githubIssueClosedAt": "2026-06-06T10:48:14Z",
+      "githubIssueLabels": [
+        "pnh",
+        "mobile-command",
+        "priority:normal",
+        "dispatch:worker-done",
+        "command:task_request"
+      ],
+      "githubIssueNumber": "8",
+      "githubIssueSet": true,
+      "githubIssueState": "closed",
+      "githubIssueUpdatedAt": "2026-06-06T10:48:40Z",
+      "githubStatusRefreshed": true,
+      "needsFollowUp": false,
+      "packetId": "launch-packet-launch-mq2593m2-wxwgt3",
+      "workerStatus": "done"
+    },
+    {
+      "discordThreadSet": true,
+      "error": "",
+      "githubIssueClosedAt": "2026-06-06T10:48:11Z",
+      "githubIssueLabels": [
+        "pnh",
+        "mobile-command",
+        "priority:normal",
+        "dispatch:worker-done",
+        "command:task_request"
+      ],
+      "githubIssueNumber": "9",
+      "githubIssueSet": true,
+      "githubIssueState": "closed",
+      "githubIssueUpdatedAt": "2026-06-06T10:48:43Z",
+      "githubStatusRefreshed": true,
+      "needsFollowUp": false,
+      "packetId": "launch-packet-launch-mq25eht2-1dzjhy",
+      "workerStatus": "done"
     }
   ],
   "recordsInspected": 8,
@@ -172,5 +172,5 @@
   "recordsRefreshed": 8,
   "recordsWithGitHub": 8,
   "tokenValuePrinted": false,
-  "writesPerformed": false
+  "writesPerformed": true
 }

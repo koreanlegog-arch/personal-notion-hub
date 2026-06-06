@@ -1,0 +1,39 @@
+{
+  "messageContentStored": false,
+  "mode": "apply",
+  "packetId": "launch-packet-launch-mq25eht2-1dzjhy",
+  "pnhWorkerProgressParse": true,
+  "privateValuesPrinted": false,
+  "progress": {
+    "artifactSignals": [
+      "tests_passed",
+      "evidence_recorded",
+      "issue_updated",
+      "discord_updated"
+    ],
+    "confidence": 88,
+    "evidenceStrength": "high",
+    "messageContentStored": false,
+    "parserVersion": 2,
+    "recommendedNextAction": "record_worker_result_and_close_dispatch",
+    "requiresSupervisorAction": false,
+    "riskSignals": [
+      "external_write"
+    ],
+    "signals": [
+      "done",
+      "qa",
+      "tests_passed",
+      "evidence_recorded",
+      "issue_updated",
+      "discord_updated",
+      "external_write"
+    ],
+    "stage": "done",
+    "status": "done",
+    "updatedAt": "2026-06-06T10:46:21+00:00"
+  },
+  "stateFile": "companion/private/pnh_dispatch_state.json",
+  "tokenValuePrinted": false,
+  "writesPerformed": true
+}
