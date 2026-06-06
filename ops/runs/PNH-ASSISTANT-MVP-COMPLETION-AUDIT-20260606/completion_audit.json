@@ -1,6 +1,6 @@
 {
   "axisStatus": {
-    "dispatchState": "ready",
+    "dispatchState": "needs_attention",
     "documentScriptDrift": "ready",
     "realPrivateDataAdapters": "covered_metadata_ready",
     "semanticWorkerProgress": "ready",
@@ -46,11 +46,11 @@
     },
     {
       "name": "semantic_progress_complete",
-      "pass": true
+      "pass": false
     },
     {
       "name": "dispatch_evidence_complete",
-      "pass": true
+      "pass": false
     },
     {
       "name": "local_private_adapters_available",
@@ -77,15 +77,15 @@
       "pass": true
     }
   ],
-  "checksPassed": 17,
+  "checksPassed": 15,
   "checksTotal": 17,
-  "completionPercent": 100.0,
+  "completionPercent": 88.2,
   "evidenceSummary": {
-    "dispatchAverageEvidenceCompleteness": 100,
+    "dispatchAverageEvidenceCompleteness": 92,
     "dispatchBlockedOrFailed": 0,
     "docScriptDriftVerdict": "current_docs_script_refs_ok",
     "docScriptMissingRefs": 0,
-    "encryptedVaultRows": 20,
+    "encryptedVaultRows": 23,
     "liveAdapterCount": 4,
     "liveAdapterFailedCount": 0,
     "phoneCaptureCount": 8,
@@ -96,21 +96,30 @@
     "phoneSourceCoverageVerdict": "all_phone_sources_covered",
     "plaintextInboxRows": 0,
     "privacyGateVerdict": "ready_for_controlled_real_phone_adapter_run",
-    "privateInboxTotal": 20,
+    "privateInboxTotal": 23,
     "schedulerFailedJobs": 0,
     "schedulerJobsRun": 11,
     "unattendedDecision": "idle_ready"
   },
   "exactOwnerNetworkUrlPersisted": false,
-  "failedChecks": [],
-  "generatedAt": "2026-06-06T09:15:05+00:00",
+  "failedChecks": [
+    {
+      "name": "semantic_progress_complete",
+      "pass": false
+    },
+    {
+      "name": "dispatch_evidence_complete",
+      "pass": false
+    }
+  ],
+  "generatedAt": "2026-06-06T09:31:15+00:00",
   "pnhAssistantMvpCompletionAudit": true,
   "privateValuesPrinted": false,
   "rawPrivateBodyRead": false,
-  "readyForOwnerControlledMvpUse": true,
+  "readyForOwnerControlledMvpUse": false,
   "tokenValuePrinted": false,
   "userActionsRequired": [],
-  "verdict": "assistant_mvp_ready_for_controlled_operation",
+  "verdict": "not_ready",
   "workMode": {
     "efficiencyNote": "The audit aggregates specialist evidence from private ingress, phone automation, scheduler, dispatch, and adapter checks instead of reimplementing their logic.",
     "mode": "normal-harness"

@@ -1,11 +1,71 @@
 {
-  "averageEvidenceCompleteness": 100,
+  "averageEvidenceCompleteness": 92,
   "blockedOrFailed": 0,
   "dispatchEvidenceSummary": true,
-  "includedRecords": 6,
+  "includedRecords": 8,
   "privateValuesPrinted": false,
   "readyForSupervisorReview": 6,
   "records": [
+    {
+      "discordThreadId": "1512749820119482568",
+      "discordThreadSet": true,
+      "evidenceCompleteness": 67,
+      "githubIssueNumber": 9,
+      "githubIssueSet": true,
+      "githubIssueState": "",
+      "githubStatusCheckedAt": "",
+      "missingEvidence": [
+        "worker_session"
+      ],
+      "nextAction": "capture_worker_session_result",
+      "packetId": "launch-packet-launch-mq25eht2-1dzjhy",
+      "semanticProgressConfidence": 0,
+      "semanticProgressEvidenceStrength": "",
+      "semanticProgressRecommendedNextAction": "",
+      "semanticProgressRequiresSupervisorAction": false,
+      "semanticProgressSet": false,
+      "semanticProgressSignals": [],
+      "semanticProgressStage": "",
+      "semanticProgressStatus": "",
+      "semanticProgressUpdatedAt": "",
+      "taskStatus": "dispatched_to_worker_thread",
+      "updatedAt": "2026-06-06T09:28:03+00:00",
+      "workerEvidenceRefSet": false,
+      "workerResultRecordedAt": "",
+      "workerResultSet": false,
+      "workerSessionId": "",
+      "workerStatus": ""
+    },
+    {
+      "discordThreadId": "1512748856499245096",
+      "discordThreadSet": true,
+      "evidenceCompleteness": 67,
+      "githubIssueNumber": 8,
+      "githubIssueSet": true,
+      "githubIssueState": "",
+      "githubStatusCheckedAt": "",
+      "missingEvidence": [
+        "worker_session"
+      ],
+      "nextAction": "capture_worker_session_result",
+      "packetId": "launch-packet-launch-mq2593m2-wxwgt3",
+      "semanticProgressConfidence": 0,
+      "semanticProgressEvidenceStrength": "",
+      "semanticProgressRecommendedNextAction": "",
+      "semanticProgressRequiresSupervisorAction": false,
+      "semanticProgressSet": false,
+      "semanticProgressSignals": [],
+      "semanticProgressStage": "",
+      "semanticProgressStatus": "",
+      "semanticProgressUpdatedAt": "",
+      "taskStatus": "dispatched_to_worker_thread",
+      "updatedAt": "2026-06-06T09:23:54+00:00",
+      "workerEvidenceRefSet": false,
+      "workerResultRecordedAt": "",
+      "workerResultSet": false,
+      "workerSessionId": "",
+      "workerStatus": ""
+    },
     {
       "discordThreadId": "1512471203754020976",
       "discordThreadSet": true,
@@ -211,5 +271,5 @@
       "workerStatus": "done"
     }
   ],
-  "totalRecords": 6
+  "totalRecords": 8
 }

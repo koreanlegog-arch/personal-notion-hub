@@ -1,11 +1,11 @@
 {
-  "capturesInspected": 20,
+  "capturesInspected": 23,
   "commandAliasesLoaded": 1,
   "cooldownActive": false,
   "delegationScope": "bounded_pnh_test_implementation_pilot",
   "eligibleCount": 0,
   "externalWritesPerformed": false,
-  "generatedAt": "2026-06-06T09:15:25+00:00",
+  "generatedAt": "2026-06-06T09:31:14+00:00",
   "lockPlan": {
     "lockFile": "companion/private/pnh_unattended_dispatch.lock",
     "singleWriter": true,
@@ -42,6 +42,39 @@
   },
   "rollbackRequiredBeforeApply": true,
   "skipped": [
+    {
+      "captureId": "launch-packet-launch-mq25eht2-1dzjhy",
+      "commandAliasApplied": false,
+      "commandType": "task_request",
+      "eligible": false,
+      "encrypted": true,
+      "originalKind": "task_request",
+      "sensitivity": "internal",
+      "skipReason": "already_in_dispatch_state",
+      "storageMode": "encrypted-vault"
+    },
+    {
+      "captureId": "launch-packet-launch-mq2593m2-wxwgt3",
+      "commandAliasApplied": false,
+      "commandType": "task_request",
+      "eligible": false,
+      "encrypted": true,
+      "originalKind": "task_request",
+      "sensitivity": "internal",
+      "skipReason": "already_in_dispatch_state",
+      "storageMode": "encrypted-vault"
+    },
+    {
+      "captureId": "assistant-capture-capture-mq24uwvd-kchrul4b",
+      "commandAliasApplied": false,
+      "commandType": "assistant_capture",
+      "eligible": false,
+      "encrypted": true,
+      "originalKind": "assistant_capture",
+      "sensitivity": "internal",
+      "skipReason": "not_dispatch_command_kind",
+      "storageMode": "encrypted-vault"
+    },
     {
       "captureId": "capture-ec7d8372c0106038afcc93ba",
       "commandAliasApplied": false,
@@ -263,6 +296,6 @@
       "storageMode": "encrypted-vault"
     }
   ],
-  "skippedCount": 20,
+  "skippedCount": 23,
   "tokenValuePrinted": false
 }

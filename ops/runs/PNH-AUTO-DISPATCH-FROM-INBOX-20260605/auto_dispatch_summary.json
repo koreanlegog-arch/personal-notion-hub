@@ -1,0 +1,37 @@
+{
+  "candidate": {
+    "captureId": "launch-packet-launch-mq25eht2-1dzjhy",
+    "commandType": "task_request",
+    "encrypted": true,
+    "storageMode": "encrypted-vault"
+  },
+  "dispatch": {
+    "discordTargetSet": true,
+    "discordThreadSet": true,
+    "existingDiscordThread": false,
+    "existingGitHubIssue": false,
+    "githubIssueSet": true,
+    "packetId": "launch-packet-launch-mq25eht2-1dzjhy",
+    "repo": "koreanlegog-arch/personal-notion-hub"
+  },
+  "externalWritePerformed": true,
+  "liveApplyGate": {
+    "reason": "apply mode can create GitHub Issues, Discord threads, GitHub comments, and OpenClaw messages",
+    "requiredFlags": [
+      "--apply",
+      "--approve-live-dispatch",
+      "--approve-external-write",
+      "--approve-discord-dispatch"
+    ],
+    "requiredForApply": true
+  },
+  "mode": "apply",
+  "outputs": {
+    "candidate": "ops/runs/PNH-AUTO-DISPATCH-FROM-INBOX-20260605/dispatch_candidate.json",
+    "dispatchPlan": "ops/runs/PNH-AUTO-DISPATCH-FROM-INBOX-20260605/dispatch_apply_result.json"
+  },
+  "pnhAutoDispatchFromInbox": true,
+  "privateValuesPrinted": false,
+  "tokenValuePrinted": false,
+  "writesPerformed": true
+}

@@ -1,7 +1,7 @@
 {
   "externalWritesPerformed": false,
   "failedJobs": [],
-  "generatedAt": "2026-06-06T08:34:58+00:00",
+  "generatedAt": "2026-06-06T09:31:14+00:00",
   "jobsRun": 11,
   "pnhSchedulerTick": true,
   "privateValuesPrinted": false,
@@ -18,7 +18,7 @@
       "returnCode": 0,
       "status": "ok",
       "stderrFirstLine": "",
-      "stdoutFirstLine": "{\"capturesInspected\": 20, \"delegationScope\": \"bounded_pnh_test_implementation_pilot\", \"externalWritesPerformed\": false, \"mode\": \"dry-run\", \"out\": \"ops/runs/PNH-UNATTENDED-DISPATCH-READINESS-20260605/queue_plan.json\", \"pnhUnattendedDispatchQ"
+      "stdoutFirstLine": "{\"capturesInspected\": 23, \"delegationScope\": \"bounded_pnh_test_implementation_pilot\", \"externalWritesPerformed\": false, \"mode\": \"dry-run\", \"out\": \"ops/runs/PNH-UNATTENDED-DISPATCH-READINESS-20260605/queue_plan.json\", \"pnhUnattendedDispatchQ"
     },
     {
       "job": "unattended-readiness",
@@ -32,7 +32,7 @@
       "returnCode": 0,
       "status": "ok",
       "stderrFirstLine": "",
-      "stdoutFirstLine": "{\"externalWritesPerformed\": false, \"mode\": \"dry-run\", \"out\": \"ops/runs/PNH-UNATTENDED-RETRY-BACKOFF-20260606/retry_backoff_plan.json\", \"pnhUnattendedRetryBackoff\": true, \"privateValuesPrinted\": false, \"recordsInspected\": 6, \"retryCandidates"
+      "stdoutFirstLine": "{\"externalWritesPerformed\": false, \"mode\": \"dry-run\", \"out\": \"ops/runs/PNH-UNATTENDED-RETRY-BACKOFF-20260606/retry_backoff_plan.json\", \"pnhUnattendedRetryBackoff\": true, \"privateValuesPrinted\": false, \"recordsInspected\": 8, \"retryCandidates"
     },
     {
       "job": "unattended-status",
@@ -46,7 +46,7 @@
       "returnCode": 0,
       "status": "ok",
       "stderrFirstLine": "",
-      "stdoutFirstLine": "{\"averageEvidenceCompleteness\": 100, \"blockedOrFailed\": 0, \"dispatchEvidenceSummary\": true, \"includedRecords\": 6, \"out\": \"ops/runs/PNH-DISPATCH-EVIDENCE-SUMMARY-20260605/dispatch_evidence_summary.json\", \"privateValuesPrinted\": false, \"ready"
+      "stdoutFirstLine": "{\"averageEvidenceCompleteness\": 92, \"blockedOrFailed\": 0, \"dispatchEvidenceSummary\": true, \"includedRecords\": 8, \"out\": \"ops/runs/PNH-DISPATCH-EVIDENCE-SUMMARY-20260605/dispatch_evidence_summary.json\", \"privateValuesPrinted\": false, \"readyF"
     },
     {
       "job": "adapter-status",
@@ -60,7 +60,7 @@
       "returnCode": 0,
       "status": "ok",
       "stderrFirstLine": "",
-      "stdoutFirstLine": "{\"adapterCount\": 4, \"externalServicesContacted\": false, \"failedAdapters\": [], \"generatedAt\": \"2026-06-06T08:34:56+00:00\", \"mode\": \"readiness\", \"out\": \"ops/runs/PNH-LIVE-PRIVATE-DATA-ADAPTER-20260606/live_adapter_batch_sync.json\", \"pnhLivePr"
+      "stdoutFirstLine": "{\"adapterCount\": 4, \"externalServicesContacted\": false, \"failedAdapters\": [], \"generatedAt\": \"2026-06-06T09:31:14+00:00\", \"mode\": \"readiness\", \"out\": \"ops/runs/PNH-LIVE-PRIVATE-DATA-ADAPTER-20260606/live_adapter_batch_sync.json\", \"pnhLivePr"
     },
     {
       "job": "phone-automation-readiness",
@@ -74,7 +74,7 @@
       "returnCode": 0,
       "status": "ok",
       "stderrFirstLine": "",
-      "stdoutFirstLine": "{\"baseUrlValuePrinted\": false, \"baselineCount\": null, \"currentCount\": 20, \"delta\": null, \"latestPhoneCaptureId\": \"capture-ec7d8372c0106038afcc93ba\", \"latestPhoneCaptureSource\": \"phone_contacts\", \"latestPhoneCaptureStorageMode\": \"encrypted-v"
+      "stdoutFirstLine": "{\"baseUrlValuePrinted\": false, \"baselineCount\": null, \"currentCount\": 23, \"delta\": null, \"latestPhoneCaptureId\": \"capture-ec7d8372c0106038afcc93ba\", \"latestPhoneCaptureSource\": \"phone_contacts\", \"latestPhoneCaptureStorageMode\": \"encrypted-v"
     },
     {
       "job": "phone-capture-summary",

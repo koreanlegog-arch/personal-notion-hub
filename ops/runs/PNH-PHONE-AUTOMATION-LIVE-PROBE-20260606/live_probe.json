@@ -2,10 +2,10 @@
   "baseUrlValuePrinted": false,
   "baselineCount": null,
   "byStorageMode": {
-    "encrypted-vault": 20,
+    "encrypted-vault": 23,
     "plaintext-inbox": 0
   },
-  "currentCount": 20,
+  "currentCount": 23,
   "delta": null,
   "latestPhoneCapture": {
     "createdAt": "2026-06-06T00:00:00Z",

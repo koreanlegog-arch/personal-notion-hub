@@ -57,14 +57,14 @@
   "checks": {
     "companionEncryptedVaultEnabled": true,
     "companionServiceActive": "active",
-    "encryptedVaultRows": 20,
+    "encryptedVaultRows": 23,
     "plaintextInboxRows": 0,
     "schedulerTimerActive": "active",
     "sensitiveOwnerVerdict": "ready_for_sensitive_local_owner_mode",
     "tailnetIpv4Set": true,
     "tailnetRunning": true
   },
-  "generatedAt": "2026-06-06T08:34:58+00:00",
+  "generatedAt": "2026-06-06T09:31:14+00:00",
   "pnhRealDataPrivacyGate": true,
   "privateValuesPrinted": false,
   "rawPrivateBodyRead": false,

@@ -1,0 +1,18 @@
+{
+  "body": "Private command body remains in the local vault and is intentionally not exported.",
+  "captureId": "launch-packet-launch-mq25eht2-1dzjhy",
+  "commandAliasApplied": false,
+  "commandStatus": "stored",
+  "commandType": "task_request",
+  "dispatchState": "not_dispatched",
+  "encrypted": true,
+  "id": "launch-packet-launch-mq25eht2-1dzjhy",
+  "originalKind": "task_request",
+  "payloadType": "pnh_mobile_command_packet",
+  "priority": "normal",
+  "sensitivity": "internal",
+  "source": "mobile_web",
+  "storageMode": "encrypted-vault",
+  "storedAt": "2026-06-06T09:26:03+00:00",
+  "title": "PNH task_request command packet (launch-packet-launch-mq25eht2-1dzjhy)"
+}

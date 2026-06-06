@@ -3,7 +3,7 @@
   "mode": "dry-run",
   "pnhUnattendedRetryBackoff": true,
   "privateValuesPrinted": false,
-  "recordsInspected": 6,
+  "recordsInspected": 8,
   "retryCandidates": [],
   "tokenValuePrinted": false,
   "writesPerformed": false

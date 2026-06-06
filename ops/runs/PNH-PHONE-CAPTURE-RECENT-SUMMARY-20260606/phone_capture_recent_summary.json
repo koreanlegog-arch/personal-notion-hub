@@ -16,7 +16,7 @@
     "phone_contacts": 1,
     "phone_recording": 1
   },
-  "capturesInspected": 20,
+  "capturesInspected": 23,
   "coverageNote": "all_supported_phone_sources_seen_in_recent_window",
   "encryptedPhoneCaptureCount": 8,
   "exactOwnerNetworkUrlPersisted": false,
@@ -39,6 +39,6 @@
   "privateValuesPrinted": false,
   "rawPrivateBodyRead": false,
   "tokenValuePrinted": false,
-  "totalPrivateInboxCaptures": 20,
+  "totalPrivateInboxCaptures": 23,
   "verdict": "phone_capture_recent_summary_ready"
 }
