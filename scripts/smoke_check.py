@@ -186,6 +186,8 @@ REQUIRED = [
     "scripts/pnh_real_data_privacy_gate_smoke_check.py",
     "scripts/pnh_assistant_mvp_completion_audit.py",
     "scripts/pnh_assistant_mvp_completion_audit_smoke_check.py",
+    "scripts/pnh_doc_script_drift_check.py",
+    "scripts/pnh_doc_script_drift_check_smoke_check.py",
     "tests/redacted-ui.spec.cjs",
     "tests/launch-status-sync.spec.cjs",
     "scripts/run_playwright_launch_status_sync_qa.sh",

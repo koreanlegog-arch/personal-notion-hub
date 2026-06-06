@@ -1,7 +1,7 @@
 {
   "autonomousNextAction": "wait_for_new_command_capture",
   "decision": "idle_ready",
-  "generatedAt": "2026-06-06T08:20:42+00:00",
+  "generatedAt": "2026-06-06T08:26:49+00:00",
   "pnhUnattendedAutomationStatus": true,
   "queue": {
     "cooldownActive": false,

@@ -174,6 +174,7 @@ python3 scripts/smoke_check.py
 python3 scripts/sensitive_owner_readiness_check.py
 python3 scripts/keychain_readiness.py
 python3 scripts/pnh_assistant_mvp_completion_audit.py
+python3 scripts/pnh_doc_script_drift_check.py
 ```
 
 ### Local Companion And Private Storage
