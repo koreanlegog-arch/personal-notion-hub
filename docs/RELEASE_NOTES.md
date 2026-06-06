@@ -20,6 +20,7 @@ including guarded live-adapter and bounded scheduler foundations.
 - authenticated phone automation adapter POST endpoint
 - bounded unattended retry/backoff planning
 - bounded local scheduler tick/loop scripts with live-adapter readiness job
+- unattended automation status summary for queue/readiness/retry decisions
 - user-systemd scheduler timer installer, uninstaller, status script, and
   runtime output routing
 - phone automation adapter runbook, schema/template generator, and local send
@@ -48,6 +49,7 @@ including guarded live-adapter and bounded scheduler foundations.
   companion API forwarding
 - real-data privacy gate passed with `13/13` assertions and no blockers
 - no private values or token values printed by validation commands
+- unattended automation status currently reports `idle_ready`
 
 ### Boundaries
 

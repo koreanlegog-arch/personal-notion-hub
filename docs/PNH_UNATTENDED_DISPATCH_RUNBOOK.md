@@ -28,13 +28,14 @@ It can:
 - assess readiness for a bounded pilot batch
 - run bounded pilot batches with rollback snapshot and single-writer lock
 - plan retry/backoff candidates for failed or blocked dispatch records
+- summarize queue/readiness/retry status into one unattended automation decision
 - run bounded local scheduler ticks/loops for status, queue, retry, evidence,
   and live-adapter readiness checks
+- run the scheduler through an installed user-systemd timer
 
 It must not:
 
 - run unbounded OpenClaw worker/model calls or include raw private command bodies
-- install or activate a daemon or scheduled service
 - store raw private command bodies in reports
 
 ## Queue Model
@@ -117,6 +118,20 @@ Retry/backoff check:
 python3 scripts/pnh_unattended_retry_backoff.py
 python3 scripts/pnh_unattended_retry_backoff.py --apply
 ```
+
+Status summary:
+
+```bash
+python3 scripts/pnh_unattended_automation_status.py
+```
+
+The status summary combines queue, readiness, and retry/backoff outputs into
+one of:
+
+- `idle_ready`
+- `ready_to_run_bounded_pilot`
+- `retry_candidates_waiting`
+- `hold_for_readiness`
 
 ## Scheduler Model
 

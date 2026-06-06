@@ -19,7 +19,9 @@ DEFAULT_OUT = ROOT / "ops" / "runs" / "PNH-SCHEDULER-20260606" / "scheduler_tick
 JOBS = {
     "private-status": ["scripts/private_inbox_status.py"],
     "queue-plan": ["scripts/pnh_unattended_dispatch_queue_plan.py"],
+    "unattended-readiness": ["scripts/pnh_unattended_dispatch_readiness.py"],
     "retry-backoff": ["scripts/pnh_unattended_retry_backoff.py"],
+    "unattended-status": ["scripts/pnh_unattended_automation_status.py"],
     "dispatch-evidence": ["scripts/pnh_dispatch_evidence_summary.py"],
     "adapter-status": ["scripts/pnh_private_data_adapter_status.py"],
     "live-adapter-status": ["scripts/pnh_live_private_data_adapter_batch_sync.py"],
@@ -28,7 +30,7 @@ JOBS = {
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run one PNH scheduler tick.")
-    parser.add_argument("--jobs", default="private-status,queue-plan,retry-backoff,dispatch-evidence,adapter-status,live-adapter-status")
+    parser.add_argument("--jobs", default="private-status,queue-plan,unattended-readiness,retry-backoff,unattended-status,dispatch-evidence,adapter-status,live-adapter-status")
     parser.add_argument("--out", default=str(DEFAULT_OUT), help="Output JSON.")
     parser.add_argument("--runtime-dir", default="", help="Optional ignored runtime dir for child job outputs.")
     args = parser.parse_args()
@@ -65,12 +67,34 @@ def build_job_command(name: str, command: list[str], runtime_dir: Path | None) -
     runtime_dir.mkdir(parents=True, exist_ok=True)
     out_map = {
         "queue-plan": "queue_plan.json",
+        "unattended-readiness": "readiness.json",
         "retry-backoff": "retry_backoff_plan.json",
+        "unattended-status": "unattended_status.json",
         "dispatch-evidence": "dispatch_evidence_summary.json",
         "live-adapter-status": "live_adapter_batch_sync.json",
     }
     if name not in out_map:
         return command
+    if name == "unattended-readiness":
+        return [
+            *command,
+            "--queue-plan",
+            str(runtime_dir / "queue_plan.json"),
+            "--out",
+            str(runtime_dir / out_map[name]),
+        ]
+    if name == "unattended-status":
+        return [
+            *command,
+            "--queue-plan",
+            str(runtime_dir / "queue_plan.json"),
+            "--readiness-json",
+            str(runtime_dir / "readiness.json"),
+            "--retry-json",
+            str(runtime_dir / "retry_backoff_plan.json"),
+            "--out",
+            str(runtime_dir / out_map[name]),
+        ]
     return [*command, "--out", str(runtime_dir / out_map[name])]
 
 

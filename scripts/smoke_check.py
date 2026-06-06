@@ -121,6 +121,8 @@ REQUIRED = [
     "scripts/pnh_unattended_dispatch_readiness_smoke_check.py",
     "scripts/pnh_unattended_dispatch_pilot.py",
     "scripts/pnh_unattended_dispatch_pilot_smoke_check.py",
+    "scripts/pnh_unattended_automation_status.py",
+    "scripts/pnh_unattended_automation_status_smoke_check.py",
     "scripts/pnh_single_command_packet.py",
     "scripts/pnh_single_command_packet_smoke_check.py",
     "scripts/pnh_command_packet_status_smoke_check.py",

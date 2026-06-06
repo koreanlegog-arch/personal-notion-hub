@@ -1,0 +1,30 @@
+{
+  "autonomousNextAction": "wait_for_new_command_capture",
+  "decision": "idle_ready",
+  "generatedAt": "2026-06-06T07:20:28+00:00",
+  "pnhUnattendedAutomationStatus": true,
+  "queue": {
+    "cooldownActive": false,
+    "queueActivationGateRequired": false,
+    "queuedCount": 0,
+    "remainingExternalWriteCapacity1h": 3,
+    "skippedCount": 14
+  },
+  "readiness": {
+    "activationGateRequired": false,
+    "failedCheckCount": 0,
+    "verdict": "ready_for_delegated_bounded_pilot"
+  },
+  "retry": {
+    "candidateCount": 0,
+    "manualReviewRequiredCount": 0
+  },
+  "safety": {
+    "boundedOnly": true,
+    "externalWritesPerformed": false,
+    "messageContentStored": false,
+    "privateValuesPrinted": false,
+    "rollbackRequired": true,
+    "tokenValuePrinted": false
+  }
+}

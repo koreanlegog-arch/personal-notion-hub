@@ -75,6 +75,7 @@ The current verified Launch flow can:
 34. expose the headless companion API to the owner tailnet through reversible Windows portproxy forwarding
 35. run a final real-data privacy gate before controlled owner phone-adapter data runs
 36. backfill semantic progress from existing redacted dispatch-state metadata without reading message bodies
+37. summarize bounded unattended automation status from queue, readiness, and retry/backoff evidence
 
 Latest owner live command-packet dispatch:
 
@@ -373,6 +374,10 @@ project `AGENTS.md` and do not require a separate per-run approval.
   URL or token values.
 - `scripts/pnh_unattended_retry_backoff.py`: plans bounded retry candidates for
   failed or blocked dispatch records.
+- `scripts/pnh_unattended_automation_status.py`: summarizes queue,
+  readiness, and retry/backoff outputs into an `idle_ready`,
+  `ready_to_run_bounded_pilot`, `retry_candidates_waiting`, or
+  `hold_for_readiness` decision without performing external writes.
 - `scripts/pnh_scheduler_tick.py`, `scripts/pnh_scheduler_loop.py`, and
   `scripts/pnh_scheduler_install_user_service.sh`: run bounded local scheduler
   checks manually or through a user-systemd timer.
