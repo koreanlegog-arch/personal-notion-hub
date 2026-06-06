@@ -67,6 +67,10 @@ will happen after approval.
 ## Operating Expectations
 
 - Use phase-level progress, not micro-approval.
+- Benchmark execution is a workspace-level function. PNH may keep wrapper scripts
+  and archived historical evidence, but active benchmark engines, model catalogs,
+  regression checks, operation-mode JSONL logs, and benchmark reports must be
+  run from `/home/koreanlego/projects` through the root PNH project adapter.
 - If the next step is reversible and within the active PNH phase, continue.
 - Do not append "next efficient work" suggestions to routine final reports.
   Report approval-required items, blockers, residual risks, and completed
