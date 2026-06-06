@@ -44,6 +44,18 @@ python3 scripts/pnh_phone_automation_profile_template.py \
 The profile output uses placeholders such as
 `Bearer <PNH_PRIVATE_INBOX_TOKEN>`. It must not contain real tokens.
 
+Generate a single owner handoff packet with placeholder-only profiles,
+readiness summary, live-probe sequence, and safety rules:
+
+```bash
+python3 scripts/pnh_phone_automation_handoff_packet.py
+```
+
+The handoff packet intentionally keeps the endpoint as
+`http://<owner-tailnet-ip>:8765` and the auth header as
+`Bearer <PNH_PRIVATE_INBOX_TOKEN>`. Replace those only inside the owner phone
+automation tool, not in committed files or chat.
+
 Check whether the current machine is ready for owner phone-tool configuration:
 
 ```bash
@@ -205,6 +217,7 @@ Raw phone data is not echoed.
 ```bash
 python3 scripts/pnh_phone_adapter_send_smoke_check.py
 python3 scripts/pnh_phone_automation_profile_template_smoke_check.py
+python3 scripts/pnh_phone_automation_handoff_packet_smoke_check.py
 python3 scripts/pnh_phone_automation_setup_readiness_smoke_check.py
 python3 scripts/pnh_phone_automation_rehearsal_smoke_check.py
 python3 scripts/pnh_phone_automation_live_probe_smoke_check.py

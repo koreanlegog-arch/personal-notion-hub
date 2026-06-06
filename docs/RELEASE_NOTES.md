@@ -24,6 +24,7 @@ including guarded live-adapter and bounded scheduler foundations.
 - owner phone automation setup readiness checker
 - synthetic phone automation rehearsal runner for loopback and owner-tailnet
 - metadata-only phone automation live probe for new encrypted-vault captures
+- placeholder-only owner phone automation handoff packet
 - bounded unattended retry/backoff planning
 - bounded local scheduler tick/loop scripts with live-adapter readiness job
 - unattended automation status summary for queue/readiness/retry decisions
@@ -59,6 +60,7 @@ including guarded live-adapter and bounded scheduler foundations.
 - phone automation setup readiness currently reports `ready_for_owner_phone_tool_configuration`
 - owner-tailnet synthetic phone automation rehearsal accepted `1` encrypted-vault record
 - phone automation live probe can detect new phone captures without decrypting private bodies
+- phone automation handoff packet consolidates owner setup steps without storing token values or exact tailnet URLs
 
 ### Boundaries
 

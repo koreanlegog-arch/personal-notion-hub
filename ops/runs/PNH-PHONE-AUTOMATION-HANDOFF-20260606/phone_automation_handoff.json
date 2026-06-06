@@ -1,0 +1,186 @@
+{
+  "adapterGuidance": [
+    {
+      "adapter": "phone-contacts-json",
+      "minimumFields": "title/name plus body/text/notes or full item JSON",
+      "useFor": "owner-exported or phone-automation contact snapshots"
+    },
+    {
+      "adapter": "phone-calendar-json",
+      "minimumFields": "title/summary plus body/description/notes",
+      "useFor": "calendar events or daily schedule snapshots"
+    },
+    {
+      "adapter": "phone-call-log-json",
+      "minimumFields": "title/name plus notes/body",
+      "useFor": "call notes or call-log summaries"
+    },
+    {
+      "adapter": "phone-recording-transcript-json",
+      "minimumFields": "title plus transcript body/text",
+      "useFor": "recording transcript snippets prepared by owner automation"
+    }
+  ],
+  "authHeader": "Bearer <PNH_PRIVATE_INBOX_TOKEN>",
+  "baseUrlValuePrinted": false,
+  "endpoint": "/api/private/phone-adapter-captures",
+  "exactOwnerNetworkUrlPersisted": false,
+  "liveProbe": {
+    "currentCount": 17,
+    "latestPhoneCaptureSource": "phone_call_log",
+    "latestPhoneCaptureStorageMode": "encrypted-vault",
+    "privateValuesPrinted": false,
+    "rawPrivateBodyRead": false,
+    "tokenValuePrinted": false,
+    "verdict": "latest_phone_capture_available"
+  },
+  "ownerSetupSequence": [
+    {
+      "command": "python3 scripts/pnh_phone_automation_setup_readiness.py",
+      "expected": "ready_for_owner_phone_tool_configuration",
+      "step": "confirm-local-readiness"
+    },
+    {
+      "command": "python3 scripts/pnh_phone_automation_profile_template.py",
+      "expected": "profiles use Bearer <PNH_PRIVATE_INBOX_TOKEN>",
+      "step": "generate-placeholder-profiles"
+    },
+    {
+      "command": "manual-owner-action: copy companion/private/auth_token into the phone automation tool secret field",
+      "expected": "token is never pasted into chat/docs/Git",
+      "step": "copy-token-locally"
+    },
+    {
+      "command": "manual-owner-action: replace <owner-tailnet-ip> in the phone tool only",
+      "expected": "repo evidence still contains placeholder-only endpoint",
+      "step": "configure-phone-automation-endpoint"
+    },
+    {
+      "command": "python3 scripts/pnh_phone_automation_live_probe.py --baseline-count 17 --timeout-seconds 120",
+      "expected": "new_phone_capture_detected",
+      "step": "start-live-probe"
+    },
+    {
+      "command": "manual-owner-action: run the phone automation action with fixture/synthetic data first",
+      "expected": "encrypted-vault row count increases by at least 1",
+      "step": "send-one-synthetic-phone-payload"
+    },
+    {
+      "command": "python3 scripts/pnh_real_data_privacy_gate.py",
+      "expected": "ready_for_controlled_real_phone_adapter_run",
+      "step": "final-real-data-gate"
+    }
+  ],
+  "pnhPhoneAutomationHandoffPacket": true,
+  "privateValuesPrinted": false,
+  "profileBaseUrl": "http://<owner-tailnet-ip>:8765",
+  "profiles": [
+    {
+      "adapter": "phone-calendar-json",
+      "bodyTemplate": {
+        "adapter": "phone-calendar-json",
+        "createdAt": "2026-06-06T00:00:00Z",
+        "items": [
+          {
+            "body": "Synthetic private body for local fixture rehearsal only.",
+            "createdAt": "2026-06-06T00:00:00Z",
+            "sensitivity": "private",
+            "title": "Synthetic private item"
+          }
+        ]
+      },
+      "headers": {
+        "Authorization": "Bearer <PNH_PRIVATE_INBOX_TOKEN>",
+        "Content-Type": "application/json"
+      },
+      "name": "PNH phone-calendar-json",
+      "responsePolicy": "metadata-only",
+      "url": "http://<owner-tailnet-ip>:8765/api/private/phone-adapter-captures"
+    },
+    {
+      "adapter": "phone-call-log-json",
+      "bodyTemplate": {
+        "adapter": "phone-call-log-json",
+        "createdAt": "2026-06-06T00:00:00Z",
+        "items": [
+          {
+            "body": "Synthetic private body for local fixture rehearsal only.",
+            "createdAt": "2026-06-06T00:00:00Z",
+            "sensitivity": "highly_sensitive",
+            "title": "Synthetic private item"
+          }
+        ]
+      },
+      "headers": {
+        "Authorization": "Bearer <PNH_PRIVATE_INBOX_TOKEN>",
+        "Content-Type": "application/json"
+      },
+      "name": "PNH phone-call-log-json",
+      "responsePolicy": "metadata-only",
+      "url": "http://<owner-tailnet-ip>:8765/api/private/phone-adapter-captures"
+    },
+    {
+      "adapter": "phone-contacts-json",
+      "bodyTemplate": {
+        "adapter": "phone-contacts-json",
+        "createdAt": "2026-06-06T00:00:00Z",
+        "items": [
+          {
+            "body": "Synthetic private body for local fixture rehearsal only.",
+            "createdAt": "2026-06-06T00:00:00Z",
+            "sensitivity": "private",
+            "title": "Synthetic private item"
+          }
+        ]
+      },
+      "headers": {
+        "Authorization": "Bearer <PNH_PRIVATE_INBOX_TOKEN>",
+        "Content-Type": "application/json"
+      },
+      "name": "PNH phone-contacts-json",
+      "responsePolicy": "metadata-only",
+      "url": "http://<owner-tailnet-ip>:8765/api/private/phone-adapter-captures"
+    },
+    {
+      "adapter": "phone-recording-transcript-json",
+      "bodyTemplate": {
+        "adapter": "phone-recording-transcript-json",
+        "createdAt": "2026-06-06T00:00:00Z",
+        "items": [
+          {
+            "body": "Synthetic private body for local fixture rehearsal only.",
+            "createdAt": "2026-06-06T00:00:00Z",
+            "sensitivity": "highly_sensitive",
+            "title": "Synthetic private item"
+          }
+        ]
+      },
+      "headers": {
+        "Authorization": "Bearer <PNH_PRIVATE_INBOX_TOKEN>",
+        "Content-Type": "application/json"
+      },
+      "name": "PNH phone-recording-transcript-json",
+      "responsePolicy": "metadata-only",
+      "url": "http://<owner-tailnet-ip>:8765/api/private/phone-adapter-captures"
+    }
+  ],
+  "rawPrivateBodyRead": false,
+  "readiness": {
+    "failedCheckCount": 0,
+    "privateValuesPrinted": false,
+    "profileCount": 4,
+    "tokenValuePrinted": false,
+    "verdict": "ready_for_owner_phone_tool_configuration"
+  },
+  "runtimeChecksUsed": true,
+  "safetyRules": [
+    "Do not paste the bearer token into chat, docs, screenshots, or Git.",
+    "Copy the token only from the local ignored companion/private/auth_token file into the phone automation tool.",
+    "Use owner tailnet or loopback endpoints only until production auth and public exposure are separately reviewed.",
+    "Run one synthetic phone automation send before sending real private data.",
+    "After the first real private data send, rerun the real-data privacy gate before long-term operation."
+  ],
+  "tokenPlaceholderOnly": true,
+  "tokenValuePrinted": false,
+  "verdict": "ready_for_owner_phone_tool_configuration"
+}
